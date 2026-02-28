@@ -1,0 +1,137 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.automation_create",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "automation_create",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "name": "automation-demo-create",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-demo",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "sku": {
+                "name": "Basic"
+              }
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true,
+          "output": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azapi_resource.automation_update",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "automation_update",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "name": "automation-demo-update",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-demo",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "sku": {
+                "name": "Basic"
+              }
+            }
+          },
+          "output": {
+            "properties": {
+              "state": "Running",
+              "startTime": "2024-01-01T00:00:00Z",
+              "endTime": "2024-01-02T00:00:00Z"
+            },
+            "status": "Ok"
+          }
+        },
+        "after": {
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "name": "automation-demo-update",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-demo",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "sku": {
+                "name": "Standard"
+              }
+            }
+          },
+          "output": {
+            "properties": {
+              "state": "Stopped",
+              "startTime": "2024-06-01T00:00:00Z",
+              "endTime": "2024-06-02T00:00:00Z"
+            },
+            "status": "Ok"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {},
+          "output": {}
+        },
+        "after_sensitive": {
+          "body": {},
+          "output": {}
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.sql_delete",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "sql_delete",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "type": "Microsoft.Sql/servers/databases@2021-11-01",
+          "name": "sql-demo-delete",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-demo/providers/Microsoft.Sql/servers/sql-demo",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "collation": "SQL_Latin1_General_CP1_CI_AS",
+              "maxSizeBytes": 268435456000
+            }
+          },
+          "output": {
+            "state": "Online",
+            "apiKey": "my-secret-key-12345"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {},
+          "output": {
+            "apiKey": true
+          }
+        },
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": []
+    }
+  }
+}

@@ -15,12 +15,31 @@
 | Task Planner | ✅ Required | ✅ Done |
 | Developer | ✅ Required | ✅ Done |
 | Technical Writer | ✅ Required | ✅ Done |
-| Code Reviewer | ✅ Required | ✅ Done |
+| Code Reviewer | ✅ Required | 🔄 Round 5 — Changes Requested |
 | UAT Tester | ⚠️ If user-facing | ⏳ Pending |
 | Release Manager | ✅ Required | ⏳ Pending |
 | Retrospective | ✅ Required | ⏳ Pending |
 
 ## Agent Work Log
+
+### Code Reviewer (Round 5 — Changes Requested)
+- **Date:** 2026-02-28
+- **Summary:** Reviewed commit `8102733` which implements B-1 suppression (no Output Values section
+  when all outputs are unknown on create/replace) and adds `linkedWorkspaceId` display name mapping
+  to the UAT plan. Template logic is correct, all 1318 tests pass, 4 snapshot changes are correct
+  (SNAPSHOT_UPDATE_OK present), UAT plan lints clean (0 errors), comprehensive demo lints clean
+  (0 errors). Three documentation inconsistencies found:
+  1. **M-1 (Major):** `specification.md` still describes the old B-1 behavior (notice shown, not
+     section suppressed) in the behaviour table, success criteria, and UX example.
+  2. **M-2 (Major):** `test-plan.md` TC-01 description and feature→test mapping still describe
+     the old notice behavior.
+  3. **M-3 (Major):** XML doc comment for `Snapshot_AzapiOutputCreateUnknown_MatchesBaseline`
+     in `AzapiSnapshotTests.cs` says "shows the known-after-apply notice" (now wrong).
+- **Decision:** Changes Requested — Developer needs to fix M-1, M-2, M-3 (documentation only).
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/code-review.md` (Round 5 section appended)
+  - `docs/features/106-azapi-output-values/work-protocol.md` (updated)
+- **Problems Encountered:** None.
 
 ### Code Reviewer (Final Approval — Round 4)
 - **Date:** 2025-07-14

@@ -878,3 +878,188 @@ demonstrate the three required rendering scenarios. Ready for UAT handoff.
 **APPROVED for UAT.** Hand off to **UAT Tester** agent to validate rendering in a real
 GitHub pull request. The `uat-plan.md` and `uat-test-plan.md` in
 `docs/features/106-azapi-output-values/` contain the complete UAT scenario.
+
+---
+
+## Round 5 — Post-UAT Fix Review (commit `8102733`)
+
+**Reviewer:** Code Reviewer agent
+**Date:** 2026-02-28
+**Scope:** Latest commit `8102733` only — B-1 suppression fix + UAT plan update.
+
+### Round 5 Summary
+
+This round reviews a focused fix that:
+1. Removes the "Output Values" section entirely for the B-1 case (create/replace where
+   `after_unknown.output = true` and no before/after output data exists)
+2. Adds `linkedWorkspaceId` Azure resource ID to the UAT plan to demonstrate display name
+   mapping
+3. Updates the UAT test plan and regenerates the UAT plan MD
+4. Updates 4 snapshot files to match the new "section suppressed" behavior
+
+### Round 5 Verification Results
+
+- **Tests:** ✅ **1318 passed, 0 failed, 0 skipped** (full suite via `scripts/test-with-timeout.sh`)
+- **Comprehensive demo markdownlint:** ✅ 0 errors (`artifacts/comprehensive-demo.md`)
+- **UAT plan markdownlint:** ✅ 0 errors (`docs/features/106-azapi-output-values/uat-plan.md`)
+- **Comprehensive demo content:** ✅ Regenerated output differs only in header timestamp vs.
+  committed artifact — content is identical
+- **`SNAPSHOT_UPDATE_OK` token:** ✅ Present in commit `8102733` message
+
+### Round 5 Template Logic Analysis
+
+The change to `_output_values.sbn` is correct. The outer condition narrows from
+`has_before_output || has_after_output || output_unknown` to `has_before_output || has_after_output`,
+which means the entire block is skipped when there is no actual output data to show — exactly the
+intended B-1 suppression.
+
+All existing code paths remain correct:
+
+| Case | Before → After | Result |
+|------|---------------|--------|
+| B-1: create/replace, `output_unknown=true`, no before/after output | Old: heading + notice shown | New: section suppressed entirely ✅ |
+| B-2: replace, `output_unknown=true`, `has_before_output=true` | Before output shown in delete mode + notice | Still shown (outer=TRUE via `has_before_output`) ✅ |
+| Update with before+after output | Before/After table | Unchanged ✅ |
+| Create with `has_after_output=true` | After-only table | Unchanged ✅ |
+| Delete with `has_before_output=true` | Before-only table | Unchanged ✅ |
+| No output on either side | Section absent | Unchanged ✅ |
+
+Edge case considered: replace with `output_unknown=true` AND `has_after_output=true` (unusual
+combination). The template correctly stays in the `output_unknown` branch and does not render the
+after output, which is the right behavior — `after_unknown.output = true` means the `after.output`
+value cannot be trusted.
+
+### Round 5 Snapshot Changes
+
+All 4 snapshot changes are correct and minimal — they each remove exactly the 4 lines that
+constituted the old B-1 rendering (`#### Output Values`, blank line, notice text, blank line):
+
+| Snapshot | Reason for change |
+|----------|------------------|
+| `azapi-output-create-unknown.md` | Dedicated TC-01 test case: B-1 suppression |
+| `azapi-create.md` | Existing create plan had `after_unknown.output = true` |
+| `azapi-create-complete.md` | Existing complete-create plan had `after_unknown.output = true` |
+| `comprehensive-demo-full.md` | azapi resource in comprehensive demo has `after_unknown.output = true` |
+
+### Round 5 UAT Plan Quality
+
+The `uat-plan.json` addition of `linkedWorkspaceId` (an Azure resource ID) in the
+`automation_update` resource's output before/after values is correct and purposeful:
+it demonstrates display name mapping — a key rendering quality feature that UAT testers
+should verify is working in real GitHub/AzureDevOps markdown rendering.
+
+The `uat-plan.md` regeneration is consistent with the JSON change (confirmed by manual
+inspection of the output: the `linkedWorkspaceId` row renders as a formatted description
+rather than a raw resource ID path).
+
+The `uat-test-plan.md` update correctly reflects the new B-1 behavior: Resource 1
+(`automation_create`) now specifies that the Output Values section must be **absent**
+rather than showing a notice.
+
+### Round 5 Issues Found
+
+#### Major Issues
+
+**M-1: `specification.md` not updated to reflect B-1 behavior change**
+
+File: `docs/features/106-azapi-output-values/specification.md`
+
+The specification was written when B-1 showed a "known after apply" notice, and was
+never updated to reflect the new "section suppressed" behavior. Two locations are
+inconsistent:
+
+- Line 126 (Behaviour Per Action table): `| Create | absent | unknown ... | "known after apply" notice |`
+  → Should say: `| Create | absent | unknown ... | *(section suppressed — nothing shown)* |`
+- Lines 157–158 (Success Criteria): `When after_unknown.output = true (create/replace), a "known after apply" notice is shown`
+  → Should say: `When after_unknown.output = true and no before/after output exists (B-1), the Output Values section is omitted entirely`
+- Lines 82–88 (UX Example): `###### Output Values` / `*Output values are not known until after apply.*`
+  → Should be removed or replaced with a note that the section is absent
+
+**Impact:** Future developers reading the specification would implement the wrong behavior (showing
+the notice instead of suppressing the section). Future code reviewers checking spec compliance would
+incorrectly flag the current code as non-compliant.
+
+**M-2: `test-plan.md` TC-01 description is wrong**
+
+File: `docs/features/106-azapi-output-values/test-plan.md`
+
+TC-01 and the feature→test mapping still describe the old behavior:
+- Line 27: `| after_unknown.output = true → "known after apply" notice | TC-01 | Snapshot |`
+  → Should say: `| after_unknown.output = true → Output Values section absent | TC-01 | Snapshot |`
+- Lines 50–52 (TC-01 Description): "a brief italic notice is rendered under an `#### Output Values` heading"
+  → Should say: "the Output Values section is suppressed entirely — no heading and no notice text"
+- Lines 65–68 (TC-01 Expected Snapshot Output): shows `#### Output Values` / `*Output values are not known until after apply.*`
+  → Should show that neither heading nor notice appears
+- Line 432: `| after_unknown.output = true on create | "known after apply" notice, no table | TC-01 |`
+  → Should say: `| after_unknown.output = true on create | No Output Values section | TC-01 |`
+
+**Impact:** Same risk as M-1 — misleading guidance for future developers and reviewers.
+
+**M-3: `AzapiSnapshotTests.cs` XML doc comment for TC-01 test method is wrong**
+
+File: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzapiSnapshotTests.cs`, line ~212
+
+The XML doc summary for `Snapshot_AzapiOutputCreateUnknown_MatchesBaseline` still reads:
+
+> "Verifies that a create action with unknown output shows the known-after-apply notice."
+
+This is incorrect — the test now verifies the **absence** of the Output Values section. The
+comment should read something like: "Verifies that a create action with unknown output suppresses
+the Output Values section entirely (B-1 case)."
+
+**Impact:** Developers reading the test code are misled about what is being tested.
+
+#### Minor Issues
+
+None.
+
+#### Suggestions
+
+None.
+
+### Round 5 Critical Questions Answered
+
+- **What could make this code fail?** The template logic handles all known combinations of
+  `has_before_output`, `has_after_output`, and `output_unknown`. No failure scenarios identified.
+- **What edge cases might not be handled?** `has_after_output=true` + `output_unknown=true`
+  simultaneously on a create is an unusual Terraform edge case; the template correctly silences
+  the after output in that branch. No practical failure.
+- **Are all error paths tested?** Yes — all 4 distinct B-1 scenarios (create, replace w/no
+  before, azapi-create.md, comprehensive demo) are covered by the updated snapshots.
+
+### Round 5 Decision
+
+**Status: Changes Requested**
+
+Three documentation inconsistencies (M-1, M-2, M-3) need to be fixed before this can be
+approved. The implementation itself is correct; all tests pass; snapshots are right. Only
+doc updates are required.
+
+### Round 5 Checklist Summary
+
+| Category | Status |
+|----------|--------|
+| Correctness (1318 tests pass) | ✅ |
+| Template logic — B-1 suppression | ✅ |
+| Template logic — B-2 still works | ✅ |
+| Snapshot changes (4 files, SNAPSHOT_UPDATE_OK) | ✅ |
+| UAT plan JSON (`linkedWorkspaceId` added) | ✅ |
+| UAT plan MD (regenerated, lints clean) | ✅ |
+| UAT test plan (updated for new behavior) | ✅ |
+| Comprehensive demo markdownlint | ✅ |
+| `specification.md` updated | ❌ M-1 |
+| `test-plan.md` updated | ❌ M-2 |
+| `AzapiSnapshotTests.cs` doc comment updated | ❌ M-3 |
+| Work Protocol — Round 5 entry | ⏳ (to be added) |
+
+### Round 5 Next Steps
+
+**Changes requested.** Hand off to **Developer** agent to fix M-1, M-2, and M-3:
+
+1. Update `specification.md` to replace the B-1 "known after apply" notice description with
+   "section suppressed entirely" in the behaviour table, success criteria, and UX example.
+2. Update `test-plan.md` TC-01 description, expected snapshot output, and feature→test mapping
+   to reflect "no section shown" rather than "notice shown".
+3. Update the XML doc comment for `Snapshot_AzapiOutputCreateUnknown_MatchesBaseline` in
+   `AzapiSnapshotTests.cs` to say "suppresses the Output Values section entirely (B-1 case)"
+   instead of "shows the known-after-apply notice".

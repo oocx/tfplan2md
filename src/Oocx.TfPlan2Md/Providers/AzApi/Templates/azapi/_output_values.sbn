@@ -13,13 +13,13 @@
 {{~ ## B-2: replace + before output present + after unknown → render before in delete mode then notice ~}}
 {{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}
 {{ render_azapi_body change.before_json.output "Output Values" "delete" null before_sensitive_output null false "inline-diff" show_sensitive }}
-*Output values are not known until after apply.*
+_Output values are not known until after apply._
 {{~ else ~}}
 {{~ ## B-1: create/replace without before output + after unknown → emit heading then notice ~}}
 
 #### Output Values
 
-*Output values are not known until after apply.*
+_Output values are not known until after apply._
 {{~ end ~}}
 {{~ else if has_before_output && has_after_output ~}}
 {{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}

@@ -1422,7 +1422,7 @@
             }
           }
         },
-        "after_unknown": { "id": true },
+        "after_unknown": { "id": true, "output": true },
         "before_sensitive": false,
         "after_sensitive": {
           "body": {

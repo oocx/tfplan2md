@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.Parsing;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -44,7 +45,7 @@ internal partial class ReportModelBuilder
             var value = action == "delete" ? outputChange.Before : outputChange.After;
 
             // Check if value is computed
-            var isComputed = outputChange.AfterUnknown;
+            var isComputed = AfterUnknownHelper.IsWholeResourceUnknownAfterApply(outputChange.AfterUnknown);
 
             // Detect sensitivity from multiple sources with precedence:
             // 1. after_sensitive (for create/update/no-op)

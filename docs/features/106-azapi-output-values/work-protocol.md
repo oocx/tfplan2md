@@ -10,7 +10,7 @@
 | Agent | Required | Status |
 |-------|----------|--------|
 | Requirements Engineer | ✅ Required | ✅ Done |
-| Architect | ✅ Required | ⏳ Pending |
+| Architect | ✅ Required | ✅ Done |
 | Quality Engineer | ✅ Required | ⏳ Pending |
 | Task Planner | ✅ Required | ⏳ Pending |
 | Developer | ✅ Required | ⏳ Pending |
@@ -34,4 +34,21 @@
 - **Artifacts Produced:**
   - `docs/features/106-azapi-output-values/specification.md`
   - `docs/features/106-azapi-output-values/work-protocol.md`
+- **Problems Encountered:** None.
+
+### Architect
+- **Date:** 2025-07-14
+- **Summary:** Analysed the feature specification against the existing codebase. Confirmed that
+  `RenderAzapiBody` (registered as `render_azapi_body` in Scriban) is fully reusable for
+  rendering the `output` attribute — it accepts any JSON sub-object and already handles
+  grouping, sensitivity masking, large-value handling, and all rendering modes. Designed a
+  template-only implementation requiring additions to `resource.sbn` and
+  `update_resource.sbn` only. No C# changes are required. Documented complete Scriban
+  snippets for both templates covering all actions (create, update, delete, replace), the
+  `after_unknown.output` known-after-apply guard, and sensitivity pass-through. Noted that
+  grouped sub-section headings will be `` `prefix` `` (consistent with existing body
+  sub-sections) rather than the aspirational `` Output Values - `prefix` `` format from the
+  spec, because modifying the C# grouping renderer is out of scope.
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/architecture.md`
 - **Problems Encountered:** None.

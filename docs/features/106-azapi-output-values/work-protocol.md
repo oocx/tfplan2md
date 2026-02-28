@@ -159,3 +159,52 @@
 - **Artifacts Produced:**
   - `docs/features/106-azapi-output-values/tasks.md`
 - **Problems Encountered:** None.
+
+### Developer (Rework - Code Review Blockers)
+- **Date:** 2025-07-14
+- **Summary:** Fixed all code review blockers (B-1 through B-7) and documentation issue (M-1)
+  identified during code review.
+
+  **B-1 (template fix):** Added `#### Output Values` heading before the notice in the
+  `output_unknown=true` branch for create/replace actions in `_output_values.sbn`. Previously
+  the notice was emitted without a heading.
+
+  **B-2 (template fix):** In the replace action with `has_before_output=true` and
+  `output_unknown=true`, now calls `render_azapi_body` in delete mode for the before output
+  (which emits the heading and table) before showing the notice. Previously only the notice
+  was shown.
+
+  **B-3 through B-6 (missing tests):** Added test data, snapshots, and test methods for:
+  - TC-04: update-unchanged — `azapi-output-update-unchanged-plan.json` + snapshot + test
+  - TC-05: delete — `azapi-output-delete-plan.json` + snapshot + test
+  - TC-06: replace-unknown — `azapi-output-replace-unknown-plan.json` + snapshot + test
+  - TC-10: large output value (214-char URL, > 200 threshold) — `azapi-output-large-value-plan.json` + snapshot + test
+
+  **B-7 (SNAPSHOT_UPDATE_OK):** Updated snapshots for `azapi-create.md`,
+  `azapi-create-complete.md`, `azapi-output-create-unknown.md` with `SNAPSHOT_UPDATE_OK`
+  in the commit message.
+
+  **M-1 (architecture docs):** Added `after_unknown`, `before_sensitive`, and `after_sensitive`
+  to the template property listing in `docs/architecture.md`.
+
+  **All 1307 non-Docker tests pass. 0 failures. 0 skipped.**
+  Code review: No issues found. CodeQL: 0 alerts.
+
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Templates/azapi/_output_values.sbn` (updated: B-1, B-2)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-output-update-unchanged-plan.json` (new: TC-04)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-output-delete-plan.json` (new: TC-05)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-output-replace-unknown-plan.json` (new: TC-06)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-output-large-value-plan.json` (new: TC-10)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzapiSnapshotTests.cs` (4 new tests)
+  - 7 snapshot files (3 updated + 4 new)
+  - `docs/architecture.md` (3 new template property entries)
+
+- **Problems Encountered:**
+  1. `update-test-snapshots.sh` deleted existing output-related snapshots (collateral damage)
+     that were unrelated to this feature. Restored them via `git checkout`.
+  2. Large value test data initially had identical before/after `largeData` values; corrected
+     to use distinct `old-storage`/`new-storage` URLs to trigger large-value rendering.
+  3. Non-deterministic snapshot issue: script regenerated large value snapshot from old binary
+     before new test data was used. Resolved by manually deleting the stale snapshot and
+     copying the freshly generated one.

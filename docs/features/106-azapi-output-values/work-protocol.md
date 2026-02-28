@@ -15,12 +15,37 @@
 | Task Planner | ✅ Required | ✅ Done |
 | Developer | ✅ Required | ✅ Done |
 | Technical Writer | ✅ Required | ✅ Done |
-| Code Reviewer | ✅ Required | ⏳ Pending |
+| Code Reviewer | ✅ Required | ✅ Done |
 | UAT Tester | ⚠️ If user-facing | ⏳ Pending |
 | Release Manager | ✅ Required | ⏳ Pending |
 | Retrospective | ✅ Required | ⏳ Pending |
 
 ## Agent Work Log
+
+### Code Reviewer
+- **Date:** 2025-07-14
+- **Summary:** Reviewed the implementation of Feature 106 (Separate Table for azapi Output
+  Values). All 1314 tests pass. However, the review identified **9 Blockers** and **1 Major**
+  issue that must be resolved before approval. Key findings:
+  1. **B-1:** `_output_values.sbn` is missing the `#### Output Values` heading for the "known
+     after apply" case — spec, test plan, and docs/features.md all require it.
+  2. **B-2:** Replace action with `has_before_output=true` + `output_unknown=true` only emits
+     the notice; it should also render the before output in delete mode first.
+  3. **B-3 to B-6:** Four test cases from the test plan are not implemented: TC-04
+     (update-unchanged), TC-05 (delete), TC-06 (replace-unknown), TC-10 (large-value).
+  4. **B-7:** Snapshot updates to `azapi-create.md` and `azapi-create-complete.md` lack the
+     required `SNAPSHOT_UPDATE_OK` commit token.
+  5. **B-8:** UAT artifacts (`uat-plan.json`, `uat-plan.md`) are missing despite being required
+     by the UAT test plan.
+  6. **B-9:** Pre-existing MD024 markdownlint error in `artifacts/comprehensive-demo.md` must
+     be resolved; comprehensive demo plan.json also needs update to demonstrate the feature.
+  7. **M-1:** `docs/architecture.md` template property list missing `after_unknown`,
+     `before_sensitive`, `after_sensitive`.
+- **Decision:** Changes Requested — handed off to Developer.
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/code-review.md`
+  - `docs/features/106-azapi-output-values/work-protocol.md` (updated)
+- **Problems Encountered:** None.
 
 ### Technical Writer
 - **Date:** 2025-07-14

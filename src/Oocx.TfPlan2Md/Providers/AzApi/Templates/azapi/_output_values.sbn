@@ -9,8 +9,18 @@
 {{~ if has_before_output || has_after_output || output_unknown ~}}
 {{~ if change.action == "create" || change.action == "replace" ~}}
 {{~ if output_unknown ~}}
+{{~ if has_before_output && change.action == "replace" ~}}
+{{~ ## B-2: replace + before output present + after unknown → render before in delete mode then notice ~}}
+{{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}
+{{ render_azapi_body change.before_json.output "Output Values" "delete" null before_sensitive_output null false "inline-diff" show_sensitive }}
+*Output values are not known until after apply.*
+{{~ else ~}}
+{{~ ## B-1: create/replace without before output + after unknown → emit heading then notice ~}}
+
+#### Output Values
 
 *Output values are not known until after apply.*
+{{~ end ~}}
 {{~ else if has_before_output && has_after_output ~}}
 {{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}
 {{~ after_sensitive_output = change.after_sensitive ? change.after_sensitive.output : null ~}}

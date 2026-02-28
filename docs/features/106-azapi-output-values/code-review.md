@@ -1011,7 +1011,21 @@ the Output Values section entirely (B-1 case)."
 
 #### Minor Issues
 
-None.
+**m-1 (Minor): Template comment inaccurate — "without before output" should be "without before or after output"**
+
+File: `src/Oocx.TfPlan2Md/Providers/AzApi/Templates/azapi/_output_values.sbn`, lines 3–4
+
+The comment says:
+> "When output is entirely unknown (create/replace without before output), no section is rendered"
+
+The actual suppression condition (`has_before_output || has_after_output`) fires when **both** before
+and after output are absent. The comment should say "without before or after output data" to
+accurately reflect this. While create actions never have before output (making "without before output"
+technically sufficient for that case), replace actions could have after output present without before
+output, so the precise condition matters for correctness of the documentation.
+
+Fix: Change line 4 in `_output_values.sbn` to:
+> "without before or after output data"
 
 #### Suggestions
 

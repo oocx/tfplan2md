@@ -733,3 +733,148 @@ B-8c (trailing blank line) is auto-fixed by regenerating `uat-plan.md`.
 
 Hand off to **Developer** agent to fix B-8a, B-8b (and B-8c by regenerating). After those
 fixes, return to **Code Reviewer** for re-approval before UAT handoff.
+
+---
+
+## Code Review: Feature 106 — Final Approval (Round 4)
+
+**Review Date:** 2025-07-14
+
+**Reviewer:** Code Reviewer agent
+
+### Round 4 Summary
+
+This is the final approval pass following the developer's B-8a/B-8b fix (commit `3f3818d`).
+All previously identified issues are now resolved. The implementation is complete, all 1318
+tests pass, both markdownlint targets are clean, and the UAT plan artifacts correctly
+demonstrate all three required rendering scenarios.
+
+**Overall Assessment:** ✅ **APPROVED**
+
+---
+
+### Round 4 Verification Results
+
+| Check | Result |
+|-------|--------|
+| Tests (full suite) | ✅ **1318 passed, 0 failed, 0 skipped** |
+| Build | ✅ Success |
+| `artifacts/comprehensive-demo.md` markdownlint | ✅ **0 errors** |
+| `docs/features/106-azapi-output-values/uat-plan.md` markdownlint | ✅ **0 errors** |
+| `SNAPSHOT_UPDATE_OK` in commit history | ✅ Present in commit `ebd457d` |
+| `uat-plan.json` exists with 3 resources | ✅ |
+| `uat-plan.md` matches `uat-plan.json` | ✅ |
+
+---
+
+### B-8a/B-8b Fix Verification
+
+#### B-8a (grouped output) — ✅ RESOLVED
+
+`uat-plan.json` resource 2 (`automation_update`) now uses a `sku` sub-object in the `output`
+field:
+
+```json
+"output": {
+  "state": "Stopped",
+  "sku": { "name": "Standard", "tier": "Standard", "capacity": 0 }
+}
+```
+
+`uat-plan.md` correctly renders `###### \`sku\`` H6 sub-section with a Before/After table —
+Feature 034 grouping is demonstrated as required by the UAT test plan.
+
+#### B-8b (MD024 siblings) — ✅ RESOLVED
+
+Resources are now distributed across three separate modules:
+
+- `automation_create` → `### 📦 Module: root`
+- `automation_update` → `### 📦 Module: \`module.automation\``
+- `sql_delete` → `### 📦 Module: \`module.sql\``
+
+Each module section contains exactly one `#### Output Values` heading, eliminating all MD024
+sibling violations.
+
+#### B-8c (trailing blank line) — ✅ RESOLVED (auto)
+
+`uat-plan.md` ends with a single newline. Markdownlint reports 0 errors.
+
+---
+
+### UAT Plan Structure Verification
+
+Confirmed `uat-plan.md` structure meets all four requirements:
+
+| Requirement | Line(s) | Status |
+|-------------|---------|--------|
+| Three separate module sections (root, module.automation, module.sql) | 17, 47, 87 | ✅ |
+| `automation_create`: `#### Output Values` + notice (create-unknown case) | 39–41 | ✅ |
+| `automation_update`: `#### Output Values` + flat table + `###### \`sku\`` sub-section | 69–82 | ✅ |
+| `sql_delete`: `#### Output Values` + delete-mode table with `(sensitive)` | 110–116 | ✅ |
+
+---
+
+### Round 4 Specification Compliance
+
+All 12 acceptance criteria implemented and tested. No regressions. See Round 3 review for
+full compliance table.
+
+---
+
+### Round 4 Snapshot Changes
+
+- Snapshot files changed: **Yes** (in earlier commits)
+- `SNAPSHOT_UPDATE_OK` token: ✅ Present in commit `ebd457d`
+- Snapshot diff is correct: emphasis style changed from `*...*` to `_..._` in the output-unknown
+  notice, consistent with the MD049 fix and existing template conventions.
+
+---
+
+### Round 4 Work Protocol & Documentation Verification
+
+| Document | Status | Notes |
+|----------|--------|-------|
+| `work-protocol.md` | ✅ | Exists; all required agents logged |
+| All required agents logged | ✅ | Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer (×2), Technical Writer, Code Reviewer (×4) |
+| `docs/features.md` | ✅ | Feature 106 section added by Technical Writer |
+| `docs/architecture.md` | ✅ | `after_unknown`, `before_sensitive`, `after_sensitive` added |
+| `docs/testing-strategy.md` | ✅ N/A | No new test patterns |
+| `README.md` | ✅ N/A | No CLI/usage changes |
+| `CHANGELOG.md` NOT modified | ✅ | Correct |
+
+---
+
+### Round 4 Review Decision
+
+**Status:** ✅ **APPROVED**
+
+The implementation is correct, complete, and well-tested. All acceptance criteria are met,
+1318 tests pass, markdownlint is clean on all targets, and the UAT plan artifacts correctly
+demonstrate the three required rendering scenarios. Ready for UAT handoff.
+
+---
+
+### Round 4 Checklist Summary
+
+| Category | Status |
+|----------|--------|
+| Correctness (1318 tests pass) | ✅ |
+| Spec Compliance (all 12 AC) | ✅ |
+| Code Quality | ✅ |
+| Architecture | ✅ |
+| Testing (10 TC implemented) | ✅ |
+| UAT Artifacts — existence | ✅ |
+| UAT Artifacts — grouping demonstrated | ✅ |
+| UAT Artifacts — markdownlint clean | ✅ |
+| Comprehensive demo markdownlint | ✅ |
+| SNAPSHOT_UPDATE_OK | ✅ |
+| Work Protocol | ✅ |
+| Global Documentation | ✅ |
+
+---
+
+### Round 4 Next Steps
+
+**APPROVED for UAT.** Hand off to **UAT Tester** agent to validate rendering in a real
+GitHub pull request. The `uat-plan.md` and `uat-test-plan.md` in
+`docs/features/106-azapi-output-values/` contain the complete UAT scenario.

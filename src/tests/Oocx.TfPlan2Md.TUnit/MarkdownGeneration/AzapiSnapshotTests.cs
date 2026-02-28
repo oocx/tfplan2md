@@ -269,6 +269,50 @@ public class AzapiSnapshotTests
     }
 
     /// <summary>
+    /// TC-04: Verifies that an update action with identical before/after output renders the Output Values
+    /// section with a "no changes detected" notice rather than a diff table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputUpdateUnchanged_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-update-unchanged-plan.json", "azapi-output-update-unchanged.md");
+    }
+
+    /// <summary>
+    /// TC-05: Verifies that a delete action with before output renders the Output Values section
+    /// in delete mode showing the values that will be removed.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputDelete_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-delete-plan.json", "azapi-output-delete.md");
+    }
+
+    /// <summary>
+    /// TC-06: Verifies that a replace action with before output present and after output unknown
+    /// renders the before output in delete mode followed by the "known after apply" notice.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputReplaceUnknown_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-replace-unknown-plan.json", "azapi-output-replace-unknown.md");
+    }
+
+    /// <summary>
+    /// TC-10: Verifies that output values exceeding the large value threshold are rendered
+    /// outside the table as large value blocks rather than inline table cells.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputLargeValue_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-large-value-plan.json", "azapi-output-large-value.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an AzAPI plan test data file.
     /// </summary>
     /// <param name="testDataFile">The test data file name under TestData.</param>

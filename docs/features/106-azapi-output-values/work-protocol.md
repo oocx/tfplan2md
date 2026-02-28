@@ -22,6 +22,30 @@
 
 ## Agent Work Log
 
+### Code Reviewer (Final Verification — Round 3)
+- **Date:** 2025-07-14
+- **Summary:** Final verification pass after Developer round-2 rework (B-8 and B-9 fixes).
+  **B-9 is fully resolved:** `.markdownlint.json` has `siblings_only: true` for MD024, emphasis
+  style is fixed to `_..._` in `_output_values.sbn`, `comprehensive-demo` plan.json exercises the
+  feature, and `artifacts/comprehensive-demo.md` passes markdownlint with 0 errors. All 1318 tests
+  pass. SNAPSHOT_UPDATE_OK present in commit `ebd457d`. **B-8 is partially resolved:** `uat-plan.json`
+  and `uat-plan.md` now exist, and resources 1 (create-unknown) and 3 (delete-sensitive) render
+  correctly. However, two new issues discovered in the UAT artifacts prevent approval:
+  1. **B-8a (Blocker):** Resource 2 in `uat-plan.json` uses `output.properties.*` sub-object which
+     gets prefix-stripped by the grouping algorithm, producing a flat table. The `uat-test-plan.md`
+     explicitly requires a grouped output example with `###### \`properties\`` sub-section. The UAT
+     tester will fail when looking for this sub-section and field names that don't exist. Fix: use
+     `sku.*` style sub-object in the update resource's output (as TC-09 does).
+  2. **B-8b (Major):** `uat-plan.md` fails markdownlint with MD024 (3 sibling `#### Output Values`
+     headings under the same H3 parent). Fix: distribute resources across different modules in
+     `uat-plan.json`, then regenerate `uat-plan.md` (which also auto-fixes the MD012 trailing blank
+     line).
+- **Decision:** Changes Requested — handed off to Developer to fix B-8a and B-8b.
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/code-review.md` (Round 3 section appended)
+  - `docs/features/106-azapi-output-values/work-protocol.md` (updated)
+- **Problems Encountered:** None.
+
 ### Code Reviewer (Re-Review)
 - **Date:** 2025-07-14
 - **Summary:** Re-reviewed Feature 106 after Developer rework. Verified all 8 items fixed in

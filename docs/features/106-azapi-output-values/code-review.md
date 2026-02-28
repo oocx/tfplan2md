@@ -494,3 +494,242 @@ comprehensive demo at all.
       heading in different document sections. Regenerate and commit `artifacts/comprehensive-demo.md`.
 
 After both fixes: all tests must still pass (1318+) and markdownlint must report 0 errors.
+
+---
+
+# Code Review: Feature 106 — Final Verification Pass (Round 3)
+
+## Summary
+
+This is the final verification pass following the developer's round-2 rework that addressed B-8
+(missing UAT artifacts) and B-9 (markdownlint errors in comprehensive demo). The core implementation
+is sound and all 1318 tests pass. However, two new issues were discovered in the UAT artifacts that
+must be fixed before the PR can be approved for UAT handoff.
+
+**Overall Assessment:** ❌ **Changes Requested**
+
+---
+
+## Verification Results
+
+| Check | Result |
+|-------|--------|
+| Tests (full suite) | ✅ **Pass — 1318/1318** (0 failures, 0 skipped) |
+| Build | ✅ Success |
+| `artifacts/comprehensive-demo.md` markdownlint | ✅ **0 errors** |
+| `docs/features/106-azapi-output-values/uat-plan.md` markdownlint | ❌ **3 errors** (MD024 x2, MD012 x1) |
+| SNAPSHOT_UPDATE_OK token present | ✅ Present in commit `ebd457d` |
+| MD049 emphasis fix in `_output_values.sbn` | ✅ Uses `_..._` style correctly |
+| `uat-plan.json` exists | ✅ 3 resources, correct actions |
+| `uat-plan.md` content matches JSON | ✅ Matches (minor trailing blank line diff) |
+
+---
+
+## B-8 / B-9 Fix Verification
+
+### B-9 (markdownlint) — ✅ RESOLVED
+
+- `.markdownlint.json` now has `"MD024": { "siblings_only": true }` ✅
+- `_output_values.sbn` uses `_Output values are not known until after apply._` (underscore, not
+  asterisk) ✅
+- `examples/comprehensive-demo/plan.json` has `after_unknown.output: true` for the
+  `azapi_resource.container_app` ✅
+- `artifacts/comprehensive-demo.md` renders `#### Output Values` with the notice ✅
+- `artifacts/comprehensive-demo.md` passes markdownlint with **0 errors** ✅
+
+### B-8 (UAT artifacts) — ⚠️ PARTIALLY RESOLVED
+
+- `docs/features/106-azapi-output-values/uat-plan.json` created with 3 resources ✅
+- `docs/features/106-azapi-output-values/uat-plan.md` created ✅
+- Resources 1 (create-unknown) and 3 (delete-sensitive) render correctly per spec ✅
+- **Resource 2 (update-grouped) does NOT demonstrate Feature 034 grouping** ❌ (see B-8a below)
+- **`uat-plan.md` fails markdownlint** with 3 errors ❌ (see B-8b below)
+
+---
+
+## Specification Compliance
+
+All core acceptance criteria continue to be met:
+
+| Acceptance Criterion | Implemented | Tested | Notes |
+|---------------------|-------------|--------|-------|
+| Output section after body for create (unknown) | ✅ | ✅ TC-01 | Notice shown with heading |
+| Output section after body for create (present) | ✅ | ✅ TC-02 | Table shown |
+| Output section after body for update | ✅ | ✅ TC-03 | Before/After table |
+| Update-unchanged output filtered | ✅ | ✅ TC-04 | No section rendered |
+| Delete — before table only | ✅ | ✅ TC-05 | Correct single-column table |
+| Replace — unknown after | ✅ | ✅ TC-06 | Before in delete mode + notice |
+| No output → section omitted | ✅ | ✅ TC-11 | No regression |
+| Sensitivity masking | ✅ | ✅ TC-08 | `(sensitive)` shown |
+| Feature 034 grouping | ✅ | ✅ TC-09 | `###### \`sku\`` sub-section |
+| Large-value handling | ✅ | ✅ TC-10 | Truncation applied |
+| `azapi_update_resource` support | ✅ | ✅ TC-03 | Covered in update template |
+| Applies to both resource types | ✅ | ✅ | Both templates include partial |
+
+**Spec deviation (pre-accepted in architecture.md):** Grouped sub-section headings use
+`` `<prefix>` `` format (same as body sections) rather than the spec's proposed
+`Output Values - \`<prefix>\`` format. Architect documented this as out of scope.
+
+---
+
+## Adversarial Testing
+
+| Test Case | Result | Notes |
+|-----------|--------|-------|
+| Empty/null output field | ✅ Pass | Section omitted (TC-11 regression coverage) |
+| Null `before_sensitive` / `after_sensitive` | ✅ Pass | Template guards with `? null` |
+| Sensitive field in delete mode | ✅ Pass | `(sensitive)` shown in before-only table |
+| Identical before/after (no changes) | ✅ Pass | TC-04 update-unchanged, section not rendered |
+| Value > 200 chars (large value) | ✅ Pass | TC-10 snapshot confirms truncation |
+| Replace action — both paths | ✅ Pass | TC-06 snapshot covers before+notice path |
+| Multiple azapi resources per module (MD024) | ⚠️ Lint issue | 3 same-named H4 headings violate MD024 siblings_only rule |
+
+---
+
+## Issues Found
+
+### Blockers
+
+#### B-8a: `uat-plan.md` does NOT demonstrate Feature 034 grouping — contradicts uat-test-plan.md
+
+**Severity:** Blocker — UAT cannot succeed with current artifact.
+
+The `uat-test-plan.md` (line "Key Resources to include", item 2) explicitly requires:
+
+> `azapi_resource.automation_update` — update action, before/after output with **grouped
+> `properties` sub-object** (shows grouped output table)
+
+The validation instructions state the UAT tester should verify:
+- A `###### \`properties\`` H6 sub-heading inside the Output Values section
+- Rows for `automationHybridServiceUrl`, `state`, and `sku.name`
+
+**What actually renders:** The `uat-plan.json` update resource has
+`output.properties.{state, startTime, endTime}`. The `render_azapi_body` grouping algorithm
+**strips the `properties.` prefix** (known limitation, documented in TC-09 developer notes),
+so the output is rendered as a flat table with keys `state`, `startTime`, `endTime` — no
+`###### \`properties\`` sub-section, no grouping.
+
+The UAT tester will look for `###### \`properties\`` and not find it. They will also look for
+`automationHybridServiceUrl` and `sku.name` which don't exist in the JSON at all.
+
+**Fix:** Update `uat-plan.json` resource 2's `output` to use a non-`properties` sub-object to
+trigger grouping. The TC-09 snapshot demonstrates the correct approach using `sku.*`:
+```json
+"output": {
+  "state": "Stopped",
+  "sku": {
+    "name": "Standard",
+    "tier": "Standard",
+    "capacity": 0
+  }
+}
+```
+Then regenerate `uat-plan.md`. Also update the validation instructions in the relevant UAT
+comments to reflect the actual field names (or update `uat-test-plan.md` to reference `sku.*`
+instead of `properties.*`).
+
+---
+
+### Major Issues
+
+#### B-8b: `uat-plan.md` fails markdownlint with MD024 (siblings_only violation)
+
+**Severity:** Major — committed artifact fails the project lint standard.
+
+Running `scripts/markdownlint.sh docs/features/106-azapi-output-values/uat-plan.md` produces:
+```
+uat-plan.md:65  MD024 Multiple headings with the same content [Context: "Output Values"]
+uat-plan.md:96  MD024 Multiple headings with the same content [Context: "Output Values"]
+```
+
+The three `#### Output Values` headings are all siblings under `### 📦 Module: root`. The
+`siblings_only: true` setting still flags siblings as duplicates. This was added to fix the
+`### 📦 Module:` issue in the comprehensive demo (where duplicates are in different H2
+sections, not siblings), but it does not help for same-module resource sections.
+
+Note: The fresh output from the current binary regenerates with the same heading structure, so
+this is not a regeneration issue — it is a structural consequence of 3 azapi resources in the
+same module all getting an `#### Output Values` section.
+
+**Fix options (choose one):**
+1. *(Recommended)* Distribute the 3 resources across different modules in `uat-plan.json`:
+   - `root` module: `azapi_resource.automation_create` (create)
+   - `module.automation`: `azapi_resource.automation_update` (update)
+   - `module.sql`: `azapi_resource.sql_delete` (delete)
+   This makes the headings non-siblings across different H3 sections, satisfying `siblings_only`.
+2. Disable MD024 entirely in `.markdownlint.json` (broader suppression, not recommended).
+
+---
+
+### Minor Issues
+
+#### B-8c: `uat-plan.md` has extra trailing blank line (MD012 at line 105)
+
+**Severity:** Minor — caused by trailing blank line in committed file.
+
+The committed `uat-plan.md` has an extra blank line after the final `</details>` (line 104)
+that is not present in a fresh regeneration from the current binary. This causes:
+```
+uat-plan.md:105  MD012 Multiple consecutive blank lines [Expected: 1; Actual: 2]
+```
+**Fix:** This will be resolved automatically when `uat-plan.md` is regenerated after fixing
+B-8a and B-8b.
+
+---
+
+### Suggestions
+
+None beyond the issues above.
+
+---
+
+## Critical Questions Answered
+
+- **What could make this code fail?** The only identified failure path is the `properties.*`
+  prefix stripping in the grouping algorithm, which prevents demonstrating Feature 034 grouping
+  with `properties.*` output keys. The template logic itself is correct for all action types.
+- **What edge cases might not be handled?** All required test cases (TC-01 through TC-11) are
+  now implemented. The edge case of `output = null` in both before/after is covered by TC-11.
+- **Are all error paths tested?** Yes — null guards in the template (`change.before_sensitive ?
+  change.before_sensitive.output : null`) prevent null reference errors for absent sensitivity
+  maps.
+
+---
+
+## Checklist Summary
+
+| Category | Status |
+|----------|--------|
+| Correctness (1318 tests pass) | ✅ |
+| Spec Compliance (core AC) | ✅ |
+| Code Quality | ✅ |
+| Architecture | ✅ |
+| Testing (unit tests) | ✅ |
+| Comprehensive demo markdownlint | ✅ |
+| UAT Artifacts — existence | ✅ |
+| UAT Artifacts — grouping demonstrated | ❌ B-8a |
+| UAT Artifacts — markdownlint clean | ❌ B-8b / B-8c |
+
+---
+
+## Review Decision
+
+**Status: ❌ Changes Requested**
+
+The implementation is correct and complete. All 1318 tests pass, the comprehensive demo renders
+and lints cleanly, and all acceptance criteria are met by the unit tests. However, the UAT
+artifacts need two targeted fixes before UAT can proceed successfully:
+
+1. **B-8a (Blocker):** Update `uat-plan.json` resource 2 to use a `sku.*`-style output
+   sub-object (not `properties.*`) to demonstrate Feature 034 grouping, then regenerate
+   `uat-plan.md`.
+2. **B-8b (Major):** Restructure `uat-plan.json` to distribute resources across different
+   modules (or suppress MD024 globally) to eliminate the 3 sibling `#### Output Values`
+   headings, then regenerate `uat-plan.md`.
+
+B-8c (trailing blank line) is auto-fixed by regenerating `uat-plan.md`.
+
+## Next Steps
+
+Hand off to **Developer** agent to fix B-8a, B-8b (and B-8c by regenerating). After those
+fixes, return to **Code Reviewer** for re-approval before UAT handoff.

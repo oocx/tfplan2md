@@ -1118,7 +1118,7 @@ flowchart LR
     class T1,T2,T3,T4 targetNode
 ```
 
-**Estimated binary size reduction:** ~1.5 MB (Scriban assembly) + ~0.3 MB (trimmer-preserved metadata) = **~1.8 MB smaller NativeAOT binary**.
+**Estimated binary size reduction:** ~1.5 MB (Scriban assembly) + ~0.3 MB (trimmer-preserved metadata) = **~1.8 MB smaller NativeAOT binary** (from ~7 MB to ~5.2 MB).
 
 ---
 

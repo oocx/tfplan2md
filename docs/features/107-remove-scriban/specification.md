@@ -51,7 +51,7 @@ This decision is documented in [ADR-010](../../../docs/adr-010-scriban-removal-e
   registering helpers on `ScriptObject`
 - Simplify sensitivity masking: apply at the C# model level or inline during rendering rather
   than as a separate pass over `ScriptObject`/`ScriptArray` trees
-- Update `docs/architecture.md` to reflect the new rendering architecture
+- Add the full target architecture document to `docs/features/107-remove-scriban/architecture.md`
 - Update `docs/features.md`
 
 ### Out of Scope
@@ -89,7 +89,5 @@ There are no new options, no removed options, and no changes to any public-facin
 
 ## Open Questions
 
-None — the architecture for this change is fully documented in ADR-010 and
-`docs/architecture-without-scriban.md` (in branch
-`copilot/evaluate-scriban-template-usefulness`). The Architect should incorporate those
-documents into the main branch as part of this feature.
+None — the architecture for this change is fully documented in ADR-010 and this feature’s
+`docs/features/107-remove-scriban/architecture.md`.

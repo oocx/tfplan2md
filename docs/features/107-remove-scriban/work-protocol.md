@@ -11,7 +11,7 @@
 
 ### Requirements Engineer
 - **Date:** 2026-03-01
-- **Summary:** Reviewed ADR-010 and `docs/architecture-without-scriban.md` from branch
+- **Summary:** Reviewed ADR-010 and the Scriban-free architecture document from branch
   `copilot/evaluate-scriban-template-usefulness`. Created feature specification documenting
   the user goals, scope, and measurable success criteria for removing Scriban and replacing
   all `.sbn` templates with pure C# rendering. Created feature branch `feature/107-remove-scriban`.
@@ -19,3 +19,11 @@
   - `docs/features/107-remove-scriban/specification.md`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** None
+
+### Architect
+- **Date:** 2026-03-01
+- **Summary:** Copied the full Scriban-free target architecture document from `origin/copilot/evaluate-scriban-template-usefulness` into this feature’s `architecture.md`, and added ADR-010 to the branch so the feature specification can reference a complete, concrete target design.
+- **Artifacts Produced:**
+  - `docs/features/107-remove-scriban/architecture.md`
+  - `docs/adr-010-scriban-removal-evaluation.md`
+- **Problems Encountered:** The reference branch name was not available as a local branch; used the remote ref `origin/copilot/evaluate-scriban-template-usefulness`.

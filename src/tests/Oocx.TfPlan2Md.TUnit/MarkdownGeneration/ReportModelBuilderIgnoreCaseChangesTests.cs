@@ -326,26 +326,23 @@ public class ReportModelBuilderIgnoreAzureIdCaseChangesTests
     }
 
     // -------------------------------------------------------------------------
-    // TC-14: Scriban variable ignore_azure_id_case_changes is true when flag active.
+    // TC-14: Model flag ignore_azure_id_case_changes is true when flag active.
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// TC-14: Scriban template {{ ignore_azure_id_case_changes }} renders "true" when flag is active.
+    /// TC-14: <see cref="ReportModel.IgnoreAzureIdCaseChanges"/> is true when the flag is active.
     /// </summary>
     [Test]
-    public async Task Render_IgnoreAzureIdCaseChangesTrue_ScribanVariableIsTrue()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_ModelFlagIsTrue()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
         var builder = CreateBuilder(ignoreCaseChanges: true);
         var model = builder.Build(plan);
 
-        // Act: map model to Scriban script object and check the key
-        var scriptObject = AotScriptObjectMapper.MapReportModel(model);
-
         // Assert
-        scriptObject["ignore_azure_id_case_changes"].Should().Be(true,
-            "the Scriban variable 'ignore_azure_id_case_changes' must be true when flag is active");
+        model.IgnoreAzureIdCaseChanges.Should().BeTrue(
+            "the model flag must be true when ignore-case filtering is enabled");
 
         await Task.CompletedTask;
     }
@@ -437,33 +434,27 @@ public class ReportModelBuilderIgnoreAzureIdCaseChangesTests
 
         // Act
         var model = builder.Build(plan);
-        var scriptObject = AotScriptObjectMapper.MapReportModel(model);
-
-        // Assert: the Scriban condition (ignore_azure_id_case_changes && filtered_resource_count > 0)
-        // evaluates to false, so the note must not appear.
-        scriptObject["ignore_azure_id_case_changes"].Should().Be(false,
-            "ignore_azure_id_case_changes must be false so the filter note is suppressed");
+        // Assert: when the flag is off, ignore-case filter metadata must be disabled.
+        model.IgnoreAzureIdCaseChanges.Should().BeFalse(
+            "ignore_azure_id_case_changes must be false so the filter note condition is suppressed");
 
         await Task.CompletedTask;
     }
 
     /// <summary>
-    /// TC-19: Scriban variable filtered_resource_count reflects FilteredResourceCount.
+    /// TC-19: Model filtered_resource_count reflects the number of suppressed resources.
     /// </summary>
     [Test]
-    public async Task Render_IgnoreAzureIdCaseChangesTrue_FilteredResourceCountInScribanObject()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_FilteredResourceCountSet()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
         var builder = CreateBuilder(ignoreCaseChanges: true);
         var model = builder.Build(plan);
 
-        // Act
-        var scriptObject = AotScriptObjectMapper.MapReportModel(model);
-
         // Assert
-        ((int)scriptObject["filtered_resource_count"]).Should().Be(model.FilteredResourceCount,
-            "the Scriban variable 'filtered_resource_count' must match the model property");
+        model.FilteredResourceCount.Should().BeGreaterThan(0,
+            "filtered_resource_count must be populated when resources are suppressed by the filter");
 
         await Task.CompletedTask;
     }

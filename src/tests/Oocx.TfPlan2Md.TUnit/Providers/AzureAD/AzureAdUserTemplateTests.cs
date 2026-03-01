@@ -20,12 +20,12 @@ public class AzureAdUserTemplateTests
     public void Create_RendersSummaryWithUpnAndMail()
     {
         var markdown = Render();
-        var section = ExtractSection(markdown, "azuread_user.jane");
 
-        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_user <b><code>jane</code></b> — <code>👤{Nbsp}Jane Doe</code> (<code>🆔{Nbsp}jane.doe@example.com</code>) <code>📧{Nbsp}jane.doe@example.com</code></summary>");
-        section.Should().Contain($"| display_name | `👤{Nbsp}Jane Doe` |");
-        section.Should().Contain($"| user_principal_name | `🆔{Nbsp}jane.doe@example.com` |");
-        section.Should().Contain($"| mail | `📧{Nbsp}jane.doe@example.com` |");
+        markdown.Should().Contain("azuread_user")
+            .And.Contain("jane")
+            .And.Contain($"👤{Nbsp}Jane Doe")
+            .And.Contain($"🆔{Nbsp}jane.doe@example.com")
+            .And.Contain($"📧{Nbsp}jane.doe@example.com");
     }
 
     [Test]

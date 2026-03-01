@@ -60,23 +60,6 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Formats attribute values for summary context using icon registry overrides when supplied.
-    /// </summary>
-    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
-    /// <param name="value">The raw attribute value.</param>
-    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
-    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
-    /// <returns>Formatted value suitable for use inside &lt;summary&gt; tags.</returns>
-    private static string FormatAttributeValueSummaryWithRegistry(
-        string? attributeName,
-        string? value,
-        string? providerName,
-        IconProviderRegistry? iconProviderRegistry)
-    {
-        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Summary, iconProviderRegistry);
-    }
-
-    /// <summary>
     /// Formats attribute values for table context using icon registry overrides when supplied.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>

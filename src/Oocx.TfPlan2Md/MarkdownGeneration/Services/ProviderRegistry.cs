@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Scriban.Runtime;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
@@ -41,18 +41,6 @@ internal sealed class ProviderRegistry
     public IEnumerable<string> GetTemplateResourcePrefixes()
     {
         return _providers.Select(p => p.TemplateResourcePrefix);
-    }
-
-    /// <summary>
-    /// Registers all provider-specific Scriban helper functions into the script object.
-    /// </summary>
-    /// <param name="scriptObject">The Scriban script object to register functions into.</param>
-    public void RegisterAllHelpers(ScriptObject scriptObject)
-    {
-        foreach (var provider in _providers)
-        {
-            provider.RegisterHelpers(scriptObject);
-        }
     }
 
     /// <summary>
@@ -104,18 +92,6 @@ internal sealed class ProviderRegistry
     }
 
     /// <summary>
-    /// Registers all provider-specific resource model mappers for ScriptObject enrichment.
-    /// </summary>
-    /// <param name="registry">The resource model mapper registry to register into.</param>
-    public void RegisterAllResourceModelMappers(ResourceModelMapperRegistry registry)
-    {
-        foreach (var provider in _providers)
-        {
-            provider.RegisterResourceModelMappers(registry);
-        }
-    }
-
-    /// <summary>
     /// Registers all provider-specific post-merge callbacks with the report model builder.
     /// </summary>
     /// <param name="builder">The report model builder to register callbacks with.</param>
@@ -128,6 +104,18 @@ internal sealed class ProviderRegistry
         foreach (var provider in _providers)
         {
             provider.RegisterPostMergeCallbacks(builder);
+        }
+    }
+
+    /// <summary>
+    /// Registers all provider-specific C# resource renderers.
+    /// </summary>
+    /// <param name="registry">The resource renderer registry to register into.</param>
+    public void RegisterAllResourceRenderers(ResourceRendererRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterResourceRenderers(registry);
         }
     }
 

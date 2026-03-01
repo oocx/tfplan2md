@@ -1,10 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
-using Scriban.Runtime;
+using Oocx.TfPlan2Md.Providers.AzureRM.Renderers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM;
 
@@ -54,16 +55,6 @@ internal sealed class AzureRMModule : IProviderModule
     public string TemplateResourcePrefix => "Oocx.TfPlan2Md.Providers.AzureRM.Templates.";
 
     /// <summary>
-    /// Registers AzureRM-specific Scriban helper functions.
-    /// </summary>
-    /// <param name="scriptObject">The Scriban script object to register helpers with.</param>
-    public void RegisterHelpers(ScriptObject scriptObject)
-    {
-        // AzureRM provider currently uses only core helpers
-        // No provider-specific Scriban helpers needed
-    }
-
-    /// <summary>
     /// Registers AzureRM-specific resource view model factories.
     /// </summary>
     /// <param name="registry">The factory registry to register with.</param>
@@ -91,22 +82,15 @@ internal sealed class AzureRMModule : IProviderModule
     }
 
     /// <summary>
-    /// Registers AzureRM-specific resource model mappers for ScriptObject enrichment.
+    /// Registers AzureRM-specific C# resource renderers.
     /// </summary>
-    /// <param name="registry">The resource model mapper registry to register with.</param>
-    public void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
+    /// <param name="registry">The resource renderer registry to register with.</param>
+    public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
-        // Create factories (these will be reused by the mappers)
-        var nsgFactory = new NetworkSecurityGroupFactory(_largeValueFormat);
-        var fwNetworkFactory = new FirewallNetworkRuleCollectionFactory(_largeValueFormat);
-        var fwAppFactory = new FirewallApplicationRuleCollectionFactory(_largeValueFormat);
-        var roleFactory = new RoleAssignmentFactory(_principalMapper, _scopeFormatter);
-
-        // Register mappers
-        registry.Register(new Mappers.NetworkSecurityGroupMapper(nsgFactory));
-        registry.Register(new Mappers.FirewallNetworkRuleCollectionMapper(fwNetworkFactory));
-        registry.Register(new Mappers.FirewallApplicationRuleCollectionMapper(fwAppFactory));
-        registry.Register(new Mappers.RoleAssignmentMapper(roleFactory));
+        registry.Register(new RoleAssignmentRenderer());
+        registry.Register(new NsgRenderer());
+        registry.Register(new FirewallNetworkRuleRenderer());
+        registry.Register(new FirewallAppRuleRenderer());
     }
 
     /// <summary>

@@ -1,23 +1,18 @@
-using System.Text;
-using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.Diagnostics;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.RenderTargets;
-using Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
-using Oocx.TfPlan2Md.RenderTargets.GitHub;
-using Scriban;
-using Scriban.Runtime;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
-/// Renders Terraform plan reports to Markdown using Scriban templates.
+/// Renders Terraform plan reports to Markdown using pure C# renderers.
+/// Related feature: docs/features/107-remove-scriban/specification.md.
 /// </summary>
-internal class MarkdownRenderer
+internal sealed class MarkdownRenderer
 {
-    private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
-
     private static readonly HashSet<string> BuiltInTemplates =
         new(StringComparer.OrdinalIgnoreCase)
         {
@@ -25,518 +20,201 @@ internal class MarkdownRenderer
             "summary"
         };
 
-    /// <summary>Compiled regex to collapse blank lines between table rows.</summary>
-    private static readonly Regex BlankLineInTableRegex = new(
-        @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)",
-        RegexOptions.Compiled, TimeSpan.FromSeconds(2));
-
-    /// <summary>Compiled regex to remove indentation from table rows.</summary>
-    private static readonly Regex IndentedTableRowRegex = new(
-        @"\n[ \t]+(\|)",
-        RegexOptions.Compiled, TimeSpan.FromSeconds(1));
-
-    /// <summary>Compiled regex to collapse runs of multiple blank lines.</summary>
-    private static readonly Regex MultipleBlankLinesRegex = new(
-        @"\n([ \t]*\n){2,}",
-        RegexOptions.Compiled | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
-
-    /// <summary>Compiled regex to ensure a blank line before headings.</summary>
-    private static readonly Regex BlankLineBeforeHeadingRegex = new(
-        @"([^\n])\n(#{1,6}\s)",
-        RegexOptions.Compiled, TimeSpan.FromSeconds(1));
-
-    /// <summary>Compiled regex to ensure a blank line after headings.</summary>
-    private static readonly Regex BlankLineAfterHeadingRegex = new(
-        @"(#{1,6}\s.+)\n(?!\n)",
-        RegexOptions.Compiled, TimeSpan.FromSeconds(1));
-
-    private readonly Platforms.Azure.IPrincipalMapper _principalMapper;
-    private readonly ScribanTemplateLoader _templateLoader;
-    private readonly TemplateResolver _templateResolver;
     private readonly DiagnosticContext? _diagnosticContext;
-    private readonly Services.ProviderRegistry? _providerRegistry;
-    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry;
-    private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry;
-    private readonly MarkdownGeneration.Services.ResourceModelMapperRegistry? _resourceModelMapperRegistry;
+    private readonly ValueFormatterRegistry? _valueFormatterRegistry;
+    private readonly IconProviderRegistry? _iconProviderRegistry;
+    private readonly ResourceRendererRegistry _resourceRendererRegistry;
+    private readonly ReportRenderer _reportRenderer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
+    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class.
     /// </summary>
-    /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
-    /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
-    /// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
-    /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
+    /// <param name="principalMapper">Unused in pure C# mode; preserved for API compatibility.</param>
+    /// <param name="diagnosticContext">Optional diagnostic context for template/render tracking.</param>
+    /// <param name="providerRegistry">Optional provider registry for formatter/icon registrations.</param>
+    /// <param name="valueFormatterRegistry">Optional preconfigured value formatter registry.</param>
+    /// <param name="iconProviderRegistry">Optional preconfigured icon provider registry.</param>
     public MarkdownRenderer(
-        Platforms.Azure.IPrincipalMapper? principalMapper = null,
+        IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
-        Services.ProviderRegistry? providerRegistry = null,
-        MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
-        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
+        ProviderRegistry? providerRegistry = null,
+        ValueFormatterRegistry? valueFormatterRegistry = null,
+        IconProviderRegistry? iconProviderRegistry = null)
     {
-        _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
-        _providerRegistry = providerRegistry;
+        _ = principalMapper;
+        _diagnosticContext = diagnosticContext;
         _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(providerRegistry);
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
-        _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
-        _templateLoader = new ScribanTemplateLoader(
-            coreTemplateResourcePrefix: TemplateResourcePrefix,
-            providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
-        _templateResolver = new TemplateResolver(_templateLoader);
-        _diagnosticContext = diagnosticContext;
+        _resourceRendererRegistry = CreateResourceRendererRegistry(providerRegistry);
+        _reportRenderer = new ReportRenderer(resourceRendererRegistry: _resourceRendererRegistry);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class with a custom template directory.
+    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class for callers
+    /// that still provide a legacy template-directory argument.
     /// </summary>
-    /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
-    /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
-    /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
-    /// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
-    /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
+    /// <param name="customTemplateDirectory">Legacy directory argument retained for source compatibility.</param>
+    /// <param name="principalMapper">Principal mapper parameter kept for caller signature compatibility.</param>
+    /// <param name="diagnosticContext">Diagnostic sink used for template-resolution events.</param>
+    /// <param name="providerRegistry">Provider module registry used to build formatter and icon registries.</param>
+    /// <param name="valueFormatterRegistry">Optional explicit value formatter registry override.</param>
+    /// <param name="iconProviderRegistry">Optional explicit icon provider registry override.</param>
     public MarkdownRenderer(
         string customTemplateDirectory,
-        Platforms.Azure.IPrincipalMapper? principalMapper = null,
+        IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
-        Services.ProviderRegistry? providerRegistry = null,
-        MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
-        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
+        ProviderRegistry? providerRegistry = null,
+        ValueFormatterRegistry? valueFormatterRegistry = null,
+        IconProviderRegistry? iconProviderRegistry = null)
+        : this(principalMapper, diagnosticContext, providerRegistry, valueFormatterRegistry, iconProviderRegistry)
     {
-        _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
-        _providerRegistry = providerRegistry;
-        _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(providerRegistry);
-        _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
-        _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
-        _templateLoader = new ScribanTemplateLoader(
-            customTemplateDirectory,
-            coreTemplateResourcePrefix: TemplateResourcePrefix,
-            providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
-        _templateResolver = new TemplateResolver(_templateLoader);
-        _diagnosticContext = diagnosticContext;
+        _ = customTemplateDirectory;
     }
 
     /// <summary>
-    /// Renders a report model to Markdown using the default embedded template.
+    /// Renders with the default built-in template.
     /// </summary>
-    /// <remarks>
-    /// Uses single-pass rendering via Scriban's include mechanism.
-    /// Resource-specific templates are dispatched directly through the
-    /// <c>resolve_template</c> helper function registered with the template context.
-    /// </remarks>
-    /// <param name="model">The report model to render.</param>
-    /// <returns>The rendered Markdown string.</returns>
+    /// <param name="model">Report model to render.</param>
+    /// <returns>Rendered markdown.</returns>
     public string Render(ReportModel model)
     {
-        var defaultTemplate = LoadTemplate("default");
-
-        // Record template resolution for main template
-        _diagnosticContext?.TemplateResolutions.Add(
-            new TemplateResolution("_main", "Built-in default template"));
-
-        return RenderWithTemplate(model, defaultTemplate, "default");
+        _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: default"));
+        var context = CreateContext(model);
+        return _reportRenderer.Render(model, context);
     }
 
     /// <summary>
-    /// Renders a report model to Markdown using a built-in template name or custom template file.
-    /// Built-in names take precedence over file paths.
+    /// Renders with a built-in template name.
     /// </summary>
-    /// <param name="model">The report model to render.</param>
-    /// <param name="templateNameOrPath">Built-in template name (e.g., "summary") or path to a custom template file.</param>
-    /// <returns>The rendered Markdown string.</returns>
+    /// <param name="model">Report model to render.</param>
+    /// <param name="templateNameOrPath">Built-in template name.</param>
+    /// <returns>Rendered markdown.</returns>
+    /// <exception cref="MarkdownRenderException">Thrown when template name is unsupported.</exception>
     public string Render(ReportModel model, string templateNameOrPath)
     {
-        var templateText = ResolveTemplateText(templateNameOrPath);
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentException.ThrowIfNullOrWhiteSpace(templateNameOrPath);
 
-        // Record template resolution for main template
-        var templateSource = DetermineTemplateSource(templateNameOrPath);
+        if (string.Equals(templateNameOrPath, "default", StringComparison.OrdinalIgnoreCase))
+        {
+            return Render(model);
+        }
 
-        _diagnosticContext?.TemplateResolutions.Add(
-            new TemplateResolution("_main", templateSource));
+        if (string.Equals(templateNameOrPath, "summary", StringComparison.OrdinalIgnoreCase))
+        {
+            _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: summary"));
+            return RenderSummaryTemplate(model);
+        }
 
-        return RenderWithTemplate(model, templateText, templateNameOrPath);
+        throw new MarkdownRenderException(
+            $"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
     }
 
     /// <summary>
-    /// Determines the source description of a template (built-in, custom file, or unknown).
+    /// Asynchronously renders with a built-in template name.
     /// </summary>
-    /// <param name="templateNameOrPath">Template name or file path.</param>
-    /// <returns>Human-readable template source description.</returns>
-    private string DetermineTemplateSource(string templateNameOrPath)
+    /// <param name="model">Report model to render.</param>
+    /// <param name="templatePath">Built-in template name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Rendered markdown.</returns>
+    public Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
     {
-        if (_templateLoader.TryGetTemplate(templateNameOrPath, out _))
-        {
-            return $"Built-in template: {templateNameOrPath}";
-        }
-
-        if (File.Exists(templateNameOrPath))
-        {
-            return $"Custom template: {templateNameOrPath}";
-        }
-
-        return "Unknown template source";
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(Render(model, templatePath));
     }
 
     /// <summary>
-    /// Builds an icon provider registry from the configured providers when not supplied explicitly.
-    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// Renders a single resource change with its registered specific renderer.
+    /// Returns null when no specialized renderer is registered.
     /// </summary>
-    /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
-    /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
-    private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
-        Services.ProviderRegistry? providerRegistry)
+    /// <param name="change">Resource change to render.</param>
+    /// <param name="renderTarget">Render target for formatting behavior.</param>
+    /// <param name="detailsDisplayMode">Details block display mode.</param>
+    /// <returns>Rendered resource markdown, or null when no specialized renderer exists.</returns>
+    public string? RenderResourceChange(
+        ResourceChangeModel change,
+        RenderTarget renderTarget = RenderTarget.AzureDevOps,
+        DetailsDisplayMode detailsDisplayMode = DetailsDisplayMode.Auto)
+    {
+        ArgumentNullException.ThrowIfNull(change);
+
+        var renderer = _resourceRendererRegistry.GetRenderer(change.Type);
+        if (renderer is null)
+        {
+            _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution(change.Type, "Default renderer"));
+            return null;
+        }
+
+        _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution(change.Type, "C# resource renderer"));
+
+        var writer = new MarkdownWriter();
+        var context = new RenderContext(
+            showSensitive: false,
+            showUnchangedValues: false,
+            ignoreAzureIdCaseChanges: true,
+            renderTarget: renderTarget,
+            detailsDisplayMode: detailsDisplayMode,
+            valueFormatterRegistry: _valueFormatterRegistry,
+            iconProviderRegistry: _iconProviderRegistry);
+
+        renderer.Render(writer, change, context);
+        return writer.Build();
+    }
+
+    private string RenderSummaryTemplate(ReportModel model)
+    {
+        var writer = new MarkdownWriter();
+        var headerRenderer = new HeaderRenderer(defaultReportTitle: "Terraform Plan Summary");
+
+        headerRenderer.Render(writer, model);
+        SummaryRenderer.Render(writer, model.Summary, boldTotal: true);
+        CodeAnalysisSectionRenderer.RenderSummary(writer, model.CodeAnalysis);
+
+        return writer.Build();
+    }
+
+    private RenderContext CreateContext(ReportModel model)
+    {
+        return new RenderContext(
+            showSensitive: model.ShowSensitive,
+            showUnchangedValues: model.ShowUnchangedValues,
+            ignoreAzureIdCaseChanges: model.IgnoreAzureIdCaseChanges,
+            renderTarget: model.RenderTarget,
+            detailsDisplayMode: model.DetailsDisplayMode,
+            valueFormatterRegistry: _valueFormatterRegistry,
+            iconProviderRegistry: _iconProviderRegistry);
+    }
+
+    private static ResourceRendererRegistry CreateResourceRendererRegistry(ProviderRegistry? providerRegistry)
+    {
+        var registry = new ResourceRendererRegistry();
+
+        providerRegistry?.RegisterAllResourceRenderers(registry);
+
+        return registry;
+    }
+
+    private static IconProviderRegistry? CreateIconProviderRegistry(ProviderRegistry? providerRegistry)
     {
         if (providerRegistry is null)
         {
             return null;
         }
 
-        var registry = new MarkdownGeneration.Services.IconProviderRegistry();
+        var registry = new IconProviderRegistry();
         providerRegistry.RegisterAllIconProviders(registry);
         return registry;
     }
 
-    /// <summary>
-    /// Builds a value formatter registry from the configured providers when not supplied explicitly.
-    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
-    /// </summary>
-    /// <param name="providerRegistry">The provider registry to pull value formatters from.</param>
-    /// <returns>The populated value formatter registry, or null when no providers are registered.</returns>
-    private static MarkdownGeneration.Services.ValueFormatterRegistry? CreateValueFormatterRegistry(
-        Services.ProviderRegistry? providerRegistry)
+    private static ValueFormatterRegistry? CreateValueFormatterRegistry(ProviderRegistry? providerRegistry)
     {
         if (providerRegistry is null)
         {
             return null;
         }
 
-        var registry = new MarkdownGeneration.Services.ValueFormatterRegistry();
+        var registry = new ValueFormatterRegistry();
         providerRegistry.RegisterAllValueFormatters(registry);
         return registry;
     }
-
-    /// <summary>
-    /// Creates and populates a ResourceModelMapperRegistry from the provider registry.
-    /// </summary>
-    /// <param name="providerRegistry">The provider registry to populate from.</param>
-    /// <returns>A populated ResourceModelMapperRegistry, or null if no provider registry is available.</returns>
-    private static MarkdownGeneration.Services.ResourceModelMapperRegistry? CreateResourceModelMapperRegistry(
-        Services.ProviderRegistry? providerRegistry)
-    {
-        if (providerRegistry is null)
-        {
-            return null;
-        }
-
-        var registry = new MarkdownGeneration.Services.ResourceModelMapperRegistry();
-        providerRegistry.RegisterAllResourceModelMappers(registry);
-        return registry;
-    }
-
-    /// <summary>
-    /// Renders a report model to Markdown using a custom template file asynchronously.
-    /// </summary>
-    /// <param name="model">The report model to render.</param>
-    /// <param name="templatePath">Path to the custom template file.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The rendered Markdown string.</returns>
-    public async Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
-    {
-        var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
-
-        // Record template resolution for main template
-        var templateSource = DetermineTemplateSource(templatePath);
-
-        _diagnosticContext?.TemplateResolutions.Add(
-            new TemplateResolution("_main", templateSource));
-
-        return RenderWithTemplate(model, templateText, templatePath);
-    }
-
-    private string ResolveTemplateText(string templateNameOrPath)
-    {
-        if (_templateLoader.TryGetTemplate(templateNameOrPath, out var builtInTemplate))
-        {
-            return builtInTemplate;
-        }
-
-        if (File.Exists(templateNameOrPath))
-        {
-            return File.ReadAllText(templateNameOrPath);
-        }
-
-        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
-    }
-
-    private async Task<string> ResolveTemplateTextAsync(string templateNameOrPath, CancellationToken cancellationToken)
-    {
-        if (_templateLoader.TryGetTemplate(templateNameOrPath, out var builtInTemplate))
-        {
-            return builtInTemplate;
-        }
-
-        if (File.Exists(templateNameOrPath))
-        {
-            return await File.ReadAllTextAsync(templateNameOrPath, cancellationToken);
-        }
-
-        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
-    }
-
-    /// <summary>
-    /// Renders a single resource change using the appropriate resource-specific template.
-    /// Falls back to the default template rendering if no specific template exists.
-    /// </summary>
-    /// <param name="change">The resource change to render.</param>
-    /// <param name="renderTarget">The target platform for rendering.</param>
-    /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
-    /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
-    public string? RenderResourceChange(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps, RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto)
-    {
-        var templateSource = ResolveResourceTemplate(change.Type);
-        if (templateSource is null)
-        {
-            return null; // Use default template handling
-        }
-
-        try
-        {
-            return RenderResourceWithTemplate(change, templateSource.Value, renderTarget, detailsDisplayMode);
-        }
-        catch (ScribanHelperException ex)
-        {
-            // Return error message for this resource but allow other resources to render
-            return $"### {change.ActionSymbol}{NonBreakingSpace}{change.Address}\n\n⚠️{NonBreakingSpace}**Template Error:** {ex.Message}\n";
-        }
-    }
-
-    /// <summary>
-    /// Resolves a template for the given resource type.
-    /// Resolution order: custom directory (if set) → embedded resources.
-    /// Within each: Templates/{provider}/{resource}.sbn → Templates/default.sbn.
-    /// </summary>
-    /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
-    /// <returns>The template text if a resource-specific template exists, null otherwise.</returns>
-    private TemplateSource? ResolveResourceTemplate(string resourceType)
-    {
-        var (provider, resource) = ResourceTypeParser.Parse(resourceType);
-        if (provider is null || resource is null)
-        {
-            return null;
-        }
-
-        var path = $"{provider}/{resource}";
-        if (_templateLoader.TryGetTemplate(path, out var template))
-        {
-            // Record template resolution
-            var templateSource = _templateLoader.HasCustomTemplateDirectory
-                ? $"Custom resource-specific template: {path}.sbn"
-                : $"Built-in resource-specific template: {path}.sbn";
-
-            _diagnosticContext?.TemplateResolutions.Add(
-                new TemplateResolution(resourceType, templateSource));
-
-            return new TemplateSource(path, template);
-        }
-
-        // Record that default template is being used for this resource type
-        _diagnosticContext?.TemplateResolutions.Add(
-            new TemplateResolution(resourceType, "Default template"));
-
-        return null;
-    }
-
-    /// <summary>
-    /// Renders a resource change using a specific Scriban template.
-    /// </summary>
-    /// <param name="change">The resource change model to render.</param>
-    /// <param name="templateSource">The template source to use for rendering.</param>
-    /// <param name="renderTarget">The target platform for rendering.</param>
-    /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
-    /// <returns>The rendered Markdown string.</returns>
-    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, RenderTargets.RenderTarget renderTarget, RenderTargets.DetailsDisplayMode detailsDisplayMode)
-    {
-        var template = Template.Parse(templateSource.Content, templateSource.Path);
-        if (template.HasErrors)
-        {
-            var errors = string.Join(Environment.NewLine, template.Messages);
-            throw new MarkdownRenderException($"Template parsing failed: {errors}");
-        }
-
-        var scriptObject = new ScriptObject();
-
-        // Create a nested ScriptObject for the change using AOT-compatible mapping
-        // Templates access properties via change.* for consistency with default.sbn include
-        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, renderTarget, _resourceModelMapperRegistry);
-
-        scriptObject["change"] = changeObject;
-
-        // Register custom helper functions
-        var diffFormatter = CreateDiffFormatter(renderTarget);
-        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry, detailsDisplayMode);
-        _providerRegistry?.RegisterAllHelpers(scriptObject);
-        RegisterRendererHelpers(scriptObject);
-
-        var context = CreateTemplateContext(scriptObject);
-
-        try
-        {
-            var rendered = template.Render(context);
-            // Collapse blank lines between table rows (which breaks tables)
-            rendered = BlankLineInTableRegex.Replace(rendered, "\n");
-            // Remove indentation from table rows (which causes them to be treated as code blocks)
-            rendered = IndentedTableRowRegex.Replace(rendered, "\n$1");
-            rendered = NormalizeHeadingSpacing(rendered);
-            return rendered;
-        }
-        catch (Scriban.Syntax.ScriptRuntimeException ex)
-        {
-            throw new MarkdownRenderException($"Error rendering template: {ex.Message}", ex);
-        }
-        finally
-        {
-            ScribanHelpers.ClearLineDiffCache();
-        }
-    }
-
-    private string RenderWithTemplate(ReportModel model, string templateText, string templatePath)
-    {
-        var template = Template.Parse(templateText, templatePath);
-        if (template.HasErrors)
-        {
-            var errors = string.Join(Environment.NewLine, template.Messages);
-            throw new MarkdownRenderException($"Template parsing failed: {errors}");
-        }
-
-        // Create a script object without relying on Reflection.Emit (unsupported in NativeAOT)
-        var scriptObject = CreateScriptObject(model);
-
-        // Register custom helper functions
-        var diffFormatter = CreateDiffFormatter(model.RenderTarget);
-        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry, model.DetailsDisplayMode);
-        _providerRegistry?.RegisterAllHelpers(scriptObject);
-        RegisterRendererHelpers(scriptObject);
-
-        var context = CreateTemplateContext(scriptObject);
-
-        try
-        {
-            var result = template.Render(context);
-            return NormalizeHeadingSpacing(result);
-        }
-        catch (Scriban.Syntax.ScriptRuntimeException ex)
-        {
-            throw new MarkdownRenderException($"Error rendering template: {ex.Message}", ex);
-        }
-        finally
-        {
-            ScribanHelpers.ClearLineDiffCache();
-        }
-    }
-
-    private static string ToSnakeCase(string name)
-    {
-        if (string.IsNullOrEmpty(name))
-        {
-            return name;
-        }
-
-        var sb = new StringBuilder();
-        for (var i = 0; i < name.Length; i++)
-        {
-            var c = name[i];
-            if (char.IsUpper(c))
-            {
-                if (i > 0)
-                {
-                    sb.Append('_');
-                }
-
-                sb.Append(char.ToLowerInvariant(c));
-            }
-            else
-            {
-                sb.Append(c);
-            }
-        }
-        return sb.ToString();
-    }
-
-    /// <summary>
-    /// Normalizes markdown output to ensure headings and surrounding content are separated by blank lines.
-    /// This prevents rendering issues where content runs directly into headings or tables.
-    /// </summary>
-    private static string NormalizeHeadingSpacing(string markdown)
-    {
-        // Collapse runs of multiple blank lines (including whitespace-only lines) to a single blank line.
-        markdown = MultipleBlankLinesRegex.Replace(markdown, "\n\n");
-
-        // Ensure exactly one blank line before any heading that follows non-blank content.
-        markdown = BlankLineBeforeHeadingRegex.Replace(markdown, "$1\n\n$2");
-
-        // Ensure a blank line after headings when the following line is not already blank.
-        markdown = BlankLineAfterHeadingRegex.Replace(markdown, "$1\n\n");
-
-        // Remove trailing blank lines while keeping a single newline at EOF for POSIX tools.
-        markdown = markdown.TrimEnd();
-        return $"{markdown}\n";
-    }
-
-    private TemplateContext CreateTemplateContext(ScriptObject scriptObject)
-    {
-        var context = new TemplateContext
-        {
-            TemplateLoader = _templateLoader,
-            MemberRenamer = member => ToSnakeCase(member.Name),
-            LoopLimit = 10000
-        };
-
-        context.PushGlobal(scriptObject);
-        return context;
-    }
-
-    private void RegisterRendererHelpers(ScriptObject scriptObject)
-    {
-        _templateResolver.Register(scriptObject);
-    }
-
-    /// <summary>
-    /// Creates a ScriptObject from a ReportModel using explicit AOT-compatible mapping.
-    /// Reflection-based Import does not work reliably under NativeAOT.
-    /// </summary>
-    private ScriptObject CreateScriptObject(ReportModel model)
-    {
-        // Use explicit mapping for NativeAOT compatibility - reflection-based
-        // Import fails at runtime even with TrimmerRootDescriptor preservation
-        return AotScriptObjectMapper.MapReportModel(model, _resourceModelMapperRegistry);
-    }
-
-    private string LoadTemplate(string templateName)
-    {
-        if (_templateLoader.TryGetTemplate(templateName, out var template))
-        {
-            return template;
-        }
-
-        if (BuiltInTemplates.Contains(templateName))
-        {
-            throw new MarkdownRenderException($"Built-in template '{templateName}' not found.");
-        }
-
-        throw new MarkdownRenderException($"Template '{templateName}' not found.");
-    }
-
-    /// <summary>
-    /// Creates the appropriate diff formatter based on the render target.
-    /// </summary>
-    /// <param name="target">The render target that determines which formatter to use.</param>
-    /// <returns>A diff formatter instance for the specified target.</returns>
-    private static IDiffFormatter CreateDiffFormatter(RenderTargets.RenderTarget target)
-    {
-        return target == RenderTargets.RenderTarget.GitHub
-            ? new RenderTargets.GitHub.GitHubDiffFormatter()
-            : new RenderTargets.AzureDevOps.AzureDevOpsDiffFormatter();
-    }
-
-    private readonly record struct TemplateSource(string Path, string Content);
 }

@@ -7,7 +7,6 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Providers;
-using Scriban.Runtime;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -613,14 +612,6 @@ public class ReportModelBuilderParentChildTests
         /// Gets the template resource prefix for the test module.
         /// </summary>
         public string TemplateResourcePrefix => string.Empty;
-
-        /// <summary>
-        /// Registers provider-specific helpers (none for the test module).
-        /// </summary>
-        /// <param name="scriptObject">The script object to register helpers with.</param>
-        public void RegisterHelpers(ScriptObject scriptObject)
-        {
-        }
 
         /// <summary>
         /// Registers view model factories (none for the test module).

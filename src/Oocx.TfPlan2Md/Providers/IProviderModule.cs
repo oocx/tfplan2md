@@ -1,5 +1,5 @@
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
-using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
@@ -8,7 +8,6 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 /// </summary>
 /// <remarks>
 /// Provider modules encapsulate all provider-specific logic including:
-/// - Scriban helper function registration
 /// - Resource view model factory registration
 /// - Template discovery prefixes
 /// 
@@ -31,12 +30,6 @@ internal interface IProviderModule
     /// For azurerm provider: "Oocx.TfPlan2Md.Providers.AzureRM.Templates.".
     /// </example>
     string TemplateResourcePrefix { get; }
-
-    /// <summary>
-    /// Registers provider-specific Scriban helper functions into the template context.
-    /// </summary>
-    /// <param name="scriptObject">The Scriban script object to register functions into.</param>
-    void RegisterHelpers(ScriptObject scriptObject);
 
     /// <summary>
     /// Registers provider-specific resource view model factories.
@@ -72,20 +65,6 @@ internal interface IProviderModule
     }
 
     /// <summary>
-    /// Registers provider-specific resource model mappers for ScriptObject enrichment.
-    /// </summary>
-    /// <param name="registry">The resource model mapper registry to register into.</param>
-    /// <remarks>
-    /// Mappers enable providers to extend template rendering with typed view models
-    /// (e.g., FirewallNetworkRuleCollectionViewModel) without creating compile-time
-    /// dependencies from MarkdownGeneration to Providers.
-    /// </remarks>
-    void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
-
-    /// <summary>
     /// Registers provider-specific attribute change filters.
     /// </summary>
     /// <param name="registry">The attribute change filter registry to register into.</param>
@@ -110,6 +89,15 @@ internal interface IProviderModule
     /// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
     /// </remarks>
     void RegisterPostMergeCallbacks(ReportModelBuilder builder)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
+
+    /// <summary>
+    /// Registers provider-specific C# resource renderers.
+    /// </summary>
+    /// <param name="registry">Resource renderer registry used by the pure C# markdown pipeline.</param>
+    void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
         // Default no-op keeps existing provider modules compatible.
     }

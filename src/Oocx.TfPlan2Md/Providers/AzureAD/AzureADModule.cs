@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureAD.Models;
-using Scriban.Runtime;
+using Oocx.TfPlan2Md.Providers.AzureAD.Renderers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureAD;
 
@@ -10,6 +12,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD;
 /// Provider module for Azure AD (Entra) resources.
 /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 /// </summary>
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider registration module aggregates provider-specific factories, formatters, and renderers.")]
 internal sealed class AzureADModule : IProviderModule
 {
     /// <summary>
@@ -35,16 +38,6 @@ internal sealed class AzureADModule : IProviderModule
     /// Gets the embedded resource prefix for this provider's templates.
     /// </summary>
     public string TemplateResourcePrefix => "Oocx.TfPlan2Md.Providers.AzureAD.Templates.";
-
-    /// <summary>
-    /// Registers Azure AD-specific Scriban helper functions.
-    /// </summary>
-    /// <param name="scriptObject">The Scriban script object to register helpers with.</param>
-    public void RegisterHelpers(ScriptObject scriptObject)
-    {
-        // Azure AD provider currently uses only core helpers
-        // Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
-    }
 
     /// <summary>
     /// Registers Azure AD-specific resource view model factories.
@@ -113,5 +106,19 @@ internal sealed class AzureADModule : IProviderModule
     public void RegisterPostMergeCallbacks(MarkdownGeneration.ReportModelBuilder builder)
     {
         builder.RegisterPostMergeCallback(AzureAdGroupSummaryRebuilder.UpdateGroupSummaries);
+    }
+
+    /// <summary>
+    /// Registers Azure AD-specific C# resource renderers.
+    /// </summary>
+    /// <param name="registry">The resource renderer registry to register with.</param>
+    public void RegisterResourceRenderers(ResourceRendererRegistry registry)
+    {
+        registry.Register(new UserRenderer());
+        registry.Register(new GroupRenderer());
+        registry.Register(new GroupWithoutMembersRenderer());
+        registry.Register(new GroupMemberRenderer());
+        registry.Register(new InvitationRenderer());
+        registry.Register(new ServicePrincipalRenderer());
     }
 }

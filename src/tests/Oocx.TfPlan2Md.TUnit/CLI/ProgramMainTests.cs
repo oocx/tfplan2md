@@ -94,10 +94,10 @@ public class ProgramMainTests
     }
 
     /// <summary>
-    /// Verifies custom templates are used when provided.
+    /// Verifies custom templates are rejected when provided.
     /// </summary>
     [Test]
-    public async Task Main_WithTemplatePath_UsesCustomTemplate()
+    public async Task Main_WithTemplatePath_ReturnsError()
     {
         var inputPath = GetTestDataPath("azapi-create-plan.json");
         var templatePath = GetTempPath("custom-template.sbn");
@@ -111,9 +111,7 @@ public class ProgramMainTests
 
         var result = await RunMainAsync([inputPath, "--template", templatePath, "--output", outputPath]);
 
-        result.ExitCode.Should().Be(0);
-        var output = await File.ReadAllTextAsync(outputPath);
-        output.Should().Contain("Custom Template Output");
+        result.ExitCode.Should().Be(1);
     }
 
     /// <summary>

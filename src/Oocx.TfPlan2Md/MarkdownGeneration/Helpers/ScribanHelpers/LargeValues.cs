@@ -202,7 +202,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="format">Format string provided by the template.</param>
     /// <returns>Normalized large value format.</returns>
-    /// <exception cref="ScribanHelperException">Thrown when an unsupported format is provided.</exception>
+    /// <exception cref="ArgumentException">Thrown when an unsupported format is provided.</exception>
     private static LargeValueFormat ParseLargeValueFormat(string format)
     {
         var normalized = (format ?? string.Empty).Trim().ToLowerInvariant();
@@ -215,7 +215,7 @@ public static partial class ScribanHelpers
             "" => LargeValueFormat.InlineDiff,
             "inlinediff" => LargeValueFormat.InlineDiff,
             "simplediff" => LargeValueFormat.SimpleDiff,
-            _ => throw new ScribanHelperException("Unsupported large value format. Use 'inline-diff' or 'simple-diff'.")
+            _ => throw new ArgumentException("Unsupported large value format. Use 'inline-diff' or 'simple-diff'.", nameof(format))
         };
     }
 

@@ -452,11 +452,9 @@ public class ParentPostMergeCallbackTests
         public string ProviderName => "test";
         public string TemplateResourcePrefix => "Test.";
 
-        public void RegisterHelpers(Scriban.Runtime.ScriptObject scriptObject) { }
         public void RegisterFactories(IResourceViewModelFactoryRegistry registry) { }
         public void RegisterValueFormatters(ValueFormatterRegistry registry) { }
         public void RegisterIconProviders(IconProviderRegistry registry) { }
-        public void RegisterResourceModelMappers(ResourceModelMapperRegistry registry) { }
 
         public void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)
         {

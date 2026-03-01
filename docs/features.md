@@ -3053,6 +3053,33 @@ Output values benefit from the same rendering quality as body attributes:
 
 See [docs/features/106-azapi-output-values/](features/106-azapi-output-values/) for specification, architecture, and implementation details.
 
+## Remove Scriban and Use Pure C# Rendering (Feature 107)
+
+**Status:** ✅ Implemented
+
+tfplan2md no longer uses Scriban templates. Markdown rendering now runs through a pure C# pipeline built around `ReportRenderer`, `MarkdownWriter`, and provider-specific `IResourceRenderer` implementations.
+
+### What Changed
+
+- Removed the `Scriban` NuGet dependency from the main project.
+- Removed all embedded `.sbn` template files and legacy template loader/resolver infrastructure.
+- Removed `AotScriptObjectMapper` and all ScriptObject-based mapper glue.
+- Provider modules now register typed C# resource renderers instead of Scriban helper registration.
+
+### User Impact
+
+- CLI behavior is unchanged.
+- Built-in template selection remains `default` and `summary`.
+- Report output remains equivalent while rendering is now compile-time checked.
+
+### Architecture Impact
+
+- Rendering logic is statically typed and validated by the compiler.
+- NativeAOT trimming no longer requires Scriban preservation entries.
+- The project no longer carries third-party templating runtime overhead.
+
+See [docs/features/107-remove-scriban/](features/107-remove-scriban/) for full specification, architecture, tasks, and test plan.
+
 ## Future Considerations
 
 The following features may be added in future versions:

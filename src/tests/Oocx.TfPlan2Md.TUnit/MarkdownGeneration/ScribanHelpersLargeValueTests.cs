@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
-using Scriban.Runtime;
 using TUnit.Core;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
@@ -153,15 +152,15 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void LargeAttributesSummary_ComputesCounts()
     {
-        var attrs = new ScriptArray
+        var attrs = new List<Dictionary<string, object?>>
         {
-            new ScriptObject
+            new()
             {
                 ["name"] = "policy",
                 [BeforeText] = "a\nb",
                 [AfterText] = "a\nc"
             },
-            new ScriptObject
+            new()
             {
                 ["name"] = "data",
                 [BeforeText] = "x",
@@ -193,25 +192,11 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void LargeAttributesSummary_MapsVariousAttributeShapes()
     {
-        var scriptObject = new ScriptObject
-        {
-            ["name"] = "script",
-            [BeforeText] = "line1",
-            [AfterText] = "line2"
-        };
-
         var model = new AttributeChangeModel
         {
             Name = "model",
             Before = "before",
             After = "after"
-        };
-
-        var roleAttribute = new ScriptObject
-        {
-            ["name"] = "role",
-            [BeforeText] = "one",
-            [AfterText] = "two"
         };
 
         IReadOnlyDictionary<string, object?> readOnlyDictionary = new Dictionary<string, object?>
@@ -231,15 +216,13 @@ public class ScribanHelpersLargeValueTests
         var attrs = new List<object?>
         {
             null,
-            scriptObject,
             model,
-            roleAttribute,
             readOnlyDictionary,
             dictionary
         };
 
         var summary = LargeAttributesSummary(attrs);
 
-        summary.Should().Be("Large values: script (2 lines, 2 changes), model (2 lines, 2 changes), role (2 lines, 2 changes), readonly (2 lines, 2 changes), dictionary (2 lines, 2 changes)");
+        summary.Should().Be("Large values: model (2 lines, 2 changes), readonly (2 lines, 2 changes), dictionary (2 lines, 2 changes)");
     }
 }

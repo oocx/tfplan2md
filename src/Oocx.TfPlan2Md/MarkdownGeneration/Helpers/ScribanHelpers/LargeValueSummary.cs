@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -73,21 +72,12 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Creates a typed attribute change entry from a dynamic object or ScriptObject.
+    /// Creates a typed attribute change entry from a dynamic object.
     /// </summary>
     /// <param name="item">The raw item to map.</param>
     /// <returns>Attribute change information instance.</returns>
     private static AttributeChangeInfo ToAttributeChangeInfo(object item)
     {
-        if (item is ScriptObject obj)
-        {
-            var name = obj.TryGetValue("name", out var n) ? n?.ToString() ?? string.Empty : string.Empty;
-            var before = obj.TryGetValue("before", out var b) ? b?.ToString() : null;
-            var after = obj.TryGetValue("after", out var a) ? a?.ToString() : null;
-
-            return new AttributeChangeInfo(name, before, after);
-        }
-
         if (item is AttributeChangeModel attrModel)
         {
             return new AttributeChangeInfo(attrModel.Name, attrModel.Before, attrModel.After);

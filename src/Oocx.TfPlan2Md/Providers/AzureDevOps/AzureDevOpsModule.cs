@@ -1,9 +1,10 @@
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
-using Scriban.Runtime;
+using Oocx.TfPlan2Md.Providers.AzureDevOps.Renderers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 
@@ -79,35 +80,6 @@ internal sealed class AzureDevOpsModule : IProviderModule
     /// Gets the embedded resource prefix for this provider's templates.
     /// </summary>
     public string TemplateResourcePrefix => "Oocx.TfPlan2Md.Providers.AzureDevOps.Templates.";
-
-    /// <summary>
-    /// Registers AzureDevOps-specific Scriban helper functions.
-    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
-    /// </summary>
-    /// <param name="scriptObject">The Scriban script object to register helpers with.</param>
-    public void RegisterHelpers(ScriptObject scriptObject)
-    {
-        // Register Azure DevOps entity name helpers if mappers are available
-        if (_azdoUserMapper is not null)
-        {
-            scriptObject.Import("azdo_user_name", new Func<string, string>(userId => _azdoUserMapper.GetEntityName(userId)));
-        }
-
-        if (_azdoGroupMapper is not null)
-        {
-            scriptObject.Import("azdo_group_name", new Func<string, string>(groupDescriptor => _azdoGroupMapper.GetEntityName(groupDescriptor)));
-        }
-
-        if (_azdoProjectMapper is not null)
-        {
-            scriptObject.Import("azdo_project_name", new Func<string, string>(projectId => _azdoProjectMapper.GetEntityName(projectId)));
-        }
-
-        if (_azdoRepositoryMapper is not null)
-        {
-            scriptObject.Import("azdo_repository_name", new Func<string, string>(repoId => _azdoRepositoryMapper.GetEntityName(repoId)));
-        }
-    }
 
     /// <summary>
     /// Registers AzureDevOps-specific resource view model factories.
@@ -254,16 +226,13 @@ internal sealed class AzureDevOpsModule : IProviderModule
     }
 
     /// <summary>
-    /// Registers Azure DevOps-specific resource model mappers for ScriptObject enrichment.
+    /// Registers Azure DevOps-specific C# resource renderers.
     /// </summary>
-    /// <param name="registry">The resource model mapper registry to register with.</param>
-    public void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
+    /// <param name="registry">The resource renderer registry to register with.</param>
+    public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
-        var variableGroupFactory = new VariableGroupFactory(_largeValueFormat);
-        registry.Register(new Mappers.VariableGroupMapper(variableGroupFactory));
-
-        var buildDefinitionFactory = new BuildDefinitionFactory(_largeValueFormat, _azdoRepositoryMapper);
-        registry.Register(new Mappers.BuildDefinitionMapper(buildDefinitionFactory));
+        registry.Register(new VariableGroupRenderer());
+        registry.Register(new BuildDefinitionRenderer());
     }
 }
 #pragma warning restore CA1506

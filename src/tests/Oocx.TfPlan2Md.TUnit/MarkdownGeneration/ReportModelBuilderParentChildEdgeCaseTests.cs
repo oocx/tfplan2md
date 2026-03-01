@@ -6,7 +6,6 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Providers;
-using Scriban.Runtime;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -371,14 +370,6 @@ public class ReportModelBuilderParentChildEdgeCaseTests
         public string TemplateResourcePrefix => string.Empty;
 
         /// <summary>
-        /// Registers helper functions (none for this test module).
-        /// </summary>
-        /// <param name="scriptObject">The script object to register helpers with.</param>
-        public void RegisterHelpers(ScriptObject scriptObject)
-        {
-        }
-
-        /// <summary>
         /// Registers resource factories (none for this test module).
         /// </summary>
         /// <param name="registry">The factory registry.</param>
@@ -420,14 +411,6 @@ public class ReportModelBuilderParentChildEdgeCaseTests
         /// Gets the template resource prefix for the edge case test module.
         /// </summary>
         public string TemplateResourcePrefix => string.Empty;
-
-        /// <summary>
-        /// Registers helper functions (none for this test module).
-        /// </summary>
-        /// <param name="scriptObject">The script object to register helpers with.</param>
-        public void RegisterHelpers(ScriptObject scriptObject)
-        {
-        }
 
         /// <summary>
         /// Registers resource factories (none for this test module).
@@ -508,14 +491,6 @@ public class ReportModelBuilderParentChildEdgeCaseTests
         public string TemplateResourcePrefix => string.Empty;
 
         /// <summary>
-        /// Registers helper functions (none for this module).
-        /// </summary>
-        /// <param name="scriptObject">The script object to register helpers with.</param>
-        public void RegisterHelpers(ScriptObject scriptObject)
-        {
-        }
-
-        /// <summary>
         /// Registers resource factories (none for this module).
         /// </summary>
         /// <param name="registry">The factory registry.</param>
@@ -581,14 +556,6 @@ public class ReportModelBuilderParentChildEdgeCaseTests
         /// Gets the template resource prefix for the invalid JSON module.
         /// </summary>
         public string TemplateResourcePrefix => string.Empty;
-
-        /// <summary>
-        /// Registers helper functions (none for this module).
-        /// </summary>
-        /// <param name="scriptObject">The script object to register helpers with.</param>
-        public void RegisterHelpers(ScriptObject scriptObject)
-        {
-        }
 
         /// <summary>
         /// Registers resource factories (none for this module).

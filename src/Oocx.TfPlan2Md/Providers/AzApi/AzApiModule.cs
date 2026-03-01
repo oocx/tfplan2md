@@ -1,8 +1,8 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
-using Scriban.Runtime;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using Oocx.TfPlan2Md.Providers.AzApi.Renderers;
 
 namespace Oocx.TfPlan2Md.Providers.AzApi;
 
@@ -44,15 +44,6 @@ internal sealed class AzApiModule : IProviderModule
     public string TemplateResourcePrefix => "Oocx.TfPlan2Md.Providers.AzApi.Templates.";
 
     /// <summary>
-    /// Registers AzApi-specific Scriban helper functions.
-    /// </summary>
-    /// <param name="scriptObject">The Scriban script object to register helpers with.</param>
-    public void RegisterHelpers(ScriptObject scriptObject)
-    {
-        Oocx.TfPlan2Md.Providers.AzApi.ScribanHelpers.RegisterAzApiHelpers(scriptObject);
-    }
-
-    /// <summary>
     /// Registers AzApi-specific resource view model factories.
     /// </summary>
     /// <param name="registry">The factory registry to register with.</param>
@@ -89,5 +80,16 @@ internal sealed class AzApiModule : IProviderModule
     {
         var resourceName = "Oocx.TfPlan2Md.Providers.Shared.Icons.azure-common-icons.json";
         registry.Register(new MatchPattern("(^azapi$|.*/azapi$)", null, null, null), new FileBasedIconProvider(resourceName));
+    }
+
+    /// <summary>
+    /// Registers AzApi-specific C# resource renderers.
+    /// </summary>
+    /// <param name="registry">The resource renderer registry to register with.</param>
+    public void RegisterResourceRenderers(ResourceRendererRegistry registry)
+    {
+        registry.Register(new AzApiResourceRenderer());
+        registry.Register(new AzApiUpdateResourceRenderer());
+        registry.Register(new AzApiOutputValuesRenderer());
     }
 }

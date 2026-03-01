@@ -32,21 +32,18 @@ public class MarkdownRendererResolutionTests
     }
 
     /// <summary>
-    /// Ensures custom template paths are resolved and recorded.
+    /// Ensures custom template paths are rejected by the pure C# renderer.
     /// </summary>
     [Test]
-    public void Render_WithCustomTemplate_RecordsResolution()
+    public void Render_WithCustomTemplate_ThrowsMarkdownRenderException()
     {
-        var diagnosticContext = new DiagnosticContext();
-        var renderer = new MarkdownRenderer(diagnosticContext: diagnosticContext);
+        var renderer = new MarkdownRenderer();
         var model = CreateModel("azurerm_custom_resource");
         var templatePath = CreateTemplateFile("custom-template.sbn", "Custom Template Output");
 
-        var result = renderer.Render(model, templatePath);
+        var action = () => renderer.Render(model, templatePath);
 
-        result.Should().Contain("Custom Template Output");
-        diagnosticContext.TemplateResolutions.Should().Contain(
-            entry => entry.ResourceType == "_main" && entry.TemplateSource.Contains("Custom template", StringComparison.Ordinal));
+        action.Should().Throw<MarkdownRenderException>();
     }
 
     /// <summary>
@@ -64,18 +61,18 @@ public class MarkdownRendererResolutionTests
     }
 
     /// <summary>
-    /// Ensures async template rendering reads custom templates from disk.
+    /// Ensures async custom template rendering is rejected.
     /// </summary>
     [Test]
-    public async Task RenderAsync_WithCustomTemplate_ReturnsContent()
+    public async Task RenderAsync_WithCustomTemplate_ThrowsMarkdownRenderException()
     {
         var renderer = new MarkdownRenderer();
         var model = CreateModel("azurerm_custom_resource");
         var templatePath = CreateTemplateFile("async-template.sbn", "Async Template Output");
 
-        var result = await renderer.RenderAsync(model, templatePath);
+        var action = () => renderer.RenderAsync(model, templatePath);
 
-        result.Should().Contain("Async Template Output");
+        await action.Should().ThrowAsync<MarkdownRenderException>();
     }
 
     /// <summary>
@@ -108,30 +105,27 @@ public class MarkdownRendererResolutionTests
     }
 
     /// <summary>
-    /// Ensures custom resource templates are discovered and rendered.
+    /// Ensures custom template directories do not implicitly enable resource-specific templates.
     /// </summary>
     [Test]
-    public void RenderResourceChange_WithCustomTemplate_RendersOutput()
+    public void RenderResourceChange_WithCustomTemplate_ReturnsNull()
     {
-        var diagnosticContext = new DiagnosticContext();
         var templateDirectory = CreateTemplateDirectory(
             ("azurerm/custom_resource.sbn", "### {{ change.address }}"));
-        var renderer = new MarkdownRenderer(templateDirectory, diagnosticContext: diagnosticContext);
+        var renderer = new MarkdownRenderer(templateDirectory);
         var model = CreateModel("azurerm_custom_resource");
         var change = model.Changes[0];
 
         var result = renderer.RenderResourceChange(change, RenderTarget.GitHub);
 
-        result.Should().Contain(change.Address);
-        diagnosticContext.TemplateResolutions.Should().Contain(
-            entry => entry.ResourceType == "azurerm_custom_resource" && entry.TemplateSource.Contains("Custom resource-specific template", StringComparison.Ordinal));
+        result.Should().BeNull();
     }
 
     /// <summary>
-    /// Ensures invalid resource templates surface a render exception.
+    /// Ensures invalid custom template directories are ignored for resource rendering.
     /// </summary>
     [Test]
-    public void RenderResourceChange_WithInvalidTemplate_ThrowsMarkdownRenderException()
+    public void RenderResourceChange_WithInvalidTemplate_ReturnsNull()
     {
         var templateDirectory = CreateTemplateDirectory(
             ("azurerm/bad_resource.sbn", "{{ include \"missing\" }}"));
@@ -139,9 +133,9 @@ public class MarkdownRendererResolutionTests
         var model = CreateModel("azurerm_bad_resource");
         var change = model.Changes[0];
 
-        var action = () => renderer.RenderResourceChange(change);
+        var result = renderer.RenderResourceChange(change);
 
-        action.Should().Throw<MarkdownRenderException>();
+        result.Should().BeNull();
     }
 
     /// <summary>

@@ -9,7 +9,6 @@ using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzureRM;
-using Scriban.Runtime;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -276,10 +275,6 @@ public class ReportModelBuilderSummaryTests
         public string ProviderName => "custom";
 
         public string TemplateResourcePrefix => "";
-
-        public void RegisterHelpers(ScriptObject scriptObject)
-        {
-        }
 
         public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
         {

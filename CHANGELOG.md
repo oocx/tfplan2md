@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.32.0"></a>
+## [1.32.0](https://github.com/oocx/tfplan2md/compare/v1.31.2...v1.32.0) (2026-03-01)
+
+### ✨ Features
+
+* add UAT plan artifacts for feature 106 (uat-plan.json, uat-plan.md) ([d03a50f](https://github.com/oocx/tfplan2md/commit/d03a50ff2412dc9237a0e0c36ef0258e8bb5c0f1))
+* expose after_unknown to Scriban templates for output-unknown detection ([5f3562f](https://github.com/oocx/tfplan2md/commit/5f3562f733891ed20c28cbaa6c9d8776fe6f9f3e))
+* render azapi output values in a separate table (feature 106) ([b99f591](https://github.com/oocx/tfplan2md/commit/b99f591317828d77909e65e8050696611daf634a))
+
+### 🐛 Bug Fixes
+
+* add Output Values heading for known-after-apply and replace-before cases SNAPSHOT_UPDATE_OK ([b82b209](https://github.com/oocx/tfplan2md/commit/b82b2090d9518bf9982464f64fd760af538dea3b))
+* remove output values section when all outputs unknown; add display name mapping to UAT (SNAPSHOT_UPDATE_OK) ([d065a92](https://github.com/oocx/tfplan2md/commit/d065a923f95cad3e31e955054a98e99417400c7b))
+* resolve MD024 markdownlint error, fix MD049 emphasis style, add azapi output to demo ([3c836c5](https://github.com/oocx/tfplan2md/commit/3c836c5fc33da737cea1d957670fbea42bbfa9b0))
+* update UAT plan to show grouped output (sku sub-object) and distribute resources across modules ([2f661ea](https://github.com/oocx/tfplan2md/commit/2f661eac7d713d822465d009eae5f53903a24044))
+
+### ♻️ Refactoring
+
+* extract output values rendering to partial template ([d3f1a9c](https://github.com/oocx/tfplan2md/commit/d3f1a9ca55c772d4be1e82d9c16be00a3934d078))
+
+### 📚 Documentation
+
+* add architecture for feature 106 azapi output values ([c9fbeba](https://github.com/oocx/tfplan2md/commit/c9fbeba5cb6615cf078ce3ddd1c556e6c6395989))
+* add minor template comment issue (m-1) found by automated code review ([67e7582](https://github.com/oocx/tfplan2md/commit/67e7582c1fc73cfb28c34a495f8f04138dbf800c))
+* add release notes and screenshots for feature 106 azapi output values ([6489cbe](https://github.com/oocx/tfplan2md/commit/6489cbe38d97c60f5d387d22acc5260d72ceb842))
+* add specification for azapi output values feature 106 ([6aa3e16](https://github.com/oocx/tfplan2md/commit/6aa3e165f13534c323dc4f4a2c9d1bec605818fb))
+* add tasks for feature 106 azapi output values ([2e1052c](https://github.com/oocx/tfplan2md/commit/2e1052cd80a6e35436088125f1a21a3c4e782c43))
+* add tasks for feature 106 azapi output values ([2611bfa](https://github.com/oocx/tfplan2md/commit/2611bfaaadd577b51a22ccab775802792dcc11e9))
+* add test plan for feature 106 azapi output values ([a7e8f98](https://github.com/oocx/tfplan2md/commit/a7e8f981dd3e5d339c690c390b65d306300729fe))
+* add UAT report for feature 106 azapi output values - PASSED ([e107bc6](https://github.com/oocx/tfplan2md/commit/e107bc62b61cfa76dadcc3fbe0b26f7782995ebf))
+* code review approved for feature 106 - ready for UAT ([c644440](https://github.com/oocx/tfplan2md/commit/c6444405c8ef19ecb24b53b2506b1da1b703000d))
+* code review round 3 for feature 106 - changes requested (B-8a, B-8b) ([404c536](https://github.com/oocx/tfplan2md/commit/404c536ef5c0a31f827a947649b3bdee6e5beb4d))
+* code review round 5 for feature 106 - changes requested (M-1, M-2, M-3 doc inconsistencies) ([5395ca6](https://github.com/oocx/tfplan2md/commit/5395ca60064f5b1b188da4b8f2492fa1a6b6bbe0))
+* log Developer B-8a/B-8b fix in work protocol ([7eaa29c](https://github.com/oocx/tfplan2md/commit/7eaa29c2687ef34b185da19a080a693c775ebb13))
+* mark code review complete for feature 106 ([77e0212](https://github.com/oocx/tfplan2md/commit/77e0212f4eae6457e45c9e1fa5e0f7abee2e6b9d))
+* mark code review complete for feature 106 (changes requested) ([fae3b49](https://github.com/oocx/tfplan2md/commit/fae3b49e9621f6588019c1987f662157f0978fa1))
+* mark code review re-review complete for feature 106 (changes requested - B-8, B-9) ([356cbef](https://github.com/oocx/tfplan2md/commit/356cbef740e002f019d6e93d72ee10ceeb30a6ac))
+* update architecture.md with after_unknown, before_sensitive, after_sensitive template properties ([74ed94a](https://github.com/oocx/tfplan2md/commit/74ed94a346e6d6ad0a5e0ce0ef813db0d510fbb0))
+* update features.md for feature 106 azapi output values ([69bf247](https://github.com/oocx/tfplan2md/commit/69bf247a9d6257069594477f164540a1567fee3c))
+* update spec, test-plan, and snapshot test docs to reflect suppressed output section ([2e11728](https://github.com/oocx/tfplan2md/commit/2e11728f52069cfeab454c1c0b36ad108e36e3b6))
+* update work protocol with Developer log for feature 106 ([5b8b99f](https://github.com/oocx/tfplan2md/commit/5b8b99f555b61dcc78b0a8486450d72fe72901d7))
+* update work protocol with Developer rework log for feature 106 code review blockers ([96e948f](https://github.com/oocx/tfplan2md/commit/96e948f12bbbd6e2b834dd89daf416e43b84cef5))
+* update work-protocol release manager round 2 entry for feature 106 ([f0eed81](https://github.com/oocx/tfplan2md/commit/f0eed81f5d97aeba5b3818d2b4e0b4b506f785ed))
+
 <a name="1.31.2"></a>
 ## [1.31.2](https://github.com/oocx/tfplan2md/compare/v1.31.1...v1.31.2) (2026-02-28)
 

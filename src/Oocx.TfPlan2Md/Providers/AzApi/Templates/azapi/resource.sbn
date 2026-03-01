@@ -84,6 +84,8 @@
 {{~ end ~}}
 {{~ end ~}}
 
+{{ include "_output_values" }}
+
 {{ include "/_code_analysis_findings.sbn" }}
 
 </details>

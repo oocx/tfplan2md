@@ -1452,6 +1452,9 @@ Per-Resource Templates (Provider-specific):
 - `attribute_changes` - List of attribute changes
 - `before_json` - Raw JSON state before change (converted to ScriptObject for navigation)
 - `after_json` - Raw JSON state after change (converted to ScriptObject for navigation)
+- `after_unknown` - Scriban object reflecting Terraform's `after_unknown` map; a property is `true` when its value will be known only after apply (e.g., `after_unknown.output == true`)
+- `before_sensitive` - Scriban object reflecting Terraform's `before_sensitive` map; a property is `true` when its before-state value is sensitive
+- `after_sensitive` - Scriban object reflecting Terraform's `after_sensitive` map; a property is `true` when its after-state value is sensitive
 - `replace_paths` - Paths that triggered replacement
 - `summary` - Precomputed one-line summary
 - `child_resource_groups` - Hierarchical child resource tables

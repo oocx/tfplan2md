@@ -203,6 +203,116 @@ public class AzapiSnapshotTests
         AssertAzapiSnapshot("azapi-update-resource-delete-plan.json", "azapi-update-resource-delete.md");
     }
 
+    // -----------------------------------------------------------------------
+    // Feature 106: Separate table for azapi output values
+    // Related feature: docs/features/106-azapi-output-values/specification.md
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a create action with unknown output suppresses the Output Values section entirely
+    /// (no heading or notice rendered, because there is no before or after output data available).
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputCreateUnknown_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-create-unknown-plan.json", "azapi-output-create-unknown.md");
+    }
+
+    /// <summary>
+    /// Verifies that a create action with output present renders an Output Values table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputCreatePresent_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-create-present-plan.json", "azapi-output-create-present.md");
+    }
+
+    /// <summary>
+    /// Verifies that an update action with both before and after output renders a Before/After Output Values table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputUpdate_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-update-plan.json", "azapi-output-update.md");
+    }
+
+    /// <summary>
+    /// Verifies that sensitive output fields are masked with (sensitive) in the Output Values table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputSensitive_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-sensitive-plan.json", "azapi-output-sensitive.md");
+    }
+
+    /// <summary>
+    /// Verifies that nested output objects trigger Feature 034 attribute grouping in the Output Values section.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputGrouped_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-grouped-plan.json", "azapi-output-grouped.md");
+    }
+
+    /// <summary>
+    /// Verifies that azapi_update_resource renders output values in a dedicated Output Values section.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiUpdateResourceOutput_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-update-resource-output-plan.json", "azapi-update-resource-output.md");
+    }
+
+    /// <summary>
+    /// TC-04: Verifies that an update action with identical before/after output renders the Output Values
+    /// section with a "no changes detected" notice rather than a diff table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputUpdateUnchanged_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-update-unchanged-plan.json", "azapi-output-update-unchanged.md");
+    }
+
+    /// <summary>
+    /// TC-05: Verifies that a delete action with before output renders the Output Values section
+    /// in delete mode showing the values that will be removed.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputDelete_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-delete-plan.json", "azapi-output-delete.md");
+    }
+
+    /// <summary>
+    /// TC-06: Verifies that a replace action with before output present and after output unknown
+    /// renders the before output in delete mode followed by the "known after apply" notice.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputReplaceUnknown_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-replace-unknown-plan.json", "azapi-output-replace-unknown.md");
+    }
+
+    /// <summary>
+    /// TC-10: Verifies that output values exceeding the large value threshold are rendered
+    /// outside the table as large value blocks rather than inline table cells.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputLargeValue_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-large-value-plan.json", "azapi-output-large-value.md");
+    }
+
     /// <summary>
     /// Renders a markdown report from an AzAPI plan test data file.
     /// </summary>

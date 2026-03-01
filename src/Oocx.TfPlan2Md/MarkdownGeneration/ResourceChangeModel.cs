@@ -137,6 +137,16 @@ public class ResourceChangeModel
     public object? AfterSensitive { get; init; }
 
     /// <summary>
+    /// Gets the raw <c>after_unknown</c> structure from the Terraform plan.
+    /// Contains either a boolean (<c>true</c> = whole resource is computed) or an object tree
+    /// where leaf <c>true</c> values mark individual attributes as unknown after apply.
+    /// Used by provider templates to render "known after apply" notices.
+    /// Related feature: docs/features/102-known-after-apply-rendering/specification.md.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    public object? AfterUnknown { get; init; }
+
+    /// <summary>
     /// Gets or sets the original resource change from parsing.
     /// Used by resource model mappers to create provider-specific view models.
     /// Internal only - not exposed to templates.

@@ -190,10 +190,11 @@ public record OutputChange
 
     /// <summary>
     /// Gets a value indicating whether the value is unknown/computed after the change.
+    /// This may be a plain boolean (<c>true</c>/<c>false</c>) or an object (<c>{}</c>) in Terraform plan JSON.
     /// Related feature: docs/features/097-terraform-outputs/specification.md.
     /// </summary>
     [JsonPropertyName("after_unknown")]
-    public bool AfterUnknown { get; init; }
+    public object? AfterUnknown { get; init; }
 
     /// <summary>
     /// Gets whether the value was sensitive before the change.
@@ -216,7 +217,7 @@ public record OutputChange
     /// <param name="actions">The ordered list of actions applied to the output.</param>
     /// <param name="before">Optional value before the change.</param>
     /// <param name="after">Optional value after the change.</param>
-    /// <param name="afterUnknown">Whether the value is unknown/computed after the change.</param>
+    /// <param name="afterUnknown">Whether the value is unknown/computed after the change. May be a boolean or object.</param>
     /// <param name="beforeSensitive">Whether the value was sensitive before the change.</param>
     /// <param name="afterSensitive">Whether the value is sensitive after the change.</param>
     [JsonConstructor]
@@ -224,7 +225,7 @@ public record OutputChange
         IReadOnlyList<string> actions,
         object? before = null,
         object? after = null,
-        bool afterUnknown = false,
+        object? afterUnknown = null,
         object? beforeSensitive = null,
         object? afterSensitive = null)
     {

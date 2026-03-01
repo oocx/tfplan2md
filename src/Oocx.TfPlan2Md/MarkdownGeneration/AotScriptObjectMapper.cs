@@ -247,6 +247,15 @@ internal static class AotScriptObjectMapper
         obj["before_sensitive"] = beforeSensitiveObj;
         obj["after_sensitive"] = afterSensitiveObj;
 
+        // after_unknown — exposed so provider templates can check per-attribute unknown flags.
+        // May be a plain boolean (whole resource unknown) or an object tree with leaf true values.
+        // Related feature: docs/features/102-known-after-apply-rendering/specification.md.
+        // Related feature: docs/features/106-azapi-output-values/specification.md.
+        var afterUnknownObj = change.AfterUnknown is JsonElement afterUnknownElem
+            ? ConvertToScriptObject(afterUnknownElem)
+            : null;
+        obj["after_unknown"] = afterUnknownObj;
+
         // JSON values — mask sensitive leaves when showSensitive is false
         var beforeJsonObj = change.BeforeJson is JsonElement jsonBefore
             ? ConvertToScriptObject(jsonBefore)

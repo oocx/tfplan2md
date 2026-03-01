@@ -2163,8 +2163,8 @@ When rendering the full report, the default renderer applies resource-specific t
 
 | Provider | Resource Type | Template |
 |----------|--------------|----------|
-| azapi | `azapi_resource` | Flattened body representation with dot notation |
-| azapi | `azapi_update_resource` | Intelligent attribute grouping and array rendering for partial updates |
+| azapi | `azapi_resource` | Flattened body representation with dot notation; dedicated Output Values section |
+| azapi | `azapi_update_resource` | Intelligent attribute grouping and array rendering for partial updates; dedicated Output Values section |
 | azurerm | `azurerm_firewall_application_rule_collection` | Application firewall rule diffing with FQDN targets |
 | azurerm | `azurerm_firewall_network_rule_collection` | Network firewall rule diffing with IP/port targets |
 | azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
@@ -2183,6 +2183,7 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 - **Per-property sensitive masking**: Respects Terraform's sensitivity markers at the property level (not just entire body)
 - **Large value handling**: Properties over 200 characters moved to collapsible sections
 - **All operations supported**: Create, update, delete, and replace actions handled appropriately
+- **Output Values section**: The Azure API response (`output` attribute) is rendered in a dedicated section below body attributes, clearly distinguishing inputs (body) from outputs (API response)
 
 **Example output for create operation:**
 
@@ -2244,6 +2245,50 @@ The template respects Terraform's per-property sensitivity markers. If Terraform
 
 Properties with values exceeding 200 characters are automatically moved to a collapsible "Large body properties" section below the main table. This keeps the main view scannable while preserving access to detailed configuration values.
 
+**Output Values:**
+
+For `azapi_resource` and `azapi_update_resource`, the `output` attribute (the Azure REST API response) is rendered in a dedicated **Output Values** section below the body attributes. This clearly distinguishes the values a user configures (body/inputs) from the values the Azure API returns (outputs such as computed URLs, provisioning state, and generated identifiers).
+
+- When the output is unknown at plan time (e.g. during a create), a notice is shown: *Output values are not known until after apply.*
+- When output values are present, they are rendered as a grouped table (using the same attribute grouping as body attributes) with sub-section headings of the form `` ###### `prefix` `` when grouping fires.
+- Sensitivity masking, large-value handling, and all change actions (create, update, delete, replace) are fully supported.
+- The Output Values section is omitted entirely when `output` is absent in both before and after states.
+
+**Example: Create action (output unknown at plan time)**
+
+```markdown
+#### Output Values
+
+*Output values are not known until after apply.*
+```
+
+**Example: Update action (output has before and after values)**
+
+```markdown
+#### Output Values
+
+| Property | Before | After |
+|----------|--------|-------|
+| state | `Ok` | `Updating` |
+| automationHybridServiceUrl | `https://eus-jobruntimedata.azure-automation.net` | `https://eus-jobruntimedata.azure-automation.net` |
+```
+
+**Example: Update action with attribute grouping**
+
+```markdown
+#### Output Values
+
+| Property | Before | After |
+|----------|--------|-------|
+| state | `Ok` | `Updating` |
+
+###### `sku`
+
+| Property | Before | After |
+|----------|--------|-------|
+| name | `Basic` | `Standard` |
+```
+
 #### azapi_update_resource
 
 The `azapi_update_resource` resource type from the AzAPI Terraform provider manages partial updates to existing Azure resources via the Azure Resource Manager REST API. Like `azapi_resource`, most configuration resides in a JSON `body` attribute. The custom template applies the same intelligent attribute grouping and array rendering from Feature 034 to make partial updates easy to review.
@@ -2256,6 +2301,7 @@ The `azapi_update_resource` resource type from the AzAPI Terraform provider mana
 - **Azure API documentation links**: Automatic links to Microsoft Learn REST API documentation based on the resource type
 - **Consistent with azapi_resource**: Update resources render with the same grouping behavior as create resources
 - **All operations supported**: Update and delete actions handled appropriately
+- **Output Values section**: The Azure API response (`output` attribute) is rendered in a dedicated section below body attributes (see [azapi_resource Output Values](#azapi_resource) for full details)
 
 **Example output for update operation with grouping:**
 
@@ -2981,6 +3027,31 @@ With `--ignore-azure-id-case-changes`, only the `display_name` row is shown — 
 - Plan summary counts (resources to add, change, destroy) are not affected.
 
 See [docs/features/103-azure-id-case-insensitive-filter/](features/103-azure-id-case-insensitive-filter/) for specification, architecture, and implementation details.
+
+## azapi Output Values (Feature 106)
+
+**Status:** ✅ Implemented
+
+`azapi_resource` and `azapi_update_resource` resources now render a dedicated **Output Values** section in the report, showing the Azure REST API response (`output` attribute) separately from the body (input) attributes.
+
+The `output` attribute captures the JSON payload returned by Azure after creating or updating a resource. This can include computed properties such as provisioning state, service URLs, and generated identifiers — values the user does not configure but may need to review.
+
+### What Is Shown
+
+- **Dedicated section heading**: The Output Values section appears below the body section, with heading **"Output Values"** (or sub-sections of the form `` `prefix` `` when attribute grouping fires)
+- **All change actions**: Create, update, delete, and replace operations are all handled
+- **Known-after-apply notice**: When the output is not yet known (e.g. during a create), the section shows: *Output values are not known until after apply.*
+- **Omitted when absent**: If `output` is absent in both before and after states, the section is not rendered at all
+
+### Consistent Quality
+
+Output values benefit from the same rendering quality as body attributes:
+- Attribute grouping with sub-section headings (Feature 034)
+- Sensitivity masking (`before_sensitive.output` / `after_sensitive.output` respected)
+- Large-value collapsible handling
+- Before/after comparison tables for update/replace actions
+
+See [docs/features/106-azapi-output-values/](features/106-azapi-output-values/) for specification, architecture, and implementation details.
 
 ## Future Considerations
 

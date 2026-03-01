@@ -17,13 +17,29 @@
 | Technical Writer | ✅ Required | ✅ Done |
 | Code Reviewer | ✅ Required | ✅ Done |
 | UAT Tester | ⚠️ If user-facing | ✅ Done |
-| Release Manager | ✅ Required | ⏳ Pending |
+| Release Manager | ✅ Required | ✅ Done |
 | Retrospective | ✅ Required | ⏳ Pending |
 
 ## Agent Work Log
 
-### UAT Tester
+### Release Manager
 - **Date:** 2026-02-28
+- **Summary:** Created release notes and screenshots for Feature 106 (azapi Output Values).
+  Diagnosed PR Validation CI failure caused by missing `release-notes.md` (release-notes
+  guardrail). Generated two screenshots using ScreenshotGenerator + Playwright: update
+  operation showing Output Values with grouped `sku` sub-table and display name mapping,
+  and delete operation showing sensitive field masking. Expected version bump: `1.31.2 → 1.32.0`
+  (feat: conventional commit).
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/release-notes.md`
+  - `docs/features/106-azapi-output-values/azapi-output-update.png`
+  - `docs/features/106-azapi-output-values/azapi-output-delete.png`
+  - `docs/features/106-azapi-output-values/work-protocol.md` (updated)
+- **Problems Encountered:** PR Validation was failing because `release-notes.md` was missing.
+  The `validate-release-notes.sh` guardrail requires it for any PR that touches
+  `docs/features/*`. Created the file to unblock CI.
+
+### UAT Tester
 - **Summary:** Ran UAT for Feature 106 (azapi Output Values). Validated rendering of all three
   required scenarios on both GitHub and Azure DevOps. All validation criteria passed.
 - **GitHub PR:** [#116](https://github.com/oocx/tfplan2md-uat/pull/116) — ✅ Approved (label `uat-approved`)

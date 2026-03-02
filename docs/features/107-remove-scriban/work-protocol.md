@@ -150,3 +150,31 @@
   - `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRMModule.cs`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** Initial broad compatibility heuristics introduced regressions in unrelated snapshots (`azapi`, `azuredevops`, `comprehensive-demo`, `no-configuration-block`). Resolved by replacing generic marker-based behavior with explicit scenario-signature detection and scoped compatibility context flags.
+
+### Technical Writer
+- **Date:** 2026-03-02
+- **Summary:** Reviewed the fully-implemented feature 107 and updated all user-facing and developer documentation to remove every Scriban reference. Updated `README.md` (removed custom Scriban templates feature bullet, updated `--template` description, renamed debug section from "Template resolution" to "Renderer resolution", replaced "Custom Templates" section with "Built-in Templates", removed Template Variables subsection). Updated `docs/features.md` (removed Scriban references throughout the Templates section, removed Custom Templates subsections for Azure DevOps and Repository Mapping features, removed the Helper Functions section listing Scriban syntax examples, replaced Template Rendering Simplification section with Feature 107 reference, updated CLI Interface table, updated Future Considerations to reflect C# renderers). Updated `docs/architecture.md` (removed Scriban from requirements, technical constraints, external interfaces, technology table, and architectural decisions; replaced Template-Driven Rendering pattern with Renderer-Driven Output; updated directory structure; updated MarkdownGeneration and Providers component descriptions with new C# types and `IProviderModule.RegisterResourceRenderers`; replaced renderer resolution diagrams; replaced Section 8.4 Templating Architecture with Rendering Architecture; removed `ScribanHelperException` from exception hierarchy; updated extensibility table; updated known limitations; removed Scriban glossary entry; removed Scriban documentation link from references).
+- **Artifacts Produced:**
+  - `README.md`
+  - `docs/features.md`
+  - `docs/architecture.md`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None
+### Code Reviewer
+- **Date:** 2026-03-02
+- **Summary:** Reviewed the full implementation of feature 107 against spec, architecture,
+  test plan, and tasks. Found 5 Blockers, 4 Major issues, and 3 Minor issues. All 1115 tests
+  pass and coverage thresholds are met (line 86.75%, branch 78.35%). Docker image builds
+  successfully. Key findings: (B1) AzureDevOps secret variable values are exposed as plain
+  text — `VariableGroupRenderer` delegates to `DefaultResourceRenderer`, losing secret masking
+  from the old template. (B2) `RenderSummaryTemplate` is missing the Refactoring Summary
+  section and filtered-changes note present in the old `summary.sbn`. (B3)
+  `FirewallNetworkRuleRenderer`/`FirewallAppRuleRenderer` delegate to default, losing the
+  structured rule table. (B4) MD031 markdownlint errors in `artifacts/comprehensive-demo.md`
+  due to `LargeValues.CodeFence` missing trailing newline. (B5) Technical Writer documentation
+  changes (README.md, docs/architecture.md, docs/features.md) are uncommitted. Decision:
+  **Changes Requested**.
+- **Artifacts Produced:**
+  - `docs/features/107-remove-scriban/code-review.md`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None

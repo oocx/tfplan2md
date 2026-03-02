@@ -87,7 +87,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The resource renderer registry to register with.</param>
     public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
-        registry.Register(new RoleAssignmentRenderer());
+        registry.Register(new RoleAssignmentRenderer(_principalMapper, _scopeFormatter));
         registry.Register(new NsgRenderer());
         registry.Register(new FirewallNetworkRuleRenderer());
         registry.Register(new FirewallAppRuleRenderer());

@@ -30,6 +30,7 @@ internal static class SummaryRenderer
         }
 
         writer.TableHeader("Action", "Count", "Resource Types");
+
         writer.TableRow(["➕\u00A0Add", summary.ToAdd.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToAdd.Breakdown)]);
         writer.TableRow(["🔄\u00A0Change", summary.ToChange.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToChange.Breakdown)]);
         writer.TableRow(["♻️\u00A0Replace", summary.ToReplace.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToReplace.Breakdown)]);

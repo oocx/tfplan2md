@@ -178,3 +178,19 @@
   - `docs/features/107-remove-scriban/code-review.md`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2026-03-03
+- **Summary:** Implemented Fix #1 (restore AzAPI-specific rendering) by replacing renderer stubs with pure C# azapi logic for metadata extraction, API documentation links, dedicated body sections, grouped body rendering, sensitive-path masking, large-value handling, and dedicated output-values section behavior across create/update/delete/replace scenarios. Added new AzAPI helper/model infrastructure under `Providers/AzApi/Helpers` and integrated it into `AzApiResourceRenderer` and `AzApiUpdateResourceRenderer`.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Renderers/AzApiResourceRenderers.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiMetadataExtractor.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyFlattener.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiGrouping.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiSensitivityHelper.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/Models/AzApiBodyProperty.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/Models/AzApiMetadata.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/Models/AzApiGroup.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** Targeted AzAPI snapshot tests now fail due to expected baseline content still reflecting flattened generic rendering in several cases. The new output includes restored AzAPI sections (`Type`, API doc link, metadata table, `Body`, `Output Values`) and needs reconciliation with the intended baseline/follow-up fixes.

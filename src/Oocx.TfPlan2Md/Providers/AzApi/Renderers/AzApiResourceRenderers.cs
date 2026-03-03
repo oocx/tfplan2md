@@ -83,7 +83,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
         if (!string.IsNullOrWhiteSpace(docUrl))
         {
             writer.BlankLine();
-            writer.Paragraph($"📚 [View API Documentation]({ScribanHelpers.EscapeMarkdown(docUrl)})");
+            writer.Paragraph($"📚\u00A0[View API Documentation]({ScribanHelpers.EscapeMarkdown(docUrl)})");
         }
     }
 

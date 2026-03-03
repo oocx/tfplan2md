@@ -194,3 +194,12 @@
   - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/Models/AzApiGroup.cs`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** Targeted AzAPI snapshot tests now fail due to expected baseline content still reflecting flattened generic rendering in several cases. The new output includes restored AzAPI sections (`Type`, API doc link, metadata table, `Body`, `Output Values`) and needs reconciliation with the intended baseline/follow-up fixes.
+
+### Developer
+- **Date:** 2026-03-03
+- **Summary:** Implemented Fix #3 stabilization for Feature 106 output-values parity in the pure C# AzApi renderer path. Kept dedicated `Output Values` section behavior intact and aligned markdown output with baseline formatting by restoring non-breaking space after the API docs icon and restoring expected blank-line separation around large-value diff blocks in output/body sections.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Renderers/AzApiResourceRenderers.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None. Targeted Feature 106 snapshot suite now passes (`9/9`).

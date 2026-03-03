@@ -398,6 +398,7 @@ internal static class AzApiBodyRenderer
             else
             {
                 writer.Raw(ScribanHelpers.FormatLargeValue(null, property.Value?.ToString(), "inline-diff"));
+                writer.Raw("\n");
             }
 
             writer.BlankLine();
@@ -428,6 +429,7 @@ internal static class AzApiBodyRenderer
             else
             {
                 writer.Raw(ScribanHelpers.FormatLargeValue(property.Before?.ToString(), property.After?.ToString(), "inline-diff"));
+                writer.Raw("\n");
             }
 
             writer.BlankLine();

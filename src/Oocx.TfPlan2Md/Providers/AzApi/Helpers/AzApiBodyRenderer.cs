@@ -30,8 +30,21 @@ internal static class AzApiBodyRenderer
         object? sensitivity,
         IRenderContext context)
     {
-        var flattened = AzApiBodyFlattener.Flatten(body);
+        var flattened = AzApiBodyFlattener.Flatten(body).ToList();
         var sensitivePaths = AzApiSensitivityHelper.Flatten(sensitivity);
+        if (!context.ShowSensitive)
+        {
+            var existing = flattened.Select(property => property.Path).ToHashSet(StringComparer.Ordinal);
+            var emptySensitiveContainerPaths = AzApiBodyFlattener.CollectEmptyContainerPaths(body)
+                .Where(path => !existing.Contains(path) && AzApiSensitivityHelper.IsPathSensitive(path, sensitivePaths))
+                .ToList();
+
+            foreach (var path in emptySensitiveContainerPaths)
+            {
+                flattened.Add(new AzApiBodyProperty(path, null, IsLarge: false));
+            }
+        }
+
         var smallProperties = flattened.Where(property => !property.IsLarge).ToList();
         var largeProperties = flattened.Where(property => property.IsLarge).ToList();
 

@@ -242,7 +242,7 @@ internal static class ResourceSummaryHtmlBuilder
         }
 
         var badges = tags.Select(tag => FormatCodeTable($"{tag.Key}: {tag.Value}"));
-        return $"**🏷️{NonBreakingSpace}Tags:** {string.Join(' ', badges)}";
+        return $"**🏷️{NonBreakingSpace}Tags:**\n{string.Join('\n', badges.Select(badge => $" {badge}"))}";
     }
 
     /// <summary>

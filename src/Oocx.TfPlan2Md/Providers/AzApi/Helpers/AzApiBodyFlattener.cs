@@ -45,6 +45,20 @@ internal static class AzApiBodyFlattener
     }
 
     /// <summary>
+    /// Collects paths for empty objects and arrays so renderers can preserve
+    /// sensitivity placeholders for intentionally empty containers.
+    /// </summary>
+    /// <param name="value">Body object, JSON element, or JSON string.</param>
+    /// <param name="prefix">Path prefix used during recursion.</param>
+    /// <returns>Flattened paths that point to empty objects/arrays.</returns>
+    internal static IReadOnlyList<string> CollectEmptyContainerPaths(object? value, string prefix = "")
+    {
+        List<string> result = [];
+        CollectEmptyContainerPathsCore(value, prefix, result);
+        return result;
+    }
+
+    /// <summary>
     /// Converts an arbitrary state object into a shallow dictionary.
     /// </summary>
     /// <param name="value">State object.</param>
@@ -168,6 +182,120 @@ internal static class AzApiBodyFlattener
         }
 
         result.Add(new AzApiBodyProperty(prefix, value, IsLargeValue(value)));
+    }
+
+    [SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Empty-container traversal must support all supported Terraform carrier shapes (json string, JsonElement, dictionaries, lists).")]
+    [SuppressMessage("Major Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "Container-path extraction intentionally branches on runtime value shapes for deterministic parity behavior.")]
+    private static void CollectEmptyContainerPathsCore(object? value, string prefix, List<string> result)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        if (value is string text)
+        {
+            if (TryParseJson(text, out var root))
+            {
+                CollectEmptyContainerPathsCore(root, prefix, result);
+            }
+
+            return;
+        }
+
+        if (value is JsonElement element)
+        {
+            CollectEmptyContainerPathsFromElement(element, prefix, result);
+            return;
+        }
+
+        if (TryGetDictionary(value, out var dict))
+        {
+            if (dict.Count == 0)
+            {
+                if (!string.IsNullOrEmpty(prefix))
+                {
+                    result.Add(prefix);
+                }
+
+                return;
+            }
+
+            foreach (var (key, nestedValue) in dict)
+            {
+                var path = string.IsNullOrEmpty(prefix) ? key : $"{prefix}.{key}";
+                CollectEmptyContainerPathsCore(nestedValue, path, result);
+            }
+
+            return;
+        }
+
+        if (TryGetList(value, out var list))
+        {
+            if (list.Count == 0)
+            {
+                if (!string.IsNullOrEmpty(prefix))
+                {
+                    result.Add(prefix);
+                }
+
+                return;
+            }
+
+            for (var index = 0; index < list.Count; index++)
+            {
+                CollectEmptyContainerPathsCore(list[index], $"{prefix}[{index}]", result);
+            }
+        }
+    }
+
+    [SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "JsonElement traversal explicitly handles object/array empty-container cases to preserve sensitivity placeholders.")]
+    [SuppressMessage("Major Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "ValueKind branching keeps behavior explicit and avoids hidden recursion side effects.")]
+    private static void CollectEmptyContainerPathsFromElement(JsonElement element, string prefix, List<string> result)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var properties = element.EnumerateObject().ToList();
+                if (properties.Count == 0)
+                {
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        result.Add(prefix);
+                    }
+
+                    return;
+                }
+
+                foreach (var property in properties)
+                {
+                    var path = string.IsNullOrEmpty(prefix)
+                        ? property.Name
+                        : $"{prefix}.{property.Name}";
+                    CollectEmptyContainerPathsFromElement(property.Value, path, result);
+                }
+
+                break;
+
+            case JsonValueKind.Array:
+                var items = element.EnumerateArray().ToList();
+                if (items.Count == 0)
+                {
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        result.Add(prefix);
+                    }
+
+                    return;
+                }
+
+                for (var index = 0; index < items.Count; index++)
+                {
+                    CollectEmptyContainerPathsFromElement(items[index], $"{prefix}[{index}]", result);
+                }
+
+                break;
+        }
     }
 
     private static void FlattenJsonElement(JsonElement element, string prefix, List<AzApiBodyProperty> result)

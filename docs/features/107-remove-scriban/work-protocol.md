@@ -203,3 +203,13 @@
   - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.cs`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** None. Targeted Feature 106 snapshot suite now passes (`9/9`).
+
+### Developer
+- **Date:** 2026-03-03
+- **Summary:** Implemented Fix #12, Fix #4 validation, and Fix #5 for snapshot parity. Restored masked output for sensitive empty AzApi body containers by emitting placeholder rows for empty sensitive paths (e.g., `accessPolicies`) that are intentionally omitted by normal flattening. Updated tag badge formatting to multiline output to match legacy snapshot contract. Verified AzApi large-value behavior remains parity-compliant through targeted snapshot tests.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyFlattener.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ResourceSummaryHtmlBuilder.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** `Snapshot_ComprehensiveDemoFull_MatchesBaseline` now fails due intentional multiline tag-format output changes (expected for Fix #5) and requires snapshot update/approval.

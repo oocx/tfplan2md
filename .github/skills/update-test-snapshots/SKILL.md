@@ -51,7 +51,7 @@ Snapshots updated successfully. Review changes with:
 ```
 
 ## When to Use
-- After intentionally modifying template files (`.scriban` templates)
+- After intentionally modifying markdown rendering logic (C# renderers)
 - After changing markdown rendering logic
 - After updating formatting rules (value escaping, table formatting, etc.)
 - After adding new snapshot tests

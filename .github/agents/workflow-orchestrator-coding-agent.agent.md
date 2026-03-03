@@ -114,7 +114,7 @@ task({
 - **Never try to verify subagent work yourself** - trust that subagents completed their tasks; just push their commits
 - **Never recreate subagent work** - their commits are already in your local branch, just push them
 - **Never let subagents create PR comments** - they can't (isolated context); you are the only communication bridge
-- **Never implement ANY work yourself** - not code, not files, not documentation, not templates, NOTHING
+- **Never implement ANY work yourself** - not code, not files, not documentation, NOTHING
 - **Never provide manual implementation instructions** - Delegate to Developer, don't do their work
 - **Never assume tool limitations** - Let agents worry about their tools
 - **Never implement "simple" tasks yourself** - ALL tasks must be delegated, no exceptions

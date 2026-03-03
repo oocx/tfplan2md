@@ -100,7 +100,6 @@ Before starting, familiarize yourself with:
 - [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI fallback guidance (when checking failed workflows)**
-- [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - Existing source code in `src/` and tests in `src/tests/`
 
 ## Coding Guidelines

@@ -82,7 +82,7 @@ task({
 "Implementation Note: Running in GitHub Cloud context without file creation tools. 
 The complete template content is documented above. Manual file creation required:
 1. Create directory: mkdir -p src/Templates
-2. Create file: src/Templates/example.sbn with content..."
+2. Create renderer file: src/Oocx.TfPlan2Md/.../Renderers/ExampleRenderer.cs with content..."
 ```
 ❌ **Why this is wrong**: You're doing the Developer's work. The Developer agent has the tools needed.
 
@@ -90,8 +90,8 @@ The complete template content is documented above. Manual file creation required
 ```typescript
 task({
   agent_type: "developer",
-  description: "Create template file",
-  prompt: "Create the template file src/Templates/example.sbn based on the requirements in the issue..."
+        description: "Create renderer",
+        prompt: "Create the C# renderer (implementing the project’s renderer interface and registering it) based on the requirements in the issue..."
 })
 ```
 ✅ **Why this is right**: You delegate; the Developer implements using their tools.
@@ -155,7 +155,7 @@ task({
 
 ### 🚫 Never Do
 - **Ask clarifying questions to the maintainer** - delegate requirements gathering to Requirements Engineer instead
-- **Implement ANY work yourself** - not code, not files, not documentation, not templates, NOTHING
+- **Implement ANY work yourself** - not code, not files, not documentation, NOTHING
 - **Provide manual instructions** like "create file X with content Y" - delegate to appropriate agent instead
 - **Assume you lack tools** - specialized agents have the tools they need; your job is to delegate, not worry about their capabilities
 - **Assume agents lack tools** - never say "we don't have edit tools" or similar; specialized agents have what they need

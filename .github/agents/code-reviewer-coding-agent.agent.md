@@ -144,7 +144,6 @@ Before starting, familiarize yourself with:
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
-- [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - The implementation in `src/` and `src/tests/`
 
 ## Critical Questions for Every Review
@@ -192,11 +191,10 @@ Before approving any code, systematically answer these questions:
 - [ ] Docker image builds and feature works in container
 - [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
 
-### Template Verification (for features modifying rendering)
-- [ ] All provider-specific templates include required shared template includes
-- [ ] For parent-child features: Verify `{{ include "/_child_resources.sbn" }}` is present in parent templates
-- [ ] Compare template structure against architectural design (e.g., architecture.md Section 4.2 "Template Changes")
-- [ ] If child resources should render, grep the generated artifact for the expected child heading (e.g., `grep "#### Members" test-output.md`)
+### Rendering Verification (for features modifying rendering)
+- [ ] Verify resource rendering changes are implemented in C# renderers
+- [ ] For parent-child features: Verify the parent renderer triggers child resource rendering (and the generated artifact contains the expected child heading, e.g., `grep "#### Members" test-output.md`)
+- [ ] Compare renderer structure against architectural design notes in the feature docs (e.g., architecture.md section describing rendering changes)
 
 ### Code Quality
 - [ ] Follows C# coding conventions

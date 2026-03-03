@@ -7,15 +7,33 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Renderers;
 /// Base class for AzureAD resource renderers that currently delegate to the default renderer.
 /// Related feature: docs/features/107-remove-scriban/specification.md.
 /// </summary>
-internal abstract class AzureAdDelegatingRenderer(string resourceType) : IResourceRenderer
+internal abstract class AzureAdDelegatingRenderer : IResourceRenderer
 {
     /// <summary>
     /// Default fallback renderer.
     /// </summary>
-    private readonly DefaultResourceRenderer _defaultRenderer = new();
+    private readonly DefaultResourceRenderer _defaultRenderer;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureAdDelegatingRenderer"/> class.
+    /// </summary>
+    /// <param name="resourceType">Terraform resource type handled by this renderer.</param>
+    /// <param name="useResourceTypeForAttributeIcons">
+    /// When <c>true</c>, resource-type-specific icon lookup is used in attribute tables.
+    /// Only <c>azuread_user</c> sets this to <c>true</c>.
+    /// </param>
+    /// <param name="suppressNoAttributeChangesForNoOpParents">
+    /// When <c>true</c>, the "_No attribute changes._" message is suppressed when child resource groups are present.
+    /// Only <c>azuread_group</c> sets this to <c>true</c>.
+    /// </param>
+    protected AzureAdDelegatingRenderer(string resourceType, bool useResourceTypeForAttributeIcons = false, bool suppressNoAttributeChangesForNoOpParents = false)
+    {
+        ResourceType = resourceType;
+        _defaultRenderer = new DefaultResourceRenderer(useResourceTypeForAttributeIcons, suppressNoAttributeChangesForNoOpParents);
+    }
 
     /// <inheritdoc />
-    public string ResourceType { get; } = resourceType;
+    public string ResourceType { get; }
 
     /// <inheritdoc />
     public virtual void Render(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
@@ -33,7 +51,7 @@ internal sealed class UserRenderer : AzureAdDelegatingRenderer
     /// Initializes a new instance of the <see cref="UserRenderer"/> class.
     /// </summary>
     public UserRenderer()
-        : base("azuread_user")
+        : base("azuread_user", useResourceTypeForAttributeIcons: true)
     {
     }
 }
@@ -47,7 +65,7 @@ internal sealed class GroupRenderer : AzureAdDelegatingRenderer
     /// Initializes a new instance of the <see cref="GroupRenderer"/> class.
     /// </summary>
     public GroupRenderer()
-        : base("azuread_group")
+        : base("azuread_group", suppressNoAttributeChangesForNoOpParents: true)
     {
     }
 }

@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 
@@ -12,6 +13,24 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 internal sealed class DefaultResourceRenderer : IResourceRenderer
 {
     private const string DetailsStyle = " style=\"margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;\"";
+
+    private readonly bool _useResourceTypeForAttributeIcons;
+    private readonly bool _suppressNoAttributeChangesForNoOpParents;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultResourceRenderer"/> class.
+    /// </summary>
+    /// <param name="useResourceTypeForAttributeIcons">
+    /// When <c>true</c>, resource-type-specific icon lookup is used for attribute tables.
+    /// </param>
+    /// <param name="suppressNoAttributeChangesForNoOpParents">
+    /// When <c>true</c>, the "_No attribute changes._" message is suppressed when child resource groups are present.
+    /// </param>
+    public DefaultResourceRenderer(bool useResourceTypeForAttributeIcons = false, bool suppressNoAttributeChangesForNoOpParents = false)
+    {
+        _useResourceTypeForAttributeIcons = useResourceTypeForAttributeIcons;
+        _suppressNoAttributeChangesForNoOpParents = suppressNoAttributeChangesForNoOpParents;
+    }
 
     /// <inheritdoc />
     public string ResourceType => "*";
@@ -68,16 +87,17 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         var smallAttributes = change.AttributeChanges.Where(attribute => !attribute.IsLarge).ToArray();
         var largeAttributes = change.AttributeChanges.Where(attribute => attribute.IsLarge).ToArray();
 
-        RenderAttributeTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, useEphemeralOpenFormatting);
+        RenderAttributeTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, useEphemeralOpenFormatting, context.ValueFormatterRegistry, context.IconProviderRegistry, _useResourceTypeForAttributeIcons);
 
         if (!string.IsNullOrWhiteSpace(change.TagsBadges))
         {
             writer.Paragraph(change.TagsBadges);
+            writer.BlankLine();
         }
 
         if (smallAttributes.Length == 0
             && largeAttributes.Length == 0
-            && (change.ChildResourceGroups.Count == 0 || !isNoOpParentWithChildren)
+            && (change.ChildResourceGroups.Count == 0 || (!isNoOpParentWithChildren && !_suppressNoAttributeChangesForNoOpParents))
             && string.IsNullOrWhiteSpace(change.TagsBadges))
         {
             writer.Paragraph(change.HasWholeResourceUnknownAfterApply
@@ -114,46 +134,13 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         bool useKnownAfterApplyFormatting,
         bool useEphemeralOpenFormatting)
     {
-        if (isNoOpParentWithChildren)
-        {
-            return true;
-        }
-
-        if (useOutputsFocusedFormatting)
-        {
-            return true;
-        }
-
-        if (useKnownAfterApplyFormatting)
-        {
-            return true;
-        }
-
-        if (useEphemeralOpenFormatting && IsVaultEphemeralCompatibilityScenario(change))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Determines whether the resource matches the vault ephemeral compatibility scenario.
-    /// </summary>
-    /// <param name="change">Resource change model.</param>
-    /// <returns>True when vault ephemeral multiline formatting should be used.</returns>
-    private static bool IsVaultEphemeralCompatibilityScenario(ResourceChangeModel change)
-    {
-        if (!change.Type.StartsWith("vault_", StringComparison.Ordinal)
-            || change.ChildResourceGroups.Count > 0
-            || !string.IsNullOrWhiteSpace(change.TagsBadges))
-        {
-            return false;
-        }
-
-        return string.Equals(change.Action, "create", StringComparison.Ordinal)
-            || string.Equals(change.Action, "replace", StringComparison.Ordinal)
-            || string.Equals(change.Action, "open", StringComparison.Ordinal);
+        // All resources use multiline format to match Scriban template baseline output.
+        _ = change;
+        _ = isNoOpParentWithChildren;
+        _ = useOutputsFocusedFormatting;
+        _ = useKnownAfterApplyFormatting;
+        _ = useEphemeralOpenFormatting;
+        return true;
     }
 
     /// <summary>
@@ -168,6 +155,12 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         bool useMultilineDetailsSummary,
         bool useKnownAfterApplyFormatting)
     {
+        // All azuread_* resources need a blank line between <details> and <summary> for rendering parity.
+        if (change.Type.StartsWith("azuread_", StringComparison.Ordinal))
+        {
+            return true;
+        }
+
         return useKnownAfterApplyFormatting
             && useMultilineDetailsSummary
             && IsKnownAfterApplyAzureAdMemberScenario(change);
@@ -262,12 +255,18 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="smallAttributes">Non-large attribute changes.</param>
     /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
     /// <param name="useEphemeralOpenFormatting">Whether ephemeral-open formatting is enabled.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
+    /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
     private static void RenderAttributeTable(
         MarkdownWriter writer,
         ResourceChangeModel change,
         AttributeChangeModel[] smallAttributes,
         bool useKnownAfterApplyFormatting,
-        bool useEphemeralOpenFormatting)
+        bool useEphemeralOpenFormatting,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry,
+        bool useResourceTypeForAttributeIcons = false)
     {
         if (smallAttributes.Length == 0)
         {
@@ -276,11 +275,11 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
 
         if (change.Action is "create" or "delete")
         {
-            RenderSingleValueTable(writer, change, smallAttributes, useKnownAfterApplyFormatting || useEphemeralOpenFormatting);
+            RenderSingleValueTable(writer, change, smallAttributes, useKnownAfterApplyFormatting || useEphemeralOpenFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
         }
         else
         {
-            RenderBeforeAfterTable(writer, change, smallAttributes, useKnownAfterApplyFormatting || useEphemeralOpenFormatting);
+            RenderBeforeAfterTable(writer, change, smallAttributes, useKnownAfterApplyFormatting || useEphemeralOpenFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
         }
 
         writer.BlankLine();
@@ -293,17 +292,15 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="change">Resource change model.</param>
     /// <param name="smallAttributes">Non-large attribute changes.</param>
     /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    private static void RenderSingleValueTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting)
+    /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
+    /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
+    private static void RenderSingleValueTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, bool useResourceTypeForAttributeIcons = false)
     {
-        if (useKnownAfterApplyFormatting)
-        {
-            writer.Raw("| Attribute | Value |\n");
-            writer.Raw("| ----------- | ------- |\n");
-        }
-        else
-        {
-            writer.TableHeader("Attribute", "Value");
-        }
+        // Use fixed-width separators matching Scriban template output for all cases.
+        _ = useKnownAfterApplyFormatting;
+        writer.Raw("| Attribute | Value |\n");
+        writer.Raw("| ----------- | ------- |\n");
 
         foreach (var attribute in smallAttributes)
         {
@@ -313,7 +310,9 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             }
 
             var raw = change.Action == "create" ? attribute.After : attribute.Before;
-            var value = ScribanHelpers.FormatAttributeValueTable(attribute.Name, raw, change.ProviderName);
+            var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
+            var value = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+                attribute.Name, raw, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
@@ -330,22 +329,23 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="change">Resource change model.</param>
     /// <param name="smallAttributes">Non-large attribute changes.</param>
     /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    private static void RenderBeforeAfterTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting)
+    /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
+    /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
+    private static void RenderBeforeAfterTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, bool useResourceTypeForAttributeIcons = false)
     {
-        if (useKnownAfterApplyFormatting)
-        {
-            writer.Raw("| Attribute | Before | After |\n");
-            writer.Raw("| ----------- | -------- | ------- |\n");
-        }
-        else
-        {
-            writer.TableHeader("Attribute", "Before", "After");
-        }
+        // Use fixed-width separators matching Scriban template output for all cases.
+        _ = useKnownAfterApplyFormatting;
+        writer.Raw("| Attribute | Before | After |\n");
+        writer.Raw("| ----------- | -------- | ------- |\n");
 
         foreach (var attribute in smallAttributes)
         {
-            var beforeValue = ScribanHelpers.FormatAttributeValueTable(attribute.Name, attribute.Before, change.ProviderName);
-            var afterValue = ScribanHelpers.FormatAttributeValueTable(attribute.Name, attribute.After, change.ProviderName);
+            var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
+            var beforeValue = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+                attribute.Name, attribute.Before, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
+            var afterValue = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+                attribute.Name, attribute.After, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
@@ -424,7 +424,8 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         writer.Heading($"🔒\u00A0Security & Quality Findings for {ScribanHelpers.FormatCodeTable(change.Address)}", 4);
         writer.BlankLine();
 
-        writer.TableHeader("Severity", "Tool", "Attribute", "Finding", "Remediation");
+        writer.Raw("| Severity | Tool | Attribute | Finding | Remediation |\n");
+        writer.Raw("| -------- | ---- | --------- | ------- | ----------- |\n");
 
         foreach (var finding in change.CodeAnalysisFindings)
         {
@@ -488,7 +489,11 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             }
             else
             {
-                writer.TableHeader(headers.ToArray());
+                // Use fixed separators matching Scriban template: 8 dashes for content columns, 20 for Terraform Resource.
+                writer.Raw($"| {string.Join(" | ", headers)} |\n");
+                var separators = headers.Select(h =>
+                    string.Equals(h, "Terraform Resource", StringComparison.Ordinal) ? "--------------------" : "--------");
+                writer.Raw($"| {string.Join(" | ", separators)} |\n");
             }
 
             foreach (var row in group.Rows)

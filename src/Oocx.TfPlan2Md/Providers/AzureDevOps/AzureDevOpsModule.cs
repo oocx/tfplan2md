@@ -231,7 +231,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
     /// <param name="registry">The resource renderer registry to register with.</param>
     public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
-        registry.Register(new VariableGroupRenderer());
+        registry.Register(new VariableGroupRenderer(_largeValueFormat));
         registry.Register(new BuildDefinitionRenderer());
     }
 }

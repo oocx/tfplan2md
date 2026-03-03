@@ -11,15 +11,11 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 /// </summary>
 internal sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
 {
-    private readonly LargeValueFormat _largeValueFormat;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="NetworkSecurityGroupFactory"/> class.
     /// </summary>
-    /// <param name="largeValueFormat">The format to use for large values.</param>
-    internal NetworkSecurityGroupFactory(LargeValueFormat largeValueFormat)
+    internal NetworkSecurityGroupFactory()
     {
-        _largeValueFormat = largeValueFormat;
     }
 
     /// <inheritdoc/>
@@ -49,8 +45,7 @@ internal sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
     {
         return NetworkSecurityGroupViewModelFactory.Build(
             resourceChange,
-            resourceChange.ProviderName,
-            _largeValueFormat);
+            resourceChange.ProviderName);
     }
 }
 

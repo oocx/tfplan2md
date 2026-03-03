@@ -45,8 +45,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🔍 **Static analysis integration** - Display security and quality findings from Checkov, Trivy, TFLint, and Semgrep (SARIF 2.1.0 format) directly in reports
 - ✅ **Validated markdown output** - Comprehensive testing ensures GitHub/Azure DevOps compatibility
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
-- 📝 **Customizable templates** - Use Scriban templates for custom report formats
-- 🐳 **Minimal Docker image** - 14.7MB AOT-compiled native binary for fast deployments and minimal attack surface
+-  **Minimal Docker image** - 14.7MB AOT-compiled native binary for fast deployments and minimal attack surface
 - 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
 - 🆔 **Readable Azure Resource IDs** - Long Azure IDs are automatically formatted as readable scopes with values in code (e.g., Key Vault `kv` in resource group `rg`)
 - 🎨 **Semantic icons** - Visual icons for values: 🌐 for IPs, 🔌 for ports, 📨/🔗 for protocols, ✅/❌ for booleans, 👤/👥/💻 for principals, 🛡️ for roles, 🆔 for identifiers, 📧 for emails
@@ -231,7 +230,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | Option | Description |
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
-| `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
+| `--template`, `-t <name>` | Use a built-in template by name (`default`, `summary`) |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
 | `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--details <auto\|open\|closed>` | Control resource details display: `auto` (expand resources with findings, default), `open` (expand all), `closed` (collapse all) |
@@ -282,9 +281,9 @@ Debug information is added as a collapsible "Debug Information" section at the e
   - Line and column numbers for JSON syntax errors
   - Docker-specific troubleshooting guidance
   - Actionable solutions based on the error type
-- **Template resolution**: Which templates (custom, built-in, or default) were used for each resource type
+- **Renderer resolution**: Which C# renderer (resource-specific or default) was used for each resource type
 
-This helps diagnose principal mapping failures, Docker volume mount issues, and understand template selection behavior.
+This helps diagnose principal mapping failures, Docker volume mount issues, and understand renderer selection behavior.
 
 #### Resource Details Display Control
 
@@ -648,19 +647,17 @@ The demo includes:
 
 See [examples/comprehensive-demo/README.md](examples/comprehensive-demo/README.md) for details.
 
-## Custom Templates
+## Built-in Templates
 
-Create custom Scriban templates for your own report format. Templates focus on layout and presentation, with all value formatting handled by C# helpers for consistency.
+Select a built-in report template with the `--template` flag:
 
 ```bash
-docker run -i -v $(pwd):/data oocx/tfplan2md --template /data/my-template.sbn < plan.json
+terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summary
 ```
 
-Built-in templates:
+Available templates:
 - `default` (implicit when not specified): Full report with resource changes
 - `summary`: Compact summary with Terraform version, plan timestamp, and action counts only
-
-See [Scriban documentation](https://github.com/scriban/scriban) for template syntax and [docs/features.md](docs/features.md) for available helper functions.
 
 ### Resource-Specific Templates
 
@@ -693,30 +690,7 @@ Example output for a firewall rule update:
 | ⏺️ | allow-https | TCP | 10.0.1.0/24 | * | 443 |
 ```
 
-See [docs/features/001-resource-specific-templates/specification.md](docs/features/001-resource-specific-templates/specification.md) for creating custom resource templates.
-
-### Template Variables
-
-Templates have access to:
-
-- `terraform_version` - Terraform version string
-- `format_version` - Plan format version
-- `timestamp` - Plan generation timestamp (RFC3339 format), if available
-- `summary` - Summary object with action details:
-  - `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op` - Each is an `ActionSummary` object containing:
-    - `count` - Number of resources for this action
-    - `breakdown` - Array of `ResourceTypeBreakdown` objects, each with `type` (resource type name) and `count` (number of that type)
-  - `total` - Total number of resources with changes
-- `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
-- `module_changes` - Resource changes grouped by module
-
-**Notes:** Attribute tables now vary depending on the resource change action:
-
-- **create** resources show a 2-column table (`Attribute | Value`) containing the *after* values.
-- **delete** resources show a 2-column table (`Attribute | Value`) containing the *before* values.
-- **update** and **replace** resources show a 3-column table (`Attribute | Before | After`).
-
-This makes create/delete outputs more concise and avoids empty columns when a side is missing.
+See [docs/features/001-resource-specific-templates/specification.md](docs/features/001-resource-specific-templates/specification.md) for details on resource-specific renderers.
 
 ## Development
 

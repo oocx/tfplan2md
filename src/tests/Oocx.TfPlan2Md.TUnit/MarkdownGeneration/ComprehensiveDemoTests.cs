@@ -91,7 +91,8 @@ public class ComprehensiveDemoTests
             .And.Contain($"{ActionIcons.Update}\u00A0Change")
             .And.Contain($"{ActionIcons.Replace}\u00A0Replace")
             .And.Contain($"{ActionIcons.Delete}\u00A0Destroy")
-            .And.Contain("**Total**");
+            // The summary template uses boldTotal: false so Total row is not bold (matching Scriban baseline).
+            .And.Contain("| Total |");
     }
 
     [Test]

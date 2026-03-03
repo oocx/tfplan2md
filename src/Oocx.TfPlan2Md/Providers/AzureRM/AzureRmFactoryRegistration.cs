@@ -63,7 +63,7 @@ internal static class AzureRmFactoryRegistration
         ArgumentNullException.ThrowIfNull(registry);
         ArgumentNullException.ThrowIfNull(principalMapper);
 
-        registry.RegisterFactory("azurerm_network_security_group", new NetworkSecurityGroupFactory(largeValueFormat));
+        registry.RegisterFactory("azurerm_network_security_group", new NetworkSecurityGroupFactory());
         registry.RegisterFactory("azurerm_firewall_network_rule_collection", new FirewallNetworkRuleCollectionFactory(largeValueFormat));
         registry.RegisterFactory("azurerm_firewall_application_rule_collection", new FirewallApplicationRuleCollectionFactory(largeValueFormat));
         registry.RegisterFactory("azurerm_role_assignment", new RoleAssignmentFactory(principalMapper, scopeFormatter));

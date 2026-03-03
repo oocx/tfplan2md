@@ -50,7 +50,8 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue(null, ValueText, SimpleDiffFormat);
 
-        result.Should().Be("```\nvalue\n```");
+        // CodeFence now includes a trailing newline for consistent spacing when written via Raw().
+        result.Should().Be("```\nvalue\n```\n");
     }
 
     [Test]
@@ -58,7 +59,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue(null, "{\"a\":1,\"b\":[1,2]}", SimpleDiffFormat);
 
-        result.Should().Be("```json\n{\n  \"a\": 1,\n  \"b\": [\n    1,\n    2\n  ]\n}\n```");
+        result.Should().Be("```json\n{\n  \"a\": 1,\n  \"b\": [\n    1,\n    2\n  ]\n}\n```\n");
     }
 
     [Test]
@@ -66,7 +67,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue(null, "<root><child>value</child></root>", SimpleDiffFormat);
 
-        result.Should().Be("```xml\n<root>\n  <child>value</child>\n</root>\n```");
+        result.Should().Be("```xml\n<root>\n  <child>value</child>\n</root>\n```\n");
     }
 
     [Test]
@@ -76,7 +77,7 @@ public class ScribanHelpersLargeValueTests
 
         var result = FormatLargeValue(null, formatted, SimpleDiffFormat);
 
-        result.Should().Be($"```json\n{formatted}\n```");
+        result.Should().Be($"```json\n{formatted}\n```\n");
     }
 
     [Test]
@@ -84,7 +85,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue(ValueText, null, SimpleDiffFormat);
 
-        result.Should().Be("```\nvalue\n```");
+        result.Should().Be("```\nvalue\n```\n");
     }
 
     [Test]
@@ -92,7 +93,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue("old", "new", SimpleDiffFormat);
 
-        result.Should().Be("```diff\n- old\n+ new\n```");
+        result.Should().Be("```diff\n- old\n+ new\n```\n");
     }
 
     [Test]
@@ -100,7 +101,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue("{\"a\":1}", "{\"a\":2}", SimpleDiffFormat);
 
-        result.Should().Be("```diff\n- {\n-   \"a\": 1\n- }\n+ {\n+   \"a\": 2\n+ }\n```");
+        result.Should().Be("```diff\n- {\n-   \"a\": 1\n- }\n+ {\n+   \"a\": 2\n+ }\n```\n");
     }
 
     [Test]

@@ -29,7 +29,8 @@ internal static class SummaryRenderer
             return;
         }
 
-        writer.TableHeader("Action", "Count", "Resource Types");
+        writer.Raw("| Action | Count | Resource Types |\n");
+        writer.Raw("| -------- | ------- | ---------------- |\n");
 
         writer.TableRow(["➕\u00A0Add", summary.ToAdd.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToAdd.Breakdown)]);
         writer.TableRow(["🔄\u00A0Change", summary.ToChange.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToChange.Breakdown)]);
@@ -39,11 +40,11 @@ internal static class SummaryRenderer
         var totalText = summary.Total.ToString(System.Globalization.CultureInfo.InvariantCulture);
         if (boldTotal)
         {
-            writer.TableRow(["**Total**", $"**{totalText}**", string.Empty]);
+            writer.Raw($"| **Total** | **{totalText}** | |\n");
         }
         else
         {
-            writer.TableRow(["Total", totalText, string.Empty]);
+            writer.Raw($"| Total | {totalText} | |\n");
         }
 
         writer.BlankLine();

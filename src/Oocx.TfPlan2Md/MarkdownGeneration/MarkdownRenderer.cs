@@ -164,10 +164,15 @@ internal sealed class MarkdownRenderer
     private string RenderSummaryTemplate(ReportModel model)
     {
         var writer = new MarkdownWriter();
+        // The summary template snapshot starts with a blank line (convention for embedded/include use cases).
+        writer.Raw("\n");
         var headerRenderer = new HeaderRenderer(defaultReportTitle: "Terraform Plan Summary");
 
         headerRenderer.Render(writer, model);
-        SummaryRenderer.Render(writer, model.Summary, boldTotal: true);
+        // The summary template does not use bold for the Total row (matching Scriban template baseline).
+        SummaryRenderer.Render(writer, model.Summary, boldTotal: false);
+        ReportRenderer.RenderRefactoring(writer, model.RefactoringOperations);
+        ReportRenderer.RenderFilteredResourceInfo(writer, model);
         CodeAnalysisSectionRenderer.RenderSummary(writer, model.CodeAnalysis);
 
         return writer.Build();

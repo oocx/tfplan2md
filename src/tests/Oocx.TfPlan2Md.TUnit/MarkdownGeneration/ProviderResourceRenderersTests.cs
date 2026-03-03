@@ -60,7 +60,7 @@ public class ProviderResourceRenderersTests
             new GroupMemberRenderer(),
             new ServicePrincipalRenderer(),
             new InvitationRenderer(),
-            new VariableGroupRenderer(),
+            new VariableGroupRenderer(LargeValueFormat.InlineDiff),
             new BuildDefinitionRenderer()
         };
 

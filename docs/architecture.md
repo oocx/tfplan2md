@@ -17,7 +17,6 @@ tfplan2md is a CLI tool that converts Terraform plan JSON files into human-reada
 **Key Requirements:**
 - Parse Terraform plan JSON (`terraform show -json` output)
 - Generate clean, readable Markdown reports compatible with GitHub and Azure DevOps
-- Support customizable templates via Scriban
 - Handle sensitive values securely (masking by default)
 - Group resources by module with proper hierarchy
 - Provide semantic diffs for complex resources (firewall rules, NSG rules)
@@ -56,7 +55,6 @@ tfplan2md is a CLI tool that converts Terraform plan JSON files into human-reada
 | **C# 13** | Modern language features (records, pattern matching, file-scoped namespaces) |
 | **Docker Distribution** | Primary distribution mechanism; NativeAOT binary in scratch container |
 | **NativeAOT** | Ahead-of-time compiled self-contained binary (~5MB); no .NET runtime required |
-| **Scriban Templates** | Template engine for markdown generation (ADR-001) |
 | **System.Text.Json** | Built-in JSON parser for .NET 10 |
 | **No External APIs** | Tool must work offline without external dependencies |
 
@@ -110,7 +108,6 @@ flowchart TD
 |-----------|-------------|
 | **Input: Terraform Plan JSON** | Standard Terraform plan format from `terraform show -json` |
 | **Output: Markdown Report** | Markdown optimized for GitHub and Azure DevOps PR comments; includes tables, collapsible sections, emoji |
-| **Templates: Scriban Files** | User-provided custom templates or built-in defaults |
 | **Principal Mapping: JSON** | Optional Azure principal ID to name mapping file |
 
 ### 3.2 Technical Context
@@ -139,7 +136,6 @@ flowchart LR
 | **Runtime** | .NET Runtime | 10.0 | Execute compiled application |
 | **Language** | C# | 13 | Implementation language |
 | **JSON Parser** | System.Text.Json | Built-in | Parse Terraform plan JSON |
-| **Template Engine** | Scriban | 6.5.2 | Render markdown from templates |
 | **Container Base** | scratch (NativeAOT binary with musl libs) | - | Minimal image (~15MB) |
 | **Test Framework** | TUnit | 1.9.26 | Unit, integration, and snapshot tests |
 | **Assertion Library** | AwesomeAssertions | Latest | Fluent test assertions |
@@ -154,10 +150,9 @@ flowchart LR
 
 | Decision | Rationale | ADR Reference |
 |----------|-----------|---------------|
-| **Scriban for templating** | Lightweight, text-focused, familiar syntax, embeddable | ADR-001 |
+| **Pure C# rendering** | Zero third-party dependencies; compile-time safety; NativeAOT-friendly; removes ~1,500 lines of Scriban glue | ADR-010 |
 | **Chiseled Docker image** | Superseded by NativeAOT scratch image (ADR-008) | ADR-002 (Superseded) |
 | **Modern C# 13 patterns** | Records for immutability, file-scoped namespaces, nullable reference types | ADR-003 |
-| **Scriban loop limit** | Handle large plans by filtering no-ops before template rendering | ADR-005 |
 | **Pure Dependency Injection** | AOT-compatible, explicit composition root, no container overhead | ADR-006 |
 | **Architecture boundaries** | Layer enforcement via NetArchTest to prevent cross-layer coupling | ADR-007 |
 | **Multi-platform binaries** | NativeAOT self-contained binaries for direct CLI use without Docker | ADR-008 |
@@ -175,15 +170,15 @@ flowchart LR
 - No mutable shared state
 - Pure functions for transformations
 
-**Template-Driven Rendering:**
-- Default templates embedded as resources
-- Custom templates loaded from filesystem
-- Resource-specific templates override defaults
-- Templates keep logic minimal; complex logic provided by model and helper functions
+**Renderer-Driven Output:**
+- `ReportRenderer` orchestrates report generation via `IResourceRenderer` implementations
+- `ResourceRendererRegistry` dispatches resource types to provider-specific renderers
+- `DefaultResourceRenderer` provides a fallback for unmapped resource types
+- All rendering logic is statically typed and validated by the compiler
 
 **Extensibility First:**
-- Users can create custom templates for any resource type
-- Resource-specific templates in `{provider}/{resource}.sbn` format
+- Resource-specific C# renderers for any resource type
+- Renderer classes in `{provider}/Renderers/` format
 - Future: customizable icons, summary formatters, and other extensibility points
 
 **Pure Dependency Injection (ADR-006):**
@@ -217,16 +212,25 @@ tfplan2md/
 │
 ├── MarkdownGeneration/          # Core report model building and rendering
 │   ├── ReportModel.cs           # Report data models
-│   ├── MarkdownRenderer.cs      # Template application and orchestration
+│   ├── MarkdownRenderer.cs      # C# rendering orchestration
 │   ├── MarkdownRenderException.cs
-│   ├── TemplateLoader.cs        # ScribanTemplateLoader: multi-prefix template loading
-│   ├── TemplateResolver.cs      # Provider-specific template resolution
 │   ├── ReportModelBuilder.cs    # Transform domain → report model (partial, 5 files)
 │   ├── ReportModelBuilder.Build.cs
 │   ├── ReportModelBuilder.ResourceChanges.cs
 │   ├── ReportModelBuilder.CodeAnalysis.cs
 │   ├── ReportModelBuilder.Summaries.cs
 │   ├── ReportModelBuilder.ParentChildMerging.cs
+│   ├── Rendering/               # Pure C# rendering pipeline
+│   │   ├── IResourceRenderer.cs       # Renderer contract
+│   │   ├── IRenderContext.cs          # Read-only rendering context
+│   │   ├── RenderContext.cs           # Rendering state (options, icons, formatters)
+│   │   ├── ResourceRendererRegistry.cs # Maps resource types to renderers
+│   │   ├── MarkdownWriter.cs          # Stream-based markdown output builder
+│   │   ├── ReportRenderer.cs          # Top-level orchestrator
+│   │   ├── HeaderRenderer.cs          # Report header section
+│   │   ├── SummaryRenderer.cs         # Summary section
+│   │   ├── DefaultResourceRenderer.cs # Fallback for unmapped resource types
+│   │   └── CodeAnalysisSectionRenderer.cs  # Code analysis section
 │   ├── Models/                  # Core model interfaces and data types
 │   │   ├── IResourceViewModelFactory.cs
 │   │   ├── ResourceViewModelFactoryRegistry.cs
@@ -242,11 +246,10 @@ tfplan2md/
 │   │   ├── ResourceSummaryBuilder.cs
 │   │   ├── ResourceSummaryMappings.cs
 │   │   └── ResourceSummaryPathFormatter.cs
-│   ├── Helpers/                 # Core Scriban helper functions
+│   ├── Helpers/                 # Core rendering helper functions
 │   │   ├── JsonFlattener.cs     # JSON → flat key-value pairs
 │   │   ├── ResourceSummaryHtmlBuilder.cs  # HTML summary generation
-│   │   └── ScribanHelpers/      # 19 partial files grouped by concern
-│   │       ├── Registry.cs      # Function registration (27+ functions)
+│   │   └── ScribanHelpers/      # C# helper methods (originally Scriban-registered)
 │   │       ├── DiffFormatting.cs, DiffArray.cs, DiffComputation.cs, DiffUtilities.cs
 │   │       ├── LargeValues.cs, LargeValueSummary.cs
 │   │       ├── SemanticFormatting.cs (+ .Registry, .Helpers, .Identity)
@@ -265,14 +268,6 @@ tfplan2md/
 │   │   ├── FileBasedIconProvider.cs, StaticIconProvider.cs
 │   │   ├── AzureResourceIdFormatter.cs
 │   │   └── ServiceRegistrationException.cs
-│   └── Templates/               # Core embedded Scriban templates (10 files)
-│       ├── default.sbn          # Full report template
-│       ├── summary.sbn          # Summary-only template
-│       ├── _header.sbn          # Report header partial
-│       ├── _summary.sbn         # Summary section partial
-│       ├── _resource.sbn        # Default per-resource fallback template
-│       ├── _child_resources.sbn # Child resource table rendering
-│       └── _code_analysis_*.sbn # Code analysis report partials (4 files)
 │
 ├── CodeAnalysis/                # Static code analysis integration (SARIF)
 │   ├── CodeAnalysisLoader.cs    # Load SARIF results
@@ -312,7 +307,7 @@ tfplan2md/
 │       ├── EnrichedAzureScopeFormatter.cs
 │       ├── AzureMappingFileLoader.cs, AzureMappingFileParser.cs
 │       ├── AzureValueFormatterRegistration.cs
-│       └── ScribanHelpers.Azure.cs  # Azure-specific Scriban helpers
+│       └── ScribanHelpers.Azure.cs  # Azure-specific formatting helpers
 │
 ├── CompositionRoot.cs           # Pure DI composition (no container)
 ├── Program.cs                   # Entry point
@@ -322,7 +317,7 @@ tfplan2md/
 **Key Architectural Patterns:**
 - **Provider Separation:** All Terraform provider-specific code (azapi, azuread, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProviderModule`.
 - **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
-- **Template Multi-Prefix Loading:** `ScribanTemplateLoader` checks core templates first, then provider-specific templates, enabling modular template organization.
+- **C# Renderer Dispatch:** `ResourceRendererRegistry` maps resource type strings to `IResourceRenderer` implementations; the provider-supplied renderers override `DefaultResourceRenderer`.
 - **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry` (AOT-compatible).
 - **Pure DI:** `CompositionRoot` wires all services without a DI container (ADR-006).
 - **Code Analysis Integration:** SARIF-based static analysis results integrated into markdown reports.
@@ -427,58 +422,59 @@ flowchart LR
 
 #### 5.2.3 MarkdownGeneration Component
 
-**Purpose:** Transform parsed plans into markdown reports using templates.
+**Purpose:** Transform parsed plans into markdown reports using pure C# rendering.
 
 **Responsibilities:**
 - Build report models from domain models
-- Apply Scriban templates (default, summary, resource-specific)
+- Dispatch resource types to provider-specific C# renderers
 - Handle sensitive value masking
 - Generate summaries and statistics
 - Format attributes for readability
-- Resolve and apply resource-specific templates
+- Resolve and apply resource-specific renderers
 
 **Key Classes:**
 
 | Class | Responsibility |
 |-------|---------------|
 | `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 5 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging) |
-| `ReportModel` | Data passed to templates (terraform version, changes, summary, module groups, code analysis, refactoring operations) |
-| `ResourceChangeModel` | Single resource change for template rendering; includes precomputed summaries, child resources, code analysis findings, import/move info |
+| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations) |
+| `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info |
 | `AttributeChangeModel` | Single attribute change |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
-| `MarkdownRenderer` | Apply templates to generate markdown; validate output is compatible with GitHub and Azure DevOps |
-| `TemplateResolver` | Resolve provider-specific templates for resource types |
-| `ScribanTemplateLoader` | Load templates from embedded resources or filesystem with multi-prefix support |
-| `ScribanHelpers` | Static partial class (19 files) with 27+ custom Scriban functions (`diff_array`, `format_diff`, etc.) |
+| `MarkdownRenderer` | Orchestrate C# rendering pipeline; validate output is compatible with GitHub and Azure DevOps |
+| `ReportRenderer` | Top-level renderer that calls `HeaderRenderer`, `SummaryRenderer`, and per-resource renderers |
+| `ResourceRendererRegistry` | Dispatch resource types to provider-registered `IResourceRenderer` implementations |
+| `DefaultResourceRenderer` | Fallback renderer for unmapped resource types |
+| `MarkdownWriter` | Stream-based markdown output builder used by all renderers |
+| `RenderContext` | Carries global rendering state (options, icons, formatters) through the rendering tree |
 | `RenderTarget` (enum) | Target platform for rendering (GitHub, AzureDevOps); controls diff formatting and markdown features |
 | `IResourceSummaryBuilder` / `ResourceSummaryBuilder` | Generate one-line summaries for resources |
 | `RefactoringOperationModel` | Track terraform import and move operations |
 | `ChildResourceGroup` / `ChildResourceRow` | Hierarchical child resource table data |
 | `ParentChildRelationshipRegistry` | Register and resolve parent-child resource relationships |
 
-**Design Principle: Logic in Code, Not Templates**
+**Design Principle: Logic in Code, Not Renderers**
 
-Scriban templates must remain simple and declarative. All complex logic (conditional formatting, data transformations, calculations) is implemented in C# and provided to templates through:
+All complex logic (conditional formatting, data transformations, calculations) is implemented in C# and provided to renderers through:
 - Rich model properties (precomputed values)
-- Helper functions registered with Scriban
+- Shared helper methods in `ScribanHelpers/` and `Helpers/`
 - Model builders that prepare data for rendering
 
-This ensures templates are maintainable and extensible by users without C# knowledge.
+This ensures renderers are focused on layout.
 
 **Subdirectories:**
 
 | Directory | Purpose |
 |-----------|---------|
+| `Rendering/` | Pure C# rendering pipeline: `IResourceRenderer`, `MarkdownWriter`, `ReportRenderer`, `DefaultResourceRenderer`, `ResourceRendererRegistry` |
 | `Models/` | Core model types: view model factories, parent-child relationships, child resources, code analysis report models, formatted values |
 | `Summaries/` | Resource summary generation: builders, mappings, path formatters |
-| `Helpers/` | JSON flattening, HTML summary builder, and `ScribanHelpers/` (19 partial files with 27+ Scriban functions) |
+| `Helpers/` | JSON flattening, HTML summary builder, and `ScribanHelpers/` (C# helper methods) |
 | `Services/` | Service registries: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`, `ResourceModelMapperRegistry`, `AttributeChangeFilterRegistry`, `PatternMatchingRegistry<T>` |
-| `Templates/` | Embedded Scriban templates: `default.sbn`, `summary.sbn`, `_resource.sbn`, `_header.sbn`, `_summary.sbn`, `_child_resources.sbn`, and 4 code analysis partials |
 
-**Template Resolution Flow:**
-1. If custom template directory provided: `{customDir}/{provider}/{resource}.sbn`
-2. Else, embedded resource-specific: `Templates/{provider}/{resource}.sbn`
-3. Else, default resource template: `Templates/_resource.sbn`
+**Renderer Resolution Flow:**
+1. Check `ResourceRendererRegistry` for a provider-registered C# renderer matching the resource type
+2. Else, use `DefaultResourceRenderer` as fallback
 
 **Data Flow:**
 
@@ -492,7 +488,7 @@ flowchart TD
     Builder[ReportModelBuilder.Build]
     Model[ReportModel]
     Renderer[MarkdownRenderer.Render]
-    Templates[📄 Scriban templates<br/>.sbn files]
+    Templates[� C# Renderers<br/>IResourceRenderer]
     Output[Markdown string]
     
     Plan --> Builder
@@ -507,7 +503,7 @@ flowchart TD
 
 #### 5.2.3.1 Report Model Structure
 
-The `ReportModel` is the central data structure passed to templates. It contains all the data needed to render a complete Terraform plan report, organized hierarchically.
+The `ReportModel` is the central data structure passed to the rendering pipeline. It contains all the data needed to render a complete Terraform plan report, organized hierarchically.
 
 **Model Class Diagram:**
 
@@ -705,12 +701,12 @@ flowchart LR
 
 #### 5.2.4 Providers Component
 
-**Purpose:** Encapsulate Terraform provider-specific logic (templates, helpers, view models) in dedicated modules.
+**Purpose:** Encapsulate Terraform provider-specific logic (renderers, helpers, view models) in dedicated modules.
 
 **Responsibilities:**
-- Register provider-specific Scriban helpers
+- Register provider-specific C# resource renderers
 - Register provider-specific resource view model factories
-- Provide embedded templates for provider-specific resources
+- Register value formatters, icon providers, parent-child relationships
 - Keep provider-specific concerns isolated and modular
 
 **Architecture:**
@@ -720,15 +716,15 @@ Each provider is a self-contained module implementing the `IProviderModule` inte
 ```csharp
 public interface IProviderModule
 {
-    string Name { get; }
-    void RegisterHelpers(ScriptObject scriptObject);
+    string ProviderName { get; }
+    void RegisterResourceRenderers(ResourceRendererRegistry registry) { }
     void RegisterFactories(IResourceViewModelFactoryRegistry registry);
     void RegisterValueFormatters(ValueFormatterRegistry registry) { }
     void RegisterIconProviders(IconProviderRegistry registry) { }
     void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry) { }
     void RegisterResourceModelMappers(ResourceModelMapperRegistry registry) { }
     void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry) { }
-    void RegisterPostMergeCallbacks(Action<IReadOnlyList<ResourceChangeModel>> callback) { }
+    void RegisterPostMergeCallbacks(ReportModelBuilder builder) { }
 }
 ```
 
@@ -780,20 +776,13 @@ Providers/AzureRM/
 │   ├── AzureRmFactoryRegistration.cs
 │   ├── AzureRmValueFormatterRegistration.cs
 │   └── AzureRmIconProviderRegistration.cs
-└── Templates/                    # .sbn templates for azurerm_* resources
-    ├── firewall_application_rule_collection.sbn
-    ├── firewall_network_rule_collection.sbn
-    ├── network_security_group.sbn
-    └── role_assignment.sbn
+└── Renderers/                    # C# renderers for azurerm_* resources
+    └── AzureRmResourceRenderers.cs
 ```
 
-**Template Multi-Prefix Loading:**
+**C# Renderer Dispatch:**
 
-The `ScribanTemplateLoader` searches for templates in multiple locations:
-1. Core templates: `MarkdownGeneration.Templates.*`
-2. Provider templates: `Providers.{Provider}.Templates.*`
-
-This enables modular template organization without breaking the fallback to `_resource.sbn`.
+`ResourceRendererRegistry` resolves the `IResourceRenderer` for a given resource type. If no provider renderer matches, `DefaultResourceRenderer` is used as fallback.
 
 **Adding a New Provider:**
 
@@ -837,7 +826,7 @@ tfplan2md plan.json --render-target github      # Use simple diff format
 tfplan2md plan.json --render-target azuredevops # Use inline diff format (alias: azdo)
 ```
 
-The selected `IDiffFormatter` is injected into `ScribanHelpers` and used by templates via the `diff` helper function.
+The selected `IDiffFormatter` is injected into the rendering context and used by C# renderers via the `FormatDiff` helper.
 
 **Design Rationale:**
 
@@ -872,7 +861,7 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 | `AzureRoleDefinitionMapper` | Map Azure role definition IDs to role names |
 | `AzureRoleDefinitionsRegistry` | Static registry of Azure built-in role definitions |
 | `AzureMappingFileLoader` / `AzureMappingFileParser` | Load and parse principal mapping JSON files |
-| `ScribanHelpers.Azure` | Azure-specific Scriban template functions |
+| `ScribanHelpers.Azure` | Azure-specific formatting helper methods |
 
 **Note:** This component is Azure-specific but not Terraform provider-specific. It is used by both AzApi and AzureRM providers.
 
@@ -1016,12 +1005,12 @@ sequenceDiagram
     Note over Builder: • Determine actions<br/>• Build attribute changes<br/>• Generate summaries<br/>• Group by module<br/>• Merge parent-child<br/>• Map code analysis
     Builder-->>Entry: ReportModel
     Entry->>Renderer: Render(model)
-    Note over Renderer: • Resolve templates<br/>• Apply Scriban templates<br/>• Normalize output
+    Note over Renderer: • Resolve renderer<br/>• Apply C# renderer<br/>• Normalize output
     Renderer-->>Entry: Markdown string
     Entry->>Output: Write to stdout or file
 ```
 
-### 6.2 Template Resolution Sequence
+### 6.2 Renderer Resolution Sequence
 
 ```mermaid
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
@@ -1032,29 +1021,19 @@ flowchart TD
     classDef endNode fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff
     
     Start[Render resource:<br/>azurerm_firewall_network_rule_collection]
-    Extract[Extract provider and resource name<br/>provider: azurerm<br/>resource: firewall_network_rule_collection]
-    CheckCustom{Custom template<br/>directory provided?}
-    LoadCustom[Load from custom<br/>{custom}/{provider}/{resource}.sbn]
-    CheckEmbedded[Check embedded resource:<br/>Templates/{provider}/{resource}.sbn]
-    FoundCustom{Found?}
-    FoundEmbedded{Found?}
-    ApplySpecific[✅ Apply resource-specific template]
-    ApplyDefault[📄 Fallback to _resource.sbn template]
+    Lookup[Look up in ResourceRendererRegistry<br/>by resource type string]
+    Found{Registered<br/>renderer found?}
+    ApplySpecific[✅ Apply resource-specific C# renderer]
+    ApplyDefault[📋 Fallback to DefaultResourceRenderer]
     
-    Start --> Extract
-    Extract --> CheckCustom
-    CheckCustom -->|Yes| LoadCustom
-    CheckCustom -->|No| CheckEmbedded
-    LoadCustom --> FoundCustom
-    CheckEmbedded --> FoundEmbedded
-    FoundCustom -->|Yes| ApplySpecific
-    FoundCustom -->|No| CheckEmbedded
-    FoundEmbedded -->|Yes| ApplySpecific
-    FoundEmbedded -->|No| ApplyDefault
+    Start --> Lookup
+    Lookup --> Found
+    Found -->|Yes| ApplySpecific
+    Found -->|No| ApplyDefault
     
     class Start startNode
-    class Extract,LoadCustom,CheckEmbedded processNode
-    class CheckCustom,FoundCustom,FoundEmbedded decisionNode
+    class Lookup processNode
+    class Found decisionNode
     class ApplySpecific,ApplyDefault endNode
 ```
 
@@ -1138,7 +1117,7 @@ flowchart TD
 | **From stdin** | `terraform show -json plan.tfplan \| docker run -i oocx/tfplan2md` |
 | **From file** | `docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json` |
 | **With output file** | `docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md < plan.json` |
-| **Custom template** | `docker run -v $(pwd):/data oocx/tfplan2md --template /data/my-template.sbn /data/plan.json` |
+| **Summary template** | `docker run -v $(pwd):/data oocx/tfplan2md --template summary /data/plan.json` |
 
 ### 7.2 CI/CD Integration
 
@@ -1207,7 +1186,7 @@ Future phases will add ARM64, macOS, and Windows binaries.
 - Opt-in via `--show-sensitive` flag
 - Sensitivity determined by Terraform's `before_sensitive` and `after_sensitive` flags
 - Masking applied after comparison (to detect actual changes)
-- Template safety rule: template contexts must receive masked-by-default JSON unless `--show-sensitive` is enabled (ADR-009)
+- Render safety rule: render contexts must receive masked-by-default JSON unless `--show-sensitive` is enabled (ADR-009)
 
 **Container Security:**
 - Scratch-based image (no OS, no shell, no package manager)
@@ -1303,212 +1282,83 @@ Azure DevOps markdown tables misalign inline code elements with default `display
 </code>
 ```
 
-The `WrapInlineDiffCode` helper in `ScribanHelpers.cs` (L863-873) applies this specialized styling, distinct from the standard `WrapInlineCode` used for non-diff values. This ensures character-level highlighting and semantic icons remain visible while maintaining proper cell alignment in both GitHub and Azure DevOps. See `ScribanHelpersFormatDiffTests.cs` test case "FormatDiff_InlineDiff_UsesBlockCodeForAlignment" for verification.
+The `WrapInlineDiffCode` helper in `CodeFormatting.cs` applies this specialized styling, distinct from the standard `WrapInlineCode` used for non-diff values. This ensures character-level highlighting and semantic icons remain visible while maintaining proper cell alignment in both GitHub and Azure DevOps.
 
-### 8.4 Templating Architecture
+### 8.4 Rendering Architecture
 
-The templating system uses Scriban to generate markdown reports. Templates are loaded from embedded resources or custom directories, and resource-specific templates can override the default rendering for specific Terraform resource types.
+All markdown generation uses a pure C# rendering pipeline (Feature 107, ADR-010). There are no template files or third-party template engine dependencies.
 
-#### Template Loading
-
-Templates are loaded from two sources in priority order:
-
-1. **Built-in Templates** - Embedded as assembly resources in `Oocx.TfPlan2Md.MarkdownGeneration.Templates.*`
-2. **Custom Templates** - Loaded from filesystem when `--template` flag or custom directory is provided
-
-**Built-in Template Resolution:**
-
-```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-flowchart TD
-    classDef processNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
-    classDef dataNode fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
-    classDef decisionNode fill:#f59e0b,stroke:#fbbf24,stroke-width:3px,color:#ffffff
-    
-    Input[Template name or path]
-    CheckBuiltIn{Is built-in name?<br/>default, summary}
-    LoadEmbedded[Load from embedded<br/>assembly resources]
-    CheckFile{File exists<br/>on filesystem?}
-    LoadFile[Load from filesystem]
-    Error[Throw MarkdownRenderException]
-    Return[Return template text]
-    
-    Input --> CheckBuiltIn
-    CheckBuiltIn -->|Yes| LoadEmbedded
-    CheckBuiltIn -->|No| CheckFile
-    LoadEmbedded --> Return
-    CheckFile -->|Yes| LoadFile
-    CheckFile -->|No| Error
-    LoadFile --> Return
-    
-    class Input,Return dataNode
-    class CheckBuiltIn,CheckFile decisionNode
-    class LoadEmbedded,LoadFile,Error processNode
-```
-
-#### Template Processing Pipeline
+#### Rendering Pipeline
 
 When `Render(model)` is called, the system:
 
-1. **Select appropriate template** - For each resource change:
-   - Parse resource type to extract provider and resource name
-   - Resolve which template to use (resource-specific or default)
-2. **Render directly** - Invoke the selected template to generate markdown for that resource
-3. **Normalize output** - Fix heading spacing, collapse multiple blank lines
+1. **Instantiate `ReportRenderer`** with `RenderContext` carrying global options, formatters, and icons
+2. **Generate report sections** in order: header → summary → module groups → resource changes → code analysis
+3. **Dispatch each resource change** to the matching `IResourceRenderer` via `ResourceRendererRegistry`
+4. **Normalize output** - Fix heading spacing, collapse multiple blank lines
 
 ```mermaid
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
 sequenceDiagram
     participant Caller
     participant Renderer as MarkdownRenderer
-    participant Template as Template (default or specific)
+    participant Report as ReportRenderer
+    participant Registry as ResourceRendererRegistry
+    participant Writer as MarkdownWriter
     
     Caller->>Renderer: Render(model)
+    Renderer->>Report: Render(model, writer)
+    Report->>Writer: Header + Summary sections
     
     loop For each resource change
-        Renderer->>Renderer: ParseResourceType(type)
-        Renderer->>Renderer: ResolveTemplate(type)
-        Renderer->>Template: RenderResourceChange(change)
-        Template-->>Renderer: Resource markdown
-        Renderer->>Renderer: Append to output
+        Report->>Registry: GetRenderer(resourceType)
+        Registry-->>Report: IResourceRenderer
+        Report->>Writer: Resource markdown via renderer
     end
     
     Renderer->>Renderer: NormalizeHeadingSpacing()
     Renderer-->>Caller: Final markdown
 ```
 
-#### Resource-Specific Template Resolution
+#### Renderer Resolution
 
-Resource types are parsed to extract provider and resource name:
-- `azurerm_firewall_network_rule_collection` → provider: `azurerm`, resource: `firewall_network_rule_collection`
+Resource type strings are resolved to C# renderers via `ResourceRendererRegistry`:
 
-Resolution order:
-1. **Custom directory**: `{customDir}/{provider}/{resource}.sbn`
-2. **Embedded resource**: `Templates/{provider}/{resource}.sbn`
-3. **Fallback**: Use default template (`_resource.sbn`)
+1. Check registry for a provider-registered `IResourceRenderer` matching the resource type
+2. Fall back to `DefaultResourceRenderer` if no match
 
-Each template is invoked directly with the resource change, eliminating the need for post-processing or section replacement.
+Provider-specific renderers are registered during startup via `IProviderModule.RegisterResourceRenderers(registry)`.
 
-**Template Hierarchy:**
+#### Built-in Output Formats
 
-```
-Global Report Templates:
-  ├── default.sbn       (Full report structure)
-  └── summary.sbn       (Compact summary only)
+The `--template` flag selects from two built-in report formats:
 
-Report Partials:
-  ├── _header.sbn       (Report header with metadata)
-  ├── _summary.sbn      (Summary statistics section)
-  ├── _resource.sbn     (Default fallback for all resources)
-  ├── _child_resources.sbn  (Child resource table rendering)
-  ├── _code_analysis_summary.sbn     (Code analysis summary)
-  ├── _code_analysis_findings.sbn    (Code analysis findings)
-  ├── _code_analysis_metadata.sbn    (Code analysis metadata)
-  └── _code_analysis_other_findings.sbn  (Other findings)
+| Template name | Description |
+|--------------|-------------|
+| `default` | Full report with detailed resource changes (default when flag omitted) |
+| `summary` | Compact summary with action counts and resource type breakdown only |
 
-Per-Resource Templates (Provider-specific):
-  ├── azurerm/          (AzureRM provider overrides)
-  │   ├── firewall_application_rule_collection.sbn
-  │   ├── firewall_network_rule_collection.sbn
-  │   ├── network_security_group.sbn
-  │   └── role_assignment.sbn
-  ├── azuread/          (AzureAD provider overrides)
-  │   ├── user.sbn
-  │   ├── group.sbn
-  │   ├── group_member.sbn
-  │   ├── group_without_members.sbn
-  │   ├── service_principal.sbn
-  │   └── invitation.sbn
-  ├── azuredevops/      (AzureDevOps provider overrides)
-  │   └── variable_group.sbn
-  └── azapi/            (AzApi provider overrides)
-      └── resource.sbn
-```
+#### C# Helper Methods
 
-#### Template Context
+Formatting logic previously registered as Scriban functions is now implemented as static C# methods in `ScribanHelpers/`:
 
-**Global templates** receive a `ReportModel` with:
-- `terraform_version` - Terraform version string
-- `format_version` - Plan format version
-- `tfplan2md_version` - Tool version
-- `commit_hash` - Tool commit hash
-- `generated_at_utc` - Report generation timestamp
-- `hide_metadata` - Whether to hide metadata section
-- `timestamp` - Plan generation timestamp
-- `report_title` - Optional custom title
-- `summary` - Aggregated statistics
-- `changes` - Flat list of resource changes (no-ops filtered out)
-- `module_changes` - Changes grouped by module
-- `code_analysis` - Code analysis report (if SARIF provided)
-- `refactoring_operations` - Import/move operations
-- `show_unchanged_values` - Boolean flag
+| Method | Purpose |
+|--------|---------|
+| `DiffArray` | Semantic diff of arrays by key property |
+| `FormatDiff` | Format before/after values with `-`/`+` markers |
+| `EscapeMarkdown` | Escape special characters for markdown |
+| `EscapeMarkdownTableCell` | Escape characters for table cells |
+| `FormatCodeTable` | Format value as inline code in tables |
+| `FormatLargeValue` | Render large values with diff highlighting |
+| `IsLargeValue` | Check if value exceeds size threshold |
+| `CollectAttributes` | Collect and categorize attribute changes |
+| `AzureRoleName` | Map Azure role definition ID to name |
+| `AzureScope` | Parse Azure resource scope to readable format |
+| `AzurePrincipalName` | Resolve Azure principal ID to name |
 
-**Resource-specific templates** receive a `ResourceChangeModel` with:
-- `address` - Full resource address
-- `type` - Resource type (e.g., `azurerm_firewall_network_rule_collection`)
-- `name` - Resource name
-- `action` - Action (create, update, delete, replace)
-- `action_symbol` - Emoji symbol for the action
-- `attribute_changes` - List of attribute changes
-- `before_json` - Raw JSON state before change (converted to ScriptObject for navigation)
-- `after_json` - Raw JSON state after change (converted to ScriptObject for navigation)
-- `after_unknown` - Scriban object reflecting Terraform's `after_unknown` map; a property is `true` when its value will be known only after apply (e.g., `after_unknown.output == true`)
-- `before_sensitive` - Scriban object reflecting Terraform's `before_sensitive` map; a property is `true` when its before-state value is sensitive
-- `after_sensitive` - Scriban object reflecting Terraform's `after_sensitive` map; a property is `true` when its after-state value is sensitive
-- `replace_paths` - Paths that triggered replacement
-- `summary` - Precomputed one-line summary
-- `child_resource_groups` - Hierarchical child resource tables
-- `code_analysis_findings` - SARIF findings mapped to this resource
-- `import_id` - Import identifier (for terraform import operations)
-- `moved_from_address` - Previous address (for terraform moved operations)
+**Large-Only Resource Rendering:**
 
-#### Property Name Conversion
-
-All C# property names are converted to snake_case for template access:
-- `TerraformVersion` → `terraform_version`
-- `ModuleChanges` → `module_changes`
-- `BeforeJson` → `before_json`
-
-**Custom Scriban Functions:**
-
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| `diff_array` | `diff_array(before, after, key)` | Semantic diff of arrays by key property |
-| `format_diff` | `format_diff(before, after)` | Format before/after values with `-`/`+` markers |
-| `escape_markdown` | `escape_markdown(value)` | Escape special characters for markdown |
-| `escape_markdown_table_cell` | `escape_markdown_table_cell(value)` | Escape characters for table cells (pipes, newlines) |
-| `format_code_table` | `format_code_table(value)` | Format value as inline code in tables |
-| `format_code_summary` | `format_code_summary(value)` | Format value for summary HTML |
-| `format_value` | `format_value(name, value, provider)` | Format attribute value with semantic formatting |
-| `format_attribute_value_summary` | `format_attribute_value_summary(name, value, provider)` | Format attribute with semantic icons |
-| `format_attribute_value_table` | `format_attribute_value_table(name, value, provider)` | Format attribute for table cells |
-| `format_large_value` | `format_large_value(before, after, format)` | Render large values with diff highlighting |
-| `is_large_value` | `is_large_value(value, provider)` | Check if value exceeds size threshold |
-| `collect_attributes` | `collect_attributes(change)` | Collect and categorize attribute changes |
-| `azure_role_name` | `azure_role_name(role_id)` | Map Azure role definition ID to name |
-| `azure_scope` | `azure_scope(scope_id)` | Parse Azure resource scope to readable format |
-| `azure_principal_name` | `azure_principal_name(principal_id)` | Resolve Azure principal ID to name |
-| `azure_principal_info` | `azure_principal_info(principal_id)` | Get full principal info (name + type) |
-| `get_attribute_finding_indicator` | `get_attribute_finding_indicator(findings, name)` | Code analysis indicator for attributes |
-
-**Template Rendering Patterns:**
-
-*Large-Only Resource Rendering:*
-
-Resources containing only large attributes (no small attributes or tags) render their content directly inline without an inner collapsible section. This design decision eliminates unnecessary click friction when all resource content is large-valued. The conditional wrapping logic applies:
-
-```scriban
-{{ if small_attrs.size > 0 || change.tags_badges }}
-  <br/><details>
-    <summary>Large values:</summary>
-    <!-- large attribute content -->
-  </details>
-{{ else }}
-  <!-- large attribute content rendered inline -->
-{{ end }}
-```
-
-This maintains the outer resource-level `<details>` wrapper while avoiding nested collapsible sections when they provide no value. See test cases TC-16 through TC-19 in `MarkdownRendererTemplateFormattingTests.cs` for verification.
+Resources containing only large attributes render their content inline without an inner collapsible section. `DefaultResourceRenderer` applies this logic in C# — resources with only large-valued attributes skip the nested `<details>` wrapper.
 
 ### 8.5 Error Handling Strategy
 
@@ -1520,7 +1370,6 @@ classDiagram
     Exception <|-- TerraformPlanParseException
     Exception <|-- MarkdownRenderException
     Exception <|-- CliParseException
-    Exception <|-- ScribanHelperException
     Exception <|-- ServiceRegistrationException
     
     class Exception {
@@ -1535,9 +1384,6 @@ classDiagram
     class CliParseException {
         +string Message
     }
-    class ScribanHelperException {
-        +string Message
-    }
     class ServiceRegistrationException {
         +string Message
     }
@@ -1546,7 +1392,6 @@ classDiagram
     style TerraformPlanParseException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
     style MarkdownRenderException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
     style CliParseException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
-    style ScribanHelperException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
     style ServiceRegistrationException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
 ```
 
@@ -1705,9 +1550,9 @@ All significant architecture decisions are documented as ADRs:
 
 | Requirement | Implementation |
 |-------------|----------------|
-| **Custom templates** | Users can provide their own Scriban templates via `--template` flag |
-| **Resource-specific templates** | Template resolution supports provider-specific overrides (e.g., `azurerm/firewall_network_rule_collection.sbn`) |
-| **Simple template logic** | Complex logic implemented in C# (model builders, helpers) to keep templates accessible to non-developers |
+| **Built-in templates** | Users select a built-in template by name via `--template` flag (`default`, `summary`) |
+| **Resource-specific renderers** | Renderer dispatch supports provider-specific overrides via `ResourceRendererRegistry` |
+| **Simple render logic** | Complex logic implemented in C# (model builders, renderers) for compile-time safety and maintainability |
 | **Future extensibility** | Architecture supports future additions such as custom icon configuration |
 
 ---
@@ -1719,7 +1564,7 @@ All significant architecture decisions are documented as ADRs:
 | Limitation | Impact | Mitigation |
 |------------|--------|------------|
 | **No backward compatibility with Terraform < 1.0** | May not parse older plan formats | Document minimum Terraform version |
-| **Scriban iteration limit (1000)** | Large plans with many no-ops fail | Filter out no-ops from template context |
+| **No-op filtering** | Large plans with many no-ops may be verbose | Filter out no-ops via plan options |
 | **No plan validation** | Malformed plans may cause cryptic errors | Validate plan structure during parsing |
 | **No incremental rendering** | Large plans held in memory | Acceptable for typical plan sizes |
 
@@ -1746,7 +1591,7 @@ All significant architecture decisions are documented as ADRs:
 |------|------------|
 | **Terraform Plan** | A JSON representation of proposed infrastructure changes generated by `terraform plan` |
 | **Resource Change** | A single resource creation, update, deletion, or replacement in a Terraform plan |
-| **Scriban** | A lightweight text templating engine for .NET |
+| **Renderer** | A C# class implementing `IResourceRenderer` that produces markdown for a specific resource type |
 | **NativeAOT** | .NET ahead-of-time compilation producing a self-contained native binary without runtime dependency |
 | **Scratch Image** | A Docker image with no operating system; contains only the application binary and required libraries |
 | **ADR** | Architecture Decision Record - Documents significant design decisions |
@@ -1771,7 +1616,6 @@ All significant architecture decisions are documented as ADRs:
 
 - **arc42 Template:** https://arc42.org/
 - **Terraform JSON Plan Format:** https://developer.hashicorp.com/terraform/internals/json-format
-- **Scriban Documentation:** https://github.com/scriban/scriban
 - **.NET 10 Documentation:** https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10
 - **C# 13 Documentation:** https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-13
 - **Conventional Commits:** https://www.conventionalcommits.org/

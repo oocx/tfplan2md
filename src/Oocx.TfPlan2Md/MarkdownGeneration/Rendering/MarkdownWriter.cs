@@ -39,6 +39,12 @@ internal sealed class MarkdownWriter
         RegexOptions.Compiled,
         TimeSpan.FromSeconds(1));
 
+    /// <summary>Compiled regex to match only unescaped pipe characters (not preceded by backslash).</summary>
+    private static readonly Regex UnescapedPipeRegex = new(
+        @"(?<!\\)\|",
+        RegexOptions.Compiled,
+        TimeSpan.FromSeconds(1));
+
     /// <summary>
     /// Accumulates emitted markdown lines.
     /// </summary>
@@ -111,6 +117,27 @@ internal sealed class MarkdownWriter
         for (var i = 0; i < separators.Length; i++)
         {
             separators[i] = "---";
+        }
+
+        TableRow(separators);
+        return this;
+    }
+
+    /// <summary>
+    /// Appends a markdown table header and separator row, padding each separator to
+    /// <c>column-header-length + 2</c> dashes to match baseline Scriban template output.
+    /// </summary>
+    /// <param name="columns">Header columns.</param>
+    /// <returns>The current writer for chaining.</returns>
+    public MarkdownWriter TableHeaderPadded(IReadOnlyList<string> columns)
+    {
+        ArgumentNullException.ThrowIfNull(columns);
+        TableRow(columns);
+
+        var separators = new string[columns.Count];
+        for (var i = 0; i < separators.Length; i++)
+        {
+            separators[i] = new string('-', columns[i].Length + 2);
         }
 
         TableRow(separators);
@@ -230,12 +257,14 @@ internal sealed class MarkdownWriter
 
     /// <summary>
     /// Escapes table cell text for markdown table output.
+    /// Only matches pipes that are not already preceded by a backslash to avoid double-escaping
+    /// values that were already processed by <see cref="ScribanHelpers.EscapeMarkdown"/>.
     /// </summary>
     /// <param name="cell">Cell text to escape.</param>
     /// <returns>Escaped cell text.</returns>
     private static string EscapeTableCell(string cell)
     {
-        return cell.Replace("|", "\\|", StringComparison.Ordinal);
+        return UnescapedPipeRegex.Replace(cell, @"\|");
     }
 
     /// <summary>

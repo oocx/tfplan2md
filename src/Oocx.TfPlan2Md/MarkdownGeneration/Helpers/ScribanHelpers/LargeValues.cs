@@ -232,7 +232,7 @@ public static partial class ScribanHelpers
         sb.Append("```");
         sb.AppendLine(fenceLang);
         sb.AppendLine(content);
-        sb.Append("```");
+        sb.AppendLine("```");  // Trailing newline ensures consistent blank-line spacing when written via writer.Raw().
         return sb.ToString();
     }
 
@@ -259,7 +259,7 @@ public static partial class ScribanHelpers
             sb.AppendLine(line);
         }
 
-        sb.Append("```");
+        sb.AppendLine("```");
         return sb.ToString();
     }
 

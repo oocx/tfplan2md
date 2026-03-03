@@ -20,25 +20,32 @@ internal static class NetworkSecurityGroupViewModelFactory
     /// </summary>
     /// <param name="change">The resource change containing before/after state.</param>
     /// <param name="providerName">The provider name for semantic formatting.</param>
-    /// <param name="largeValueFormat">Preferred large value format for diff rendering.</param>
     /// <returns>Populated <see cref="NetworkSecurityGroupViewModel"/>.</returns>
-    public static NetworkSecurityGroupViewModel Build(ResourceChange change, string providerName, LargeValueFormat largeValueFormat)
+    public static NetworkSecurityGroupViewModel Build(ResourceChange change, string providerName)
     {
         var name = ExtractName(change.Change.After) ?? ExtractName(change.Change.Before);
 
         var beforeRules = ExtractRules(change.Change.Before);
         var afterRules = ExtractRules(change.Change.After);
 
-        var added = BuildAdded(afterRules, beforeRules, providerName);
-        var removed = BuildRemoved(beforeRules, afterRules, providerName);
-        var modified = BuildModified(beforeRules, afterRules, providerName, largeValueFormat);
-        var unchanged = BuildUnchanged(beforeRules, afterRules, providerName);
+        var beforeLookup = beforeRules.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
+        var afterLookup = afterRules.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
+        var beforeNames = new HashSet<string>(beforeRules.Select(r => r.Name), StringComparer.OrdinalIgnoreCase);
+        var afterNames = new HashSet<string>(afterRules.Select(r => r.Name), StringComparer.OrdinalIgnoreCase);
 
-        var changeRows = new List<SecurityRuleChangeRowViewModel>();
-        changeRows.AddRange(added);
-        changeRows.AddRange(modified);
-        changeRows.AddRange(removed);
-        changeRows.AddRange(unchanged);
+        // Added group: new rules (not in before) + after-version of modified rules (shown as ➕)
+        var addedGroup = BuildAddedGroup(afterRules, beforeNames, beforeLookup, providerName);
+
+        // Unchanged group: rules present in both with identical values (shown as ⏺️)
+        var unchangedGroup = BuildUnchangedGroup(afterRules, beforeNames, beforeLookup, providerName);
+
+        // Removed group: before-version of modified rules (shown as ❌) + rules only in before
+        var removedGroup = BuildRemovedGroup(beforeRules, afterNames, afterLookup, providerName);
+
+        var changeRows = new List<SecurityRuleChangeRowViewModel>(addedGroup.Count + unchangedGroup.Count + removedGroup.Count);
+        changeRows.AddRange(addedGroup);
+        changeRows.AddRange(unchangedGroup);
+        changeRows.AddRange(removedGroup);
 
         return new NetworkSecurityGroupViewModel
         {
@@ -121,90 +128,72 @@ internal static class NetworkSecurityGroupViewModelFactory
     }
 
     /// <summary>
-    /// Builds change rows for rules that only exist in the after state.
+    /// Builds the added group: completely new rules plus the after-version of modified rules.
+    /// Modified rules appear in both the added and removed groups (split-diff).
     /// </summary>
     /// <param name="afterRules">Rules from the after state.</param>
-    /// <param name="beforeRules">Rules from the before state.</param>
+    /// <param name="beforeNames">Set of rule names in the before state.</param>
+    /// <param name="beforeLookup">Before-state rules indexed by name.</param>
     /// <param name="providerName">Provider name for formatting.</param>
     /// <returns>Ordered added rule rows.</returns>
-    private static List<SecurityRuleChangeRowViewModel> BuildAdded(
+    private static List<SecurityRuleChangeRowViewModel> BuildAddedGroup(
         IReadOnlyList<SecurityRuleValues> afterRules,
-        IReadOnlyList<SecurityRuleValues> beforeRules,
+        HashSet<string> beforeNames,
+        Dictionary<string, SecurityRuleValues> beforeLookup,
         string providerName)
     {
-        var beforeNames = new HashSet<string>(beforeRules.Select(r => r.Name), StringComparer.OrdinalIgnoreCase);
         return afterRules
-            .Where(rule => !beforeNames.Contains(rule.Name))
-            .OrderBy(rule => rule.PriorityNumber ?? int.MaxValue)
-            .ThenBy(rule => rule.Name, StringComparer.Ordinal)
-            .Select(rule => CreateAddedRow(rule, providerName))
+            .Where(r => !beforeNames.Contains(r.Name) ||
+                        (beforeLookup.TryGetValue(r.Name, out var before) && !RulesEqual(before, r)))
+            .OrderBy(r => r.PriorityNumber ?? int.MaxValue)
+            .ThenBy(r => r.Name, StringComparer.Ordinal)
+            .Select(r => CreateAddedRow(r, providerName))
             .ToList();
     }
 
     /// <summary>
-    /// Builds change rows for rules that only exist in the before state.
+    /// Builds the unchanged group: rules present in both states with identical values.
     /// </summary>
-    /// <param name="beforeRules">Rules from the before state.</param>
     /// <param name="afterRules">Rules from the after state.</param>
-    /// <param name="providerName">Provider name for formatting.</param>
-    /// <returns>Ordered removed rule rows.</returns>
-    private static List<SecurityRuleChangeRowViewModel> BuildRemoved(
-        IReadOnlyList<SecurityRuleValues> beforeRules,
-        IReadOnlyList<SecurityRuleValues> afterRules,
-        string providerName)
-    {
-        var afterNames = new HashSet<string>(afterRules.Select(r => r.Name), StringComparer.OrdinalIgnoreCase);
-        return beforeRules
-            .Where(rule => !afterNames.Contains(rule.Name))
-            .OrderBy(rule => rule.PriorityNumber ?? int.MaxValue)
-            .ThenBy(rule => rule.Name, StringComparer.Ordinal)
-            .Select(rule => CreateRemovedRow(rule, providerName))
-            .ToList();
-    }
-
-    /// <summary>
-    /// Builds change rows for rules that exist in both states but differ.
-    /// </summary>
-    /// <param name="beforeRules">Rules from the before state.</param>
-    /// <param name="afterRules">Rules from the after state.</param>
-    /// <param name="providerName">Provider name for formatting.</param>
-    /// <param name="largeValueFormat">Preferred diff format.</param>
-    /// <returns>Ordered modified rule rows.</returns>
-    private static List<SecurityRuleChangeRowViewModel> BuildModified(
-        IReadOnlyList<SecurityRuleValues> beforeRules,
-        IReadOnlyList<SecurityRuleValues> afterRules,
-        string providerName,
-        LargeValueFormat largeValueFormat)
-    {
-        var beforeLookup = beforeRules.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
-
-        return afterRules
-            .Where(after => beforeLookup.TryGetValue(after.Name, out var before) && !RulesEqual(before!, after))
-            .OrderBy(rule => rule.PriorityNumber ?? int.MaxValue)
-            .ThenBy(rule => rule.Name, StringComparer.Ordinal)
-            .Select(after => CreateDiffRow(beforeLookup[after.Name], after, providerName, largeValueFormat))
-            .ToList();
-    }
-
-    /// <summary>
-    /// Builds change rows for rules that remain unchanged between states.
-    /// </summary>
-    /// <param name="beforeRules">Rules from the before state.</param>
-    /// <param name="afterRules">Rules from the after state.</param>
+    /// <param name="beforeNames">Set of rule names in the before state.</param>
+    /// <param name="beforeLookup">Before-state rules indexed by name.</param>
     /// <param name="providerName">Provider name for formatting.</param>
     /// <returns>Ordered unchanged rule rows.</returns>
-    private static List<SecurityRuleChangeRowViewModel> BuildUnchanged(
-        IReadOnlyList<SecurityRuleValues> beforeRules,
+    private static List<SecurityRuleChangeRowViewModel> BuildUnchangedGroup(
         IReadOnlyList<SecurityRuleValues> afterRules,
+        HashSet<string> beforeNames,
+        Dictionary<string, SecurityRuleValues> beforeLookup,
         string providerName)
     {
-        var beforeLookup = beforeRules.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
-
         return afterRules
-            .Where(after => beforeLookup.TryGetValue(after.Name, out var before) && RulesEqual(before!, after))
-            .OrderBy(rule => rule.PriorityNumber ?? int.MaxValue)
-            .ThenBy(rule => rule.Name, StringComparer.Ordinal)
-            .Select(after => CreateUnchangedRow(after, providerName))
+            .Where(r => beforeNames.Contains(r.Name) && beforeLookup.TryGetValue(r.Name, out var before) && RulesEqual(before, r))
+            .OrderBy(r => r.PriorityNumber ?? int.MaxValue)
+            .ThenBy(r => r.Name, StringComparer.Ordinal)
+            .Select(r => CreateUnchangedRow(r, providerName))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Builds the removed group: the before-version of modified rules plus completely deleted rules.
+    /// Modified rules appear in both the added and removed groups (split-diff).
+    /// </summary>
+    /// <param name="beforeRules">Rules from the before state.</param>
+    /// <param name="afterNames">Set of rule names in the after state.</param>
+    /// <param name="afterLookup">After-state rules indexed by name.</param>
+    /// <param name="providerName">Provider name for formatting.</param>
+    /// <returns>Ordered removed rule rows.</returns>
+    private static List<SecurityRuleChangeRowViewModel> BuildRemovedGroup(
+        IReadOnlyList<SecurityRuleValues> beforeRules,
+        HashSet<string> afterNames,
+        Dictionary<string, SecurityRuleValues> afterLookup,
+        string providerName)
+    {
+        return beforeRules
+            .Where(r => !afterNames.Contains(r.Name) ||
+                        (afterLookup.TryGetValue(r.Name, out var after) && !RulesEqual(r, after)))
+            .OrderBy(r => r.PriorityNumber ?? int.MaxValue)
+            .ThenBy(r => r.Name, StringComparer.Ordinal)
+            .Select(r => CreateRemovedRow(r, providerName))
             .ToList();
     }
 
@@ -227,10 +216,10 @@ internal static class NetworkSecurityGroupViewModelFactory
                 Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
                 Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
                 Access = FormatAttributeValueTable("access", rule.Access, providerName),
-                Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-                SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+                Protocol = FormatNsgProtocol(rule.Protocol),
+                SourceAddresses = FormatNsgAddresses(rule.SourceAddresses, "source_address_prefix", providerName),
                 SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-                DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+                DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
                 DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
                 Description = FormatAttributeValueTable("description", rule.Description, providerName)
             })
@@ -252,10 +241,10 @@ internal static class NetworkSecurityGroupViewModelFactory
             Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
             Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
             Access = FormatAttributeValueTable("access", rule.Access, providerName),
-            Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-            SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+            Protocol = FormatNsgProtocol(rule.Protocol),
+            SourceAddresses = FormatNsgAddresses(rule.SourceAddresses, "source_address_prefix", providerName),
             SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-            DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+            DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
             DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
             Description = FormatAttributeValueTable("description", rule.Description, providerName)
         };
@@ -276,10 +265,10 @@ internal static class NetworkSecurityGroupViewModelFactory
             Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
             Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
             Access = FormatAttributeValueTable("access", rule.Access, providerName),
-            Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-            SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+            Protocol = FormatNsgProtocol(rule.Protocol),
+            SourceAddresses = FormatNsgAddresses(rule.SourceAddresses, "source_address_prefix", providerName),
             SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-            DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+            DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
             DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
             Description = FormatAttributeValueTable("description", rule.Description, providerName)
         };
@@ -300,45 +289,47 @@ internal static class NetworkSecurityGroupViewModelFactory
             Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
             Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
             Access = FormatAttributeValueTable("access", rule.Access, providerName),
-            Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-            SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+            Protocol = FormatNsgProtocol(rule.Protocol),
+            SourceAddresses = FormatNsgAddresses(rule.SourceAddresses, "source_address_prefix", providerName),
             SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-            DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+            DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
             DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
             Description = FormatAttributeValueTable("description", rule.Description, providerName)
         };
     }
 
     /// <summary>
-    /// Creates a formatted diff row for a modified rule.
+    /// Formats a protocol value with NSG-specific icons (🔗 for TCP/UDP/ICMP, ✳️ for wildcard).
+    /// All routed protocols use the chain icon (🔗) consistent with the security rule extractor.
+    /// Uses a regular space between icon and label, matching the Scriban template output.
     /// </summary>
-    /// <param name="before">Rule values before the change.</param>
-    /// <param name="after">Rule values after the change.</param>
-    /// <param name="providerName">Provider name for formatting.</param>
-    /// <param name="largeValueFormat">Preferred diff format.</param>
-    /// <returns>Formatted diff row.</returns>
-    private static SecurityRuleChangeRowViewModel CreateDiffRow(
-        SecurityRuleValues before,
-        SecurityRuleValues after,
-        string providerName,
-        LargeValueFormat largeValueFormat)
+    /// <param name="protocol">Raw protocol value (e.g. "Tcp", "Udp", "*").</param>
+    /// <returns>Icon-prefixed protocol string.</returns>
+    private static string FormatNsgProtocol(string protocol) => protocol.ToUpperInvariant() switch
     {
-        var format = largeValueFormat.ToString();
+        "TCP" => FormatCodeTable("🔗" + NonBreakingSpace + "TCP"),
+        "UDP" => FormatCodeTable("🔗" + NonBreakingSpace + "UDP"),
+        "ICMP" => FormatCodeTable("🔗" + NonBreakingSpace + "ICMP"),
+        "*" => FormatCodeTable("✳️"),
+        _ => protocol
+    };
 
-        return new SecurityRuleChangeRowViewModel
+    /// <summary>
+    /// comma-separated addresses, each is formatted individually using the value table formatter.
+    /// </summary>
+    /// <param name="addresses">Single address or comma-separated list from <see cref="ComposeValue"/>.</param>
+    /// <param name="attributeName">Attribute name for the icon registry lookup (e.g. "source_address_prefix").</param>
+    /// <param name="providerName">Provider name for formatting.</param>
+    /// <returns>Icon-prefixed address string or joined list.</returns>
+    private static string FormatNsgAddresses(string addresses, string attributeName, string providerName)
+    {
+        if (!addresses.Contains(',', StringComparison.Ordinal))
         {
-            Change = ActionIcons.Update,
-            Name = FormatAttributeValueTable("name", after.Name, providerName),
-            Priority = FormatDiff(before.Priority, after.Priority, format),
-            Direction = FormatDiff(before.Direction, after.Direction, format),
-            Access = FormatDiff(before.Access, after.Access, format),
-            Protocol = FormatDiff(before.Protocol, after.Protocol, format),
-            SourceAddresses = FormatDiff(before.SourceAddresses, after.SourceAddresses, format),
-            SourcePorts = FormatDiff(before.SourcePorts, after.SourcePorts, format),
-            DestinationAddresses = FormatDiff(before.DestinationAddresses, after.DestinationAddresses, format),
-            DestinationPorts = FormatDiff(before.DestinationPorts, after.DestinationPorts, format),
-            Description = FormatDiff(before.Description, after.Description, format)
-        };
+            return FormatAttributeValueTable(attributeName, addresses, providerName);
+        }
+
+        var parts = addresses.Split(',');
+        return string.Join(", ", parts.Select(p => FormatAttributeValueTable(attributeName, p.Trim(), providerName)));
     }
 
     /// <summary>

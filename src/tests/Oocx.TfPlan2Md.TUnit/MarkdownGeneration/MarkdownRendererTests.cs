@@ -1283,9 +1283,11 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         result.Should().NotBeNull();
-        result.Should().Contain("| Attribute |")
-            .And.Contain("| Before |")
-            .And.Contain("| After |");
+        // FirewallNetworkRuleRenderer now produces a structured rule table (B3 fix)
+        result.Should().Contain("Rule Changes")
+            .And.Contain("| Change |")
+            .And.Contain("| Rule Name |")
+            .And.Contain("| Protocols |");
     }
 
 

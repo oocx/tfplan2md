@@ -444,7 +444,7 @@ internal sealed class ReportRenderer
     /// </summary>
     /// <param name="writer">Markdown writer.</param>
     /// <param name="operations">Refactoring operations.</param>
-    private static void RenderRefactoring(MarkdownWriter writer, IReadOnlyList<RefactoringOperationModel> operations)
+    internal static void RenderRefactoring(MarkdownWriter writer, IReadOnlyList<RefactoringOperationModel> operations)
     {
         if (operations.Count == 0)
         {
@@ -454,7 +454,8 @@ internal sealed class ReportRenderer
         writer.Heading("Refactoring Summary", 2);
         writer.BlankLine();
 
-        writer.TableHeader("Operation", "Resource", "Details", "Status");
+        writer.Raw("| Operation | Resource | Details | Status |\n");
+        writer.Raw("| --------- | -------- | ------- | ------ |\n");
 
         foreach (var operation in operations)
         {
@@ -483,7 +484,7 @@ internal sealed class ReportRenderer
     /// </summary>
     /// <param name="writer">Markdown writer.</param>
     /// <param name="model">Report model.</param>
-    private static void RenderFilteredResourceInfo(MarkdownWriter writer, ReportModel model)
+    internal static void RenderFilteredResourceInfo(MarkdownWriter writer, ReportModel model)
     {
         if (!model.IgnoreAzureIdCaseChanges || model.FilteredResourceCount <= 0)
         {

@@ -45,7 +45,8 @@ internal static class CodeAnalysisSectionRenderer
         }
 
         writer.BlankLine();
-        writer.TableHeader("Severity", "Count", "Resource Types");
+        writer.Raw("| Severity | Count | Resource Types |\n");
+        writer.Raw("| -------- | ----- | -------------- |\n");
         writer.TableRow(["🚨\u00A0Critical", codeAnalysis.Summary.CriticalCount.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(codeAnalysis.Summary.CriticalResourceTypes)]);
         writer.TableRow(["⚠️\u00A0High", codeAnalysis.Summary.HighCount.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(codeAnalysis.Summary.HighResourceTypes)]);
         writer.TableRow(["⚠️\u00A0Medium", codeAnalysis.Summary.MediumCount.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(codeAnalysis.Summary.MediumResourceTypes)]);
@@ -113,7 +114,8 @@ internal static class CodeAnalysisSectionRenderer
 
     private static void RenderOtherFindingsTable(MarkdownWriter writer, IReadOnlyList<CodeAnalysisFindingModel> findings)
     {
-        writer.TableHeader("Severity", "Tool", "Finding", "Remediation");
+        writer.Raw("| Severity | Tool | Finding | Remediation |\n");
+        writer.Raw("| -------- | ---- | ------- | ----------- |\n");
 
         foreach (var finding in findings)
         {

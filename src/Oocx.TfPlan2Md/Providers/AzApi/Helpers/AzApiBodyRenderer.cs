@@ -437,7 +437,7 @@ internal static class AzApiBodyRenderer
 
             if (property.IsSensitive && !context.ShowSensitive)
             {
-                writer.Paragraph("*(sensitive)*");
+                writer.Paragraph("(sensitive)");
             }
             else
             {

@@ -213,3 +213,15 @@
   - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ResourceSummaryHtmlBuilder.cs`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** `Snapshot_ComprehensiveDemoFull_MatchesBaseline` now fails due intentional multiline tag-format output changes (expected for Fix #5) and requires snapshot update/approval.
+
+### Developer
+- **Date:** 2026-03-03
+- **Summary:** Implemented Fix #8 (AzDO variable group blank-line separation), Fix #11 (filter empty role-assignment before/after rows), Fix #6 (render `-` placeholders in NSG/firewall description cells without code formatting), and Fix #7 parity tweak (render large AzApi sensitive markers as plain `(sensitive)` without markdown emphasis).
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzureDevOps/Renderers/AzureDevOpsResourceRenderers.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/RoleAssignmentViewModelFactory.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/NetworkSecurityGroupViewModelFactory.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/FirewallNetworkRuleCollectionViewModelFactory.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** Full-suite snapshot run still reports pre-existing unrelated parity differences in this branch (e.g., multiline tags and azapi numeric `12.0` vs `12`). Targeted tests for role assignments, firewall, NSG child-rule snapshot, and AzApi large/body-sensitive scenarios pass with these changes.

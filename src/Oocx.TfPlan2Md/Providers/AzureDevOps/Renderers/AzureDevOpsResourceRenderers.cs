@@ -94,6 +94,8 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
             writer.Paragraph($"**Variable Group:** <code>{ScribanHelpers.EscapeMarkdown(viewModel.Name)}</code>");
         }
 
+        writer.BlankLine();
+
         if (!string.IsNullOrWhiteSpace(viewModel.Description))
         {
             writer.Paragraph($"**Description:** <code>{ScribanHelpers.EscapeMarkdown(viewModel.Description)}</code>");

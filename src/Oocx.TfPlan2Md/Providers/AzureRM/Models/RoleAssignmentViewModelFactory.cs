@@ -157,6 +157,11 @@ internal static class RoleAssignmentViewModelFactory
                 scopeFormatter,
                 change.Address);
 
+            if (string.IsNullOrWhiteSpace(beforeValue) && string.IsNullOrWhiteSpace(afterValue))
+            {
+                continue;
+            }
+
             var attrViewModel = new RoleAssignmentAttributeViewModel
             {
                 Name = attr.Name,

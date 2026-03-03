@@ -221,7 +221,7 @@ internal static class NetworkSecurityGroupViewModelFactory
                 SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
                 DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
                 DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-                Description = FormatAttributeValueTable("description", rule.Description, providerName)
+                Description = FormatDescriptionCell(rule.Description, providerName)
             })
             .ToList();
     }
@@ -246,7 +246,7 @@ internal static class NetworkSecurityGroupViewModelFactory
             SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
             DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
             DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-            Description = FormatAttributeValueTable("description", rule.Description, providerName)
+            Description = FormatDescriptionCell(rule.Description, providerName)
         };
     }
 
@@ -270,7 +270,7 @@ internal static class NetworkSecurityGroupViewModelFactory
             SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
             DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
             DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-            Description = FormatAttributeValueTable("description", rule.Description, providerName)
+            Description = FormatDescriptionCell(rule.Description, providerName)
         };
     }
 
@@ -294,7 +294,7 @@ internal static class NetworkSecurityGroupViewModelFactory
             SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
             DestinationAddresses = FormatNsgAddresses(rule.DestinationAddresses, "destination_address_prefix", providerName),
             DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-            Description = FormatAttributeValueTable("description", rule.Description, providerName)
+            Description = FormatDescriptionCell(rule.Description, providerName)
         };
     }
 
@@ -397,6 +397,17 @@ internal static class NetworkSecurityGroupViewModelFactory
     private static string NormalizeDescription(string value)
     {
         return string.IsNullOrWhiteSpace(value) ? "-" : value;
+    }
+
+    /// <summary>
+    /// Formats description values while preserving the plain dash placeholder for empty descriptions.
+    /// </summary>
+    /// <param name="description">Raw normalized description value.</param>
+    /// <param name="providerName">Provider name for semantic formatting.</param>
+    /// <returns>Formatted description cell value.</returns>
+    private static string FormatDescriptionCell(string description, string providerName)
+    {
+        return description == "-" ? "-" : FormatAttributeValueTable("description", description, providerName);
     }
 
     /// <summary>

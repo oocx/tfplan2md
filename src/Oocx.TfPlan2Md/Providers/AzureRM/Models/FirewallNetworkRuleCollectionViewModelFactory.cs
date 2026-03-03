@@ -241,7 +241,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
                 SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
                 DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
                 DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-                Description = $"`{EscapeMarkdown(rule.Description)}`"
+                Description = FormatDescriptionCell(rule.Description)
             })
             .ToList();
     }
@@ -259,7 +259,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
             DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-            Description = $"`{EscapeMarkdown(rule.Description)}`"
+            Description = FormatDescriptionCell(rule.Description)
         };
     }
 
@@ -276,7 +276,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
             DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-            Description = $"`{EscapeMarkdown(rule.Description)}`"
+            Description = FormatDescriptionCell(rule.Description)
         };
     }
 
@@ -293,7 +293,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
             DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-            Description = $"`{EscapeMarkdown(rule.Description)}`"
+            Description = FormatDescriptionCell(rule.Description)
         };
     }
 
@@ -359,6 +359,16 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         }
 
         return FormatDiff(beforeStr, afterStr, format);
+    }
+
+    /// <summary>
+    /// Formats description values while preserving dash placeholders as plain text.
+    /// </summary>
+    /// <param name="description">Rule description.</param>
+    /// <returns>Formatted description value for markdown tables.</returns>
+    private static string FormatDescriptionCell(string description)
+    {
+        return description == "-" ? "-" : $"`{EscapeMarkdown(description)}`";
     }
 
     /// <summary>

@@ -271,30 +271,61 @@ internal static class AzApiBodyRenderer
         writer.BlankLine();
 
         var items = ExtractArrayItemsForCreate(properties, arrayPath, sensitivePaths, context.ShowSensitive);
+        if (items.Count == 0)
+        {
+            writer.BlankLine();
+            return;
+        }
+
+        var columns = CollectArrayColumns(items);
+        writer.Raw($"| Index | {string.Join(" | ", columns.Select(ScribanHelpers.EscapeMarkdown))} |\n");
+        writer.Raw($"|-------|{string.Join("|", columns.Select(_ => "-------"))}|\n");
+
         foreach (var item in items)
         {
-            writer.Paragraph($"**Item [{item.Index}]**");
-            writer.BlankLine();
-            writer.Raw("| Property | Value |\n");
-            writer.Raw("|----------|-------|\n");
-
-            foreach (var entry in item.Entries)
+            List<string> cells = [];
+            foreach (var column in columns)
             {
-                var fullPath = $"properties.{arrayPath}[{item.Index}]" + (string.IsNullOrEmpty(entry.LocalPath) ? string.Empty : $".{entry.LocalPath}");
-                if (!context.ShowSensitive && AzApiSensitivityHelper.IsPathSensitive(fullPath, sensitivePaths))
+                var entry = item.Entries.FirstOrDefault(candidate => string.Equals(candidate.LocalPath, column, StringComparison.Ordinal));
+                if (entry is null)
                 {
-                    writer.Raw($"| {ScribanHelpers.EscapeMarkdown(entry.LocalPath)} | (sensitive) |\n");
+                    cells.Add(string.Empty);
                     continue;
                 }
 
-                var formatted = FormatValue(entry.LocalPath, entry.Value?.ToString(), context);
-                writer.Raw($"| {ScribanHelpers.EscapeMarkdown(entry.LocalPath)} | {formatted} |\n");
+                if (!context.ShowSensitive && entry.IsSensitive)
+                {
+                    cells.Add("(sensitive)");
+                    continue;
+                }
+
+                cells.Add(FormatValue(column, entry.Value?.ToString(), context));
             }
 
-            writer.BlankLine();
+            writer.Raw($"| [{item.Index}] | {string.Join(" | ", cells)} |\n");
         }
 
         writer.BlankLine();
+    }
+
+    private static List<string> CollectArrayColumns(IReadOnlyList<AzApiArrayItem> items)
+    {
+        List<string> columns = [];
+        HashSet<string> seen = new(StringComparer.Ordinal);
+        foreach (var item in items)
+        {
+            foreach (var localPath in item.Entries.Select(entry => entry.LocalPath))
+            {
+                if (!seen.Add(localPath))
+                {
+                    continue;
+                }
+
+                columns.Add(localPath);
+            }
+        }
+
+        return columns;
     }
 
     private static void WriteUpdateTable(MarkdownWriter writer, IReadOnlyList<AzApiComparisonProperty> properties, IRenderContext context)

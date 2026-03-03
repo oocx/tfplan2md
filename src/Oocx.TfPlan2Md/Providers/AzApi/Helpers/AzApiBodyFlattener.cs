@@ -436,7 +436,7 @@ internal static class AzApiBodyFlattener
                 StringComparer.Ordinal),
             JsonValueKind.Array => element.EnumerateArray().Select(ConvertJsonValue).ToList(),
             JsonValueKind.String => element.GetString(),
-            JsonValueKind.Number => element.TryGetInt64(out var integer) ? integer : element.GetDouble(),
+            JsonValueKind.Number => element.GetRawText(),
             JsonValueKind.True => true,
             JsonValueKind.False => false,
             JsonValueKind.Null => null,

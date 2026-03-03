@@ -41,12 +41,10 @@ _No attribute changes._
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azurerm_role_assignment <b><code>main</code></b> — <code></code> → <code>🛡️ </code> on </summary>
+<summary>➕ azurerm_role_assignment <b><code>main</code></b></summary>
 <br>
 
-| Attribute | Value |
-| ----------- | ------- |
-| scope |  |
+_No attribute changes._
 
 </details>
 

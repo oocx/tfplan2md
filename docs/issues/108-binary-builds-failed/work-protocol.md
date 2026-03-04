@@ -16,3 +16,13 @@
   - `docs/issues/108-binary-builds-failed/work-protocol.md`
   - `docs/issues/108-binary-builds-failed/analysis.md`
 - **Problems Encountered:** `scripts/check-workflow-status.sh logs --step` is incompatible with the current `gh` CLI (`--log-failed` is now a boolean), so step-scoped log extraction required full-log filtering.
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Implemented AOT isolation for `JsonEmbedGenerator` so `PublishAot` no longer breaks analyzer restore/build during binary publish. Added focused regression tests and validated both local reproduction and full solution tests.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj`
+  - `src/tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Workflows/AotPublishIsolationTests.cs`
+  - `docs/issues/108-binary-builds-failed/work-protocol.md`
+- **Problems Encountered:** Initial `ProjectReference` metadata fix alone did not resolve restore-time propagation of `PublishAot`; added generator-side `TreatAsLocalProperty="PublishAot"` and explicit `<PublishAot>false</PublishAot>` to fully prevent NETSDK1207.

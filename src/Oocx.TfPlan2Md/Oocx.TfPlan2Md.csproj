@@ -41,7 +41,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Oocx.TfPlan2Md.TUnit" />
-    <ProjectReference Include="../tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" GlobalPropertiesToRemove="PublishAot" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="EmbedAsJson" />
   </ItemGroup>
 

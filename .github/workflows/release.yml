@@ -244,6 +244,7 @@ jobs:
             binary_name: tfplan2md
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
             needs_clang: true
+            compress_with_upx: true
           - platform: linux-arm64
             os: ubuntu-24.04-arm
             rid: linux-arm64
@@ -251,6 +252,7 @@ jobs:
             binary_name: tfplan2md
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
             needs_clang: true
+            compress_with_upx: true
           # Alpine/musl builds (for Alpine Linux, Atlantis, and other musl-based environments)
           # Note: Alpine job containers are NOT used because:
           # - actions/setup-dotnet requires bash, which Alpine lacks by default
@@ -263,6 +265,7 @@ jobs:
             binary_name: tfplan2md
             container: ''
             needs_clang: false
+            compress_with_upx: true
           - platform: linux-musl-arm64
             os: ubuntu-24.04-arm
             rid: linux-musl-arm64
@@ -270,6 +273,7 @@ jobs:
             binary_name: tfplan2md
             container: ''
             needs_clang: false
+            compress_with_upx: true
           # Windows builds
           - platform: windows-x64
             os: windows-latest
@@ -278,10 +282,14 @@ jobs:
             binary_name: tfplan2md.exe
             container: ''
             needs_clang: false
+            compress_with_upx: true
           # Note: windows-arm64 removed due to lack of native ARM64 Windows runners
           # and low usage (<1%). Can be re-added if native runners become available.
           # macOS builds
           # Note: macos-x64 (Intel) removed — GitHub Actions macos-13 runner is no longer supported.
+          # Note: UPX is intentionally excluded for macOS: UPX modifies the Mach-O binary, which
+          # invalidates code signatures and triggers macOS Gatekeeper. Re-signing would require
+          # Apple Developer certificates; without signing, the binary is quarantined on user machines.
           - platform: macos-arm64
             os: macos-14  # Apple Silicon runner
             rid: osx-arm64
@@ -289,6 +297,7 @@ jobs:
             binary_name: tfplan2md
             container: ''
             needs_clang: false
+            compress_with_upx: false
 
     steps:
       - name: Checkout
@@ -344,6 +353,25 @@ jobs:
             -e PLATFORM="${{ matrix.platform }}" \
             mcr.microsoft.com/dotnet/sdk:10.0-alpine \
             sh -c 'apk add --no-cache clang build-base zlib-dev linux-headers && dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r "$RID" --self-contained true -p:PublishAot=true -o "/work/artifacts/$PLATFORM"'
+
+
+      - name: Install UPX (Linux)
+        if: startsWith(matrix.platform, 'linux-') && matrix.compress_with_upx
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends upx-ucl
+
+      - name: Install UPX (Windows)
+        if: matrix.os == 'windows-latest' && matrix.compress_with_upx
+        shell: pwsh
+        run: choco install upx -y --no-progress
+
+      - name: Compress Binary with UPX
+        if: matrix.compress_with_upx
+        shell: bash
+        run: |
+          upx --best "artifacts/${{ matrix.platform }}/${{ matrix.binary_name }}"
+          echo "Compressed size: $(du -h "artifacts/${{ matrix.platform }}/${{ matrix.binary_name }}" | cut -f1)"
 
       - name: Verify glibc version (Linux only)
         if: startsWith(matrix.platform, 'linux-')

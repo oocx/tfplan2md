@@ -583,5 +583,6 @@ jobs:
             org.opencontainers.image.version=${{ needs.release.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.meta.outputs.created }}
+          outputs: type=image,compression=zstd,compression-level=19,force-compression=true
           cache-from: type=gha
           cache-to: type=gha,mode=max

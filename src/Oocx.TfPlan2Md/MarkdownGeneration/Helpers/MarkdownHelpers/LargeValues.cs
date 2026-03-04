@@ -2,7 +2,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Xml.Linq;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -139,18 +138,28 @@ public static partial class MarkdownHelpers
     private static bool TryFormatXml(string value, out string formatted)
     {
         var trimmed = value.Trim();
-        try
-        {
-            var document = XDocument.Parse(trimmed);
-            var pretty = document.ToString();
-            formatted = IsAlreadyFormatted(trimmed) ? trimmed : pretty;
-            return true;
-        }
-        catch (Exception)
+
+        if (!SimpleXmlFormatter.LooksLikeXml(trimmed))
         {
             formatted = string.Empty;
             return false;
         }
+
+        if (IsAlreadyFormatted(trimmed))
+        {
+            formatted = trimmed;
+            return true;
+        }
+
+        if (SimpleXmlFormatter.TryPrettyPrint(trimmed, out formatted))
+        {
+            return true;
+        }
+
+        // Best-effort: if it looks like XML but we can't safely format it (e.g., DOCTYPE/CDATA),
+        // keep the original content but still enable XML syntax highlighting.
+        formatted = trimmed;
+        return true;
     }
 
     /// <summary>

@@ -11,6 +11,7 @@
     <AssemblyName>tfplan2md</AssemblyName>
     <RuntimeIdentifiers>linux-x64;linux-arm64;win-x64;win-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <PublishAot>true</PublishAot>
+    <IlcDisableReflection>true</IlcDisableReflection>
     <TrimMode>full</TrimMode>
     <StripSymbols>true</StripSymbols>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -21,7 +22,6 @@
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
     <WarningsNotAsErrors>IL2067;IL2070;IL2075;IL2080;IL2104;IL3050;IL3053</WarningsNotAsErrors>
-    <TrimmerRootDescriptor>TrimmerRootDescriptor.xml</TrimmerRootDescriptor>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
@@ -35,18 +35,48 @@
   </Target>
 
   <ItemGroup>
-    <AssemblyMetadata Include="CommitHash" Value="$(SourceRevisionId)" Condition="'$(SourceRevisionId)'!=''" />
     <InternalsVisibleTo Include="Oocx.TfPlan2Md.TUnit" />
+    <ProjectReference Include="../tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="EmbedAsJson" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Providers/AzApi/Icons/*.json" />
-    <EmbeddedResource Include="Providers/Shared/Icons/*.json" />
-    <EmbeddedResource Include="Providers/AzureAD/Icons/*.json" />
-    <EmbeddedResource Include="Providers/AzureDevOps/Icons/*.json" />
-    <EmbeddedResource Include="Providers/AzureRM/Icons/*.json" />
-    <EmbeddedResource Include="Platforms/Azure/AzureRoleDefinitions.json" />
-    <EmbeddedResource Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" />
+    <AdditionalFiles Include="Platforms/Azure/AzureRoleDefinitions.json" EmbedAsJson="true" />
+    <AdditionalFiles Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" EmbedAsJson="true" />
+    <AdditionalFiles Include="Providers/Shared/Icons/azure-common-icons.json" EmbedAsJson="true" />
+    <AdditionalFiles Include="Providers/AzureAD/Icons/azuread-icons.json" EmbedAsJson="true" />
+    <AdditionalFiles Include="Providers/AzureDevOps/Icons/azuredevops-icons.json" EmbedAsJson="true" />
   </ItemGroup>
+
+  <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile" DependsOnTargets="SetSourceRevisionId">
+    <PropertyGroup>
+      <_BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</_BuildInfoFile>
+      <_BuildInfoVersion Condition="'$(Version)'!=''">$([System.String]::Copy('$(Version)').Trim())</_BuildInfoVersion>
+      <_BuildInfoVersion Condition="'$(_BuildInfoVersion)'==''">0.0.0</_BuildInfoVersion>
+      <_BuildInfoCommitHash Condition="'$(SourceRevisionId)'!=''">$([System.String]::Copy('$(SourceRevisionId)').Trim())</_BuildInfoCommitHash>
+      <_BuildInfoCommitHash Condition="'$(_BuildInfoCommitHash)'==''">unknown</_BuildInfoCommitHash>
+      <_BuildInfoInformationalVersion>$(_BuildInfoVersion)</_BuildInfoInformationalVersion>
+      <_BuildInfoInformationalVersion Condition="'$(_BuildInfoCommitHash)'!='' and '$(_BuildInfoCommitHash)'!='unknown'">$(_BuildInfoVersion)+$(_BuildInfoCommitHash)</_BuildInfoInformationalVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_BuildInfoLines Include="// &lt;auto-generated /&gt;" />
+      <_BuildInfoLines Include="namespace $(RootNamespace)" />
+      <_BuildInfoLines Include="{" />
+      <_BuildInfoLines Include="internal static class BuildInfo" />
+      <_BuildInfoLines Include="{" />
+      <_BuildInfoLines Include="    internal const string Version = &quot;$(_BuildInfoVersion)&quot;%3B" />
+      <_BuildInfoLines Include="    internal const string InformationalVersion = &quot;$(_BuildInfoInformationalVersion)&quot;%3B" />
+      <_BuildInfoLines Include="    internal const string CommitHash = &quot;$(_BuildInfoCommitHash)&quot;%3B" />
+      <_BuildInfoLines Include="}" />
+      <_BuildInfoLines Include="}" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(_BuildInfoFile)" Lines="@(_BuildInfoLines)" Overwrite="true" Encoding="UTF-8" />
+
+    <ItemGroup>
+      <Compile Include="$(_BuildInfoFile)" />
+    </ItemGroup>
+  </Target>
 
 </Project>

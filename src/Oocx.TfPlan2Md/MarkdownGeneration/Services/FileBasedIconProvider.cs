@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
@@ -12,37 +12,36 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 /// <remarks>
 /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
 /// </remarks>
+[SuppressMessage("Maintainability", "CA1506:Avoid excessive class coupling", Justification = "Pattern-based icon rule loading naturally couples parsing and registry models.")]
 internal sealed class FileBasedIconProvider : IIconProvider
 {
     /// <summary>
     /// Holds the icon rules in matching order for resolution.
     /// </summary>
     private readonly PatternMatchingRegistry<IconRule> _registry = new();
-    private readonly Assembly _assembly;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileBasedIconProvider"/> class.
     /// </summary>
     /// <param name="resourceName">The embedded resource name containing icon rules.</param>
     public FileBasedIconProvider(string resourceName)
-        : this(resourceName, Assembly.GetExecutingAssembly())
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FileBasedIconProvider"/> class.
-    /// </summary>
-    /// <param name="resourceName">The embedded resource name containing icon rules.</param>
-    /// <param name="assembly">The assembly that contains the embedded resource.</param>
-    public FileBasedIconProvider(string resourceName, Assembly assembly)
     {
         if (string.IsNullOrWhiteSpace(resourceName))
         {
             throw new ArgumentException("Icon rule resource name must be provided.", nameof(resourceName));
         }
 
-        _assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
         LoadRules(resourceName);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileBasedIconProvider"/> class for raw JSON payload content.
+    /// </summary>
+    /// <param name="jsonPayload">UTF-8 JSON payload containing icon rules.</param>
+    /// <param name="sourceName">Logical source name used in diagnostics.</param>
+    internal FileBasedIconProvider(ReadOnlyMemory<byte> jsonPayload, string sourceName)
+    {
+        LoadRules(jsonPayload, sourceName);
     }
 
     /// <summary>
@@ -65,23 +64,33 @@ internal sealed class FileBasedIconProvider : IIconProvider
     /// <param name="resourceName">The embedded resource name containing icon rules.</param>
     private void LoadRules(string resourceName)
     {
+        var payload = EmbeddedJsonPayloads.GetIconRulesPayload(resourceName);
+        if (payload is null)
+        {
+            throw new ServiceRegistrationException($"Failed to load embedded icon rules '{resourceName}'.");
+        }
+
+        LoadRules(payload, resourceName);
+    }
+
+    /// <summary>
+    /// Loads icon rules from a UTF-8 JSON payload and registers them for matching.
+    /// </summary>
+    /// <param name="jsonPayload">UTF-8 JSON payload containing icon rules.</param>
+    /// <param name="sourceName">Logical source name used in diagnostics.</param>
+    private void LoadRules(ReadOnlyMemory<byte> jsonPayload, string sourceName)
+    {
         try
         {
-            using var stream = _assembly.GetManifestResourceStream(resourceName);
-            if (stream is null)
-            {
-                throw new ServiceRegistrationException($"Failed to load embedded icon rules '{resourceName}'.");
-            }
-
-            var model = JsonSerializer.Deserialize(stream, IconRulesJsonContext.Default.IconRulesModel);
+            var model = JsonSerializer.Deserialize(jsonPayload.Span, IconRulesJsonContext.Default.IconRulesModel);
             if (model?.Rules is null)
             {
-                throw new ServiceRegistrationException($"Failed to parse icon rules from embedded resource '{resourceName}'.");
+                throw new ServiceRegistrationException($"Failed to parse icon rules from embedded resource '{sourceName}'.");
             }
 
             foreach (var rule in model.Rules)
             {
-                RegisterRule(rule, resourceName);
+                RegisterRule(rule, sourceName);
             }
         }
         catch (ServiceRegistrationException)
@@ -90,7 +99,7 @@ internal sealed class FileBasedIconProvider : IIconProvider
         }
         catch (Exception ex) when (ex is JsonException or NotSupportedException)
         {
-            throw new ServiceRegistrationException($"Failed to load icon rules from embedded resource '{resourceName}'.", ex);
+            throw new ServiceRegistrationException($"Failed to load icon rules from embedded resource '{sourceName}'.", ex);
         }
     }
 

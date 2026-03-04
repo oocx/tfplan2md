@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Oocx.TfPlan2Md.ScreenshotGenerator;
 
 /// <summary>
@@ -14,7 +12,6 @@ internal static class VersionProvider
     /// <returns>A human-readable version string.</returns>
     public static string GetVersion()
     {
-        var attribute = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-        return attribute?.InformationalVersion ?? "0.0.0";
+        return BuildInfo.InformationalVersion;
     }
 }

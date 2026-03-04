@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Reflection;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -29,34 +27,19 @@ public interface IMetadataProvider
 public readonly record struct ReportMetadata(string Version, string CommitHash, DateTimeOffset GeneratedAtUtc);
 
 /// <summary>
-/// Default metadata provider that reads assembly attributes and captures the current UTC time.
+/// Default metadata provider that reads build-time generated metadata and captures the current UTC time.
 /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
 /// </summary>
 public class AssemblyMetadataProvider : IMetadataProvider
 {
     /// <summary>
-    /// Assembly supplying version and commit information.
+    /// Gets metadata using generated build constants and the current UTC time.
     /// </summary>
-    private readonly Assembly _assembly;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AssemblyMetadataProvider"/> class.
-    /// </summary>
-    /// <param name="assembly">Assembly that contains the version metadata; when null, the executing assembly is used.</param>
-    public AssemblyMetadataProvider(Assembly? assembly = null)
-    {
-        _assembly = assembly ?? Assembly.GetExecutingAssembly();
-    }
-
-    /// <summary>
-    /// Gets metadata using assembly attributes and the current UTC time.
-    /// </summary>
-    /// <returns>Metadata populated from assembly attributes.</returns>
+    /// <returns>Metadata populated from generated build information.</returns>
     public ReportMetadata GetMetadata()
     {
-        var informationalVersion = _assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        var version = NormalizeVersion(informationalVersion);
-        var commit = GetCommitHash();
+        var version = NormalizeVersion(BuildInfo.InformationalVersion);
+        var commit = NormalizeCommitHash(BuildInfo.CommitHash);
 
         return new ReportMetadata(version, commit, DateTimeOffset.UtcNow);
     }
@@ -80,56 +63,18 @@ public class AssemblyMetadataProvider : IMetadataProvider
     }
 
     /// <summary>
-    /// Gets the commit hash from assembly metadata or informational version metadata.
+    /// Normalizes the commit hash by trimming whitespace and shortening to 7 characters.
     /// </summary>
+    /// <param name="commitHash">Raw commit hash value.</param>
     /// <returns>Short commit hash (up to 7 characters) or "unknown" when not available.</returns>
-    private string GetCommitHash()
+    private static string NormalizeCommitHash(string? commitHash)
     {
-        var commit = _assembly
-            .GetCustomAttributes<AssemblyMetadataAttribute>()
-            .FirstOrDefault(a => string.Equals(a.Key, "CommitHash", StringComparison.OrdinalIgnoreCase)
-                                 || string.Equals(a.Key, "SourceRevisionId", StringComparison.OrdinalIgnoreCase))
-            ?.Value;
-
-        if (string.IsNullOrWhiteSpace(commit))
-        {
-            commit = TryParseInformationalCommit();
-        }
-
-        if (string.IsNullOrWhiteSpace(commit))
+        if (string.IsNullOrWhiteSpace(commitHash))
         {
             return "unknown";
         }
 
-        var trimmed = commit.Trim();
+        var trimmed = commitHash.Trim();
         return trimmed.Length > 7 ? trimmed[..7] : trimmed;
-    }
-
-    /// <summary>
-    /// Extracts a commit hash from the informational version metadata when no assembly metadata is present.
-    /// </summary>
-    /// <returns>Commit hash string if present; otherwise null.</returns>
-    private string? TryParseInformationalCommit()
-    {
-        var informationalVersion = _assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        if (string.IsNullOrWhiteSpace(informationalVersion))
-        {
-            return null;
-        }
-
-        var plusIndex = informationalVersion.IndexOf('+');
-        if (plusIndex < 0 || plusIndex + 1 >= informationalVersion.Length)
-        {
-            return null;
-        }
-
-        var metadataPart = informationalVersion[(plusIndex + 1)..].Trim();
-        if (string.IsNullOrWhiteSpace(metadataPart))
-        {
-            return null;
-        }
-
-        var firstSegment = metadataPart.Split(['.', '+', '-'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-        return string.IsNullOrWhiteSpace(firstSegment) ? null : firstSegment;
     }
 }

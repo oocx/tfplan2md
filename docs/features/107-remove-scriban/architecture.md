@@ -1607,7 +1607,25 @@ gantt
 | **Test setup** | Complex (`ScriptObject` construction) | Simple (call method with model) | ⬆️ Better |
 | **Security surface** | Templates can access raw state | Renderers only see masked model | ⬆️ Better |
 
-### 14.2 Architecture Boundary Enforcement
+### 14.2 Reflection-Free NativeAOT (Addendum)
+
+NativeAOT and full trimming benefits improve significantly when the runtime can avoid reflection entirely. While removing Scriban eliminates the largest trimming blocker, the current post-migration codebase still uses limited reflection for:
+
+- Assembly metadata reads (version / commit hash)
+- Embedded JSON loading via `Assembly.GetManifestResourceStream(...)`
+
+If the goal is to enable `IlcDisableReflection=true` (or otherwise strongly reduce reflection metadata), a follow-up change should remove **all production** reflection usage:
+
+1) **Build metadata without reflection**
+- Replace assembly attribute reads with build-time generated constants (e.g., `BuildInfo.Version`, `BuildInfo.CommitHash`).
+
+2) **Embedded JSON without `Assembly.*` APIs**
+- Replace manifest-resource loading with build-time generated in-binary payloads (e.g., `ReadOnlySpan<byte>` JSON) and deserialize directly from the payload using existing `System.Text.Json` source generation contexts.
+
+This work is documented in detail in:
+- [docs/features/107-remove-scriban/reflection-removal-analysis.md](reflection-removal-analysis.md)
+
+### 14.3 Architecture Boundary Enforcement
 
 ```mermaid
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'14px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%

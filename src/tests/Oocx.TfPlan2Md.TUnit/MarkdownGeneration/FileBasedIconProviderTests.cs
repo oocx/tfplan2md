@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.Text;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using TUnit.Core;
@@ -56,21 +56,17 @@ public class FileBasedIconProviderTests
     /// <returns>The initialized icon provider.</returns>
     private static FileBasedIconProvider CreateProvider(string resourceFileName)
     {
-        var assembly = typeof(FileBasedIconProviderTests).Assembly;
-        var resourceName = BuildResourceName(assembly, resourceFileName);
+        var json = resourceFileName switch
+        {
+            "valid-icons.json" =>
+                "{\"rules\":[{\"providerPattern\":\"^provider$\",\"resourceTypePattern\":\"^resource$\",\"attributeNamePattern\":\"^name$\",\"valuePattern\":\"^value$\",\"icon\":\"X\"}]}",
+            "invalid-json.json" =>
+                "{\"rules\":[{\"providerPattern\":\"^provider$\",",
+            "invalid-regex.json" =>
+                "{\"rules\":[{\"providerPattern\":\"^provider$\",\"attributeNamePattern\":\"[\",\"icon\":\"X\"}]}",
+            _ => throw new InvalidOperationException($"Unsupported test resource '{resourceFileName}'.")
+        };
 
-        return new FileBasedIconProvider(resourceName, assembly);
-    }
-
-    /// <summary>
-    /// Builds the embedded resource name for icon rule test data.
-    /// </summary>
-    /// <param name="assembly">The assembly containing the resources.</param>
-    /// <param name="resourceFileName">The resource file name.</param>
-    /// <returns>The fully qualified resource name.</returns>
-    private static string BuildResourceName(Assembly assembly, string resourceFileName)
-    {
-        var baseName = assembly.GetName().Name ?? "Oocx.TfPlan2Md.TUnit";
-        return $"{baseName}.TestData.IconRules.{resourceFileName}";
+        return new FileBasedIconProvider(Encoding.UTF8.GetBytes(json), resourceFileName);
     }
 }

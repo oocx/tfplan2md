@@ -1,0 +1,41 @@
+<Project>
+  <Target Name="SetSourceRevisionId" BeforeTargets="GenerateAssemblyInfo" Condition="'$(SourceRevisionId)'=='' and ('$(AssemblyName)'=='tfplan2md-html' or '$(AssemblyName)'=='tfplan2md-terraform-show' or '$(AssemblyName)'=='tfplan2md-screenshot')">
+    <Exec Command="git rev-parse --short HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceRevisionIdFromGit" />
+    </Exec>
+    <PropertyGroup>
+      <SourceRevisionId Condition="'$(SourceRevisionId)'=='' and '$(SourceRevisionIdFromGit)'!=''">$([System.String]::Copy('$(SourceRevisionIdFromGit)').Trim())</SourceRevisionId>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile" DependsOnTargets="SetSourceRevisionId" Condition="'$(AssemblyName)'=='tfplan2md-html' or '$(AssemblyName)'=='tfplan2md-terraform-show' or '$(AssemblyName)'=='tfplan2md-screenshot'">
+    <PropertyGroup>
+      <_BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</_BuildInfoFile>
+      <_BuildInfoVersion Condition="'$(Version)'!=''">$([System.String]::Copy('$(Version)').Trim())</_BuildInfoVersion>
+      <_BuildInfoVersion Condition="'$(_BuildInfoVersion)'==''">0.0.0</_BuildInfoVersion>
+      <_BuildInfoCommitHash Condition="'$(SourceRevisionId)'!=''">$([System.String]::Copy('$(SourceRevisionId)').Trim())</_BuildInfoCommitHash>
+      <_BuildInfoCommitHash Condition="'$(_BuildInfoCommitHash)'==''">unknown</_BuildInfoCommitHash>
+      <_BuildInfoInformationalVersion>$(_BuildInfoVersion)</_BuildInfoInformationalVersion>
+      <_BuildInfoInformationalVersion Condition="'$(_BuildInfoCommitHash)'!='' and '$(_BuildInfoCommitHash)'!='unknown'">$(_BuildInfoVersion)+$(_BuildInfoCommitHash)</_BuildInfoInformationalVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_BuildInfoLines Include="// &lt;auto-generated /&gt;" />
+      <_BuildInfoLines Include="namespace $(RootNamespace)" />
+      <_BuildInfoLines Include="{" />
+      <_BuildInfoLines Include="internal static class BuildInfo" />
+      <_BuildInfoLines Include="{" />
+      <_BuildInfoLines Include="    internal const string Version = &quot;$(_BuildInfoVersion)&quot;%3B" />
+      <_BuildInfoLines Include="    internal const string InformationalVersion = &quot;$(_BuildInfoInformationalVersion)&quot;%3B" />
+      <_BuildInfoLines Include="    internal const string CommitHash = &quot;$(_BuildInfoCommitHash)&quot;%3B" />
+      <_BuildInfoLines Include="}" />
+      <_BuildInfoLines Include="}" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(_BuildInfoFile)" Lines="@(_BuildInfoLines)" Overwrite="true" Encoding="UTF-8" />
+
+    <ItemGroup>
+      <Compile Include="$(_BuildInfoFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

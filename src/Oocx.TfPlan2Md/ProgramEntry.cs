@@ -2,7 +2,6 @@
 // Related feature: docs/features/046-code-quality-metrics-enforcement/.
 #pragma warning disable CA1506
 
-using System.Reflection;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
@@ -186,10 +185,7 @@ internal static class ProgramEntry
     /// </summary>
     private static void PrintVersion()
     {
-        var version = Assembly.GetExecutingAssembly()
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            ?.InformationalVersion ?? "0.0.0";
-        Console.WriteLine($"tfplan2md {version}");
+        Console.WriteLine($"tfplan2md {BuildInfo.InformationalVersion}");
     }
 
     /// <summary>

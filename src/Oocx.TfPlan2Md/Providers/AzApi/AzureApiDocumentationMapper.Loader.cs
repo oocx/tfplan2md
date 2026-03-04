@@ -2,7 +2,6 @@ using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.Providers.AzApi;
@@ -34,22 +33,13 @@ public static partial class AzureApiDocumentationMapper
     /// </remarks>
     private static FrozenDictionary<string, string> LoadMappings()
     {
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "Oocx.TfPlan2Md.Providers.AzApi.Data.AzureApiDocumentationMappings.json";
-
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-        if (stream is null)
-        {
-            throw new InvalidOperationException($"Failed to load embedded resource: {resourceName}");
-        }
-
         var model = JsonSerializer.Deserialize(
-            stream,
+            EmbeddedJsonPayloads.AzureApiDocumentationMappings,
             AzureApiDocumentationMappingsJsonContext.Default.AzureApiDocumentationMappingsModel);
 
         if (model is null || model.Mappings is null || model.Mappings.Count == 0)
         {
-            throw new InvalidOperationException($"Failed to parse Azure API documentation mappings from {resourceName}");
+            throw new InvalidOperationException("Failed to parse Azure API documentation mappings from generated payload.");
         }
 
         // Convert nested structure to flat dictionary: ResourceType -> URL

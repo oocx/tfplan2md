@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Reflection;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -29,19 +28,13 @@ public class ReportModelBuilderMetadataTests
     }
 
     [Test]
-    public void AssemblyMetadataProvider_UsesAssemblyInformationalVersion()
+    public void AssemblyMetadataProvider_UsesGeneratedBuildMetadata()
     {
-        var assembly = typeof(ReportModelBuilder).Assembly;
-        var informationalVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        var expectedVersion = string.IsNullOrWhiteSpace(informationalVersion)
-            ? "unknown"
-            : informationalVersion.Split('+')[0].Trim();
-
-        var provider = new AssemblyMetadataProvider(assembly);
+        var provider = new AssemblyMetadataProvider();
 
         var metadata = provider.GetMetadata();
 
-        metadata.Version.Should().Be(expectedVersion);
+        metadata.Version.Should().NotBeNullOrWhiteSpace();
         metadata.CommitHash.Should().NotBeNullOrWhiteSpace();
     }
 

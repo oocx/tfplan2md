@@ -281,3 +281,66 @@
   - `docs/features/107-remove-scriban/code-review.md` (updated)
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** None.
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Performed targeted post-Scriban cleanup requested by Maintainer. Removed a stale suppression entry that referenced the deleted namespace `Oocx.TfPlan2Md.Azure.AzureRoleDefinitionsJsonContext` from `GlobalSuppressions.cs`. Reassessed runtime reflection requirements after Scriban removal and confirmed reflection is still required in the main app for assembly metadata (`AssemblyInformationalVersionAttribute`/`AssemblyMetadataAttribute`) and embedded resource loading (`GetManifestResourceStream`). Therefore `IlcDisableReflection=true` was **not** applied. Cleaned `TrimmerRootDescriptor.xml` by removing the obsolete `System.DateTimeOffset` preserve block that was tied to old reflective formatting assumptions.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/GlobalSuppressions.cs`
+  - `src/Oocx.TfPlan2Md/TrimmerRootDescriptor.xml`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None. Verification command passed: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` (`1115` passed, `0` failed, `0` skipped).
+
+### Architect
+- **Date:** 2026-03-04
+- **Summary:** Evaluated all current production reflection usage post-Scriban removal and documented a concrete path to remove reflection completely to improve trimming predictability and make `IlcDisableReflection=true` feasible. Inventory shows reflection is limited to assembly attribute reads for version/commit metadata and `Assembly.GetManifestResourceStream(...)` for embedded JSON inputs (role definitions, icon rules, AzAPI documentation mappings). Proposed replacing these with build-time generated constants and build-time generated `ReadOnlySpan<byte>` JSON payloads (or alternatively shipping JSON as external content files), and outlined impacted components and test follow-up.
+- **Artifacts Produced:**
+  - `docs/features/107-remove-scriban/reflection-removal-analysis.md`
+  - `docs/features/107-remove-scriban/architecture.md`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None.
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Implemented reflection-free production/runtime metadata and JSON loading paths per `reflection-removal-analysis.md`. Replaced assembly-attribute reflection in CLI/report/tool version flows with build-generated `BuildInfo` constants (main project + tool shared targets), removed `System.Reflection` usage from production sources, and switched role-definition/AzAPI-doc/icon-rule loading from manifest resources to generated in-binary payloads (`EmbeddedJsonPayloads.g.cs`). Enabled NativeAOT reflection disabling (`IlcDisableReflection=true`) and removed the obsolete trimmer root descriptor. Updated affected tests to validate the new non-reflection behavior and refactored icon-provider tests to use raw JSON payload fixtures instead of embedded-resource reflection.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj`
+  - `src/Oocx.TfPlan2Md/EmbeddedJsonPayloads.g.cs`
+  - `src/Oocx.TfPlan2Md/ProgramEntry.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/IMetadataProvider.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/AzureRoleDefinitionMapper.Roles.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/AzureApiDocumentationMapper.Loader.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/FileBasedIconProvider.cs`
+  - `src/tools/Directory.Build.targets`
+  - `src/tools/Oocx.TfPlan2Md.HtmlRenderer/VersionProvider.cs`
+  - `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/VersionProvider.cs`
+  - `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/VersionProvider.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AssemblyMetadataProviderTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderMetadataTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/FileBasedIconProviderTests.cs`
+  - Deleted: `src/Oocx.TfPlan2Md/TrimmerRootDescriptor.xml`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** Initial MSBuild property-function approach for JSON payload generation (`ReadAllBytes`) is unsupported. Resolved by generating and checking in `EmbeddedJsonPayloads.g.cs` once from source JSON files. Verification command passed: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` (`1114` passed, `0` failed, `0` skipped).
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Replaced the checked-in base64 payload approach with a build-time Roslyn source generator (`JsonEmbedGenerator`) that emits one generated class per JSON file under `EmbeddedJsonResources`, using Brotli-compressed data exposed through a `ReadOnlySpan<byte>` expression-bodied property plus `GetString()`, `GetBytes()`, and `OpenStream()` APIs. Wired the generator into the main app as an analyzer, moved JSON inputs to `AdditionalFiles`, and replaced `EmbeddedJsonPayloads.g.cs` with a thin wrapper (`EmbeddedJsonPayloads.cs`) that maps legacy lookup keys to generated classes. This keeps runtime reflection-free JSON access while removing the large committed payload blob.
+- **Artifacts Produced:**
+  - `src/tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj`
+  - `src/tools/JsonEmbedGenerator/JsonEmbedSourceGenerator.cs`
+  - `src/tfplan2md.slnx`
+  - `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj`
+  - `src/Oocx.TfPlan2Md/EmbeddedJsonPayloads.cs`
+  - Deleted: `src/Oocx.TfPlan2Md/EmbeddedJsonPayloads.g.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** AdditionalFiles metadata from MSBuild was not reliably surfaced by Roslyn in this repository configuration. Implemented resilient handling that still honors explicit non-`true` metadata values, while allowing generation when metadata keys are absent. Verification passed: `scripts/test-with-timeout.sh --timeout-seconds 240 -- dotnet test --solution src/tfplan2md.slnx` (`1114` passed, `0` failed, `0` skipped).
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Applied follow-up review hardening for the new JSON embed generator: enforced strict opt-in behavior (`EmbedAsJson=true`) now that `CompilerVisibleItemMetadata` is configured, kept incremental caching-friendly immutable records for pipeline values, simplified metadata key lookup to the canonical lowercase key, tightened Brotli constructor activation to the explicit `(Stream, CompressionLevel, bool)` signature, and wrapped generated hex literals at 16-byte boundaries for readability. Also resolved analyzer gate issues in the internal generator project and removed remaining build blockers.
+- **Artifacts Produced:**
+  - `src/tools/JsonEmbedGenerator/JsonEmbedSourceGenerator.cs`
+  - `src/tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj`
+  - `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** One transient full-suite test failure (`MergeCustomRoles_BuiltInRole_IsOverriddenByCustomMapping`) appeared during the first mandatory run and did not reproduce on isolated or subsequent full-suite reruns; final verification passed with `1114` tests succeeded, `0` failed, `0` skipped.

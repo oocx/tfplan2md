@@ -5,6 +5,7 @@
   <Folder Name="/tools/">
     <Project Path="tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj" />
     <Project Path="tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj" />
+    <Project Path="tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj" />
     <Project Path="tools/Oocx.TfPlan2Md.ScreenshotGenerator/Oocx.TfPlan2Md.ScreenshotGenerator.csproj" />
     <Project Path="tools/Oocx.TfPlan2Md.TerraformShowRenderer/Oocx.TfPlan2Md.TerraformShowRenderer.csproj" />
   </Folder>

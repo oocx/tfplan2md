@@ -16,7 +16,7 @@ RUN dotnet build src/tfplan2md.slnx --no-restore -c Release
 RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r linux-musl-x64 --self-contained true -o /app/publish \
 	-p:StaticExecutable=true \
 	-p:LinkerFlavor=lld \
-	&& rm -f /app/publish/*.dbg
+      && rm -f /app/publish/*.dbg /app/publish/tfplan2md.xml
 
 # Final runtime stage - pure scratch, no shared libraries needed (fully static binary)
 FROM scratch AS runtime

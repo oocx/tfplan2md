@@ -55,11 +55,8 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             : change.SummaryHtml;
 
         var isNoOpParentWithChildren = IsNoOpParentSecurityRuleScenario(change);
-        var useOutputsFocusedFormatting = (context as IScenarioRenderContext)?.IsOutputsFocusedReport == true;
-        var useKnownAfterApplyFormatting = ((context as IScenarioRenderContext)?.IsKnownAfterApplyScenario == true)
-            || ShouldUseKnownAfterApplyFormatting(change);
-        var useEphemeralOpenFormatting = ((context as IScenarioRenderContext)?.IsEphemeralOpenScenario == true)
-            || ShouldUseEphemeralOpenFormatting(change);
+        var (useOutputsFocusedFormatting, useKnownAfterApplyFormatting, useEphemeralOpenFormatting) =
+            ResolveScenarioFormatting(change, context);
         var useMultilineDetailsSummary = ShouldUseMultilineDetailsSummary(
             change,
             isNoOpParentWithChildren,
@@ -116,6 +113,31 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
 
         writer.DetailsClose();
         writer.BlankLine();
+    }
+
+    /// <summary>
+    /// Resolves report-scenario formatting flags from context overrides and resource heuristics.
+    /// </summary>
+    /// <param name="change">Resource change model.</param>
+    /// <param name="context">Current render context.</param>
+    /// <returns>
+    /// A tuple containing, in order, outputs-focused formatting, known-after-apply formatting,
+    /// and ephemeral-open formatting flags.
+    /// </returns>
+    internal static (bool UseOutputsFocusedFormatting, bool UseKnownAfterApplyFormatting, bool UseEphemeralOpenFormatting)
+        ResolveScenarioFormatting(ResourceChangeModel change, IRenderContext context)
+    {
+        ArgumentNullException.ThrowIfNull(change);
+        ArgumentNullException.ThrowIfNull(context);
+
+        var scenarioContext = context as IScenarioRenderContext;
+        var useOutputsFocusedFormatting = scenarioContext?.IsOutputsFocusedReport == true;
+        var useKnownAfterApplyFormatting = (scenarioContext?.IsKnownAfterApplyScenario == true)
+            || ShouldUseKnownAfterApplyFormatting(change);
+        var useEphemeralOpenFormatting = (scenarioContext?.IsEphemeralOpenScenario == true)
+            || ShouldUseEphemeralOpenFormatting(change);
+
+        return (useOutputsFocusedFormatting, useKnownAfterApplyFormatting, useEphemeralOpenFormatting);
     }
 
     /// <summary>

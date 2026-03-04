@@ -38,6 +38,15 @@
   - `docs/features/107-remove-scriban/test-plan.md`
 - **Problems Encountered:** None
 
+### Task Planner
+- **Date:** 2026-03-01
+- **Summary:** Produced the implementation task breakdown for feature 107, including dependency
+  sequencing and acceptance criteria mapping used by Developer execution.
+- **Artifacts Produced:**
+  - `docs/features/107-remove-scriban/tasks.md`
+  - `docs/features/107-remove-scriban/task planner.chat.json`
+- **Problems Encountered:** None
+
 ### Developer
 - **Date:** 2026-03-01
 - **Summary:** Implemented Task 1 (core rendering infrastructure) by adding the new pure-C#
@@ -344,3 +353,17 @@
   - `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** One transient full-suite test failure (`MergeCustomRoles_BuiltInRole_IsOverriddenByCustomMapping`) appeared during the first mandatory run and did not reproduce on isolated or subsequent full-suite reruns; final verification passed with `1114` tests succeeded, `0` failed, `0` skipped.
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Addressed Round 2 rework findings by adding explicit unit coverage for
+  `IScenarioRenderContext` formatting detection behavior in `DefaultResourceRenderer` and by
+  restoring the missing retrospective Task Planner log entry required by the feature workflow.
+  Extracted scenario-flag resolution into an internal helper to keep runtime behavior unchanged
+  while enabling direct branch testing of known-after-apply detection, boundary suppression, and
+  context override paths.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderer.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/DefaultResourceRendererScenarioTests.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None.

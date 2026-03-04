@@ -26,3 +26,10 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/Workflows/AotPublishIsolationTests.cs`
   - `docs/issues/108-binary-builds-failed/work-protocol.md`
 - **Problems Encountered:** Initial `ProjectReference` metadata fix alone did not resolve restore-time propagation of `PublishAot`; added generator-side `TreatAsLocalProperty="PublishAot"` and explicit `<PublishAot>false</PublishAot>` to fully prevent NETSDK1207.
+
+### Release Manager
+- **Date:** 2026-03-04
+- **Summary:** Pre-release checks passed (clean working directory, branch up to date). Skipped Technical Writer and Code Reviewer per Maintainer instruction (minor CI-only fix). Generated user-facing release notes and committed. Created PR; will merge after PR Validation passes.
+- **Artifacts Produced:**
+  - `docs/issues/108-binary-builds-failed/release-notes.md`
+- **Problems Encountered:** None.

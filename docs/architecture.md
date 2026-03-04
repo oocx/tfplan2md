@@ -249,7 +249,7 @@ tfplan2md/
 │   ├── Helpers/                 # Core rendering helper functions
 │   │   ├── JsonFlattener.cs     # JSON → flat key-value pairs
 │   │   ├── ResourceSummaryHtmlBuilder.cs  # HTML summary generation
-│   │   └── ScribanHelpers/      # C# helper methods (originally Scriban-registered)
+│   │   └── MarkdownHelpers/     # C# helper methods for markdown rendering
 │   │       ├── DiffFormatting.cs, DiffArray.cs, DiffComputation.cs, DiffUtilities.cs
 │   │       ├── LargeValues.cs, LargeValueSummary.cs
 │   │       ├── SemanticFormatting.cs (+ .Registry, .Helpers, .Identity)
@@ -307,7 +307,7 @@ tfplan2md/
 │       ├── EnrichedAzureScopeFormatter.cs
 │       ├── AzureMappingFileLoader.cs, AzureMappingFileParser.cs
 │       ├── AzureValueFormatterRegistration.cs
-│       └── ScribanHelpers.Azure.cs  # Azure-specific formatting helpers
+│       └── MarkdownHelpers.Azure.cs  # Azure-specific formatting helpers
 │
 ├── CompositionRoot.cs           # Pure DI composition (no container)
 ├── Program.cs                   # Entry point
@@ -457,7 +457,7 @@ flowchart LR
 
 All complex logic (conditional formatting, data transformations, calculations) is implemented in C# and provided to renderers through:
 - Rich model properties (precomputed values)
-- Shared helper methods in `ScribanHelpers/` and `Helpers/`
+- Shared helper methods in `MarkdownHelpers/` and `Helpers/`
 - Model builders that prepare data for rendering
 
 This ensures renderers are focused on layout.
@@ -469,7 +469,7 @@ This ensures renderers are focused on layout.
 | `Rendering/` | Pure C# rendering pipeline: `IResourceRenderer`, `MarkdownWriter`, `ReportRenderer`, `DefaultResourceRenderer`, `ResourceRendererRegistry` |
 | `Models/` | Core model types: view model factories, parent-child relationships, child resources, code analysis report models, formatted values |
 | `Summaries/` | Resource summary generation: builders, mappings, path formatters |
-| `Helpers/` | JSON flattening, HTML summary builder, and `ScribanHelpers/` (C# helper methods) |
+| `Helpers/` | JSON flattening, HTML summary builder, and `MarkdownHelpers/` (C# helper methods) |
 | `Services/` | Service registries: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`, `ResourceModelMapperRegistry`, `AttributeChangeFilterRegistry`, `PatternMatchingRegistry<T>` |
 
 **Renderer Resolution Flow:**
@@ -861,7 +861,7 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 | `AzureRoleDefinitionMapper` | Map Azure role definition IDs to role names |
 | `AzureRoleDefinitionsRegistry` | Static registry of Azure built-in role definitions |
 | `AzureMappingFileLoader` / `AzureMappingFileParser` | Load and parse principal mapping JSON files |
-| `ScribanHelpers.Azure` | Azure-specific formatting helper methods |
+| `MarkdownHelpers.Azure` | Azure-specific formatting helper methods |
 
 **Note:** This component is Azure-specific but not Terraform provider-specific. It is used by both AzApi and AzureRM providers.
 
@@ -1340,7 +1340,7 @@ The `--template` flag selects from two built-in report formats:
 
 #### C# Helper Methods
 
-Formatting logic previously registered as Scriban functions is now implemented as static C# methods in `ScribanHelpers/`:
+Formatting logic is implemented as static C# methods in `MarkdownHelpers/`:
 
 | Method | Purpose |
 |--------|---------|

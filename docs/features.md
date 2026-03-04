@@ -832,7 +832,6 @@ Masking is applied comprehensively across all rendering paths:
 - **Attribute tables** — individual attributes marked sensitive by Terraform are shown as `(sensitive)`
 - **AzApi body tables** — flattened JSON body properties (create, update, delete, replace) are masked when the corresponding `before_sensitive` / `after_sensitive` metadata marks them as sensitive
 - **Azure DevOps Variable Group diffs** — a variable cell is masked as `(sensitive / hidden)` when either the before or after state has `is_secret: true` (including transitions where a variable gains or loses secret status)
-- **Scriban template JSON context** — `before_json` and `after_json` objects supplied to templates are masked before template rendering; any leaf whose path matches a sensitivity entry in `before_sensitive` / `after_sensitive` is replaced with `(sensitive)`
 
 **Hierarchical sensitivity detection** handles all Terraform sensitivity encodings:
 
@@ -953,26 +952,9 @@ Resource changes in the report are now grouped by Terraform module. Each module 
 - **Module header**: Each module is shown as an H3 heading ("### 📦 Module: <module_address>"), where `module_address` is the full module path from the Terraform plan (e.g., `module.network.module.subnet`). The root module is shown as `root`. The 📦 icon is followed by a non-breaking space (U+00A0) to prevent wrapping.
 - **Resource headings**: Resources within a module are shown as H4 headings ("#### <action_symbol> <address>") to preserve a proper document hierarchy.
 - **Ordering**: Modules are listed so that the root module appears first, followed by other modules in lexicographic order. Nested modules are presented in a flat list but the sort order ensures child modules follow their parent modules.
-- **Template variable**: Templates have access to a top-level `module_changes` collection (in addition to the existing `changes` collection). Each item has:
+- **Module grouping**: The C# `ReportRenderer` groups resource changes by module and emits a `📦 Module: \`module_address\`` heading for each non-root module. Each item has:
   - `module_address` (string, empty for root)
-  - `changes` (array of resource change objects, same structure as items in `changes`)
-
-Example usage in a Scriban template:
-
-```scriban
-{{ for module in module_changes }}
-### Module: {{ if module.module_address && module.module_address != "" }}`{{ module.module_address }}`{{ else }}root{{ end }}
-
-{{ for change in module.changes }}
-#### {{ change.action_symbol }} {{ change.address }}
-
-... render attribute tables ...
-
-{{ end }}
-
----
-{{ end }}
-```
+  - `changes` (array of resource change objects)
 
 This grouping is enabled by default and cannot be disabled (it keeps reports concise and improves readability for multi-module plans).
 

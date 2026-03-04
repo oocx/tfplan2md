@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 /// Fallback renderer for resource types without a specialized provider renderer.
 /// Related feature: docs/features/107-remove-scriban/specification.md.
 /// </summary>
-[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Default renderer composes shared markdown behaviors for multiple model types after Scriban removal.")]
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Default renderer composes shared markdown behaviors for multiple model types in the pure C# rendering pipeline.")]
 internal sealed class DefaultResourceRenderer : IResourceRenderer
 {
     private const string DetailsStyle = " style=\"margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;\"";
@@ -51,7 +51,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         };
 
         var summary = string.IsNullOrWhiteSpace(change.SummaryHtml)
-            ? $"{change.ActionSymbol}\u00A0{ScribanHelpers.EscapeMarkdown(change.Type)} {ScribanHelpers.FormatCodeTable(change.Name)}"
+            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.Name)}"
             : change.SummaryHtml;
 
         var isNoOpParentWithChildren = IsNoOpParentSecurityRuleScenario(change);
@@ -134,7 +134,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         bool useKnownAfterApplyFormatting,
         bool useEphemeralOpenFormatting)
     {
-        // All resources use multiline format to match Scriban template baseline output.
+        // All resources use multiline format to preserve baseline output.
         _ = change;
         _ = isNoOpParentWithChildren;
         _ = useOutputsFocusedFormatting;
@@ -297,7 +297,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
     private static void RenderSingleValueTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, bool useResourceTypeForAttributeIcons = false)
     {
-        // Use fixed-width separators matching Scriban template output for all cases.
+        // Use fixed-width separators to preserve baseline output for all cases.
         _ = useKnownAfterApplyFormatting;
         writer.Raw("| Attribute | Value |\n");
         writer.Raw("| ----------- | ------- |\n");
@@ -311,12 +311,12 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
 
             var raw = change.Action == "create" ? attribute.After : attribute.Before;
             var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
-            var value = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var value = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 attribute.Name, raw, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
-                ScribanHelpers.EscapeMarkdown(attribute.Name) + indicator,
+                MarkdownHelpers.EscapeMarkdown(attribute.Name) + indicator,
                 value
             ]);
         }
@@ -334,7 +334,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
     private static void RenderBeforeAfterTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, bool useResourceTypeForAttributeIcons = false)
     {
-        // Use fixed-width separators matching Scriban template output for all cases.
+        // Use fixed-width separators to preserve baseline output for all cases.
         _ = useKnownAfterApplyFormatting;
         writer.Raw("| Attribute | Before | After |\n");
         writer.Raw("| ----------- | -------- | ------- |\n");
@@ -342,14 +342,14 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         foreach (var attribute in smallAttributes)
         {
             var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
-            var beforeValue = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var beforeValue = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 attribute.Name, attribute.Before, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
-            var afterValue = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var afterValue = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 attribute.Name, attribute.After, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
-                ScribanHelpers.EscapeMarkdown(attribute.Name) + indicator,
+                MarkdownHelpers.EscapeMarkdown(attribute.Name) + indicator,
                 string.IsNullOrEmpty(beforeValue) ? "-" : beforeValue,
                 string.IsNullOrEmpty(afterValue) ? "-" : afterValue
             ]);
@@ -421,7 +421,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             return;
         }
 
-        writer.Heading($"🔒\u00A0Security & Quality Findings for {ScribanHelpers.FormatCodeTable(change.Address)}", 4);
+        writer.Heading($"🔒\u00A0Security & Quality Findings for {MarkdownHelpers.FormatCodeTable(change.Address)}", 4);
         writer.BlankLine();
 
         writer.Raw("| Severity | Tool | Attribute | Finding | Remediation |\n");
@@ -429,27 +429,27 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
 
         foreach (var finding in change.CodeAnalysisFindings)
         {
-            var message = ScribanHelpers.EscapeMarkdownTableCell(finding.Message).Replace("\n", "<br/>", StringComparison.Ordinal);
+            var message = MarkdownHelpers.EscapeMarkdownTableCell(finding.Message).Replace("\n", "<br/>", StringComparison.Ordinal);
 
             if (!string.IsNullOrWhiteSpace(finding.RuleId))
             {
-                message += "<br/>Rule: " + ScribanHelpers.FormatCodeTable(finding.RuleId);
+                message += "<br/>Rule: " + MarkdownHelpers.FormatCodeTable(finding.RuleId);
             }
 
             if (!string.IsNullOrWhiteSpace(finding.ResourceAddress)
                 && !string.Equals(finding.ResourceAddress, change.Address, StringComparison.Ordinal))
             {
-                message += "<br/>Resource: " + ScribanHelpers.FormatCodeTable(finding.ResourceAddress);
+                message += "<br/>Resource: " + MarkdownHelpers.FormatCodeTable(finding.ResourceAddress);
             }
 
             var remediation = string.IsNullOrWhiteSpace(finding.HelpUri)
                 ? "-"
-                : $"[Details](<{ScribanHelpers.EscapeMarkdownLinkDestination(finding.HelpUri)}>)";
+                : $"[Details](<{MarkdownHelpers.EscapeMarkdownLinkDestination(finding.HelpUri)}>)";
 
             writer.TableRow([
                 $"{finding.SeverityIcon}\u00A0{finding.Severity}",
                 string.IsNullOrWhiteSpace(finding.ToolName) ? "-" : finding.ToolName,
-                string.IsNullOrWhiteSpace(finding.AttributePath) ? "-" : MarkdownWriter.InlineCode(ScribanHelpers.EscapeMarkdown(finding.AttributePath)),
+                string.IsNullOrWhiteSpace(finding.AttributePath) ? "-" : MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdown(finding.AttributePath)),
                 message,
                 remediation
             ]);
@@ -489,7 +489,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             }
             else
             {
-                // Use fixed separators matching Scriban template: 8 dashes for content columns, 20 for Terraform Resource.
+                // Use fixed separators: 8 dashes for content columns, 20 for Terraform Resource.
                 writer.Raw($"| {string.Join(" | ", headers)} |\n");
                 var separators = headers.Select(h =>
                     string.Equals(h, "Terraform Resource", StringComparison.Ordinal) ? "--------------------" : "--------");
@@ -503,12 +503,12 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
                 foreach (var column in group.Columns)
                 {
                     row.Values.TryGetValue(column.PropertyName, out var value);
-                    cells.Add(ScribanHelpers.FormatChildValue(value));
+                    cells.Add(MarkdownHelpers.FormatChildValue(value));
                 }
 
                 if (group.HasExternalResources)
                 {
-                    cells.Add(ScribanHelpers.FormatChildValue(row.TerraformResource));
+                    cells.Add(MarkdownHelpers.FormatChildValue(row.TerraformResource));
                 }
 
                 writer.TableRow(cells);
@@ -529,7 +529,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             return;
         }
 
-        var summary = ScribanHelpers.LargeAttributesSummary(largeAttributes);
+        var summary = MarkdownHelpers.LargeAttributesSummary(largeAttributes);
         if (hasSmallAttributesOrTags)
         {
             writer.Raw("<br/>\n");
@@ -555,9 +555,9 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
 
         foreach (var attribute in largeAttributes)
         {
-            writer.Heading($"**{ScribanHelpers.EscapeMarkdown(attribute.Name)}:**", 5);
+            writer.Heading($"**{MarkdownHelpers.EscapeMarkdown(attribute.Name)}:**", 5);
             writer.BlankLine();
-            writer.Raw(ScribanHelpers.FormatLargeValue(attribute.Before, attribute.After, largeValueFormat));
+            writer.Raw(MarkdownHelpers.FormatLargeValue(attribute.Before, attribute.After, largeValueFormat));
             writer.BlankLine();
         }
     }

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Oocx.TfPlan2Md.Parsing;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -50,9 +50,8 @@ internal partial class ReportModelBuilder
         // Now merge parent-child relationships (this removes children from allChanges for display)
         MergeParentChildRelationships(allChanges);
 
-        // Filter out no-op resources from the changes list passed to the template
-        // No-op resources have no meaningful changes to display and including them
-        // can cause the template to exceed Scriban's iteration limit of 1000
+        // Filter out no-op resources from the rendered changes list.
+        // No-op resources have no meaningful changes to display.
         // Exception: Preserve no-op parents that have children with actual changes (not just no-op children)
         var afterNoOpFilter = allChanges
             .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null || HasChildrenWithChanges(c))

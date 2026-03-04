@@ -70,7 +70,7 @@ internal partial class ReportModelBuilder
                 IsMasked = isMasked,
                 ModuleAddress = moduleAddress,
                 ProviderName = ResolveOutputProviderName(plan, outputName, moduleAddress),
-                IsLargeOutputValue = ScribanHelpers.IsLargeOutputValue(value),
+                IsLargeOutputValue = MarkdownHelpers.IsLargeOutputValue(value),
                 ReferencedAttributeName = ExtractReferencedAttributeName(plan.Configuration, outputName, moduleAddress)
             });
         }

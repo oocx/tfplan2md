@@ -125,7 +125,7 @@ internal sealed class MarkdownWriter
 
     /// <summary>
     /// Appends a markdown table header and separator row, padding each separator to
-    /// <c>column-header-length + 2</c> dashes to match baseline Scriban template output.
+    /// <c>column-header-length + 2</c> dashes to preserve baseline report formatting.
     /// </summary>
     /// <param name="columns">Header columns.</param>
     /// <returns>The current writer for chaining.</returns>
@@ -258,7 +258,7 @@ internal sealed class MarkdownWriter
     /// <summary>
     /// Escapes table cell text for markdown table output.
     /// Only matches pipes that are not already preceded by a backslash to avoid double-escaping
-    /// values that were already processed by <see cref="ScribanHelpers.EscapeMarkdown"/>.
+    /// values that were already escaped for markdown output.
     /// </summary>
     /// <param name="cell">Cell text to escape.</param>
     /// <returns>Escaped cell text.</returns>

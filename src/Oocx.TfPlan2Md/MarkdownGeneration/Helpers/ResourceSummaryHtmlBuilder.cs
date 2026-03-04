@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Encodings.Web;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 

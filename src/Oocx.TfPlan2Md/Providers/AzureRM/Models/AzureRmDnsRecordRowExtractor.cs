@@ -151,7 +151,7 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
                 var ip = record.GetString();
                 if (!string.IsNullOrEmpty(ip))
                 {
-                    var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                    var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistry(
                         "ip_address",
                         ip,
                         providerName,
@@ -340,21 +340,21 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
 
         var beforeName = JsonStateReader.GetStringProperty(beforeElement, "name") ?? "-";
         var afterName = JsonStateReader.GetStringProperty(afterElement, "name") ?? "-";
-        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+        var nameDiff = MarkdownHelpers.FormatDiff(beforeName, afterName, format);
 
         var beforeRecordType = InferRecordType(beforeElement);
         var afterRecordType = InferRecordType(afterElement);
-        var typeDiff = ScribanHelpers.FormatDiff(beforeRecordType, afterRecordType, format);
+        var typeDiff = MarkdownHelpers.FormatDiff(beforeRecordType, afterRecordType, format);
 
         var beforeTtl = JsonStateReader.GetStringProperty(beforeElement, "ttl") ?? "-";
         var afterTtl = JsonStateReader.GetStringProperty(afterElement, "ttl") ?? "-";
-        var ttlDiff = ScribanHelpers.FormatDiff(beforeTtl, afterTtl, format);
+        var ttlDiff = MarkdownHelpers.FormatDiff(beforeTtl, afterTtl, format);
 
         // Extract RAW values without formatting, then format the diff
         // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
         var beforeValue = ExtractRawRecordValue(beforeElement, beforeRecordType, providerName, iconProviderRegistry);
         var afterValue = ExtractRawRecordValue(afterElement, afterRecordType, providerName, iconProviderRegistry);
-        var valueDiff = ScribanHelpers.FormatDiff(beforeValue, afterValue, format);
+        var valueDiff = MarkdownHelpers.FormatDiff(beforeValue, afterValue, format);
 
         return new Dictionary<string, string>
         {
@@ -409,7 +409,7 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
                 var ip = record.GetString();
                 if (!string.IsNullOrEmpty(ip))
                 {
-                    var formatted = ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                    var formatted = MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
                         "ip_address",
                         ip,
                         providerName,

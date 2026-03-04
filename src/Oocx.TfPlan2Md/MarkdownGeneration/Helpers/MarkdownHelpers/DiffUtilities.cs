@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Diff utilities used by large value and array diff formatting.
 /// </summary>
-public static partial class ScribanHelpers
+public static partial class MarkdownHelpers
 {
     /// <summary>
     /// Appends a styled line prefixing removal or addition markers with consistent coloring.

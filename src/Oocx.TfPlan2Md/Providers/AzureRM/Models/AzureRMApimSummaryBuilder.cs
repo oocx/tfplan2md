@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 

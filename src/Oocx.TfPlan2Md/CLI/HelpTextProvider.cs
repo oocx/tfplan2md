@@ -21,7 +21,7 @@ public static class HelpTextProvider
         var options = new (string Option, string Description)[]
         {
             ("-o, --output <file>", "Write output to a file instead of stdout."),
-            ("-t, --template <name|file>", "Use a built-in template by name or a custom Scriban template file."),
+            ("-t, --template <name>", "Use a built-in template by name (default or summary)."),
             ("--report-title <title>", "Override the report title (level-1 heading) with a custom value."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
             ("--render-target <github|azuredevops>", "Target platform for rendering (default: azuredevops)."),
@@ -61,8 +61,8 @@ public static class HelpTextProvider
             "# GitHub-friendly rendering",
             "tfplan2md plan.json --render-target github",
             string.Empty,
-            "# With output file and custom template",
-            "tfplan2md plan.json --output plan.md --template my-template.sbn"
+            "# With output file and built-in summary template",
+            "tfplan2md plan.json --output plan.md --template summary"
         };
 
         var sb = new StringBuilder();

@@ -8,13 +8,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Helper functions for summarizing large attribute value changes.
 /// </summary>
-public static partial class ScribanHelpers
+public static partial class MarkdownHelpers
 {
     /// <summary>
     /// Builds the summary string for a set of large attributes.
     /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
-    /// <param name="attributes">Collection of attribute change objects (ScriptArray) with name/before/after.</param>
+    /// <param name="attributes">Collection of attribute change objects with name/before/after.</param>
     /// <returns>Summary string like "Large values: policy (3 lines, 2 changed)" or empty when none.</returns>
     public static string LargeAttributesSummary(object? attributes)
     {
@@ -44,7 +44,7 @@ public static partial class ScribanHelpers
     /// <summary>
     /// Converts raw attribute change objects into strongly typed attribute change info entries.
     /// </summary>
-    /// <param name="attributes">Attributes passed from Scriban context.</param>
+    /// <param name="attributes">Attributes passed from the rendering context.</param>
     /// <returns>List of attribute change information.</returns>
     private static List<AttributeChangeInfo> ToAttributeList(object? attributes)
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 

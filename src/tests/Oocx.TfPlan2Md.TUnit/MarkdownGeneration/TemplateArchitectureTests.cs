@@ -11,10 +11,10 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class TemplateArchitectureTests
 {
     /// <summary>
-    /// Verifies that no embedded Scriban templates remain in the main assembly.
+    /// Verifies that no embedded legacy template resources remain in the main assembly.
     /// </summary>
     [Test]
-    public void RenderingArchitecture_ShouldNotEmbedScribanTemplates()
+    public void RenderingArchitecture_ShouldNotEmbedLegacyTemplateResources()
     {
         var assembly = typeof(MarkdownRenderer).Assembly;
         var templateResources = assembly
@@ -22,6 +22,6 @@ public class TemplateArchitectureTests
             .Where(name => name.EndsWith(".sbn", StringComparison.Ordinal))
             .ToList();
 
-        templateResources.Should().BeEmpty("pure C# rendering should not ship Scriban templates");
+        templateResources.Should().BeEmpty("pure C# rendering should not ship legacy template resources");
     }
 }

@@ -56,7 +56,7 @@ internal sealed class PrincipalIdFormatter : IValueFormatter
             _ => "👤"
         };
 
-        var enriched = $"{icon}{ScribanHelpers.NonBreakingSpace}{displayName} ({context.Value})";
-        return ScribanHelpers.FormatCodeTable(enriched);
+        var enriched = $"{icon}{MarkdownHelpers.NonBreakingSpace}{displayName} ({context.Value})";
+        return MarkdownHelpers.FormatCodeTable(enriched);
     }
 }

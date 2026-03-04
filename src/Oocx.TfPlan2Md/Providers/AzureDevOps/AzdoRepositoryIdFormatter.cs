@@ -48,6 +48,6 @@ internal sealed class AzdoRepositoryIdFormatter : IValueFormatter
         }
 
         var enriched = $"🗃️\u00A0{displayName} ({context.Value})";
-        return ScribanHelpers.FormatCodeTable(enriched);
+        return MarkdownHelpers.FormatCodeTable(enriched);
     }
 }

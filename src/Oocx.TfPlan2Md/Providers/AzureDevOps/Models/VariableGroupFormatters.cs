@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
@@ -276,6 +276,6 @@ internal static class VariableGroupFormatters
             return false;
         }
 
-        return ScribanHelpers.IsLargeValue(variable.Value, null);
+        return MarkdownHelpers.IsLargeValue(variable.Value, null);
     }
 }

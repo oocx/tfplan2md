@@ -9,7 +9,7 @@ using Oocx.TfPlan2Md.Parsing;
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
-/// Represents the data model passed to the Scriban template.
+/// Represents the data model used by markdown renderers.
 /// </summary>
 internal class ReportModel
 {

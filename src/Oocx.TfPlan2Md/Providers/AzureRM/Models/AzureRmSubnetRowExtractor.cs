@@ -65,7 +65,7 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        return MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             attributeName,
             value,
             providerName,
@@ -98,7 +98,7 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
         {
             if (prefix.ValueKind == JsonValueKind.String)
             {
-                var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistry(
                     "address_prefix",
                     prefix.GetString() ?? string.Empty,
                     providerName,
@@ -137,7 +137,7 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        return MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             "security_group",
             nsgValue,
             providerName,
@@ -174,19 +174,19 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
         // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
         var beforeName = ExtractRawAttribute(beforeElement, "name", providerName, iconProviderRegistry);
         var afterName = ExtractRawAttribute(afterElement, "name", providerName, iconProviderRegistry);
-        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+        var nameDiff = MarkdownHelpers.FormatDiff(beforeName, afterName, format);
 
         var beforeAddressPrefixes = ExtractRawAddressPrefixes(beforeElement, providerName, iconProviderRegistry);
         var afterAddressPrefixes = ExtractRawAddressPrefixes(afterElement, providerName, iconProviderRegistry);
-        var addressPrefixesDiff = ScribanHelpers.FormatDiff(beforeAddressPrefixes, afterAddressPrefixes, format);
+        var addressPrefixesDiff = MarkdownHelpers.FormatDiff(beforeAddressPrefixes, afterAddressPrefixes, format);
 
         var beforeNsg = ExtractRawNsg(beforeElement, providerName, iconProviderRegistry);
         var afterNsg = ExtractRawNsg(afterElement, providerName, iconProviderRegistry);
-        var nsgDiff = ScribanHelpers.FormatDiff(beforeNsg, afterNsg, format);
+        var nsgDiff = MarkdownHelpers.FormatDiff(beforeNsg, afterNsg, format);
 
         var beforeDelegation = ExtractDelegation(beforeElement);
         var afterDelegation = ExtractDelegation(afterElement);
-        var delegationDiff = ScribanHelpers.FormatDiff(beforeDelegation, afterDelegation, format);
+        var delegationDiff = MarkdownHelpers.FormatDiff(beforeDelegation, afterDelegation, format);
 
         return new Dictionary<string, string>
         {
@@ -213,7 +213,7 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
         }
 
         // Use FormatAttributeValuePlainWithRegistry which adds icons but NOT backticks
-        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+        return MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
             attributeName,
             value,
             providerName,
@@ -244,7 +244,7 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
         {
             if (prefix.ValueKind == JsonValueKind.String)
             {
-                var formatted = ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                var formatted = MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
                     "address_prefix",
                     prefix.GetString() ?? string.Empty,
                     providerName,
@@ -280,7 +280,7 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+        return MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
             "security_group",
             nsgValue,
             providerName,

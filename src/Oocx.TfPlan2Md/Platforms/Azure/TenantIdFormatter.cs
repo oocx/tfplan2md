@@ -50,6 +50,6 @@ internal sealed class TenantIdFormatter : IValueFormatter
         }
 
         var label = AzureLabelFormatter.FormatTenantLabel(displayName);
-        return ScribanHelpers.FormatCodeTable(label);
+        return MarkdownHelpers.FormatCodeTable(label);
     }
 }

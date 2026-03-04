@@ -47,7 +47,7 @@ internal abstract class AzureRmDelegatingRenderer(string resourceType) : IResour
         };
 
         var summary = change.SummaryHtml
-            ?? $"{change.ActionSymbol}\u00A0{ScribanHelpers.EscapeMarkdown(change.Type)} <b>{ScribanHelpers.FormatCodeSummary(change.Name)}</b>";
+            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");
         writer.Raw("<summary>");
@@ -130,7 +130,7 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
             writer.Raw("| ----------- | -------- | ------- |\n");
             foreach (var attr in viewModel.SmallAttributes)
             {
-                writer.TableRow([ScribanHelpers.EscapeMarkdown(attr.Name), string.IsNullOrWhiteSpace(attr.Before) ? "-" : attr.Before, attr.After ?? string.Empty]);
+                writer.TableRow([MarkdownHelpers.EscapeMarkdown(attr.Name), string.IsNullOrWhiteSpace(attr.Before) ? "-" : attr.Before, attr.After ?? string.Empty]);
             }
         }
         else
@@ -140,7 +140,7 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
             foreach (var attr in viewModel.SmallAttributes)
             {
                 var value = isDelete ? attr.Before : attr.After;
-                writer.TableRow([ScribanHelpers.EscapeMarkdown(attr.Name), value ?? string.Empty]);
+                writer.TableRow([MarkdownHelpers.EscapeMarkdown(attr.Name), value ?? string.Empty]);
             }
         }
 
@@ -164,7 +164,7 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
         // SummaryHtml for role assignments may already include provider-specific content
         // (e.g. Azure resource name badge, change-count badges) that is not part of the
         // plain action/type/name prefix the snapshot expects.
-        var baseSummary = $"{change.ActionSymbol}\u00A0{ScribanHelpers.EscapeMarkdown(change.Type)} <b>{ScribanHelpers.FormatCodeSummary(change.Name)}</b>";
+        var baseSummary = $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
         var enrichedSummary = !string.IsNullOrWhiteSpace(summaryText)
             ? $"{baseSummary} — {summaryText}"
             : baseSummary;
@@ -221,7 +221,7 @@ internal sealed class NsgRenderer : AzureRmDelegatingRenderer
 
         WriteDetailsOpen(writer, change, context);
 
-        // Heading is always "Security Rules" regardless of action type, matching Scriban output parity.
+        // Heading is always "Security Rules" regardless of action type to preserve established output.
         writer.Heading("Security Rules", 4);
         writer.BlankLine();
         writer.TableHeader("Change", "Name", "Priority", "Direction", "Access", "Protocol", "Source Addresses", "Source Ports", "Destination Addresses", "Destination Ports", "Description");
@@ -344,12 +344,12 @@ internal sealed class FirewallNetworkRuleRenderer : AzureRmDelegatingRenderer
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(name))
         {
-            parts.Add($"**Collection:** `{ScribanHelpers.EscapeMarkdown(name)}`");
+            parts.Add($"**Collection:** `{MarkdownHelpers.EscapeMarkdown(name)}`");
         }
 
         if (!string.IsNullOrEmpty(priority))
         {
-            parts.Add($"**Priority:** `{ScribanHelpers.EscapeMarkdown(priority)}`");
+            parts.Add($"**Priority:** `{MarkdownHelpers.EscapeMarkdown(priority)}`");
         }
 
         if (!string.IsNullOrEmpty(action))
@@ -451,12 +451,12 @@ internal sealed class FirewallAppRuleRenderer : AzureRmDelegatingRenderer
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(name))
         {
-            parts.Add($"**Collection:** `{ScribanHelpers.EscapeMarkdown(name)}`");
+            parts.Add($"**Collection:** `{MarkdownHelpers.EscapeMarkdown(name)}`");
         }
 
         if (!string.IsNullOrEmpty(priority))
         {
-            parts.Add($"**Priority:** `{ScribanHelpers.EscapeMarkdown(priority)}`");
+            parts.Add($"**Priority:** `{MarkdownHelpers.EscapeMarkdown(priority)}`");
         }
 
         if (!string.IsNullOrEmpty(action))

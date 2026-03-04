@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using TUnit.Core;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
-public class ScribanHelpersLargeValueTests
+public class MarkdownHelpersLargeValueTests
 {
     private const string SimpleDiffFormat = "simple-diff";
     private const string ValueText = "value";

@@ -36,7 +36,7 @@ internal record CliOptions
     public string? OutputFile { get; init; }
 
     /// <summary>
-    /// Gets the custom template file path.
+    /// Gets the selected built-in template name.
     /// </summary>
     public string? TemplatePath { get; init; }
 
@@ -208,7 +208,7 @@ internal static class CliParser
                     }
                     else
                     {
-                        throw new CliParseException("--template requires a file path argument.");
+                        throw new CliParseException("--template requires a template name argument.");
                     }
                     break;
                 case "--report-title":

@@ -49,7 +49,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
         };
 
         var summary = string.IsNullOrWhiteSpace(change.SummaryHtml)
-            ? $"{change.ActionSymbol}\u00A0{ScribanHelpers.EscapeMarkdown(change.Type)} {ScribanHelpers.FormatCodeTable(change.Name)}"
+            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.Name)}"
             : change.SummaryHtml;
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");
@@ -69,7 +69,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
     {
         if (!string.IsNullOrWhiteSpace(metadata.Type))
         {
-            var typeText = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var typeText = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 "type",
                 metadata.Type,
                 AzApiProviderName,
@@ -83,7 +83,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
         if (!string.IsNullOrWhiteSpace(docUrl))
         {
             writer.BlankLine();
-            writer.Paragraph($"📚\u00A0[View API Documentation]({ScribanHelpers.EscapeMarkdown(docUrl)})");
+            writer.Paragraph($"📚\u00A0[View API Documentation]({MarkdownHelpers.EscapeMarkdown(docUrl)})");
         }
     }
 
@@ -108,7 +108,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
 
         if (!string.IsNullOrWhiteSpace(metadata.Name))
         {
-            var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 "name",
                 metadata.Name,
                 AzApiProviderName,
@@ -120,7 +120,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
 
         if (!string.IsNullOrWhiteSpace(metadata.ParentId))
         {
-            var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 "parent_id",
                 metadata.ParentId,
                 AzureRmProviderName,
@@ -132,7 +132,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
 
         if (!string.IsNullOrWhiteSpace(metadata.Location))
         {
-            var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+            var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
                 "location",
                 metadata.Location,
                 AzApiProviderName,
@@ -160,7 +160,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
         writer.Raw("| Attribute | Value |\n");
         writer.Raw("|-----------|-------|\n");
 
-        var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+        var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
             "resource_id",
             metadata.ResourceId,
             AzureRmProviderName,
@@ -186,7 +186,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
         writer.Paragraph("**🏷️\u00A0Tags:**");
         foreach (var (key, value) in metadata.Tags)
         {
-            writer.Paragraph($" `{ScribanHelpers.EscapeMarkdown(key)}: {ScribanHelpers.EscapeMarkdown(value)}`");
+            writer.Paragraph($" `{MarkdownHelpers.EscapeMarkdown(key)}: {MarkdownHelpers.EscapeMarkdown(value)}`");
         }
     }
 

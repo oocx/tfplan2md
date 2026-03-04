@@ -21,7 +21,7 @@ public class ReportModelBuilderNoOpTests
         var model = builder.Build(plan);
 
         // Assert - no-op resources are counted in summary but not included in Changes
-        // to avoid exceeding Scriban's iteration limit on large plans
+        // to avoid unnecessary rendering overhead on large plans
         model.Summary.ToAdd.Count.Should().Be(0);
         model.Summary.ToChange.Count.Should().Be(0);
         model.Summary.ToDestroy.Count.Should().Be(0);

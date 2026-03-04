@@ -3,7 +3,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Helper routines that apply semantic icons and detection rules for attribute formatting.
 /// </summary>
-public static partial class ScribanHelpers
+public static partial class MarkdownHelpers
 {
     /// <summary>
     /// Determines whether a value represents a boolean and formats it with icons.

@@ -56,7 +56,7 @@ internal static class CodeAnalysisSectionRenderer
 
         if (codeAnalysis.Tools.Count > 0)
         {
-            writer.Paragraph($"**Tools Used:** {string.Join(", ", codeAnalysis.Tools.Select(tool => ScribanHelpers.EscapeMarkdown(tool.DisplayName)))}");
+            writer.Paragraph($"**Tools Used:** {string.Join(", ", codeAnalysis.Tools.Select(tool => MarkdownHelpers.EscapeMarkdown(tool.DisplayName)))}");
             writer.BlankLine();
         }
 
@@ -70,8 +70,8 @@ internal static class CodeAnalysisSectionRenderer
 
         foreach (var warning in codeAnalysis.Warnings)
         {
-            writer.Paragraph($"⚠️\u00A0**Warning:** Unable to process code analysis file {ScribanHelpers.FormatCodeTable(warning.FilePath)}");
-            writer.Paragraph($"- Error: {ScribanHelpers.EscapeMarkdown(warning.Message)}");
+            writer.Paragraph($"⚠️\u00A0**Warning:** Unable to process code analysis file {MarkdownHelpers.FormatCodeTable(warning.FilePath)}");
+            writer.Paragraph($"- Error: {MarkdownHelpers.EscapeMarkdown(warning.Message)}");
             writer.BlankLine();
         }
     }
@@ -95,7 +95,7 @@ internal static class CodeAnalysisSectionRenderer
         {
             var moduleText = string.IsNullOrWhiteSpace(module.ModuleAddress)
                 ? "root"
-                : ScribanHelpers.FormatCodeTable(module.ModuleAddress);
+                : MarkdownHelpers.FormatCodeTable(module.ModuleAddress);
 
             writer.Heading($"📦\u00A0Module: {moduleText}", 3);
             writer.BlankLine();
@@ -119,10 +119,10 @@ internal static class CodeAnalysisSectionRenderer
 
         foreach (var finding in findings)
         {
-            var message = ScribanHelpers.EscapeMarkdownTableCell(finding.Message).Replace("\n", "<br/>", StringComparison.Ordinal);
+            var message = MarkdownHelpers.EscapeMarkdownTableCell(finding.Message).Replace("\n", "<br/>", StringComparison.Ordinal);
             if (!string.IsNullOrWhiteSpace(finding.RuleId))
             {
-                message += "<br/>Rule: " + ScribanHelpers.FormatCodeTable(finding.RuleId);
+                message += "<br/>Rule: " + MarkdownHelpers.FormatCodeTable(finding.RuleId);
             }
 
             writer.TableRow([
@@ -131,7 +131,7 @@ internal static class CodeAnalysisSectionRenderer
                 message,
                 string.IsNullOrWhiteSpace(finding.HelpUri)
                     ? "-"
-                    : $"[Details]({ScribanHelpers.EscapeMarkdown(finding.HelpUri)})"
+                    : $"[Details]({MarkdownHelpers.EscapeMarkdown(finding.HelpUri)})"
             ]);
         }
 
@@ -147,6 +147,6 @@ internal static class CodeAnalysisSectionRenderer
 
         return string.Join(
             "<br/>",
-            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {ScribanHelpers.EscapeMarkdown(entry.Type)}"));
+            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {MarkdownHelpers.EscapeMarkdown(entry.Type)}"));
     }
 }

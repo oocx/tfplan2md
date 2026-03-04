@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Diff computation helpers used by diff rendering routines.
 /// </summary>
-public static partial class ScribanHelpers
+public static partial class MarkdownHelpers
 {
     /// <summary>
     /// Maximum number of cells in the LCS matrix before falling back to a simple diff.
@@ -20,7 +20,7 @@ public static partial class ScribanHelpers
     /// Thread-local cache for <see cref="BuildLineDiff"/> results.
     /// Eliminates double LCS computation when the template first counts changed lines
     /// (via <c>LargeAttributesSummary</c>) and then renders the diff (via <c>FormatLargeValue</c>).
-    /// Uses <c>[ThreadStatic]</c> because Scriban templates execute single-threaded per render
+    /// Uses <c>[ThreadStatic]</c> because render passes execute single-threaded
     /// pass, and this avoids thread-safety issues if multiple renders run concurrently on
     /// different threads. The cache is cleared after each render pass via <see cref="ClearLineDiffCache"/>.
     /// </summary>

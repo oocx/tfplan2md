@@ -11,7 +11,7 @@ using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -899,9 +899,8 @@ public class MarkdownRendererTests
     [Test]
     public void Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit()
     {
-        // Arrange - Create a large plan with many no-op resources to test that the template
-        // does not exceed Scriban's default iteration limit of 1000
-        // See: https://github.com/scriban/scriban/issues/226
+        // Arrange - Create a large plan with many no-op resources to verify
+        // rendering remains stable with high resource counts.
         var resourceChanges = new List<ResourceChange>();
 
         // Create 200 no-op resources, each with 10 attributes

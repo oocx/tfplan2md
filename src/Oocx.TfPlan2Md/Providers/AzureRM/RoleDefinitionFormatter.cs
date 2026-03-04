@@ -33,7 +33,7 @@ internal sealed class RoleDefinitionFormatter : IValueFormatter
             return null;
         }
 
-        var roleText = $"🛡️{ScribanHelpers.NonBreakingSpace}{roleInfo.FullName}";
-        return ScribanHelpers.FormatCodeTable(roleText);
+        var roleText = $"🛡️{MarkdownHelpers.NonBreakingSpace}{roleInfo.FullName}";
+        return MarkdownHelpers.FormatCodeTable(roleText);
     }
 }

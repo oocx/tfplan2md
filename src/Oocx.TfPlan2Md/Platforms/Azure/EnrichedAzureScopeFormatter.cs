@@ -157,11 +157,11 @@ internal sealed class EnrichedAzureScopeFormatter
         {
             var tenantLabel = $"{AzureLabelFormatter.ManagementGroupIcon}{AzureLabelFormatter.NonBreakingSpace}" +
                 $"{TenantRootPrefix}{tenantName}{TenantRootSuffix}";
-            return ScribanHelpers.FormatCodeTable(tenantLabel);
+            return MarkdownHelpers.FormatCodeTable(tenantLabel);
         }
 
         var managementGroupLabel = $"{AzureLabelFormatter.ManagementGroupIcon}{AzureLabelFormatter.NonBreakingSpace}{label}";
-        return ScribanHelpers.FormatCodeTable(managementGroupLabel);
+        return MarkdownHelpers.FormatCodeTable(managementGroupLabel);
     }
 
     /// <summary>

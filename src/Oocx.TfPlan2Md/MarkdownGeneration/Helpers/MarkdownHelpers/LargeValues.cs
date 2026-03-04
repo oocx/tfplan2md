@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Helpers for large value rendering and inline/simple diffs.
 /// </summary>
-public static partial class ScribanHelpers
+public static partial class MarkdownHelpers
 {
     /// <summary>
     /// Formats large attribute values according to the requested rendering format.

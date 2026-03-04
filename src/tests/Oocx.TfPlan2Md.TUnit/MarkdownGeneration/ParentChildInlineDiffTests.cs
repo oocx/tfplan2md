@@ -27,7 +27,7 @@ public class ParentChildInlineDiffTests
         var after = "10.200.2.0/23";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should contain rich HTML with styling
         result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
@@ -56,7 +56,7 @@ public class ParentChildInlineDiffTests
         var after = "new value";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should use styled spans with +/- prefixes
         result.Should().Contain("<code style=\"display:block;");
@@ -81,7 +81,7 @@ public class ParentChildInlineDiffTests
         var after = "VnetLocal";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "simple-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "simple-diff");
 
         // Assert - Should NOT contain HTML style attributes
         result.Should().NotContain("<span style=");
@@ -105,7 +105,7 @@ public class ParentChildInlineDiffTests
         var after = "10.200.2.0/23";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should contain rich HTML with character-level highlighting
         result.Should().Contain("<code style=\"display:block;");
@@ -129,7 +129,7 @@ public class ParentChildInlineDiffTests
         var after = "VnetLocal";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should contain rich HTML with character-level highlighting
         result.Should().Contain("<code style=\"display:block;");
@@ -158,7 +158,7 @@ public class ParentChildInlineDiffTests
         var after = "🌐 10.1.1.5, 🌐 10.1.1.6";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should contain rich HTML with character-level highlighting
         result.Should().Contain("<code style=\"display:block;");
@@ -182,7 +182,7 @@ public class ParentChildInlineDiffTests
         var after = "🔌 8443, 🔌 9443";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should contain rich HTML with character-level highlighting
         result.Should().Contain("<code style=\"display:block;");
@@ -207,7 +207,7 @@ public class ParentChildInlineDiffTests
         var after = "🌐 10.1.1.20";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should contain rich HTML with character-level highlighting
         result.Should().Contain("<code style=\"display:block;");
@@ -231,7 +231,7 @@ public class ParentChildInlineDiffTests
         var after = "new-nsg-id";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert
         result.Should().NotContain("<span style=");
@@ -249,7 +249,7 @@ public class ParentChildInlineDiffTests
         string? after = null;
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert
         result.Should().NotContain("<span style=");
@@ -267,7 +267,7 @@ public class ParentChildInlineDiffTests
         var after = "unchanged-value";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should show value without diff markers
         result.Should().NotContain("- ");
@@ -286,7 +286,7 @@ public class ParentChildInlineDiffTests
         var after = "Different value with spaces";
 
         // Act
-        var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
+        var result = MarkdownHelpers.FormatDiff(before, after, "inline-diff");
 
         // Assert - Should be table-compatible with rich HTML
         result.Should().NotContain("\n"); // No raw newlines

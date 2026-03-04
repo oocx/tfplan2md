@@ -221,12 +221,12 @@ internal static class AzApiBodyRenderer
             var displayPath = AzApiGrouping.RemovePropertiesPrefix(property.Path);
             if (!context.ShowSensitive && AzApiSensitivityHelper.IsPathSensitive(property.Path, sensitivePaths))
             {
-                writer.Raw($"| {ScribanHelpers.EscapeMarkdown(displayPath)} | (sensitive) |\n");
+                writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(displayPath)} | (sensitive) |\n");
                 continue;
             }
 
             var formatted = FormatValue(displayPath, property.Value?.ToString(), context);
-            writer.Raw($"| {ScribanHelpers.EscapeMarkdown(displayPath)} | {formatted} |\n");
+            writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(displayPath)} | {formatted} |\n");
         }
 
         writer.BlankLine();
@@ -239,7 +239,7 @@ internal static class AzApiBodyRenderer
         HashSet<string> sensitivePaths,
         IRenderContext context)
     {
-        writer.Heading($"`{ScribanHelpers.EscapeMarkdown(groupPath)}`", 6);
+        writer.Heading($"`{MarkdownHelpers.EscapeMarkdown(groupPath)}`", 6);
         writer.BlankLine();
         writer.Raw("| Property | Value |\n");
         writer.Raw("|----------|-------|\n");
@@ -249,12 +249,12 @@ internal static class AzApiBodyRenderer
             var localPath = AzApiGrouping.RemoveNestedPrefix(property.Path, groupPath);
             if (!context.ShowSensitive && AzApiSensitivityHelper.IsPathSensitive(property.Path, sensitivePaths))
             {
-                writer.Raw($"| {ScribanHelpers.EscapeMarkdown(localPath)} | (sensitive) |\n");
+                writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(localPath)} | (sensitive) |\n");
                 continue;
             }
 
             var formatted = FormatValue(localPath, property.Value?.ToString(), context);
-            writer.Raw($"| {ScribanHelpers.EscapeMarkdown(localPath)} | {formatted} |\n");
+            writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(localPath)} | {formatted} |\n");
         }
 
         writer.BlankLine();
@@ -267,7 +267,7 @@ internal static class AzApiBodyRenderer
         HashSet<string> sensitivePaths,
         IRenderContext context)
     {
-        writer.Heading($"`{ScribanHelpers.EscapeMarkdown(arrayPath)}` Array", 6);
+        writer.Heading($"`{MarkdownHelpers.EscapeMarkdown(arrayPath)}` Array", 6);
         writer.BlankLine();
 
         var items = ExtractArrayItemsForCreate(properties, arrayPath, sensitivePaths, context.ShowSensitive);
@@ -278,7 +278,7 @@ internal static class AzApiBodyRenderer
         }
 
         var columns = CollectArrayColumns(items);
-        writer.Raw($"| Index | {string.Join(" | ", columns.Select(ScribanHelpers.EscapeMarkdown))} |\n");
+        writer.Raw($"| Index | {string.Join(" | ", columns.Select(MarkdownHelpers.EscapeMarkdown))} |\n");
         writer.Raw($"|-------|{string.Join("|", columns.Select(_ => "-------"))}|\n");
 
         foreach (var item in items)
@@ -343,13 +343,13 @@ internal static class AzApiBodyRenderer
             var displayPath = AzApiGrouping.RemovePropertiesPrefix(property.Path);
             if (property.IsSensitive && !context.ShowSensitive)
             {
-                writer.Raw($"| {ScribanHelpers.EscapeMarkdown(displayPath)} | (sensitive) | (sensitive) |\n");
+                writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(displayPath)} | (sensitive) | (sensitive) |\n");
                 continue;
             }
 
             var before = FormatValue(displayPath, property.Before?.ToString(), context);
             var after = FormatValue(displayPath, property.After?.ToString(), context);
-            writer.Raw($"| {ScribanHelpers.EscapeMarkdown(displayPath)} | {before} | {after} |\n");
+            writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(displayPath)} | {before} | {after} |\n");
         }
 
         writer.BlankLine();
@@ -357,7 +357,7 @@ internal static class AzApiBodyRenderer
 
     private static void WriteUpdatePrefixGroup(MarkdownWriter writer, string groupPath, IReadOnlyList<AzApiComparisonProperty> properties, IRenderContext context)
     {
-        writer.Heading($"`{ScribanHelpers.EscapeMarkdown(groupPath)}`", 6);
+        writer.Heading($"`{MarkdownHelpers.EscapeMarkdown(groupPath)}`", 6);
         writer.BlankLine();
         writer.Raw("| Property | Before | After |\n");
         writer.Raw("|----------|--------|-------|\n");
@@ -367,13 +367,13 @@ internal static class AzApiBodyRenderer
             var localPath = AzApiGrouping.RemoveNestedPrefix(property.Path, groupPath);
             if (property.IsSensitive && !context.ShowSensitive)
             {
-                writer.Raw($"| {ScribanHelpers.EscapeMarkdown(localPath)} | (sensitive) | (sensitive) |\n");
+                writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(localPath)} | (sensitive) | (sensitive) |\n");
                 continue;
             }
 
             var before = FormatValue(localPath, property.Before?.ToString(), context);
             var after = FormatValue(localPath, property.After?.ToString(), context);
-            writer.Raw($"| {ScribanHelpers.EscapeMarkdown(localPath)} | {before} | {after} |\n");
+            writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(localPath)} | {before} | {after} |\n");
         }
 
         writer.BlankLine();
@@ -386,7 +386,7 @@ internal static class AzApiBodyRenderer
         HashSet<int> changedLocalIndexes,
         IRenderContext context)
     {
-        writer.Heading($"`{ScribanHelpers.EscapeMarkdown(arrayPath)}` Array", 6);
+        writer.Heading($"`{MarkdownHelpers.EscapeMarkdown(arrayPath)}` Array", 6);
         writer.BlankLine();
 
         var items = ExtractArrayItemsForUpdate(properties, arrayPath, changedLocalIndexes);
@@ -401,13 +401,13 @@ internal static class AzApiBodyRenderer
             {
                 if (entry.IsSensitive && !context.ShowSensitive)
                 {
-                    writer.Raw($"| {ScribanHelpers.EscapeMarkdown(entry.LocalPath)} | (sensitive) | (sensitive) |\n");
+                    writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(entry.LocalPath)} | (sensitive) | (sensitive) |\n");
                     continue;
                 }
 
                 var beforeFormatted = FormatValue(entry.LocalPath, entry.Before?.ToString(), context);
                 var afterFormatted = FormatValue(entry.LocalPath, entry.After?.ToString(), context);
-                writer.Raw($"| {ScribanHelpers.EscapeMarkdown(entry.LocalPath)} | {beforeFormatted} | {afterFormatted} |\n");
+                writer.Raw($"| {MarkdownHelpers.EscapeMarkdown(entry.LocalPath)} | {beforeFormatted} | {afterFormatted} |\n");
             }
 
             writer.BlankLine();
@@ -432,7 +432,7 @@ internal static class AzApiBodyRenderer
         foreach (var property in properties)
         {
             var displayPath = AzApiGrouping.RemovePropertiesPrefix(property.Path);
-            writer.Heading($"**{ScribanHelpers.EscapeMarkdown(displayPath)}:**", 5);
+            writer.Heading($"**{MarkdownHelpers.EscapeMarkdown(displayPath)}:**", 5);
             writer.BlankLine();
 
             if (!context.ShowSensitive && AzApiSensitivityHelper.IsPathSensitive(property.Path, sensitivePaths))
@@ -441,7 +441,7 @@ internal static class AzApiBodyRenderer
             }
             else
             {
-                writer.Raw(ScribanHelpers.FormatLargeValue(null, property.Value?.ToString(), "inline-diff"));
+                writer.Raw(MarkdownHelpers.FormatLargeValue(null, property.Value?.ToString(), "inline-diff"));
                 writer.Raw("\n");
             }
 
@@ -463,7 +463,7 @@ internal static class AzApiBodyRenderer
         foreach (var property in properties)
         {
             var displayPath = AzApiGrouping.RemovePropertiesPrefix(property.Path);
-            writer.Heading($"**{ScribanHelpers.EscapeMarkdown(displayPath)}:**", 5);
+            writer.Heading($"**{MarkdownHelpers.EscapeMarkdown(displayPath)}:**", 5);
             writer.BlankLine();
 
             if (property.IsSensitive && !context.ShowSensitive)
@@ -472,7 +472,7 @@ internal static class AzApiBodyRenderer
             }
             else
             {
-                writer.Raw(ScribanHelpers.FormatLargeValue(property.Before?.ToString(), property.After?.ToString(), "inline-diff"));
+                writer.Raw(MarkdownHelpers.FormatLargeValue(property.Before?.ToString(), property.After?.ToString(), "inline-diff"));
                 writer.Raw("\n");
             }
 
@@ -484,7 +484,7 @@ internal static class AzApiBodyRenderer
 
     private static string FormatValue(string? attributeName, string? value, IRenderContext context)
     {
-        return ScribanHelpers.FormatAttributeValueTableWithRegistryResource(
+        return MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
             attributeName,
             value,
             ProviderForFormatting,

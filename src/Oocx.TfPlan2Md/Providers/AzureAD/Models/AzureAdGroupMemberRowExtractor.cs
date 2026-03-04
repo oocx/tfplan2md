@@ -29,7 +29,7 @@ internal sealed class AzureAdGroupMemberRowExtractor : IChildRowExtractor
         IconProviderRegistry? iconProviderRegistry)
     {
         var rawMember = ResolveMemberId(childState);
-        var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             "member_object_id",
             rawMember,
             providerName,

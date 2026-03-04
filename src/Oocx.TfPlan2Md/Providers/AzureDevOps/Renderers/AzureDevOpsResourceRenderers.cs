@@ -81,7 +81,7 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
         };
 
         var summary = change.SummaryHtml
-            ?? $"{change.ActionSymbol}\u00A0{ScribanHelpers.EscapeMarkdown(change.Type)} <b>{ScribanHelpers.FormatCodeSummary(change.Name)}</b>";
+            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");
         writer.Raw("<summary>");
@@ -91,14 +91,14 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
 
         if (!string.IsNullOrWhiteSpace(viewModel.Name))
         {
-            writer.Paragraph($"**Variable Group:** <code>{ScribanHelpers.EscapeMarkdown(viewModel.Name)}</code>");
+            writer.Paragraph($"**Variable Group:** <code>{MarkdownHelpers.EscapeMarkdown(viewModel.Name)}</code>");
         }
 
         writer.BlankLine();
 
         if (!string.IsNullOrWhiteSpace(viewModel.Description))
         {
-            writer.Paragraph($"**Description:** <code>{ScribanHelpers.EscapeMarkdown(viewModel.Description)}</code>");
+            writer.Paragraph($"**Description:** <code>{MarkdownHelpers.EscapeMarkdown(viewModel.Description)}</code>");
         }
 
         if (viewModel.KeyVaultBlocks.Count > 0)

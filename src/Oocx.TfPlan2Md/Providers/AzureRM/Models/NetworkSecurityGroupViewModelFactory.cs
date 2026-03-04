@@ -5,7 +5,7 @@ using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
@@ -301,7 +301,7 @@ internal static class NetworkSecurityGroupViewModelFactory
     /// <summary>
     /// Formats a protocol value with NSG-specific icons (🔗 for TCP/UDP/ICMP, ✳️ for wildcard).
     /// All routed protocols use the chain icon (🔗) consistent with the security rule extractor.
-    /// Uses a regular space between icon and label, matching the Scriban template output.
+    /// Uses a regular space between icon and label to preserve baseline output.
     /// </summary>
     /// <param name="protocol">Raw protocol value (e.g. "Tcp", "Udp", "*").</param>
     /// <returns>Icon-prefixed protocol string.</returns>

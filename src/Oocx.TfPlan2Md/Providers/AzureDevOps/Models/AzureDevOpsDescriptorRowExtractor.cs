@@ -69,7 +69,7 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
             return new Dictionary<string, string> { [_columnKey] = formattedElements };
         }
 
-        var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             _attributeName,
             rawValue,
             providerName,
@@ -104,7 +104,7 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
                     ? element.GetString() ?? string.Empty
                     : element.ToString();
 
-                var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                var formatted = MarkdownHelpers.FormatAttributeValueTableWithRegistry(
                     _attributeName,
                     value,
                     providerName,
@@ -120,7 +120,7 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
         catch
         {
             // If parsing fails, return the original array string
-            return ScribanHelpers.FormatCodeTable(jsonArray);
+            return MarkdownHelpers.FormatCodeTable(jsonArray);
         }
     }
 

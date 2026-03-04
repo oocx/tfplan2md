@@ -1,11 +1,11 @@
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using TUnit.Core;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
-public class ScribanHelpersFormatDiffTests
+public class MarkdownHelpersFormatDiffTests
 {
     [Test]
     public void FormatDiff_EqualStrings_ReturnsCodeFormattedValue()

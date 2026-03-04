@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// Tests for code formatting helpers (FormatChildValue, FormatCodeSummary, FormatCodeTable).
 /// Related: Fix for escaped backtick handling in plain text values.
 /// </summary>
-public class ScribanHelpersCodeFormattingTests
+public class MarkdownHelpersCodeFormattingTests
 {
     /// <summary>
     /// Verifies that plain text with escaped backtick preserves the backslash-backtick sequence.
@@ -22,7 +22,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = @"some\`text";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be(@"`some\`text`");
@@ -40,7 +40,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = @"<code>\`value\`</code>";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be("<code>value</code>");
@@ -56,7 +56,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = @"<span>\`test\`</span>";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be("<span>test</span>");
@@ -72,7 +72,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = "simple-value";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be("`simple-value`");
@@ -85,7 +85,7 @@ public class ScribanHelpersCodeFormattingTests
     public void FormatChildValue_Null_ReturnsEmpty()
     {
         // Act
-        var result = ScribanHelpers.FormatChildValue(null);
+        var result = MarkdownHelpers.FormatChildValue(null);
 
         // Assert
         result.Should().BeEmpty();
@@ -98,7 +98,7 @@ public class ScribanHelpersCodeFormattingTests
     public void FormatChildValue_EmptyString_ReturnsEmpty()
     {
         // Act
-        var result = ScribanHelpers.FormatChildValue(string.Empty);
+        var result = MarkdownHelpers.FormatChildValue(string.Empty);
 
         // Assert
         result.Should().BeEmpty();
@@ -114,7 +114,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = "`already-formatted`";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be("`already-formatted`");
@@ -130,7 +130,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = "- old<br>+ new";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be("- old<br>+ new");
@@ -146,7 +146,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = "-";
 
         // Act
-        var result = ScribanHelpers.FormatChildValue(input);
+        var result = MarkdownHelpers.FormatChildValue(input);
 
         // Assert
         result.Should().Be("-");
@@ -162,7 +162,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = "test-value";
 
         // Act
-        var result = ScribanHelpers.FormatCodeSummary(input);
+        var result = MarkdownHelpers.FormatCodeSummary(input);
 
         // Assert
         result.Should().Be("<code>test-value</code>");
@@ -175,7 +175,7 @@ public class ScribanHelpersCodeFormattingTests
     public void FormatCodeSummary_Null_ReturnsEmpty()
     {
         // Act
-        var result = ScribanHelpers.FormatCodeSummary(null);
+        var result = MarkdownHelpers.FormatCodeSummary(null);
 
         // Assert
         result.Should().BeEmpty();
@@ -191,7 +191,7 @@ public class ScribanHelpersCodeFormattingTests
         var input = "test-value";
 
         // Act
-        var result = ScribanHelpers.FormatCodeTable(input);
+        var result = MarkdownHelpers.FormatCodeTable(input);
 
         // Assert
         result.Should().Be("`test-value`");
@@ -204,7 +204,7 @@ public class ScribanHelpersCodeFormattingTests
     public void FormatCodeTable_Null_ReturnsEmpty()
     {
         // Act
-        var result = ScribanHelpers.FormatCodeTable(null);
+        var result = MarkdownHelpers.FormatCodeTable(null);
 
         // Assert
         result.Should().BeEmpty();

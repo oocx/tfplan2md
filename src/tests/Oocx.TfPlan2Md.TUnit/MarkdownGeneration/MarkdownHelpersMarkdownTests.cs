@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// Tests for markdown escaping helpers used by templates.
 /// Related feature: docs/features/007-markdown-quality-validation/specification.md.
 /// </summary>
-public class ScribanHelpersMarkdownTests
+public class MarkdownHelpersMarkdownTests
 {
     /// <summary>
     /// Verifies null and empty inputs return empty output.
@@ -16,8 +16,8 @@ public class ScribanHelpersMarkdownTests
     [Test]
     public void EscapeMarkdown_NullOrEmpty_ReturnsEmpty()
     {
-        ScribanHelpers.EscapeMarkdown(null).Should().BeEmpty();
-        ScribanHelpers.EscapeMarkdown(string.Empty).Should().BeEmpty();
+        MarkdownHelpers.EscapeMarkdown(null).Should().BeEmpty();
+        MarkdownHelpers.EscapeMarkdown(string.Empty).Should().BeEmpty();
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public class ScribanHelpersMarkdownTests
     {
         var input = "value|`test`\\\nline<end>&";
 
-        var escaped = ScribanHelpers.EscapeMarkdown(input);
+        var escaped = MarkdownHelpers.EscapeMarkdown(input);
 
         escaped.Should().Be("value\\|\\`test\\`\\\\<br/>line<end>&amp;");
     }
@@ -41,7 +41,7 @@ public class ScribanHelpersMarkdownTests
     {
         var input = "before->after";
 
-        var escaped = ScribanHelpers.EscapeMarkdown(input);
+        var escaped = MarkdownHelpers.EscapeMarkdown(input);
 
         escaped.Should().Be("before->after");
     }
@@ -54,7 +54,7 @@ public class ScribanHelpersMarkdownTests
     {
         var input = "html: <div>";
 
-        var escaped = ScribanHelpers.EscapeMarkdown(input);
+        var escaped = MarkdownHelpers.EscapeMarkdown(input);
 
         escaped.Should().Be("html: <div>");
     }
@@ -67,7 +67,7 @@ public class ScribanHelpersMarkdownTests
     {
         var input = "column|value";
 
-        var escaped = ScribanHelpers.EscapeMarkdownTableCell(input);
+        var escaped = MarkdownHelpers.EscapeMarkdownTableCell(input);
 
         escaped.Should().Be("column&#124;value");
     }
@@ -80,7 +80,7 @@ public class ScribanHelpersMarkdownTests
     {
         var input = "# [Title]_";
 
-        var escaped = ScribanHelpers.EscapeMarkdownHeading(input);
+        var escaped = MarkdownHelpers.EscapeMarkdownHeading(input);
 
         escaped.Should().Be("\\# \\[Title\\]\\_");
     }

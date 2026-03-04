@@ -65,7 +65,7 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        return MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             attributeName,
             value,
             providerName,
@@ -88,7 +88,7 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        return MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             "next_hop_in_ip_address",
             address,
             providerName,
@@ -125,19 +125,19 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
         // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
         var beforeName = ExtractRawAttribute(beforeElement, "name", providerName, iconProviderRegistry);
         var afterName = ExtractRawAttribute(afterElement, "name", providerName, iconProviderRegistry);
-        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+        var nameDiff = MarkdownHelpers.FormatDiff(beforeName, afterName, format);
 
         var beforeAddressPrefix = ExtractRawAttribute(beforeElement, "address_prefix", providerName, iconProviderRegistry);
         var afterAddressPrefix = ExtractRawAttribute(afterElement, "address_prefix", providerName, iconProviderRegistry);
-        var addressPrefixDiff = ScribanHelpers.FormatDiff(beforeAddressPrefix, afterAddressPrefix, format);
+        var addressPrefixDiff = MarkdownHelpers.FormatDiff(beforeAddressPrefix, afterAddressPrefix, format);
 
         var beforeNextHopType = JsonStateReader.GetStringProperty(beforeElement, "next_hop_type") ?? "-";
         var afterNextHopType = JsonStateReader.GetStringProperty(afterElement, "next_hop_type") ?? "-";
-        var nextHopTypeDiff = ScribanHelpers.FormatDiff(beforeNextHopType, afterNextHopType, format);
+        var nextHopTypeDiff = MarkdownHelpers.FormatDiff(beforeNextHopType, afterNextHopType, format);
 
         var beforeNextHopAddress = ExtractRawNextHopAddress(beforeElement, providerName, iconProviderRegistry);
         var afterNextHopAddress = ExtractRawNextHopAddress(afterElement, providerName, iconProviderRegistry);
-        var nextHopAddressDiff = ScribanHelpers.FormatDiff(beforeNextHopAddress, afterNextHopAddress, format);
+        var nextHopAddressDiff = MarkdownHelpers.FormatDiff(beforeNextHopAddress, afterNextHopAddress, format);
 
         return new Dictionary<string, string>
         {
@@ -164,7 +164,7 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
         }
 
         // Use FormatAttributeValuePlainWithRegistry which adds icons but NOT backticks
-        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+        return MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
             attributeName,
             value,
             providerName,
@@ -185,7 +185,7 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+        return MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
             "next_hop_in_ip_address",
             address,
             providerName,

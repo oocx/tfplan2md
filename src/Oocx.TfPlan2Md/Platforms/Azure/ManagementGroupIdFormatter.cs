@@ -50,6 +50,6 @@ internal sealed class ManagementGroupIdFormatter : IValueFormatter
         }
 
         var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
-        return ScribanHelpers.FormatCodeTable(formattedLabel);
+        return MarkdownHelpers.FormatCodeTable(formattedLabel);
     }
 }

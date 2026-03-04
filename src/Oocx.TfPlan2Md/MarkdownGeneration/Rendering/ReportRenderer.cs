@@ -136,7 +136,7 @@ internal sealed class ReportRenderer
 
         return string.Join(
             "<br/>",
-            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {ScribanHelpers.EscapeMarkdown(entry.Type)}"));
+            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {MarkdownHelpers.EscapeMarkdown(entry.Type)}"));
     }
 
     /// <summary>
@@ -167,7 +167,7 @@ internal sealed class ReportRenderer
 
             var moduleText = string.IsNullOrWhiteSpace(module.ModuleAddress)
                 ? "root"
-                : ScribanHelpers.FormatCodeTable(module.ModuleAddress);
+                : MarkdownHelpers.FormatCodeTable(module.ModuleAddress);
 
             writer.Heading($"📦\u00A0Module: {moduleText}", 3);
             writer.BlankLine();
@@ -257,7 +257,7 @@ internal sealed class ReportRenderer
                 }
                 else
                 {
-                    value = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                    value = MarkdownHelpers.FormatAttributeValueTableWithRegistry(
                         formatAttributeName,
                         rawValue,
                         output.ProviderName,
@@ -268,8 +268,8 @@ internal sealed class ReportRenderer
 
             writer.TableRow([
                 output.ActionSymbol,
-                MarkdownWriter.InlineCode(ScribanHelpers.EscapeMarkdownTableCell(output.Name)),
-                ScribanHelpers.EscapeMarkdownTableCell(output.Description),
+                MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(output.Name)),
+                MarkdownHelpers.EscapeMarkdownTableCell(output.Description),
                 output.IsSensitive ? "🔒\u00A0Yes" : "No",
                 value
             ]);
@@ -284,7 +284,7 @@ internal sealed class ReportRenderer
                 continue;
             }
 
-            writer.Paragraph($"**{MarkdownWriter.InlineCode(ScribanHelpers.EscapeMarkdownTableCell(output.Name))}:**");
+            writer.Paragraph($"**{MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(output.Name))}:**");
             writer.BlankLine();
             writer.Code(output.Value?.ToString() ?? string.Empty, "json");
             writer.BlankLine();
@@ -460,10 +460,10 @@ internal sealed class ReportRenderer
         foreach (var operation in operations)
         {
             var operationText = operation.Operation == "Import" ? "📥\u00A0Import" : "🔀\u00A0Move";
-            var resourceText = $"{ScribanHelpers.EscapeMarkdown(operation.ResourceType)} {ScribanHelpers.FormatCodeTable(operation.ResourceName)}";
+            var resourceText = $"{MarkdownHelpers.EscapeMarkdown(operation.ResourceType)} {MarkdownHelpers.FormatCodeTable(operation.ResourceName)}";
             var detailsText = operation.Operation == "Import"
-                ? $"ID: {ScribanHelpers.FormatImportIdDetails(operation.Details)}"
-                : $"From: {ScribanHelpers.FormatCodeTable(operation.Details)}";
+                ? $"ID: {MarkdownHelpers.FormatImportIdDetails(operation.Details)}"
+                : $"From: {MarkdownHelpers.FormatCodeTable(operation.Details)}";
 
             var statusText = "✅\u00A0Ready";
             if (operation.IsAlreadyApplied)

@@ -73,7 +73,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
             return "-";
         }
 
-        return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+        return MarkdownHelpers.FormatAttributeValueTableWithRegistry(
             attributeName,
             value,
             providerName,
@@ -168,7 +168,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
                     }
                     else
                     {
-                        formatted.Add(ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                        formatted.Add(MarkdownHelpers.FormatAttributeValueTableWithRegistry(
                             $"{prefix}_address_prefix",
                             p,
                             providerName,
@@ -201,7 +201,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
                 return $"`{addressPrefix}`";
             }
 
-            return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+            return MarkdownHelpers.FormatAttributeValueTableWithRegistry(
                 $"{prefix}_address_prefix",
                 addressPrefix,
                 providerName,
@@ -318,43 +318,43 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
         var beforeName = ExtractRawAttribute(beforeElement, "name", providerName, iconProviderRegistry);
         var afterName = ExtractRawAttribute(afterElement, "name", providerName, iconProviderRegistry);
-        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+        var nameDiff = MarkdownHelpers.FormatDiff(beforeName, afterName, format);
 
         var beforePriority = JsonStateReader.GetStringProperty(beforeElement, "priority") ?? "-";
         var afterPriority = JsonStateReader.GetStringProperty(afterElement, "priority") ?? "-";
-        var priorityDiff = ScribanHelpers.FormatDiff(beforePriority, afterPriority, format);
+        var priorityDiff = MarkdownHelpers.FormatDiff(beforePriority, afterPriority, format);
 
         var beforeDirection = FormatDirection(beforeElement);
         var afterDirection = FormatDirection(afterElement);
-        var directionDiff = ScribanHelpers.FormatDiff(beforeDirection, afterDirection, format);
+        var directionDiff = MarkdownHelpers.FormatDiff(beforeDirection, afterDirection, format);
 
         var beforeAccess = FormatAccess(beforeElement);
         var afterAccess = FormatAccess(afterElement);
-        var accessDiff = ScribanHelpers.FormatDiff(beforeAccess, afterAccess, format);
+        var accessDiff = MarkdownHelpers.FormatDiff(beforeAccess, afterAccess, format);
 
         var beforeProtocol = FormatProtocol(beforeElement);
         var afterProtocol = FormatProtocol(afterElement);
-        var protocolDiff = ScribanHelpers.FormatDiff(beforeProtocol, afterProtocol, format);
+        var protocolDiff = MarkdownHelpers.FormatDiff(beforeProtocol, afterProtocol, format);
 
         var beforeSourceAddresses = ExtractRawAddresses(beforeElement, "source", providerName, iconProviderRegistry);
         var afterSourceAddresses = ExtractRawAddresses(afterElement, "source", providerName, iconProviderRegistry);
-        var sourceAddressesDiff = ScribanHelpers.FormatDiff(beforeSourceAddresses, afterSourceAddresses, format);
+        var sourceAddressesDiff = MarkdownHelpers.FormatDiff(beforeSourceAddresses, afterSourceAddresses, format);
 
         var beforeSourcePorts = FormatPorts(beforeElement, "source");
         var afterSourcePorts = FormatPorts(afterElement, "source");
-        var sourcePortsDiff = ScribanHelpers.FormatDiff(beforeSourcePorts, afterSourcePorts, format);
+        var sourcePortsDiff = MarkdownHelpers.FormatDiff(beforeSourcePorts, afterSourcePorts, format);
 
         var beforeDestinationAddresses = ExtractRawAddresses(beforeElement, "destination", providerName, iconProviderRegistry);
         var afterDestinationAddresses = ExtractRawAddresses(afterElement, "destination", providerName, iconProviderRegistry);
-        var destinationAddressesDiff = ScribanHelpers.FormatDiff(beforeDestinationAddresses, afterDestinationAddresses, format);
+        var destinationAddressesDiff = MarkdownHelpers.FormatDiff(beforeDestinationAddresses, afterDestinationAddresses, format);
 
         var beforeDestinationPorts = FormatPorts(beforeElement, "destination");
         var afterDestinationPorts = FormatPorts(afterElement, "destination");
-        var destinationPortsDiff = ScribanHelpers.FormatDiff(beforeDestinationPorts, afterDestinationPorts, format);
+        var destinationPortsDiff = MarkdownHelpers.FormatDiff(beforeDestinationPorts, afterDestinationPorts, format);
 
         var beforeDescription = FormatDescription(beforeElement);
         var afterDescription = FormatDescription(afterElement);
-        var descriptionDiff = ScribanHelpers.FormatDiff(beforeDescription, afterDescription, format);
+        var descriptionDiff = MarkdownHelpers.FormatDiff(beforeDescription, afterDescription, format);
 
         return new Dictionary<string, string>
         {
@@ -387,7 +387,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         }
 
         // Use FormatAttributeValuePlainWithRegistry which adds icons but NOT backticks
-        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+        return MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
             attributeName,
             value,
             providerName,
@@ -436,7 +436,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
                     }
                     else
                     {
-                        formatted.Add(ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                        formatted.Add(MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
                             $"{prefix}_address_prefix",
                             p,
                             providerName,
@@ -468,7 +468,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
                 return addressPrefix;  // No backticks for service tags in diffs
             }
 
-            return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+            return MarkdownHelpers.FormatAttributeValuePlainWithRegistry(
                 $"{prefix}_address_prefix",
                 addressPrefix,
                 providerName,

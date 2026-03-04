@@ -64,6 +64,6 @@ internal static class SummaryRenderer
 
         return string.Join(
             "<br/>",
-            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {ScribanHelpers.EscapeMarkdown(entry.Type)}"));
+            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {MarkdownHelpers.EscapeMarkdown(entry.Type)}"));
     }
 }

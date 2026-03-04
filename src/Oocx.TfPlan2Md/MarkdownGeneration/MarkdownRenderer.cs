@@ -169,7 +169,7 @@ internal sealed class MarkdownRenderer
         var headerRenderer = new HeaderRenderer(defaultReportTitle: "Terraform Plan Summary");
 
         headerRenderer.Render(writer, model);
-        // The summary template does not use bold for the Total row (matching Scriban template baseline).
+        // The summary template does not use bold for the Total row to preserve baseline output.
         SummaryRenderer.Render(writer, model.Summary, boldTotal: false);
         ReportRenderer.RenderRefactoring(writer, model.RefactoringOperations);
         ReportRenderer.RenderFilteredResourceInfo(writer, model);

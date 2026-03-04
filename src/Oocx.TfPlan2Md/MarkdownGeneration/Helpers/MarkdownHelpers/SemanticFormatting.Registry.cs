@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Semantic formatting helpers for attribute values.
 /// </summary>
-public static partial class ScribanHelpers
+public static partial class MarkdownHelpers
 {
     /// <summary>
     /// Formats attribute values with semantic icons for the requested rendering context.

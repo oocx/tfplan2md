@@ -177,9 +177,9 @@ internal class DiagnosticContext
     /// Gets the list of template resolution decisions made during rendering.
     /// </summary>
     /// <remarks>
-    /// Each entry records which template was selected for a specific resource type.
-    /// This helps users understand whether custom templates, built-in resource-specific
-    /// templates, or the default template was used.
+    /// Each entry records which rendering path was selected for a specific resource type.
+    /// This helps users understand whether a built-in template mode, a resource-specific
+    /// renderer, or the default renderer was used.
     /// </remarks>
     public List<TemplateResolution> TemplateResolutions { get; } = new();
 

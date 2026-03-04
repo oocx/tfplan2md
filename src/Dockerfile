@@ -16,16 +16,13 @@ RUN dotnet build src/tfplan2md.slnx --no-restore -c Release
 RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r linux-musl-x64 --self-contained true -o /app/publish \
 	&& rm -f /app/publish/*.dbg
 
-# Runtime stage - Alpine for musl libraries
+# Runtime stage - Alpine for musl dynamic linker
 FROM alpine:3.21 AS base
-RUN apk add --no-cache libgcc libstdc++
 
-# Final runtime stage - minimal FROM scratch with only essential musl libraries
+# Final runtime stage - minimal FROM scratch with only musl dynamic linker
 FROM scratch AS runtime
-# Copy minimal musl libraries for NativeAOT binary
+# Only ld-musl is needed; libgcc_s and libstdc++ are statically linked via libstdc++compat.a
 COPY --from=base /lib/ld-musl-x86_64.so.1 /lib/
-COPY --from=base /usr/lib/libgcc_s.so.1 /usr/lib/
-COPY --from=base /usr/lib/libstdc++.so.6 /usr/lib/
 
 LABEL org.opencontainers.image.source="https://github.com/oocx/tfplan2md" \
       org.opencontainers.image.url="https://github.com/oocx/tfplan2md" \

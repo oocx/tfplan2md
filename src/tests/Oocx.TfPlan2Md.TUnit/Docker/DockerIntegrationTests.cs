@@ -131,28 +131,4 @@ public class DockerIntegrationTests
         await Assert.That(stdout).Contains("azuredevops_git_repository <b><code>main</code></b>");
     }
 
-    [Test]
-    public async Task Docker_Includes_ComprehensiveDemoFiles(CancellationToken cancellationToken)
-    {
-        if (await SkipIfDockerNotAvailableAsync())
-        {
-            // Skip if Docker not available
-            return;
-        }
-
-        var args = new[]
-        {
-            "/examples/comprehensive-demo/plan.json",
-            "--principals",
-            "/examples/comprehensive-demo/demo-principals.json",
-            "--template",
-            "summary"
-        };
-
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(null, args, cancellationToken);
-
-        await Assert.That(exitCode).IsEqualTo(0);
-        await Assert.That(stderr).IsEmpty();
-        await Assert.That(stdout).Contains("Terraform Plan Summary");
-    }
 }

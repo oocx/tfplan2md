@@ -23,7 +23,7 @@ This directory contains a handcrafted Terraform plan JSON that demonstrates all 
 | Firewall rule semantic diff | `azurerm_firewall_network_rule_collection.network_rules` update |
 | Metadata (version, timestamp) | Top-level `format_version`, `terraform_version`, `timestamp` |
 | Complex attribute types | Maps, lists, nested objects, computed values |
-| Docker inclusion | Files copied into the published Docker image under `/examples/comprehensive-demo/` |
+| Docker usage | Mount repo `examples/` directory with `-v $(pwd)/examples:/examples` |
 
 ## Usage (local build)
 
@@ -53,24 +53,24 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
 
 ## Usage (Docker)
 
-The demo files are packaged into the Docker image at `/examples/comprehensive-demo/`.
+The demo files are not bundled in the Docker image. Mount the `examples/` directory from the cloned repository:
 
 ```bash
 # Default report
-docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
+docker run --rm -v $(pwd)/examples:/examples oocx/tfplan2md /examples/comprehensive-demo/plan.json \
   --principals /examples/comprehensive-demo/demo-principals.json
 
 # Report with sensitive values
-docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
+docker run --rm -v $(pwd)/examples:/examples oocx/tfplan2md /examples/comprehensive-demo/plan.json \
   --principals /examples/comprehensive-demo/demo-principals.json \
   --show-sensitive
 
 # Summary report
-docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
+docker run --rm -v $(pwd)/examples:/examples oocx/tfplan2md /examples/comprehensive-demo/plan.json \
   --template summary
 
 # Report with debug information
-docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
+docker run --rm -v $(pwd)/examples:/examples oocx/tfplan2md /examples/comprehensive-demo/plan.json \
   --principals /examples/comprehensive-demo/demo-principals.json \
   --debug
 ```

@@ -405,3 +405,11 @@
 - **Artifacts Produced:**
   - `docs/features/107-remove-scriban/release-notes.md`
 - **Problems Encountered:** None.
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Removed obsolete Docker integration coverage that assumed comprehensive demo files are bundled into the container image. This aligns test expectations with current image behavior where demo assets are repository-mounted at runtime, not shipped in `/app`.
+- **Artifacts Produced:**
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerIntegrationTests.cs`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None. Targeted Docker integration suite passes after the removal (`6` passed, `0` failed, `0` skipped).

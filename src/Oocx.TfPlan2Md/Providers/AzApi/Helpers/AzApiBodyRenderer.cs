@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzApi.Helpers.Models;
 
 namespace Oocx.TfPlan2Md.Providers.AzApi.Helpers;
@@ -107,8 +108,8 @@ internal static class AzApiBodyRenderer
         object? afterSensitive,
         IRenderContext context)
     {
-        var allComparisons = Compare(beforeBody, afterBody, beforeSensitive, afterSensitive, showUnchanged: true, context.ShowSensitive);
-        var changedComparisons = Compare(beforeBody, afterBody, beforeSensitive, afterSensitive, showUnchanged: false, context.ShowSensitive);
+        var allComparisons = Compare(beforeBody, afterBody, beforeSensitive, afterSensitive, showUnchanged: true, context.ShowSensitive, context.IgnoreAzureIdCaseChanges);
+        var changedComparisons = Compare(beforeBody, afterBody, beforeSensitive, afterSensitive, showUnchanged: false, context.ShowSensitive, context.IgnoreAzureIdCaseChanges);
 
         var smallAll = allComparisons.Where(property => !property.IsLarge).ToList();
         var smallChanged = changedComparisons.Where(property => !property.IsLarge).ToList();
@@ -500,7 +501,8 @@ internal static class AzApiBodyRenderer
         object? beforeSensitive,
         object? afterSensitive,
         bool showUnchanged,
-        bool showSensitive)
+        bool showSensitive,
+        bool ignoreAzureIdCaseChanges = false)
     {
         var beforeFlattened = AzApiBodyFlattener.FlattenToDictionary(beforeJson);
         var afterFlattened = AzApiBodyFlattener.FlattenToDictionary(afterJson);
@@ -517,7 +519,7 @@ internal static class AzApiBodyRenderer
             afterFlattened.TryGetValue(path, out var after);
 
             var isSensitive = beforeSensitivePaths.Contains(path) || afterSensitivePaths.Contains(path);
-            var isChanged = !AreEqual(before, after);
+            var isChanged = !AreEqual(before, after, ignoreAzureIdCaseChanges);
             if (!isChanged && isSensitive && !showSensitive && before is not null && after is not null)
             {
                 isChanged = true;
@@ -535,7 +537,7 @@ internal static class AzApiBodyRenderer
         return result;
     }
 
-    private static bool AreEqual(object? before, object? after)
+    private static bool AreEqual(object? before, object? after, bool ignoreAzureIdCaseChanges = false)
     {
         if (before is null && after is null)
         {
@@ -550,6 +552,14 @@ internal static class AzApiBodyRenderer
         if (IsNumeric(before) && IsNumeric(after))
         {
             return Math.Abs(Convert.ToDouble(before) - Convert.ToDouble(after)) < 0.0000001d;
+        }
+
+        if (ignoreAzureIdCaseChanges
+            && before is string beforeStr && after is string afterStr
+            && string.Equals(beforeStr, afterStr, StringComparison.OrdinalIgnoreCase)
+            && (AzureScopeParser.IsAzureResourceId(beforeStr) || AzureScopeParser.IsAzureResourceId(afterStr)))
+        {
+            return true;
         }
 
         return before.Equals(after);

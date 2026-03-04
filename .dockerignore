@@ -1,0 +1,23 @@
+# VCS / editor metadata
+.git/
+.github/
+.vscode/
+.vs/
+
+# Build outputs and test results
+**/bin/
+**/obj/
+**/TestResults/
+TestResults/
+StrykerOutput/
+
+# Local/dev caches
+**/node_modules/
+.tmp/
+
+# Non-essential repo content for image build context
+docs/
+artifacts/
+website/
+uat-repos/
+test_sensitive/

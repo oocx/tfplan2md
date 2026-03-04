@@ -114,6 +114,10 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: dotnet tool restore
 
+      - name: Build source generators
+        if: steps.filter.outputs.changed == 'true'
+        run: dotnet build src/tools/JsonEmbedGenerator/JsonEmbedGenerator.csproj --no-restore
+
       - name: Check formatting
         if: steps.filter.outputs.changed == 'true'
         run: dotnet format src/tfplan2md.slnx --verify-no-changes --verbosity diagnostic

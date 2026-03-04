@@ -29,7 +29,6 @@ LABEL org.opencontainers.image.source="https://github.com/oocx/tfplan2md" \
 
 WORKDIR /app
 COPY --from=build /app/publish/ .
-COPY --from=build /workspace/examples/comprehensive-demo /examples/comprehensive-demo
 USER 1654
 
 # Set the entrypoint to the native binary

@@ -19,6 +19,10 @@
     <StackTraceSupport>false</StackTraceSupport>
     <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
     <EventSourceSupport>false</EventSourceSupport>
+    <UseSizeOptimizedLinq>true</UseSizeOptimizedLinq>
+    <MetricsSupport>false</MetricsSupport>
+    <Http3Support>false</Http3Support>
+    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <MetadataUpdaterSupport>false</MetadataUpdaterSupport>

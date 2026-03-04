@@ -92,4 +92,13 @@ internal sealed class AzApiModule : IProviderModule
         registry.Register(new AzApiUpdateResourceRenderer());
         registry.Register(new AzApiOutputValuesRenderer());
     }
+
+    /// <summary>
+    /// Registers AzApi-specific attribute change filters.
+    /// </summary>
+    /// <param name="registry">The attribute change filter registry to register with.</param>
+    public void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry)
+    {
+        registry.Register(new AzApiResourceIdCaseChangeFilter());
+    }
 }

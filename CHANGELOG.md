@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.34.0"></a>
+## [1.34.0](https://github.com/oocx/tfplan2md/compare/v1.33.1...v1.34.0) (2026-03-04)
+
+### ✨ Features
+
+* add UPX compression for Linux and Windows binaries ([b7000d3](https://github.com/oocx/tfplan2md/commit/b7000d3724d2f67860d38a4bc5023e1e21d27cc1))
+
+### 🐛 Bug Fixes
+
+* filter out casing-only Azure ID changes in azapi body comparison ([cc9ed44](https://github.com/oocx/tfplan2md/commit/cc9ed4456e24849fd64db7a528a39254f183b04d))
+* reimplement azapi casing filter on post-Scriban C# rendering pipeline ([bc468c2](https://github.com/oocx/tfplan2md/commit/bc468c213824a9b6fa123560327c22b07347fe9d))
+
+### 📚 Documentation
+
+* add code review report for issue 108 azapi body casing filter ([8cb02c0](https://github.com/oocx/tfplan2md/commit/8cb02c0e21871b9d6b28cd87062ae900866625e4))
+* add developer work protocol entry for issue 108 ([05e37cb](https://github.com/oocx/tfplan2md/commit/05e37cbc641170a68fb2eb9a3a0cb998b15de44a))
+* add issue analysis for azapi body casing-only Azure ID filter ([#108](https://github.com/oocx/tfplan2md/issues/108)) ([60473da](https://github.com/oocx/tfplan2md/commit/60473dab7122932b2fa705eb86735a3df96d09c9))
+* add release notes for issue 108 azapi casing filter ([bbcb7da](https://github.com/oocx/tfplan2md/commit/bbcb7daff6bf4617332b77a2106ab9c6b4803089))
+* update documentation for azapi casing filter ([62dce7a](https://github.com/oocx/tfplan2md/commit/62dce7a2aa26365866af94f54ec85a9a6fdbbd34))
+
 <a name="1.33.1"></a>
 ## [1.33.1](https://github.com/oocx/tfplan2md/compare/v1.33.0...v1.33.1) (2026-03-04)
 

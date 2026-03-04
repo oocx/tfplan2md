@@ -2886,7 +2886,7 @@ With `--ignore-azure-id-case-changes`, only the `display_name` row is shown — 
 ### Scope and Limitations
 
 - Only **Azure resource ID** attribute values are subject to the filter. Plain display names, numeric values, boolean values, and null values are never suppressed.
-- The filter applies to `azurerm` resources only. Resources from other providers (e.g., `azapi`, `aws`) are unaffected.
+- The filter applies to `azurerm` resources and to body properties of `azapi` resources (`azapi_resource`, `azapi_update_resource`). Resources from other providers (e.g., `aws`) are unaffected.
 - Rows suppressed by `--ignore-azure-id-case-changes` remain hidden **even when `--show-unchanged-values` is also active** — casing-only Azure ID changes take precedence.
 - The resource entry itself still appears in the report even if all its attribute change rows are suppressed.
 - Plan summary counts (resources to add, change, destroy) are not affected.

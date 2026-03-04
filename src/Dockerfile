@@ -6,7 +6,7 @@ WORKDIR /workspace
 COPY . .
 
 # Install native toolchain prerequisites for NativeAOT (Alpine uses apk)
-RUN apk add --no-cache clang build-base zlib-dev linux-headers bash
+RUN apk add --no-cache clang build-base zlib-dev linux-headers bash lld
 
 # Restore and build (skip tests - Playwright requires glibc)
 RUN dotnet restore src/tfplan2md.slnx
@@ -15,6 +15,7 @@ RUN dotnet build src/tfplan2md.slnx --no-restore -c Release
 # Publish NativeAOT for linux-musl-x64 with static musl linking (no dynamic libc dependency)
 RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r linux-musl-x64 --self-contained true -o /app/publish \
 	-p:StaticExecutable=true \
+	-p:LinkerFlavor=lld \
 	&& rm -f /app/publish/*.dbg
 
 # Final runtime stage - pure scratch, no shared libraries needed (fully static binary)

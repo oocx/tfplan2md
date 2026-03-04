@@ -6,9 +6,9 @@ Eliminate all **production** runtime reflection usage so the NativeAOT build can
 
 This document inventories the current reflection usages and proposes alternative approaches.
 
-## Current Reflection Usage Inventory (Production)
+## Reflection Usage Inventory (Production)
 
-Reflection is currently used only for:
+Immediately after Scriban removal, production reflection usage was limited to:
 
 1) **Assembly metadata / version**
 - CLI `--version` output:

@@ -367,3 +367,11 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/DefaultResourceRendererScenarioTests.cs`
   - `docs/features/107-remove-scriban/work-protocol.md`
 - **Problems Encountered:** None.
+
+### Developer
+- **Date:** 2026-03-04
+- **Summary:** Reduced Docker build-context bloat for root-context builds using `src/Dockerfile` by introducing a repository-level `.dockerignore` that excludes non-essential and generated content (`docs/`, build outputs, test results, local artifacts, and workspace caches) while keeping required source/demo inputs. Validated with `docker build -f src/Dockerfile .` that context transfer dropped from ~`3.39GB` to `78.09kB`.
+- **Artifacts Produced:**
+  - `.dockerignore`
+  - `docs/features/107-remove-scriban/work-protocol.md`
+- **Problems Encountered:** None.

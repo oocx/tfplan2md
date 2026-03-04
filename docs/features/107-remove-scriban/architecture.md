@@ -1609,12 +1609,12 @@ gantt
 
 ### 14.2 Reflection-Free NativeAOT (Addendum)
 
-NativeAOT and full trimming benefits improve significantly when the runtime can avoid reflection entirely. While removing Scriban eliminates the largest trimming blocker, the current post-migration codebase still uses limited reflection for:
+NativeAOT and full trimming benefits improve significantly when the runtime can avoid reflection entirely. After removing Scriban, the remaining reflection hotspots to watch for were:
 
 - Assembly metadata reads (version / commit hash)
 - Embedded JSON loading via `Assembly.GetManifestResourceStream(...)`
 
-If the goal is to enable `IlcDisableReflection=true` (or otherwise strongly reduce reflection metadata), a follow-up change should remove **all production** reflection usage:
+If the goal is to enable `IlcDisableReflection=true` (or otherwise strongly reduce reflection metadata), ensure these areas are implemented without **any production** reflection usage:
 
 1) **Build metadata without reflection**
 - Replace assembly attribute reads with build-time generated constants (e.g., `BuildInfo.Version`, `BuildInfo.CommitHash`).

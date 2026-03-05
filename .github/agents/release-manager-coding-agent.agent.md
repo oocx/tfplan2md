@@ -1,6 +1,7 @@
 ---
 description: Coordinate and execute releases
 name: Release Manager (coding agent)
+model: Claude Sonnet 4.6
 target: github-copilot
 ---
 

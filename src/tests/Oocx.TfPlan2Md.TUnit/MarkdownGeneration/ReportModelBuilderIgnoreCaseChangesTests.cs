@@ -458,4 +458,83 @@ public class ReportModelBuilderIgnoreAzureIdCaseChangesTests
 
         await Task.CompletedTask;
     }
+
+    // -------------------------------------------------------------------------
+    // TC-20: Summary count excludes casing-only resources (the bug fix).
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// TC-20: ignoreCaseChanges: true → Summary.ToChange.Count is lower than with flag off,
+    /// because casing-only-change resources are excluded from the count.
+    /// This is the regression test for the bug where summary counts included hidden resources.
+    /// </summary>
+    [Test]
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_SummaryCountExcludesCasingOnlyResource()
+    {
+        // Arrange
+        var plan = _parser.Parse(_planJson);
+
+        // Act
+        var modelWithFilter = CreateBuilder(ignoreCaseChanges: true).Build(plan);
+        var modelWithoutFilter = CreateBuilder(ignoreCaseChanges: false).Build(plan);
+
+        // Assert: the casing filter must reduce the summary change count
+        modelWithFilter.Summary.ToChange.Count.Should().BeLessThan(modelWithoutFilter.Summary.ToChange.Count,
+            "casing-only resources must not be counted in the summary when --ignore-azure-id-case-changes is enabled");
+
+        await Task.CompletedTask;
+    }
+
+    // -------------------------------------------------------------------------
+    // TC-21: Summary count is consistent with display changes.
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// TC-21: ignoreCaseChanges: true → Summary.ToChange.Count equals the number of update resources
+    /// actually visible in model.Changes, so the report header and body are in sync.
+    /// </summary>
+    [Test]
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_SummaryCountMatchesDisplayedResourceCount()
+    {
+        // Arrange
+        var plan = _parser.Parse(_planJson);
+        var builder = CreateBuilder(ignoreCaseChanges: true);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Derive the displayed update count directly from the changes list
+        var displayedUpdateCount = model.Changes.Count(c => c.Action is "update" or "unknown");
+
+        // Assert
+        model.Summary.ToChange.Count.Should().Be(displayedUpdateCount,
+            "summary count must match the number of update resources actually shown in the report body");
+
+        await Task.CompletedTask;
+    }
+
+    // -------------------------------------------------------------------------
+    // TC-22: Summary total excludes casing-only resources.
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// TC-22: ignoreCaseChanges: true → Summary.Total is lower than with flag off.
+    /// Verifies the total headline count does not inflate due to hidden resources.
+    /// </summary>
+    [Test]
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_SummaryTotalExcludesCasingOnlyResource()
+    {
+        // Arrange
+        var plan = _parser.Parse(_planJson);
+
+        // Act
+        var modelWithFilter = CreateBuilder(ignoreCaseChanges: true).Build(plan);
+        var modelWithoutFilter = CreateBuilder(ignoreCaseChanges: false).Build(plan);
+
+        // Assert
+        modelWithFilter.Summary.Total.Should().BeLessThan(modelWithoutFilter.Summary.Total,
+            "casing-only resources must not inflate the summary total when --ignore-azure-id-case-changes is enabled");
+
+        await Task.CompletedTask;
+    }
 }

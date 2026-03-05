@@ -37,15 +37,23 @@ internal partial class ReportModelBuilder
 
         var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
 
+        // Pre-filter for summary counting: exclude update/unknown resources whose only changes were
+        // Azure ID casing differences when --ignore-azure-id-case-changes is enabled.
+        // This ensures the summary counts match what is actually displayed in the report body.
+        // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md
+        var summaryChanges = _ignoreAzureIdCaseChanges
+            ? allChanges.Where(IsEffectivelyVisible).ToList()
+            : allChanges;
+
         // CRITICAL: Calculate summary BEFORE parent-child merging.
         // Parent-child grouping is visual only and must NOT affect resource counts.
         // The summary must reflect actual Terraform changes (all resources).
         // Related feature: docs/features/068-parent-child-resource-grouping/specification.md
-        var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
-        var toChange = BuildActionSummary(allChanges.Where(c => c.Action is "update" or "unknown"));
-        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action is "delete" or "forget"));
-        var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
-        var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
+        var toAdd = BuildActionSummary(summaryChanges.Where(c => c.Action == "create"));
+        var toChange = BuildActionSummary(summaryChanges.Where(c => c.Action is "update" or "unknown"));
+        var toDestroy = BuildActionSummary(summaryChanges.Where(c => c.Action is "delete" or "forget"));
+        var toReplace = BuildActionSummary(summaryChanges.Where(c => c.Action == "replace"));
+        var noOp = BuildActionSummary(summaryChanges.Where(c => c.Action == "no-op"));
 
         // Now merge parent-child relationships (this removes children from allChanges for display)
         MergeParentChildRelationships(allChanges);
@@ -62,14 +70,7 @@ internal partial class ReportModelBuilder
         // Only applies when casing filter is active; when disabled no additional suppression occurs.
         // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md
         var displayChanges = afterNoOpFilter
-            .Where(c => !_ignoreAzureIdCaseChanges
-                || c.Action is not (UpdateAction or UnknownAction)
-                || c.AttributeChanges.Count > 0
-                || c.CodeAnalysisFindings.Count > 0
-                || c.ImportId is not null
-                || c.MovedFromAddress is not null
-                || c.HasWholeResourceUnknownAfterApply
-                || HasChildrenWithChanges(c))
+            .Where(c => !_ignoreAzureIdCaseChanges || IsEffectivelyVisible(c))
             .ToList();
 
         var filteredResourceCount = afterNoOpFilter.Count - displayChanges.Count;
@@ -150,6 +151,30 @@ internal partial class ReportModelBuilder
             FilteredResourceCount = filteredResourceCount
         };
     }
+
+    /// <summary>
+    /// Returns <c>true</c> if a resource change is visible in the report body — that is, it has
+    /// something meaningful to display beyond Azure ID casing differences.
+    /// </summary>
+    /// <param name="c">Resource change to evaluate.</param>
+    /// <returns>
+    /// <c>true</c> when the action is not an update/unknown, or when there is at least one
+    /// visible attribute change, code analysis finding, refactoring operation, unknown-after-apply
+    /// marker, or child group with actual changes.
+    /// </returns>
+    /// <remarks>
+    /// Used both for filtering the display list and for aligning summary counts so that
+    /// resources hidden by <c>--ignore-azure-id-case-changes</c> are excluded from both.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </remarks>
+    private static bool IsEffectivelyVisible(ResourceChangeModel c) =>
+        c.Action is not (UpdateAction or UnknownAction)
+        || c.AttributeChanges.Count > 0
+        || c.CodeAnalysisFindings.Count > 0
+        || c.ImportId is not null
+        || c.MovedFromAddress is not null
+        || c.HasWholeResourceUnknownAfterApply
+        || HasChildrenWithChanges(c);
 
     /// <summary>
     /// Checks if a resource has child resources with actual changes (not just no-op children).

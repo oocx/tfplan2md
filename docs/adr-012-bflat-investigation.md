@@ -2,7 +2,7 @@
 
 ## Status
 
-Partially Validated — Promising for Standalone Binaries; Docker Blocked by Dynamic glibc Linking
+Adopted for Linux Homebrew Binaries — Docker Blocked by Dynamic glibc Linking
 
 ## Context
 
@@ -41,13 +41,24 @@ Note: the `--no-reflection` flag produces a binary that is ~28% smaller than the
 
 All measurements are for `linux-x64` (glibc). The baseline is `dotnet publish -r linux-x64` with the current `.csproj` size optimization settings.
 
+**With dynamic brotli** (binary requires `libbrotlidec.so.1` at runtime):
+
 | Build | Pre-UPX | UPX `--best` | UPX `--ultra-brute` |
 |---|---|---|---|
 | dotnet NativeAOT (baseline) | 5.9 MB | 2.6 MB | 2.1 MB |
 | bflat v10.0.0-rc.1 (with reflection) | **4.7 MB (−20%)** | **2.0 MB (−20%)** | **1.7 MB (−19%)** |
 | bflat v10.0.0-rc.1 (--no-reflection) | 4.2 MB (−28%) — *broken* | — | — |
 
+**With static brotli** (self-contained, no runtime libbrotli dependency — used in the actual Homebrew release):
+
+| Build | Pre-UPX | UPX `--best` |
+|---|---|---|
+| dotnet NativeAOT (baseline) | 5.9 MB | 2.6 MB |
+| bflat v10.0.0-rc.1 (static brotli) | **5.5 MB (−7%)** | **2.5 MB (−5%)** |
+
 The bflat binary was tested functionally and produces correct output for all test inputs.
+
+**Note on `--no-debug-info`:** In bflat v10.0.0-rc.1, the `--no-debug-info` flag alone does not strip debug symbols from the binary. The `--separate-symbols` flag is required to strip the binary; it moves debug info to a `.dwo` file that is not archived in the release assets. This is a known quirk of bflat v10.0.0-rc.1.
 
 ### Linkage Constraint: Dynamic glibc
 
@@ -62,25 +73,31 @@ This is the critical constraint for the Docker use case:
 | bflat (glibc dynamic) + debian:12-slim (~75 MB) | ~80 MB — *much larger* |
 | bflat (musl static) + FROM scratch | ~1.6 MB — *not yet possible* |
 
-Switching to a glibc base image would make the Docker image larger than the current approach, not smaller. The size advantage bflat provides over NativeAOT (~20% pre-UPX) is negated by the larger base image required.
+Switching to a glibc base image would make the Docker image larger than the current approach, not smaller. The size advantage bflat provides over NativeAOT (up to −20% with dynamic brotli, −7% with static brotli) is negated by the larger base image required.
 
 ## Decision
 
-**bflat is not adopted for the Docker image at this time**, because:
+**bflat is not adopted for the Docker image**, but **is adopted for the Linux Homebrew release binaries** (`linux-x64` and `linux-arm64` assets), because:
+
+1. **Homebrew runs on glibc systems** — the dynamic glibc linkage that blocks Docker is not a concern for Homebrew users on Ubuntu, Debian, or Fedora.
+2. The binary is ~7% smaller (with static brotli for a self-contained binary), reducing download size for `brew install tfplan2md` users. The reduction could be ~20% if dynamic brotli were used with `depends_on "brotli"` in the formula, but static brotli keeps the binary fully self-contained with no additional Homebrew dependencies.
+3. The build pipeline requires only one additional step (downloading bflat and emitting source generator output), with no infrastructure changes.
+
+**bflat is not adopted for the Docker image**, because:
 
 1. **bflat does not support musl** (stated as "in the works" in the README as of v10.0.0-rc.1). Without musl, the binary requires a glibc runtime environment, which means a larger Docker base image — the total image size would increase from ~14.7 MB to ~25 MB.
 
-2. **The pre-release status** of bflat's .NET 10 support (`v10.0.0-rc.1`) makes production CI integration premature.
+2. **The pre-release status** of bflat's .NET 10 support (`v10.0.0-rc.1`) makes it unsuitable for the Docker image, which is the primary distribution artifact. The Linux Homebrew binaries are a secondary distribution path where the risk of pre-release tooling is lower.
 
-**bflat is promising for standalone binary distribution** (GitHub Release assets), where the Docker base image constraint does not apply. The standalone binaries would be ~20% smaller across all platforms, improving download speed.
+**bflat is not adopted for macOS** (`macos-arm64`) because bflat has no macOS target.
 
 ## When to Revisit
 
 Revisit this ADR when:
 
-1. **bflat ships stable musl support** (which would allow `FROM scratch` and a smaller Docker image than the current approach).
-2. **bflat ships a stable .NET 10 release** (v10.0.0 or later).
-3. **The `--no-reflection` issue is resolved** — either by a bflat fix or by identifying which type initializer fails and adding a targeted workaround.
+1. **bflat ships stable musl support** (which would allow `FROM scratch` and a smaller Docker image than the current approach). At that point, bflat can replace the current dotnet publish + Alpine/musl pipeline for both Docker and musl release assets.
+2. **bflat ships a stable .NET 10 release** (v10.0.0 or later). At that point, the Docker image adoption blocker is resolved.
+3. **The `--no-reflection` issue is resolved** — either by a bflat fix or by identifying which type initializer fails and adding a targeted workaround. Enabling `--no-reflection` would reduce the binary by an additional ~10–15%.
 
 ## Build Integration Notes
 
@@ -98,10 +115,11 @@ For future integration, the build process in the Dockerfile and release workflow
 
 ## Consequences
 
-- No changes to the Docker image or release pipeline for now.
-- The investigation confirms that bflat does produce meaningfully smaller binaries (~20%) and is technically feasible for this project with a pre-build source generation step.
-- When bflat ships musl support, the Docker image could shrink from ~14.7 MB to approximately ~1.7 MB (bflat binary + UPX + FROM scratch).
-- Standalone binary distribution could adopt bflat sooner for a ~20% size reduction.
+- The `linux-x64` and `linux-arm64` release binaries distributed via Homebrew are now built with bflat instead of `dotnet publish`. This reduces their size by ~7% (pre-UPX with self-contained static brotli), reducing `brew install` download size. If `libbrotli` were added as a Homebrew dependency, the reduction would be ~20% (dynamic brotli).
+- The Docker image is unchanged (still uses dotnet publish + Alpine/musl).
+- The `macos-arm64` Homebrew binary is unchanged (bflat has no macOS target).
+- When bflat ships musl support, the Docker image could shrink from ~14.7 MB to approximately ~1.7 MB (bflat binary + UPX + FROM scratch). At that point, the musl release assets can also adopt bflat.
+- Standalone binary distribution could adopt bflat sooner for a ~7% size reduction (or ~20% with dynamic brotli).
 
 ## References
 

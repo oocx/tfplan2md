@@ -237,22 +237,31 @@ jobs:
       matrix:
         include:
           # Linux builds (use container for consistent glibc)
+          # Linux glibc builds use bflat (produces ~7% smaller binary than dotnet NativeAOT pre-UPX).
+          # bflat requires: dotnet build for source generation, then bflat for native compilation.
+          # Static brotli linkage is used since bflat does not bundle a Brotli native implementation;
+          # this keeps the binary self-contained (no libbrotli runtime dependency).
+          # Dynamic glibc linkage is fine here since Homebrew users run on glibc systems.
           - platform: linux-x64
             os: ubuntu-latest
             rid: linux-x64
             archive_ext: tar.gz
             binary_name: tfplan2md
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
-            needs_clang: true
+            needs_clang: false
             compress_with_upx: true
+            use_bflat: true
+            bflat_arch: x64
           - platform: linux-arm64
             os: ubuntu-24.04-arm
             rid: linux-arm64
             archive_ext: tar.gz
             binary_name: tfplan2md
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
-            needs_clang: true
+            needs_clang: false
             compress_with_upx: true
+            use_bflat: true
+            bflat_arch: arm64
           # Alpine/musl builds (for Alpine Linux, Atlantis, and other musl-based environments)
           # Note: Alpine job containers are NOT used because:
           # - actions/setup-dotnet requires bash, which Alpine lacks by default
@@ -333,7 +342,7 @@ jobs:
           fi
 
       - name: Build Binary
-        if: "!startsWith(matrix.platform, 'linux-musl-')"
+        if: "!startsWith(matrix.platform, 'linux-musl-') && !matrix.use_bflat"
         shell: bash
         run: |
           dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
@@ -342,6 +351,66 @@ jobs:
             --self-contained true \
             -p:PublishAot=true \
             -o artifacts/${{ matrix.platform }}
+
+      - name: Build Binary (bflat)
+        if: matrix.use_bflat
+        shell: bash
+        run: |
+          BFLAT_VERSION="10.0.0-rc.1"
+          BFLAT_ARCH="${{ matrix.bflat_arch }}"
+          BFLAT_TOOL="/tmp/bflat-tool"
+
+          # Download and extract bflat
+          curl -fL -o /tmp/bflat.tar.gz \
+            "https://github.com/bflattened/bflat/releases/download/v${BFLAT_VERSION}/bflat-${BFLAT_VERSION}-linux-glibc-${BFLAT_ARCH}.tar.gz"
+          mkdir -p "${BFLAT_TOOL}"
+          tar xzf /tmp/bflat.tar.gz -C "${BFLAT_TOOL}"
+
+          # Install static brotli libraries (needed for BrotliStream in embedded JSON classes)
+          apt-get update -qq
+          apt-get install -y --no-install-recommends libbrotli-dev
+
+          # Run dotnet build to emit source generator output (JsonEmbedGenerator + System.Text.Json)
+          dotnet build src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
+            -c Release \
+            -p:EmitCompilerGeneratedFiles=true
+
+          # Collect hand-written and generated source files
+          OBJ_DIR=src/Oocx.TfPlan2Md/obj/Release/net10.0
+          {
+            find src/Oocx.TfPlan2Md -name "*.cs" -not -path "*/obj/*"
+            echo "${OBJ_DIR}/BuildInfo.g.cs"
+            find "${OBJ_DIR}/generated" -name "*.g.cs"
+            echo "${OBJ_DIR}/Oocx.TfPlan2Md.GlobalUsings.g.cs"
+          } > /tmp/bflat-sources.txt
+          echo "Source files collected: $(wc -l < /tmp/bflat-sources.txt)"
+
+          # Determine platform-specific static library paths
+          if [ "${BFLAT_ARCH}" = "x64" ]; then
+            MULTIARCH="x86_64-linux-gnu"
+          else
+            MULTIARCH="aarch64-linux-gnu"
+          fi
+          BROTLI_LDFLAGS="-Bstatic /usr/lib/${MULTIARCH}/libbrotlidec.a /usr/lib/${MULTIARCH}/libbrotlienc.a /usr/lib/${MULTIARCH}/libbrotlicommon.a -Bdynamic"
+
+          # Build native binary with bflat
+          mkdir -p "artifacts/${{ matrix.platform }}"
+          mapfile -t BFLAT_SOURCES < /tmp/bflat-sources.txt
+          "${BFLAT_TOOL}/bflat" build \
+            "${BFLAT_SOURCES[@]}" \
+            --target Exe \
+            -o "artifacts/${{ matrix.platform }}/tfplan2md" \
+            -Os \
+            --no-stacktrace-data \
+            --no-globalization \
+            --no-exception-messages \
+            --no-debug-info \
+            --no-pie \
+            --separate-symbols \
+            --langversion latest \
+            --ldflags "${BROTLI_LDFLAGS}"
+
+          echo "bflat binary size: $(du -h "artifacts/${{ matrix.platform }}/tfplan2md" | cut -f1)"
 
       - name: Build Binary (musl via Docker)
         if: startsWith(matrix.platform, 'linux-musl-')

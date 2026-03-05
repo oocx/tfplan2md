@@ -16,7 +16,7 @@ change"). PR #574 fixed the display suppression but missed the summary-count fix
 | Step | Agent | Status |
 |------|-------|--------|
 | 1 | Issue Analyst | ✅ Complete |
-| 2 | Developer | ⬜ Pending |
+| 2 | Developer | ✅ Complete |
 | 3 | Code Reviewer | ⬜ Pending |
 | 4 | Technical Writer | ⬜ Pending (if needed) |
 | 5 | Release Manager | ⬜ Pending |
@@ -56,3 +56,25 @@ where summary counts are computed from `allChanges` (all Terraform resources) be
 
 **Recommendation:** Hand off to Developer to implement fix in `ReportModelBuilder.Build.cs` and
 add regression tests.
+
+### Developer (2026-03-05)
+
+**Summary:** Implemented the fix in `ReportModelBuilder.Build.cs`:
+1. Extracted `IsEffectivelyVisible(ResourceChangeModel c)` private static helper that captures the
+   visibility predicate (same logic used in both `summaryChanges` and `displayChanges`).
+2. Added `summaryChanges` pre-filter — when `_ignoreAzureIdCaseChanges` is enabled, summary counts
+   are computed from `allChanges.Where(IsEffectivelyVisible)` instead of `allChanges`.
+3. Simplified `displayChanges` filter to use `IsEffectivelyVisible` (DRY).
+
+**Artifacts produced:**
+- `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs` — fix
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderIgnoreCaseChangesTests.cs`
+  — new tests TC-20 (summary count reduced), TC-21 (summary count matches display), TC-22 (total reduced)
+
+**Test results:** All 19 tests in `ReportModelBuilderIgnoreAzureIdCaseChangesTests` pass.
+7 pre-existing snapshot/unit test failures are unrelated to this fix (confirmed by verifying
+failures exist on the original branch HEAD before my changes).
+
+**Commit:** `2cff0349`
+
+**Problems encountered:** None. Fix was straightforward and aligned with the Issue Analyst's recommendation.

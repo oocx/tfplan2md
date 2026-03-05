@@ -40,6 +40,8 @@ internal partial class ReportModelBuilder
         // Pre-filter for summary counting: exclude update/unknown resources whose only changes were
         // Azure ID casing differences when --ignore-azure-id-case-changes is enabled.
         // This ensures the summary counts match what is actually displayed in the report body.
+        // Note: this creates a filtered view for summary calculation only — the original allChanges
+        // collection continues to be used for parent-child merging and display filtering below.
         // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md
         var summaryChanges = _ignoreAzureIdCaseChanges
             ? allChanges.Where(IsEffectivelyVisible).ToList()

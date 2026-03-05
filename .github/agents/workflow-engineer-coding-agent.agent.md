@@ -1,7 +1,6 @@
 ---
 description: Analyze, improve, and maintain the agent workflow
 name: Workflow Engineer (coding agent)
-model: GPT-5.2
 target: github-copilot
 ---
 

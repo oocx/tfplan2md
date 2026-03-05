@@ -321,6 +321,18 @@ Context window size determines how much conversation history and documentation t
 - Comprehensive feature: ~120K tokens (spec + implementation + tests)
 - Full workflow review: ~150-180K tokens (all agent files + documentation)
 
+## ⚠️ Critical: `model:` Property Not Supported in Coding Agents
+
+**The `model:` frontmatter property must NOT be set in `*-coding-agent.agent.md` files.**
+
+GitHub Copilot's official documentation states that the `model:` property "is not supported for Copilot coding agent on GitHub.com" and is "ignored to ensure compatibility." However, **in practice this causes a hard `CAPIError: 400 The requested model is not supported` error** that completely prevents the agent from running.
+
+This was confirmed by experiment:
+- Agents **with** `model:` (any value) → fail with 400 error when invoked as subagents
+- Agents **without** `model:` → work correctly, using the session's default model
+
+**Rule**: VS Code agent files (`.agent.md` without the `-coding-agent` suffix) should have `model:` set for LLM selection. Coding agent files (`*-coding-agent.agent.md`) must **not** have `model:` set.
+
 ## Sub-Agent Billing and Cost
 
 Sub-agents (invoked via the `task` tool) run in their own context window. How they affect billing depends on the execution context:

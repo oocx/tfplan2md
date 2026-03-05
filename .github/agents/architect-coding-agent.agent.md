@@ -1,7 +1,6 @@
 ---
 description: Design technical solutions and document architecture decisions
 name: Architect (coding agent)
-model: GPT-5.2
 target: github-copilot
 ---
 

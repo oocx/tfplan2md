@@ -52,6 +52,13 @@ This reference is updated periodically with latest benchmark data.
    - Model names must match exactly (case-sensitive)
    - Include "(Preview)" suffix for preview models (e.g., "Gemini 3 Pro (Preview)")
 
+6. **⚠️ Coding agents must NOT have `model:` in frontmatter**
+   - The `model:` property is only valid for VS Code agents (files without `-coding-agent` suffix)
+   - On GitHub.com, the `model:` property in `*-coding-agent.agent.md` files causes a hard
+     `CAPIError: 400 The requested model is not supported` error (confirmed by experiment)
+   - The GitHub docs say this property is "ignored" but in practice it prevents the agent from running
+   - Apply model selection only to the corresponding VS Code agent file (e.g., `developer.agent.md`)
+
 ## Model Selection Process
 
 When selecting or changing a model:

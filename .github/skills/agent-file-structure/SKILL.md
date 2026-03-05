@@ -58,7 +58,13 @@ What this agent produces
 The YAML frontmatter at the top of each agent file must include:
 - `description`: Brief description (100 characters or less) that explains the agent's purpose
 - `name`: The agent's display name (include "(coding agent)" or local agent type)
-- `model`: The language model assigned to this agent (must exist in docs/ai-model-reference.md)
+- `model`: **VS Code agents only** — The language model assigned to this agent (must exist in docs/ai-model-reference.md)
+
+> ⚠️ **Coding agents (`*-coding-agent.agent.md`) must NOT include `model:` in frontmatter.**
+> The `model:` property is not supported on GitHub.com coding agents and causes a hard
+> `CAPIError: 400 The requested model is not supported` error, preventing the agent from running.
+> VS Code agents (without the `-coding-agent` suffix) should always include `model:` for LLM selection.
+> See [docs/ai-model-reference.md](../../docs/ai-model-reference.md) for details.
 
 ## Section Guidelines
 

@@ -1,7 +1,6 @@
 ---
 description: Review code for quality, standards, and correctness
 name: Code Reviewer (coding agent)
-model: Claude Sonnet 4.6
 target: github-copilot
 ---
 

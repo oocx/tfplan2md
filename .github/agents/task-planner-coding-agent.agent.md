@@ -1,7 +1,6 @@
 ---
 description: Create actionable user stories and tasks from specifications
 name: Task Planner (coding agent)
-model: Gemini 3 Flash (Preview)
 target: github-copilot
 ---
 

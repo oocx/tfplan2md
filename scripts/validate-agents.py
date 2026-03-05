@@ -88,13 +88,21 @@ def validate_agents():
         file_errors = 0
         
         # 1. Validate Model
+        # Coding agents (*-coding-agent.agent.md) run on GitHub.com where the model:
+        # property is not supported and causes "400 The requested model is not supported"
+        # errors. They must not have a model: field. VS Code agents (without -coding-agent
+        # suffix) run locally and should specify a model for LLM selection.
+        is_coding_agent = filename.endswith("-coding-agent.agent.md")
         model_match = MODEL_PATTERN.search(data["frontmatter"])
         if model_match:
             model = model_match.group(1).strip()
-            if valid_models and model not in valid_models:
+            if is_coding_agent:
+                print(f"  - Coding agents must not have model in frontmatter (causes 400 error on GitHub.com): '{model}'")
+                file_errors += 1
+            elif valid_models and model not in valid_models:
                 print(f"  - Invalid model: '{model}' (not found in {MODEL_REF_FILE.name})")
                 file_errors += 1
-        else:
+        elif not is_coding_agent:
             print(f"  - Missing model in frontmatter")
             file_errors += 1
             
@@ -114,10 +122,13 @@ def validate_agents():
                 file_errors += 1
                 
         # 4. Validate Tools (basic format check)
+        # Coding agents on GitHub.com can omit tools entirely, which enables all tools.
+        # Tools validation is only required for VS Code agents.
         tools_match = TOOLS_PATTERN.search(data["frontmatter"])
         if not tools_match:
-            print(f"  - Missing or invalid tools format in frontmatter")
-            file_errors += 1
+            if not is_coding_agent:
+                print(f"  - Missing or invalid tools format in frontmatter")
+                file_errors += 1
         else:
             tools_str = tools_match.group(1)
             # Check for snake_case tools which are often a sign of error

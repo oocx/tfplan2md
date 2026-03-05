@@ -1,7 +1,6 @@
 ---
 description: Design, develop, and maintain the tfplan2md website
 name: Web Designer (coding agent)
-model: Claude Sonnet 4.6
 target: github-copilot
 ---
 

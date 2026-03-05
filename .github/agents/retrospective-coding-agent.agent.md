@@ -1,7 +1,6 @@
 ---
 description: Conducts post-release retrospectives to identify workflow improvements
 name: Retrospective (coding agent)
-model: Gemini 3 Flash (Preview)
 target: github-copilot
 ---
 

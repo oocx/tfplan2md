@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted and Implemented (see [Feature 107](features/107-remove-scriban))
 
 ## Context
 

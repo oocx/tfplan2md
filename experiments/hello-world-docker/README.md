@@ -67,16 +67,22 @@ docker images hello-world-experiment
 docker run --rm hello-world-experiment
 ```
 
-## Expected Results
+## Results
 
 | Metric | Value |
 |---|---|
-| Raw NativeAOT binary (before UPX) | ~1.2 MB |
-| After `upx --ultra-brute` | ~0.5–0.7 MB |
-| Final Docker image (FROM scratch) | ~0.5–0.7 MB |
+| Raw NativeAOT binary (before UPX) | 1,082,024 bytes (~1.0 MB) |
+| After `upx --ultra-brute` | 440,004 bytes (~430 KB) |
+| Final Docker image (`FROM scratch`) | **440 kB** |
+| UPX compression ratio | 40.66% |
 
-Compared to `tfplan2md` (~14.7 MB compressed), this tells us roughly how much of the image
-size is pure .NET runtime infrastructure vs. actual application code and embedded assets.
+Compared to `tfplan2md` (~14.7 MB), the Hello World lower bound is **~430 KB** — meaning
+roughly **14.3 MB** of the `tfplan2md` image is application code, embedded JSON assets,
+and the C# rendering pipeline.
+
+> **Note:** Build requires `--network=host` in restricted sandbox environments where
+> `api.nuget.org` is not accessible inside Docker containers (even though Alpine CDN is).
+> In normal environments `docker build -t hello-world-experiment .` works without flags.
 
 ## Interpretation
 

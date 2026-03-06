@@ -36,7 +36,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     public string ResourceType => "*";
 
     /// <inheritdoc />
-    [SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Render orchestrates scoped compatibility formatting branches while preserving legacy snapshot parity.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Render orchestrates multiple scenario branches and rendering phases that cannot be further simplified without introducing fragmentation.")]
     public void Render(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(writer);
@@ -55,14 +55,13 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
             : change.SummaryHtml;
 
         var isNoOpParentWithChildren = IsNoOpParentSecurityRuleScenario(change);
-        var (useOutputsFocusedFormatting, useKnownAfterApplyFormatting, useEphemeralOpenFormatting) =
+        var (useOutputsFocusedFormatting, useKnownAfterApplyFormatting) =
             ResolveScenarioFormatting(change, context);
         var useMultilineDetailsSummary = ShouldUseMultilineDetailsSummary(
             change,
             isNoOpParentWithChildren,
             useOutputsFocusedFormatting,
-            useKnownAfterApplyFormatting,
-            useEphemeralOpenFormatting);
+            useKnownAfterApplyFormatting);
         var useExtraBlankLineBeforeSummary = ShouldUseExtraBlankLineBeforeSummary(
             change,
             useMultilineDetailsSummary,
@@ -84,7 +83,7 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         var smallAttributes = change.AttributeChanges.Where(attribute => !attribute.IsLarge).ToArray();
         var largeAttributes = change.AttributeChanges.Where(attribute => attribute.IsLarge).ToArray();
 
-        RenderAttributeTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, useEphemeralOpenFormatting, context.ValueFormatterRegistry, context.IconProviderRegistry, _useResourceTypeForAttributeIcons);
+        RenderAttributeTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, context.ValueFormatterRegistry, context.IconProviderRegistry, _useResourceTypeForAttributeIcons);
 
         if (!string.IsNullOrWhiteSpace(change.TagsBadges))
         {
@@ -121,10 +120,9 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="change">Resource change model.</param>
     /// <param name="context">Current render context.</param>
     /// <returns>
-    /// A tuple containing, in order, outputs-focused formatting, known-after-apply formatting,
-    /// and ephemeral-open formatting flags.
+    /// A tuple containing, in order, outputs-focused formatting and known-after-apply formatting flags.
     /// </returns>
-    internal static (bool UseOutputsFocusedFormatting, bool UseKnownAfterApplyFormatting, bool UseEphemeralOpenFormatting)
+    internal static (bool UseOutputsFocusedFormatting, bool UseKnownAfterApplyFormatting)
         ResolveScenarioFormatting(ResourceChangeModel change, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(change);
@@ -134,10 +132,8 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         var useOutputsFocusedFormatting = scenarioContext?.IsOutputsFocusedReport == true;
         var useKnownAfterApplyFormatting = (scenarioContext?.IsKnownAfterApplyScenario == true)
             || ShouldUseKnownAfterApplyFormatting(change);
-        var useEphemeralOpenFormatting = (scenarioContext?.IsEphemeralOpenScenario == true)
-            || ShouldUseEphemeralOpenFormatting(change);
 
-        return (useOutputsFocusedFormatting, useKnownAfterApplyFormatting, useEphemeralOpenFormatting);
+        return (useOutputsFocusedFormatting, useKnownAfterApplyFormatting);
     }
 
     /// <summary>
@@ -147,21 +143,18 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="isNoOpParentWithChildren">Whether the resource is a no-op parent with changed children.</param>
     /// <param name="useOutputsFocusedFormatting">Whether outputs-focused formatting is enabled.</param>
     /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    /// <param name="useEphemeralOpenFormatting">Whether ephemeral-open formatting is enabled.</param>
     /// <returns>True when multiline details summary formatting should be used.</returns>
     private static bool ShouldUseMultilineDetailsSummary(
         ResourceChangeModel change,
         bool isNoOpParentWithChildren,
         bool useOutputsFocusedFormatting,
-        bool useKnownAfterApplyFormatting,
-        bool useEphemeralOpenFormatting)
+        bool useKnownAfterApplyFormatting)
     {
         // All resources use multiline format to preserve baseline output.
         _ = change;
         _ = isNoOpParentWithChildren;
         _ = useOutputsFocusedFormatting;
         _ = useKnownAfterApplyFormatting;
-        _ = useEphemeralOpenFormatting;
         return true;
     }
 
@@ -241,17 +234,6 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     }
 
     /// <summary>
-    /// Determines whether ephemeral-open formatting should be enabled for a resource.
-    /// </summary>
-    /// <param name="change">Resource change model.</param>
-    /// <returns>True when ephemeral-open formatting should be used.</returns>
-    private static bool ShouldUseEphemeralOpenFormatting(ResourceChangeModel change)
-    {
-        _ = change;
-        return false;
-    }
-
-    /// <summary>
     /// Determines whether a resource represents the no-op parent NSG scenario with separate security-rule children.
     /// </summary>
     /// <param name="change">Resource change model.</param>
@@ -276,7 +258,6 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
     /// <param name="change">Resource change model.</param>
     /// <param name="smallAttributes">Non-large attribute changes.</param>
     /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    /// <param name="useEphemeralOpenFormatting">Whether ephemeral-open formatting is enabled.</param>
     /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
     /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
@@ -285,7 +266,6 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
         ResourceChangeModel change,
         AttributeChangeModel[] smallAttributes,
         bool useKnownAfterApplyFormatting,
-        bool useEphemeralOpenFormatting,
         ValueFormatterRegistry? valueFormatterRegistry,
         IconProviderRegistry? iconProviderRegistry,
         bool useResourceTypeForAttributeIcons = false)
@@ -297,11 +277,11 @@ internal sealed class DefaultResourceRenderer : IResourceRenderer
 
         if (change.Action is "create" or "delete")
         {
-            RenderSingleValueTable(writer, change, smallAttributes, useKnownAfterApplyFormatting || useEphemeralOpenFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
+            RenderSingleValueTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
         }
         else
         {
-            RenderBeforeAfterTable(writer, change, smallAttributes, useKnownAfterApplyFormatting || useEphemeralOpenFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
+            RenderBeforeAfterTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
         }
 
         writer.BlankLine();

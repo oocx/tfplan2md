@@ -64,14 +64,11 @@ internal sealed class ReportRenderer
                 string.Equals(change.Action, "no-op", StringComparison.Ordinal)
                 && change.ChildResourceGroups.Count > 0);
         var useWideSummarySeparators = isOutputsFocusedReport
-            || isNoOpParentChildScenario
-            || IsKnownAfterApplyCompatibilityScenario(model)
-            || IsEphemeralOpenCompatibilityScenario(model);
+            || isNoOpParentChildScenario;
         var effectiveContext = new ScenarioRenderContext(
             context,
             isOutputsFocusedReport,
-            IsKnownAfterApplyCompatibilityScenario(model),
-            IsEphemeralOpenCompatibilityScenario(model));
+            false);
 
         _headerRenderer.Render(writer, model);
         RenderSummary(writer, model.Summary, useWideSummarySeparators);
@@ -292,76 +289,15 @@ internal sealed class ReportRenderer
     }
 
     /// <summary>
-    /// Detects the known-after-apply snapshot compatibility scenario that expects wide summary separators.
-    /// </summary>
-    /// <param name="model">Report model.</param>
-    /// <returns>True when the scenario matches restored baseline traits.</returns>
-    [SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Compatibility matcher intentionally validates a precise type-count signature to avoid affecting other scenarios.")]
-    private static bool IsKnownAfterApplyCompatibilityScenario(ReportModel model)
-    {
-        if (model.Summary.Total != 11 || model.ModuleChanges.Count != 1)
-        {
-            return false;
-        }
-
-        var module = model.ModuleChanges[0];
-        if (module.Changes.Count != 11)
-        {
-            return false;
-        }
-
-        var counts = module.Changes
-            .GroupBy(change => change.Type, StringComparer.Ordinal)
-            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
-
-        return counts.Count == 6
-            && counts.TryGetValue("azuread_group_member", out var azureAdGroupMemberCount) && azureAdGroupMemberCount == 5
-            && counts.TryGetValue("azurerm_resource_group", out var resourceGroupCount) && resourceGroupCount == 2
-            && counts.TryGetValue("azurerm_storage_account", out var storageCount) && storageCount == 1
-            && counts.TryGetValue("azurerm_virtual_network", out var virtualNetworkCount) && virtualNetworkCount == 1
-            && counts.TryGetValue("azurerm_subnet", out var subnetCount) && subnetCount == 1
-            && counts.TryGetValue("null_resource", out var nullResourceCount) && nullResourceCount == 1;
-    }
-
-    /// <summary>
-    /// Detects the ephemeral-open snapshot compatibility scenario that expects wide summary separators.
-    /// </summary>
-    /// <param name="model">Report model.</param>
-    /// <returns>True when the scenario matches restored baseline traits.</returns>
-    private static bool IsEphemeralOpenCompatibilityScenario(ReportModel model)
-    {
-        if (model.Summary.Total != 3 || model.ModuleChanges.Count != 1)
-        {
-            return false;
-        }
-
-        var module = model.ModuleChanges[0];
-        if (module.Changes.Count != 4)
-        {
-            return false;
-        }
-
-        var counts = module.Changes
-            .GroupBy(change => change.Type, StringComparer.Ordinal)
-            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
-
-        return counts.Count == 2
-            && counts.TryGetValue("vault_kv_secret_v2", out var vaultCount) && vaultCount == 3
-            && counts.TryGetValue("null_resource", out var nullResourceCount) && nullResourceCount == 1;
-    }
-
-    /// <summary>
     /// Wraps the base context with report-level scenario hints.
     /// </summary>
     /// <param name="baseContext">Base render context.</param>
     /// <param name="isOutputsFocusedReport">Whether the report is outputs-focused.</param>
     /// <param name="isKnownAfterApplyScenario">Whether the report is the known-after-apply scenario.</param>
-    /// <param name="isEphemeralOpenScenario">Whether the report is the ephemeral-open scenario.</param>
     private sealed class ScenarioRenderContext(
         IRenderContext baseContext,
         bool isOutputsFocusedReport,
-        bool isKnownAfterApplyScenario,
-        bool isEphemeralOpenScenario) : IRenderContext, IScenarioRenderContext
+        bool isKnownAfterApplyScenario) : IRenderContext, IScenarioRenderContext
     {
         /// <inheritdoc />
         public bool ShowSensitive => baseContext.ShowSensitive;
@@ -386,9 +322,6 @@ internal sealed class ReportRenderer
 
         /// <inheritdoc />
         public bool IsKnownAfterApplyScenario { get; } = isKnownAfterApplyScenario;
-
-        /// <inheritdoc />
-        public bool IsEphemeralOpenScenario { get; } = isEphemeralOpenScenario;
 
         /// <inheritdoc />
         public bool IsOutputsFocusedReport { get; } = isOutputsFocusedReport;

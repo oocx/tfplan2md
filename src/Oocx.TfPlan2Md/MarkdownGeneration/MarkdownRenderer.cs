@@ -80,7 +80,14 @@ internal sealed class MarkdownRenderer
     {
         _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: default"));
         var context = CreateContext(model);
-        return _reportRenderer.Render(model, context);
+        try
+        {
+            return _reportRenderer.Render(model, context);
+        }
+        finally
+        {
+            MarkdownHelpers.ClearLineDiffCache();
+        }
     }
 
     /// <summary>
@@ -100,14 +107,21 @@ internal sealed class MarkdownRenderer
             return Render(model);
         }
 
-        if (string.Equals(templateNameOrPath, "summary", StringComparison.OrdinalIgnoreCase))
+        try
         {
-            _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: summary"));
-            return RenderSummaryTemplate(model);
-        }
+            if (string.Equals(templateNameOrPath, "summary", StringComparison.OrdinalIgnoreCase))
+            {
+                _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: summary"));
+                return RenderSummaryTemplate(model);
+            }
 
-        throw new MarkdownRenderException(
-            $"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
+            throw new MarkdownRenderException(
+                $"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
+        }
+        finally
+        {
+            MarkdownHelpers.ClearLineDiffCache();
+        }
     }
 
     /// <summary>

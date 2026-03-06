@@ -3,7 +3,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Code formatting helpers for markdown and HTML contexts.
 /// </summary>
-public static partial class MarkdownHelpers
+internal static partial class MarkdownHelpers
 {
     /// <summary>
     /// Formats text as HTML code for usage inside summary tags where markdown backticks are unreliable.

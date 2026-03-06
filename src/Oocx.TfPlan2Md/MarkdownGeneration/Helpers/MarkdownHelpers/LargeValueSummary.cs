@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Helper functions for summarizing large attribute value changes.
 /// </summary>
-public static partial class MarkdownHelpers
+internal static partial class MarkdownHelpers
 {
     /// <summary>
     /// Builds the summary string for a set of large attributes.

@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Markdown escaping helpers.
 /// </summary>
-public static partial class MarkdownHelpers
+internal static partial class MarkdownHelpers
 {
     /// <summary>
     /// Escapes only markdown-breaking characters to keep generated tables and headings valid while preserving readability.

@@ -25,24 +25,6 @@ internal sealed class VariableGroupFactory : IResourceViewModelFactory
         _largeValueFormat = largeValueFormat;
     }
 
-    /// <inheritdoc/>
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
-    {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
-        _ = model;
-        _ = action;
-        _ = attributeChanges;
-        _ = resourceChange;
-        // View model is now created on-demand by CreateViewModel
-    }
-
     /// <summary>
     /// Creates a VariableGroupViewModel for the given resource change.
     /// </summary>
@@ -76,24 +58,6 @@ internal sealed class BuildDefinitionFactory : IResourceViewModelFactory
     {
         _largeValueFormat = largeValueFormat;
         _repositoryMapper = repositoryMapper;
-    }
-
-    /// <inheritdoc/>
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
-    {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
-        _ = model;
-        _ = action;
-        _ = attributeChanges;
-        _ = resourceChange;
-        // View model is now created on-demand by CreateViewModel
     }
 
     /// <summary>

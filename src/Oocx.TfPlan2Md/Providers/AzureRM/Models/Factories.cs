@@ -18,24 +18,6 @@ internal sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
     {
     }
 
-    /// <inheritdoc/>
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        Parsing.ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
-    {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
-        _ = action;
-        _ = attributeChanges;
-        _ = resourceChange;
-        // NetworkSecurityGroup factory doesn't produce a ChangedAttributesSummary
-        // (no CreateViewModel tuple return for this factory)
-    }
-
     /// <summary>
     /// Creates a NetworkSecurityGroupViewModel for the given resource change.
     /// </summary>
@@ -193,24 +175,6 @@ internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
     {
         _principalMapper = principalMapper;
         _scopeFormatter = scopeFormatter;
-    }
-
-    /// <inheritdoc/>
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        Parsing.ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
-    {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
-        _ = model;
-        _ = action;
-        _ = attributeChanges;
-        _ = resourceChange;
-        // View model is now created on-demand by CreateViewModel
     }
 
     /// <summary>

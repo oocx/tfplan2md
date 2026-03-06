@@ -30,7 +30,6 @@ public class DefaultResourceRendererScenarioTests
         var result = DefaultResourceRenderer.ResolveScenarioFormatting(change, CreateContext());
 
         result.UseKnownAfterApplyFormatting.Should().BeTrue();
-        result.UseEphemeralOpenFormatting.Should().BeFalse();
         result.UseOutputsFocusedFormatting.Should().BeFalse();
     }
 
@@ -138,26 +137,6 @@ public class DefaultResourceRendererScenarioTests
     }
 
     /// <summary>
-    /// Verifies heuristic detection does not currently auto-enable ephemeral-open formatting.
-    /// </summary>
-    [Test]
-    public void ResolveScenarioFormatting_HeuristicOnly_DoesNotEnableEphemeralOpenFormatting()
-    {
-        var change = CreateChange(
-            resourceType: "ephemeral.vault_kv_secret_v2",
-            moduleAddress: null,
-            action: "open",
-            attributes:
-            [
-                new AttributeChangeModel { Name = "value", Before = null, After = "(known after apply)" }
-            ]);
-
-        var result = DefaultResourceRenderer.ResolveScenarioFormatting(change, CreateContext());
-
-        result.UseEphemeralOpenFormatting.Should().BeFalse();
-    }
-
-    /// <summary>
     /// Verifies scenario-context flags override heuristic detection when provided.
     /// </summary>
     [Test]
@@ -173,13 +152,11 @@ public class DefaultResourceRendererScenarioTests
 
         var context = new ScenarioRenderContext(
             isKnownAfterApplyScenario: true,
-            isEphemeralOpenScenario: true,
             isOutputsFocusedReport: true);
 
         var result = DefaultResourceRenderer.ResolveScenarioFormatting(change, context);
 
         result.UseKnownAfterApplyFormatting.Should().BeTrue();
-        result.UseEphemeralOpenFormatting.Should().BeTrue();
         result.UseOutputsFocusedFormatting.Should().BeTrue();
     }
 
@@ -237,23 +214,17 @@ public class DefaultResourceRendererScenarioTests
         /// Initializes a new instance of the <see cref="ScenarioRenderContext"/> class.
         /// </summary>
         /// <param name="isKnownAfterApplyScenario">Known-after-apply scenario flag.</param>
-        /// <param name="isEphemeralOpenScenario">Ephemeral-open scenario flag.</param>
         /// <param name="isOutputsFocusedReport">Outputs-focused scenario flag.</param>
         public ScenarioRenderContext(
             bool isKnownAfterApplyScenario,
-            bool isEphemeralOpenScenario,
             bool isOutputsFocusedReport)
         {
             IsKnownAfterApplyScenario = isKnownAfterApplyScenario;
-            IsEphemeralOpenScenario = isEphemeralOpenScenario;
             IsOutputsFocusedReport = isOutputsFocusedReport;
         }
 
         /// <inheritdoc />
         public bool IsKnownAfterApplyScenario { get; }
-
-        /// <inheritdoc />
-        public bool IsEphemeralOpenScenario { get; }
 
         /// <inheritdoc />
         public bool IsOutputsFocusedReport { get; }

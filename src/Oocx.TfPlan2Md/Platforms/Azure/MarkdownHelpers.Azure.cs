@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Azure-specific markdown formatting helpers.
 /// </summary>
-public static partial class MarkdownHelpers
+internal static partial class MarkdownHelpers
 {
     /// <summary>
     /// Formats an Azure scope for table display with semantic icons for resource and resource group names.

@@ -3,7 +3,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Diff formatting helpers for before/after rendering.
 /// </summary>
-public static partial class MarkdownHelpers
+internal static partial class MarkdownHelpers
 {
     /// <summary>
     /// Formats a before/after pair into a diff-style string while preserving table compatibility.

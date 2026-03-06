@@ -16,6 +16,7 @@ internal interface IResourceViewModelFactory
 {
     /// <summary>
     /// Applies resource-specific view model to the provided model.
+    /// The default implementation is a no-op; override only when the factory enriches the model.
     /// </summary>
     /// <param name="model">The resource change model to populate.</param>
     /// <param name="resourceChange">The resource change data from the Terraform plan.</param>
@@ -29,5 +30,8 @@ internal interface IResourceViewModelFactory
         string action,
         System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges,
         IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry);
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        // Default no-op: factories that do not enrich the model skip this method.
+    }
 }

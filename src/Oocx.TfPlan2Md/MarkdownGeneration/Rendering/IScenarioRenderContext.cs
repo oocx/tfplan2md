@@ -12,11 +12,6 @@ internal interface IScenarioRenderContext
     bool IsKnownAfterApplyScenario { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the report matches the ephemeral-open scenario.
-    /// </summary>
-    bool IsEphemeralOpenScenario { get; }
-
-    /// <summary>
     /// Gets a value indicating whether the report is outputs-focused.
     /// </summary>
     bool IsOutputsFocusedReport { get; }

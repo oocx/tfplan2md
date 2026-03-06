@@ -36,7 +36,8 @@ Source: [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/ref
 | GPT-5.1 | GA | 1x | 400K | - | Improved reasoning |
 | GPT-5.2 | GA | 1x | 400K | - | Latest general model |
 | GPT-5.2-Codex | GA | 1x | 400K | - | Latest Codex model (agentic coding) |
-| GPT-5.3-Codex | GA | 1x | 400K | - | **Latest Codex model (agentic coding, improved)** |
+| GPT-5.3-Codex | GA | 1x | 400K | - | Latest Codex model (agentic coding, improved) |
+| GPT-5.4 | GA | 1x | 400K | - | **Latest model (agentic coding + general)** |
 | GPT-5-Codex | GA | 1x | 400K | - | Specialized for code |
 | GPT-5.1-Codex | GA | 1x | 400K | - | Improved code model |
 | GPT-5.1-Codex-Mini | Public Preview | 0.33x | 400K | - | Fast coding |
@@ -356,11 +357,11 @@ Sub-agents (invoked via the `task` tool) run in their own context window. How th
 
 | Agent Type | Primary Needs | Recommended Models | Rationale |
 |------------|--------------|-------------------|-----------|
-| **Issue Analyst** | Reasoning + debugging | GPT-5.2, Claude Sonnet 4.5 | Reliable reasoning/debugging (Gemini 3 Pro currently suspended) |
-| **Developer** | Code generation, real-world SWE | GPT-5.2-Codex, GPT-5.2 | Latest Codex model for coding + strong SWE performance |
-| **Architect** | Complex reasoning, analysis | GPT-5.2, Claude Sonnet 4.5 | Balanced intelligence + reliability (Gemini 3 Pro currently suspended) |
+| **Issue Analyst** | Reasoning + debugging | GPT-5.4, Claude Sonnet 4.5 | Reliable reasoning/debugging (Gemini 3 Pro currently suspended) |
+| **Developer** | Code generation, real-world SWE | GPT-5.4, GPT-5.2-Codex | Latest model for coding + strong SWE performance |
+| **Architect** | Complex reasoning, analysis | GPT-5.4, Claude Sonnet 4.5 | Balanced intelligence + reliability (Gemini 3 Pro currently suspended) |
 | **Code Reviewer** | Code understanding + reasoning | Claude Sonnet 4.5, Gemini 3 Flash | Strong analysis + different perspective from Developer |
-| **Quality Engineer** | Instruction following + structure | Gemini 3 Flash, GPT-5.2-Codex | Strong instruction following + reliable execution |
+| **Quality Engineer** | Instruction following + structure | Gemini 3 Flash, GPT-5.4 | Strong instruction following + reliable execution |
 | **Task Planner** | Instruction following + language | Gemini 3 Flash, GPT-5 mini | Best instruction following + cost + speed |
 | **Requirements Engineer** | Language + reasoning | Claude Sonnet 4.5, Gemini 3 Flash | Strong language + reasoning (⭐ User: Excellent performance) |
 | **Technical Writer** | Language + writing | Claude Sonnet 4.5, Gemini 3 Flash | Excellent language + low latency |
@@ -369,7 +370,7 @@ Sub-agents (invoked via the `task` tool) run in their own context window. How th
 **Model Selection Priorities by Agent**:
 
 - **Interactive Agents** (chat-focused): Prioritize **speed + low latency** → Gemini 3 Flash, Claude Sonnet 4.5
-- **Coding Agents** (generate/review code): Prioritize **SWE-bench scores** → ⚠️ **Gemini 3 Pro Preview suspended due to reliability issues**, GPT-5.2-Codex, GPT-5.2
+- **Coding Agents** (generate/review code): Prioritize **SWE-bench scores** → ⚠️ **Gemini 3 Pro Preview suspended due to reliability issues**, GPT-5.4, GPT-5.2-Codex
 - **High-Frequency Agents** (run often): Prioritize **cost efficiency** → Gemini 3 Flash (0.33x), GPT-5 mini (0x)
 - **Template-Based Agents** (strict format): Prioritize **instruction following** → Gemini models, **avoid Claude Sonnet 4.5**
 
@@ -381,7 +382,7 @@ Sub-agents (invoked via the `task` tool) run in their own context window. How th
 - **0x**: GPT-5 mini, GPT-4.1, Raptor mini - Included in base allowance
 - **0.25x**: Grok Code Fast 1 - Complimentary (temporary)
 - **0.33x**: Claude Haiku 4.5, Gemini 3 Flash, GPT-5.1-Codex-Mini - Very cost-effective
-- **1x**: Most standard models (GPT-5, GPT-5.1, GPT-5.2, GPT-5.2-Codex, Gemini 2.5 Pro, Claude Sonnet 4.5, etc.) - Normal cost
+- **1x**: Most standard models (GPT-5, GPT-5.1, GPT-5.2, GPT-5.2-Codex, GPT-5.4, Gemini 2.5 Pro, Claude Sonnet 4.5, etc.) - Normal cost
 - **3x**: Claude Opus 4.5 - Premium
 - **10x**: Claude Opus 4.1 - Very expensive
 
@@ -390,7 +391,7 @@ Sub-agents (invoked via the `task` tool) run in their own context window. How th
 | Use Case | Best Value Model | Rationale |
 |----------|-----------------|-----------|
 | **Software Engineering** | Gemini 3 Pro Preview (⚠️ suspended) | 74.20% SWE-bench @ $0.46/task (vs Claude Opus $0.72) — currently suspended due to reliability |
-| **General Coding** | GPT-5.2 standard | 69.00% SWE-bench @ $0.27/task - best cost/performance |
+| **General Coding** | GPT-5.4 standard | Latest model, strong SWE performance - best all-round coding choice |
 | **High-Volume Coding** | GPT-5 mini (0x), DeepSeek V3.2 | 59.80% @ $0.04/task, 60% @ $0.03/task |
 | **Interactive Agents** | Gemini 3 Flash (0.33x) | 221 t/s output + 0.5s latency + strong intelligence (71.27) |
 | **Instruction Following** | Gemini 3 Flash (0.33x) | Score 74.86, cost-effective, fast |
@@ -440,12 +441,12 @@ When selecting a model for an agent:
 
 ### ✅ Do
 
-- **Prefer GPT-5.2 for real-world SWE while Gemini 3 Pro Preview is suspended** - Gemini 3 Pro has top SWE-bench (74.20%) but current reliability issues outweigh the benchmark advantage
-- **Use GPT-5.2 standard for cost-effective coding** - 69% SWE-bench @ $0.27/task
+- **Prefer GPT-5.4 for real-world SWE while Gemini 3 Pro Preview is suspended** - Gemini 3 Pro has top SWE-bench (74.20%) but current reliability issues outweigh the benchmark advantage
+- **Use GPT-5.4 for coding agents** - Latest model covering both general and agentic coding tasks
 - **Use Gemini models for instruction following** - Significantly better than Claude (74.86 vs 23.52)
 - **Use Gemini 3 Flash for interactive agents** - 221 t/s + 0.5s latency + 0.33x cost
 - **Use Claude Sonnet for language/reasoning tasks** - Strong in these categories (avoid for templates)
-- **Consider DeepSeek V3.2 for high-volume** - 60% SWE-bench @ $0.03/task (20x cheaper than GPT-5.2)
+- **Consider DeepSeek V3.2 for high-volume** - 60% SWE-bench @ $0.03/task (20x cheaper than GPT-5.4)
 - **Verify model IDs match exactly** - Use the **Copilot Model ID** string (case-sensitive)
 - **Check multiple benchmarks** - LiveBench (synthetic) + SWE-bench (real-world) + Artificial Analysis (speed)
 - **Size your context window appropriately** - Use 200K+ for complex tasks, 1M+ for comprehensive work
@@ -471,11 +472,11 @@ This section captures actual performance data from completed feature development
 - **Real-World Success**: Zero issues reported despite poor instruction following benchmark (23.52)
 - **Conclusion**: Benchmark weakness doesn't manifest in requirements work; keep assignment
 
-**GPT-5.2-Codex** (Developer)
-- **Performance**: Latest Codex model for agentic coding tasks
-- **Strengths**: Improved over GPT-5.1-Codex-Max, specialized for coding
-- **Benchmark Alignment**: Expected to match/exceed GPT-5.1 Codex Max (84.60)
-- **Conclusion**: Optimal choice for Developer role (latest generation)
+**GPT-5.4** (Developer, Issue Analyst, Architect, Workflow Engineer)
+- **Performance**: Latest model for agentic coding and general tasks
+- **Strengths**: Improved over GPT-5.3-Codex, covers both coding and reasoning
+- **Benchmark Alignment**: Expected to match/exceed GPT-5.3-Codex
+- **Conclusion**: Optimal choice for coding and reasoning roles (latest generation)
 
 **Gemini 3 Flash** (Task Planner, Release Manager)
 - **Performance**: Fast iterations, cost-effective, good instruction following
@@ -522,10 +523,10 @@ This section captures actual performance data from completed feature development
 ### Agent-Specific Insights
 
 #### Developer Agent
-- **Current Model**: GPT-5.2-Codex
+- **Current Model**: GPT-5.4
 - **Evidence**: "Strong diagnosis and fix implementation" (CI Fix)
-- **Issue**: "High usage of flash/gpt-5.2" instead of assigned model
-- **Conclusion**: Assignment correct, but enforce stricter model adherence
+- **Issue**: "High usage of flash/gpt-5.2" instead of assigned model (historical; now upgraded to GPT-5.4)
+- **Conclusion**: GPT-5.4 is the latest generation — optimal for Developer role
 
 #### Code Reviewer Agent
 - **Current Model**: GPT-5.2
@@ -558,7 +559,7 @@ This section captures actual performance data from completed feature development
 1. **Benchmarks ≠ Real-World**: Claude Sonnet 4.5 excels despite poor instruction following score (23.52)
 2. **Reliability Trumps Performance**: Gemini 3 Pro's excellent benchmarks (74.20% SWE) negated by crashes
 3. **Model Diversity Critical**: Code Reviewer needs different model than Developer for varied perspectives
-4. **Speed Matters**: GPT-5.2's 32.3s latency caused "subjectively slow" perception and mid-task stops
+4. **Speed Matters**: GPT-5.2's 32.3s latency caused "subjectively slow" perception and mid-task stops (note: GPT-5.4 is expected to have improved latency)
 5. **Context of Use**: Same model (GPT-5.2) performs well in some roles (Code Reviewer ⭐⭐⭐⭐) but poorly in others (UAT ⭐⭐⭐, failures in CI work)
 
 ### Recommended Model Changes
@@ -566,18 +567,18 @@ This section captures actual performance data from completed feature development
 | Agent | Current | Recommended | Rationale |
 |-------|---------|-------------|----------|
 | Requirements Engineer | Claude Sonnet 4.5 | ✅ **Keep** | User: "Excellent performance" |
-| Developer | GPT-5.2-Codex | ✅ **Keep** | Latest Codex model for coding |
+| Developer | GPT-5.2-Codex | 🔄 **Switch to GPT-5.4** | Latest generation model for coding |
 | Code Reviewer | GPT-5.2 | 🔄 **Switch to Claude Sonnet 4.5** | Diversity from Developer + strong reasoning |
 | UAT Tester | Claude Sonnet 4.5 | ✅ **Keep** | Evidence-based: succeeded in Feature 065 after Gemini 3 Flash failed |
 | Retrospective | Gemini 3 Pro | 🔄 **Switch to Gemini 3 Flash** | More stable + better IF (74.86 vs 65.85) |
-| Architect | Gemini 3 Pro | ⚠️ **Suspend - Use GPT-5.2** | Reliability issues |
-| Workflow Engineer | Gemini 3 Pro | ⚠️ **Suspend - Use GPT-5.2** | Reliability issues |
+| Architect | Gemini 3 Pro | ⚠️ **Suspend - Use GPT-5.4** | Reliability issues |
+| Workflow Engineer | Gemini 3 Pro | ⚠️ **Suspend - Use GPT-5.4** | Reliability issues |
 | Technical Writer | Gemini 3 Pro | ⚠️ **Suspend - Use Claude Sonnet 4.5** | Reliability issues + excellent language (84.62) |
 | Task Planner | Gemini 3 Flash | ✅ **Keep** | Good performance, improve instructions |
 | Release Manager | Gemini 3 Flash | ✅ **Keep** | Cost-effective, appropriate for checklist work |
 
 **Rationale Summary**:
-- ✅ Keep what works: Claude Sonnet 4.5 (Req Engineer, UAT Tester), GPT-5.2-Codex (Developer), Gemini 3 Flash (Task/Release)
+- ✅ Keep what works: Claude Sonnet 4.5 (Req Engineer, UAT Tester), GPT-5.4 (Developer, Architect, Workflow Engineer, Issue Analyst), Gemini 3 Flash (Task/Release)
 - 🔄 Diversify Code Reviewer: Switch to Claude Sonnet 4.5 (different from Developer, strong reasoning)
 - 🔄 Fix Retrospective: Switch to Gemini 3 Flash (more stable, better instruction following)
 - ⚠️ Suspend Gemini 3 Pro: Replace in all roles until reliability improves

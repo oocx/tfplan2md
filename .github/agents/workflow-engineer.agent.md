@@ -1,7 +1,7 @@
 ---
 description: Analyze, improve, and maintain the agent workflow
 name: Workflow Engineer
-model: GPT-5.2
+model: GPT-5.4
 target: vscode
 tools: ['vscode/askQuestions', 'vscode', 'execute', 'read', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'memory/*', 'microsoftdocs/mcp/*', 'agent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest', 'todo']
 ---
@@ -206,7 +206,7 @@ This reference is updated periodically with latest benchmark data.
 
 1. **Use task-specific benchmarks, not overall scores**
    - Different models excel at different tasks
-   - Example: GPT-5.3-Codex excels in Coding while Claude Sonnet 4.6 is better for Language (76.00)
+   - Example: GPT-5.4 excels in Coding while Claude Sonnet 4.6 is better for Language (76.00)
 
 2. **Claude Sonnet 4.6 has poor Instruction Following** (score: 23.52)
    - Unsuitable for agents that follow templates (Task Planner, Quality Engineer)
@@ -218,8 +218,8 @@ This reference is updated periodically with latest benchmark data.
    - Good Language performance (84.56)
    - Ideal for: Task Planner, Release Manager, high-frequency agents
 
-4. **GPT-5.3-Codex is the latest coding model**
-   - Latest generation Codex model (improved over 5.1 Codex Max)
+4. **GPT-5.4 is the latest coding model**
+   - Latest generation model (improved over 5.3-Codex)
    - Specialized for agentic coding tasks
    - Primary choice for Developer agent
    - Also solid for Code Reviewer

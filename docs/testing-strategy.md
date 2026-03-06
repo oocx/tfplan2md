@@ -456,7 +456,7 @@ Tests for rendering the report model to Markdown output.
 | `Render_CreatePlan_MasksSensitiveAttributes` | Verifies that sensitive attributes are masked in the create `Value` column by default |
 | `Render_Create_OmitsNullAndUnknownAttributes` | Verifies that null and unknown attributes are omitted from create tables |
 | `Render_Delete_OmitsNullAttributes` | Verifies that null attributes are omitted from delete tables |
-| `Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit` | Verifies that large plans don't exceed Scriban's iteration limit of 1000 |
+| `Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit` | Verifies that large plans with many no-op resources render without errors |
 | `RenderResourceChange_FirewallRuleCollection_ReturnsResourceSpecificMarkdown` | Verifies that firewall rule collections use the resource-specific template |
 | `Render_FirewallRuleCollection_UsesResourceSpecificTemplate` | Verifies that the full `Render` applies resource-specific templates automatically when available |
 | `RenderResourceChange_FirewallRuleCollection_ShowsAddedRules` | Verifies that added rules are shown with ➕ indicator |
@@ -474,38 +474,23 @@ Tests for rendering the report model to Markdown output.
 | `Render_FirewallModifiedRules_ShowsSingleValueForUnchangedAttributes` | Verifies that unchanged attributes in modified firewall rules show single values without diff formatting |
 | `Render_FirewallNonModifiedRules_DisplayAsExpected` | Verifies that added, removed, and unchanged firewall rules display correctly without diff formatting |
 
-### Scriban Helpers Tests (`MarkdownGeneration/ScribanHelpersTests.cs`)
+### Markdown Helpers Format Diff Tests (`MarkdownGeneration/MarkdownHelpersFormatDiffTests.cs`)
 
-Tests for the custom Scriban helper functions used in templates.
-
-| Test Name | Description |
-|-----------|-------------|
-| `DiffArray_WithAddedItems_ReturnsAddedCollection` | Verifies that items present only in the after array are returned as added |
-| `DiffArray_WithRemovedItems_ReturnsRemovedCollection` | Verifies that items present only in the before array are returned as removed |
-| `DiffArray_WithModifiedItems_ReturnsModifiedCollectionWithBeforeAndAfter` | Verifies that items with changed values are returned with both before and after states |
-| `DiffArray_WithUnchangedItems_ReturnsUnchangedCollection` | Verifies that identical items are returned as unchanged |
-| `DiffArray_WithMixedChanges_ReturnsAllCategories` | Verifies that mixed add/remove/modify/unchanged scenarios are handled correctly |
-| `DiffArray_WithEmptyBeforeArray_ReturnsAllAsAdded` | Verifies that all items are added when before array is empty |
-| `DiffArray_WithEmptyAfterArray_ReturnsAllAsRemoved` | Verifies that all items are removed when after array is empty |
-| `DiffArray_WithNullBeforeArray_ReturnsAllAsAdded` | Verifies that null before array is handled as empty |
-| `DiffArray_WithNullAfterArray_ReturnsAllAsRemoved` | Verifies that null after array is handled as empty |
-| `DiffArray_WithMissingKeyProperty_ThrowsScribanHelperException` | Verifies that missing key property throws descriptive exception |
-| `DiffArray_WithNestedArrays_ComparesCorrectly` | Verifies that nested array changes are detected |
-| `DiffArray_WithNestedObjects_ComparesCorrectly` | Verifies that nested object changes are detected |
-| `RegisterHelpers_AddsDiffArrayFunction` | Verifies that `diff_array` function is registered with ScriptObject |
-
-### Scriban Helpers Format Diff Tests (`MarkdownGeneration/ScribanHelpersFormatDiffTests.cs`)
-
-Tests for the `format_diff` helper function used to display before/after values in templates.
+Tests for the `FormatDiff` helper function used to display before/after values in rendered output.
 
 | Test Name | Description |
 |-----------|-------------|
-| `FormatDiff_EqualStrings_ReturnsSingleValue` | Verifies that equal before and after values return the value as-is without diff formatting |
-| `FormatDiff_DifferentStrings_ReturnsDiffFormat` | Verifies that different values return `"- before<br>+ after"` format |
-| `FormatDiff_NullBefore_ReturnsDiffFormat` | Verifies that null before value is treated as empty string in diff format |
-| `FormatDiff_NullAfter_ReturnsDiffFormat` | Verifies that null after value is treated as empty string in diff format |
+| `FormatDiff_EqualStrings_ReturnsCodeFormattedValue` | Verifies that equal before and after values return the value wrapped in `<code>` tags |
+| `FormatDiff_DifferentStrings_ReturnsSimpleDiffWithoutBackticks` | Verifies that different values return `"- before<br>+ after"` format without backtick wrapping |
+| `FormatDiff_NullBefore_ReturnsSimpleDiffWithoutBackticks` | Verifies that null before value is treated as empty string in diff format |
+| `FormatDiff_NullAfter_ReturnsSimpleDiffWithoutBackticks` | Verifies that null after value is treated as empty string in diff format |
 | `FormatDiff_BothNull_ReturnsEmptyString` | Verifies that both null values return empty string |
 | `FormatDiff_EmptyStrings_HandledCorrectly` | Verifies that empty strings are handled correctly and distinguished from null |
+| `FormatDiff_EscapesValuesAndPreservesLineBreaks` | Verifies that HTML special characters are preserved and line breaks render correctly |
+| `FormatDiff_InlineDiff_UsesHtmlWithCharacterLevelHighlighting` | Verifies that inline-diff mode produces HTML with character-level red/green highlighting |
+| `FormatDiff_InlineDiff_PrefixesAddedAndRemovedLines` | Verifies that inline-diff uses `+`/`-` prefixes with background color spans |
+| `FormatDiff_InlineDiff_DoesNotUseNegativeMargins` | Verifies that inline-diff avoids negative margins that misalign content in AzDO tables |
+| `FormatDiff_InlineDiff_UsesHtmlForRichTableRendering` | Verifies that inline-diff uses `display:block` and `white-space:normal` for table compatibility |
 
 ### Docker Integration Tests (`Docker/DockerIntegrationTests.cs`)
 

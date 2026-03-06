@@ -107,7 +107,7 @@ internal string Action { get; init; }
 /// Default is <c>false</c> for security.
 /// </value>
 /// <remarks>
-/// This flag affects how the Scriban templates render resource attributes.
+/// This flag affects how resource attributes are rendered.
 /// When false, values marked as sensitive in the plan are replaced with "[REDACTED]".
 /// </remarks>
 internal bool ShowSensitive { get; init; }
@@ -124,18 +124,17 @@ internal bool ShowSensitive { get; init; }
 
 ```csharp
 /// <summary>
-/// Default template name used when no custom template is specified.
+/// Default markdown format name used when no explicit format is specified.
 /// </summary>
-private const string DefaultTemplateName = "default.scriban";
+private const string DefaultFormatName = "simple-diff";
 
 /// <summary>
-/// Cache of compiled Scriban templates to avoid recompilation.
+/// Cache of compiled regex patterns to avoid recompilation.
 /// </summary>
 /// <remarks>
-/// Templates are cached by their file path. Cache is thread-safe and uses
-/// ConcurrentDictionary for lock-free reads.
+/// Patterns are cached as static fields for thread-safe, lock-free access.
 /// </remarks>
-private readonly ConcurrentDictionary<string, Template> _templateCache;
+private static readonly Regex BlankLinePattern = new(@"\n{2,}", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
 ```
 
 **Required tags:**

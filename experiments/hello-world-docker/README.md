@@ -82,8 +82,6 @@ size is pure .NET runtime infrastructure vs. actual application code and embedde
 
 The difference between this Hello World image and the `tfplan2md` image represents the cost of:
 
-- Scriban template engine (the only external dependency)
-- ~27 Scriban templates embedded as resources
 - ~5 JSON data files embedded as resources (Azure role definitions, API mappings, icons)
 - JSON parsing infrastructure (for Terraform plan files)
-- All the tfplan2md business logic and markdown generation code
+- All the tfplan2md business logic and markdown generation code (pure C# rendering pipeline)

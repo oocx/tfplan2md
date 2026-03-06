@@ -63,7 +63,7 @@ The tfplan2md codebase is organized into 8 architectural layers, each with speci
 - No dependencies on other domain layers (pure domain logic)
 
 #### MarkdownGeneration Layer
-- Render Terraform plans to markdown using Scriban templates
+- Render Terraform plans to markdown using pure C# renderers
 - Generate reports with styling and formatting
 - Provide base rendering infrastructure
 - Use parsed domain models from Parsing layer
@@ -273,25 +273,6 @@ The following files violate architectural rules but are temporarily exempted wit
 
 **Tracking Issue:** None (accepted as permanent exception)
 
-### Category 2: MarkdownGeneration → Providers (AOT Script Mapping)
-
-**Files Affected:**
-- `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/LargeValueSummary.cs`
-- `src/Oocx.TfPlan2Md/MarkdownGeneration/ResourceChangeModel.cs`
-- `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs`
-
-**Violation:** These files reference provider-specific view models (e.g., `NetworkSecurityGroupViewModel`, `TeamProjectViewModel`) for AOT-compatible Scriban script object mapping.
-
-**Justification:** AOT-compatible Scriban mapping requires explicit type registration. Core MarkdownGeneration currently registers provider-specific types directly.
-
-**Resolution Options:**
-- **Option A (Recommended):** Providers register their own types with MarkdownGeneration via registration callbacks
-- **Option B:** Move AOT mapping logic to provider modules (each provider registers itself)
-- **Option C:** Use reflection-based registration (loses AOT benefits)
-
-**Tracking Issue:** TBD (create issue for refactoring)
-
-**Priority:** Low - Current implementation enables AOT compilation, but creates coupling.
 
 ## Violation Resolution Process
 

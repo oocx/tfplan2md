@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
@@ -66,30 +65,22 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     }
 
     /// <inheritdoc />
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = attributeChanges;
-        _ = principalMapper;
-        _ = iconProviderRegistry;
+        ArgumentNullException.ThrowIfNull(context);
 
-        if (!string.Equals(model.Type, ResourceType, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(context.Model.Type, ResourceType, StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
 
-        var state = ResolveActiveState(resourceChange, action);
+        var state = ResolveActiveState(context.ResourceChange, context.Action);
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
         var roleInfo = _roleDefinitionResolver.GetRoleDefinition(
             GetValue(flatState, RoleDefinitionIdAttribute),
             GetValue(flatState, RoleDefinitionNameAttribute),
-            resourceChange.Address);
+            context.ResourceChange.Address);
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;
@@ -105,7 +96,7 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
         }
 
         var principalName = !string.IsNullOrWhiteSpace(principalId)
-            ? _principalMapper.GetName(principalId, principalType, resourceChange.Address) ?? principalId
+            ? _principalMapper.GetName(principalId, principalType, context.ResourceChange.Address) ?? principalId
             : string.Empty;
 
         if (string.IsNullOrWhiteSpace(roleName) || string.IsNullOrWhiteSpace(principalName))
@@ -121,8 +112,8 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
         var principalSummary = FormatPrincipalSummary(principalType, principalName, isSummaryHtml: false);
         var principalSummaryHtml = FormatPrincipalSummary(principalType, principalName, isSummaryHtml: true);
 
-        model.Summary = $"Assign {roleSummary} to {principalSummary}";
-        model.SummaryHtml = BuildSummaryHtml(model, roleSummaryHtml, principalSummaryHtml);
+        context.Model.Summary = $"Assign {roleSummary} to {principalSummary}";
+        context.Model.SummaryHtml = BuildSummaryHtml(context.Model, roleSummaryHtml, principalSummaryHtml);
     }
 
     /// <summary>

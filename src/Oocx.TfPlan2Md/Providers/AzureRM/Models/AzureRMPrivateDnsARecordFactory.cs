@@ -4,9 +4,7 @@ using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Platforms.Azure;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -58,24 +56,16 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
     private const string ZoneNameAttribute = "zone_name";
 
     /// <inheritdoc />
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = attributeChanges;
-        _ = principalMapper;
-        _ = iconProviderRegistry;
+        ArgumentNullException.ThrowIfNull(context);
 
-        if (!string.Equals(model.Type, ResourceType, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(context.Model.Type, ResourceType, StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
 
-        var state = ResolveActiveState(resourceChange, action);
+        var state = ResolveActiveState(context.ResourceChange, context.Action);
         if (!TryBuildSummaryData(state, out var recordName, out var fqdn, out var recordValues))
         {
             return;
@@ -86,8 +76,8 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
         var recordTokens = BuildRecordValueTokens(recordValues);
         var recordSuffix = recordTokens.Count > 0 ? $" {string.Join(" ", recordTokens)}" : string.Empty;
 
-        model.Summary = $"{recordNameToken} — {fqdnToken}{recordSuffix}";
-        model.SummaryHtml = BuildSummaryHtml(model, recordName, fqdn, recordValues);
+        context.Model.Summary = $"{recordNameToken} — {fqdnToken}{recordSuffix}";
+        context.Model.SummaryHtml = BuildSummaryHtml(context.Model, recordName, fqdn, recordValues);
     }
 
     /// <summary>

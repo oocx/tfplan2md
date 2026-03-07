@@ -145,7 +145,6 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         return new MarkdownRenderer(
-            principalMapper: new NullPrincipalMapper(),
             providerRegistry: providerRegistry);
     }
 
@@ -160,7 +159,6 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         return new ReportModelBuilder(
-            principalMapper: new NullPrincipalMapper(),
             providerRegistry: providerRegistry);
     }
 

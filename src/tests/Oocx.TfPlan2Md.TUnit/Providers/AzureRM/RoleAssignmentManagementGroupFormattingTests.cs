@@ -43,7 +43,6 @@ public class RoleAssignmentManagementGroupFormattingTests
             change,
             action: "create",
             attributeChanges: [],
-            principalMapper: new NullPrincipalMapper(),
             scopeFormatter: scopeFormatter);
 
         viewModel.SummaryText.Should().Be("<code>👤\u00A0principal-1</code> → <code>🛡️\u00A0Reader</code> on management group <code>🗂️\u00A0Core Platform</code>");
@@ -78,7 +77,6 @@ public class RoleAssignmentManagementGroupFormattingTests
             change,
             action: "create",
             attributeChanges: [],
-            principalMapper: new NullPrincipalMapper(),
             scopeFormatter: scopeFormatter);
 
         var scope = viewModel.SmallAttributes.Single(item => item.Name == "scope");

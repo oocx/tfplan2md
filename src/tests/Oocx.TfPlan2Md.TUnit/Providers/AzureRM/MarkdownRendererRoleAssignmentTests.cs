@@ -26,7 +26,6 @@ public class MarkdownRendererRoleAssignmentTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: principalMapper));
         return new ReportModelBuilder(
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
     }
 
@@ -37,7 +36,6 @@ public class MarkdownRendererRoleAssignmentTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: principalMapper));
         return new MarkdownRenderer(
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
     }
 

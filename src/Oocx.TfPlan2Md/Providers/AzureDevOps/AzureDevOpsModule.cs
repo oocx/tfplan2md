@@ -15,8 +15,6 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 #pragma warning disable CA1506 // Suppress class coupling - module integrates multiple mapper types
 internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IParentChildRelationshipProvider, IResourceRendererProvider
 {
-    private readonly LargeValueFormat _largeValueFormat;
-
     /// <summary>
     /// Optional mapper for tenant display name resolution.
     /// </summary>
@@ -49,21 +47,18 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
     /// <summary>
     /// Initializes a new instance of the <see cref="AzureDevOpsModule"/> class.
     /// </summary>
-    /// <param name="largeValueFormat">Format for rendering large values (inline-diff or simple-diff).</param>
-    /// <param name="entityMapper">Optional mapper for tenant display names.</param>
+    /// <param name="entityMapper">Optional mapper for Azure entity display names.</param>
     /// <param name="azdoUserMapper">Optional mapper for Azure DevOps user display names.</param>
     /// <param name="azdoGroupMapper">Optional mapper for Azure DevOps group display names.</param>
     /// <param name="azdoProjectMapper">Optional mapper for Azure DevOps project display names.</param>
     /// <param name="azdoRepositoryMapper">Optional mapper for Azure DevOps repository display names.</param>
     public AzureDevOpsModule(
-        LargeValueFormat largeValueFormat,
         AzureEntityMapper? entityMapper = null,
         AzdoUserMapper? azdoUserMapper = null,
         AzdoGroupMapper? azdoGroupMapper = null,
         AzdoProjectMapper? azdoProjectMapper = null,
         AzdoRepositoryMapper? azdoRepositoryMapper = null)
     {
-        _largeValueFormat = largeValueFormat;
         _entityMapper = entityMapper;
         _azdoUserMapper = azdoUserMapper;
         _azdoGroupMapper = azdoGroupMapper;
@@ -230,7 +225,7 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
     /// <param name="registry">The resource renderer registry to register with.</param>
     public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
-        registry.Register(new VariableGroupRenderer(_largeValueFormat));
+        registry.Register(new VariableGroupRenderer());
         registry.Register(new AzureDevOpsDelegatingRenderer("azuredevops_build_definition"));
     }
 }

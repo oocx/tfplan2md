@@ -102,7 +102,7 @@ public class ProviderIconRegistryTests
     public void AzureDevOpsModule_RegisterIconProviders_RegistersChangeIcon()
     {
         var registry = new IconProviderRegistry();
-        var module = new AzureDevOpsModule(LargeValueFormat.SimpleDiff);
+        var module = new AzureDevOpsModule();
 
         module.RegisterIconProviders(registry);
 

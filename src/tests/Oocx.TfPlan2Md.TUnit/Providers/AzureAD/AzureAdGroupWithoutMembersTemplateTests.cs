@@ -45,11 +45,9 @@ public class AzureAdGroupWithoutMembersTemplateTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         var builder = new ReportModelBuilder(
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
         var model = builder.Build(plan);
         var renderer = new MarkdownRenderer(
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
         return renderer.Render(model);
     }

@@ -162,7 +162,6 @@ public class OutputsSnapshotTests
         var providerRegistry = CreateProviderRegistry(principalMapper);
         var model = new ReportModelBuilder(
             metadataProvider: TestMetadataProvider.Instance,
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 

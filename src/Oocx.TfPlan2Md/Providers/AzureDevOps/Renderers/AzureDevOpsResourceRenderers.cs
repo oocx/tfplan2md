@@ -48,18 +48,6 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VariableGroupRenderer"/> class.
-    /// The <paramref name="largeValueFormat"/> parameter is accepted for API compatibility but
-    /// is not stored — the format is derived from the render context at render time.
-    /// </summary>
-    /// <param name="largeValueFormat">Accepted for API compatibility; derived from context at render time.</param>
-    public VariableGroupRenderer(LargeValueFormat largeValueFormat)
-        : base("azuredevops_variable_group")
-    {
-        _ = largeValueFormat;
-    }
-
     /// <inheritdoc />
     public override void Render(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
     {

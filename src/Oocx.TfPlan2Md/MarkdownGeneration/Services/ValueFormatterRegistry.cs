@@ -29,23 +29,13 @@ internal sealed class ValueFormatterRegistry
     }
 
     /// <summary>
-    /// Attempts to format a value by iterating formatters in specificity order.
+    /// Attempts to format a value by returning the first non-null result from registered formatters.
     /// </summary>
     /// <param name="context">The resolution context to evaluate.</param>
     /// <returns>A formatted string when handled; otherwise null.</returns>
     public string? TryFormat(ServiceResolutionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
-
-        foreach (var formatter in _registry.ResolveAll(context))
-        {
-            var formatted = formatter.TryFormat(context);
-            if (formatted is not null)
-            {
-                return formatted;
-            }
-        }
-
-        return null;
+        return _registry.TryResolveFirst(context, static (formatter, ctx) => formatter.TryFormat(ctx));
     }
 }

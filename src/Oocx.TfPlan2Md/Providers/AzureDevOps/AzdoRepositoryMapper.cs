@@ -11,90 +11,30 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 /// repository IDs to human-readable names for improved report readability.
 /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </remarks>
-internal sealed class AzdoRepositoryMapper
+internal sealed class AzdoRepositoryMapper : AzdoEntityMapper
 {
-    /// <summary>
-    /// Maps Azure DevOps repository IDs to display names.
-    /// </summary>
-    private readonly FrozenDictionary<string, string> _repositoryMappings;
-
-    /// <summary>
-    /// Optional diagnostics for recording failed resolutions.
-    /// </summary>
-    private readonly IDiagnosticSink? _diagnostics;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="AzdoRepositoryMapper"/> class.
     /// </summary>
     /// <param name="repositoryMappings">Mapping of repository IDs to display names.</param>
     /// <param name="diagnostics">Optional diagnostic sink for recording failed resolutions.</param>
     public AzdoRepositoryMapper(FrozenDictionary<string, string> repositoryMappings, IDiagnosticSink? diagnostics)
+        : base(repositoryMappings, diagnostics)
     {
-        _repositoryMappings = repositoryMappings;
-        _diagnostics = diagnostics;
     }
 
+    /// <inheritdoc />
+    protected override FailedResolutionType EntityType => FailedResolutionType.AzdoRepository;
+
     /// <summary>
-    /// Gets only the display name for a repository ID without resource context.
+    /// Gets the formatted repository name prefixed with the repository icon.
     /// </summary>
     /// <param name="repositoryId">The GUID of the repository.</param>
     /// <returns>
-    /// The display name if found in the mapping file, otherwise null.
+    /// Repository icon followed by display name and repository ID in parentheses when a mapping exists;
+    /// otherwise the repository icon followed by just the identifier.
     /// </returns>
-    public string? GetName(string repositoryId)
-    {
-        if (string.IsNullOrWhiteSpace(repositoryId))
-        {
-            return null;
-        }
-
-        return _repositoryMappings.TryGetValue(repositoryId, out var name) ? name : null;
-    }
-
-    /// <summary>
-    /// Gets only the display name for a repository ID with optional resource context.
-    /// </summary>
-    /// <param name="repositoryId">The GUID of the repository.</param>
-    /// <param name="resourceAddress">Optional Terraform resource address for diagnostic tracking.</param>
-    /// <returns>
-    /// The display name if found in the mapping file, otherwise null.
-    /// </returns>
-    /// <remarks>
-    /// If a diagnostic context was provided and the repository ID cannot be resolved,
-    /// the failure is recorded with the resource address for troubleshooting.
-    /// </remarks>
-    public string? GetName(string repositoryId, string? resourceAddress)
-    {
-        if (string.IsNullOrWhiteSpace(repositoryId))
-        {
-            return null;
-        }
-
-        var found = _repositoryMappings.TryGetValue(repositoryId, out var name);
-
-        // Record failed resolution for diagnostics
-        if (!found && _diagnostics != null && resourceAddress != null)
-        {
-            _diagnostics.RecordFailedResolution(
-                new FailedResolution(
-                    FailedResolutionType.AzdoRepository,
-                    repositoryId,
-                    resourceAddress,
-                    "not found in mapping file"));
-        }
-
-        return found ? name : null;
-    }
-
-    /// <summary>
-    /// Gets the formatted entity name for display (🗃️ DisplayName [ID] or 🗃️ ID if not mapped).
-    /// </summary>
-    /// <param name="repositoryId">The GUID of the repository.</param>
-    /// <returns>
-    /// Repository icon followed by display name and repository ID in brackets if mapping exists,
-    /// otherwise just the repository icon followed by the ID.
-    /// </returns>
-    public string GetEntityName(string repositoryId)
+    public override string GetEntityName(string repositoryId)
     {
         if (string.IsNullOrWhiteSpace(repositoryId))
         {

@@ -436,3 +436,226 @@ the local copies.
 3. **Major M-2**: Split `AzApiBodyRenderPlanner.cs` (630 lines) into main + helpers file.
 4. **Major M-3**: Add Developer Entry 8 to `work-protocol.md`.
 5. After rework: return to Code Reviewer for re-approval.
+
+---
+
+## Review 4 Summary (2026-03-07)
+
+This review verifies that all three Review-3 blockers and major issues are resolved by
+Developer Entries 8–10 and Technical Writer Entry 2.
+
+**Key finding:** All Review-3 issues are fully addressed. All 1186 tests pass from a clean
+working tree. The comprehensive demo generates clean Markdown (0 markdownlint errors). All
+previously oversized files are split under 300 lines. All seven missing test cases (TC-36, TC-37,
+TC-42, TC-45, TC-46, TC-47, TC-48) are implemented and meaningful. Documentation (global
+architecture, ADR-006, features.md, CONTRIBUTING.md) correctly reflects the current provider
+model without `IProviderModule`. 
+
+Residual pending items (TC-12 full 6-stage coverage, TC-17, TC-30–TC-35) are aligned with
+Task 6 being explicitly open follow-up work — they are not blockers.
+
+---
+
+## Review 4 — Review-3 Issue Resolution
+
+| Issue | Status | Notes |
+|-------|--------|-------|
+| **Blocker B-1: Tasks 7–9 uncommitted** | ✅ Resolved | Working tree is clean; all changes committed in `ec6119ad` |
+| **Major M-1: TC-36/37/42/45/46/47/48 missing** | ✅ Resolved | All 7 tests exist with correct assertions |
+| **Major M-2: 4 files over 300 lines** | ✅ Resolved | AzApiBodyRenderPlanner.cs (237), AzApiBodyRenderer.cs (260), DefaultResourceRenderer.cs (229), DiagnosticMarkdownFormatter.cs (207) |
+| **Major M-3: Work protocol missing dev entries for Tasks 7–9** | ✅ Resolved | Developer Entries 8, 9, 10 and Technical Writer Entry 2 added |
+
+---
+
+## Review 4 — Verification Results
+
+- Tests: **Pass** (1186 succeeded, 0 failed, 0 skipped)
+- Build: **Success** (0 errors, 0 warnings in changed files; pre-existing analyzer diagnostics
+  in unrelated files not introduced by this feature)
+- Markdownlint: **0 errors** on `artifacts/comprehensive-demo.md`
+- Snapshots: **No snapshot data changes** — `SNAPSHOT_UPDATE_OK` not required
+- Docker: Not re-verified (pre-existing `MSB1009` failure on `main` unrelated to this feature)
+- Git status: **Clean** — working tree has no uncommitted changes
+
+---
+
+## Review 4 — Specification Compliance
+
+### Tasks 7–9
+
+| Acceptance Criterion | Implemented | Tested | Notes |
+|---------------------|-------------|--------|-------|
+| Typed diagnostic sink abstraction (`IDiagnosticSink`) | ✅ | ✅ TC-36 | `DiagnosticContextCollectionTests.DiagnosticSink_Append_RecordsEventWithoutExposingMutableCollection` |
+| Diagnostic event models separate from markdown formatting | ✅ | ✅ TC-37 | `DiagnosticEventModelStructureTests.DiagnosticEventTypes_DoNotContainMarkdownGenerationLogic` |
+| Dedicated formatter for debug markdown (`DiagnosticMarkdownFormatter`) | ✅ | ✅ TC-38 | Covered by `DiagnosticContextTests.Format_*` using `DiagnosticMarkdownFormatter.Format` |
+| Producers migrated to sink boundary | ✅ | ✅ | All producers use `IDiagnosticSink`; `DiagnosticContext` implements it |
+| `ProgramEntry` uses dedicated formatter | ✅ | ✅ TC-39 | `DiagnosticEventModelStructureTests.ProgramEntry_DebugMode_UsesFormatterForDebugSection` |
+| Debug markdown behaviorally unchanged | ✅ | ✅ TC-40 | All `DiagnosticContextTests.Format_*` pass with same expected content |
+| AzApi policy separated from emission (`AzApiBodyRenderPlanner`) | ✅ | ✅ TC-42 | `AzApiBodyComparisonPolicyTests.AzApiRenderModel_AllPolicyCapturedBeforeEmission` (static code-analysis assertion) |
+| Render-ready intermediate models exist (`AzApiBodyRenderPlans.cs`) | ✅ | ✅ TC-45 | `AzApiBodyComparisonPolicy_Evaluate_ScenarioMatrix` validates policy result without markdown emission |
+| `DefaultResourceRenderPolicy` delegates scenario detection | ✅ | ✅ TC-43 | `DefaultResourceRenderPolicyTests` + `DefaultResourceRendererScenarioTests` call policy directly |
+| Existing snapshot output unchanged | ✅ | ✅ TC-44 | 1186 tests pass; 0 snapshot regressions |
+| Active docs no longer instruct `IProviderModule` | ✅ | ✅ TC-46 | `DocumentationAlignmentTests.DocumentationFiles_DoNotReferToIProviderModuleAsActiveContract` |
+| `docs/features.md` reflects `IProvider` model | ✅ | ✅ TC-47 | `DocumentationAlignmentTests.Adr006_DescribesIProvider_NotIProviderModule` |
+| `docs/adr-006-dependency-injection.md` updated | ✅ | ✅ TC-48 | `DocumentationAlignmentTests.ActiveDocumentationFiles_DoNotInstructImplementingIProviderModule` |
+
+**Spec Deviations Found for Tasks 7–9:** None.
+
+### Open Test Cases (Task 6 — expected pending)
+
+TC-12 (full 6-stage delegation), TC-17 (all 6 stages instantiable independently), and
+TC-30–TC-35 are pending Task 6 completion. This is expected: `tasks.md` still shows open
+checkboxes for Task 6 acceptance criteria, and the 5-stage pipe is documented accurately in
+`docs/architecture.md`. These are not blockers for the reviewer to approve Tasks 7–9 and the
+rework.
+
+---
+
+## Review 4 — Notes on Test Case Coverage
+
+### TC-38 (dedicated formatter produces identical markdown)
+
+The exact test name `DiagnosticSectionFormatter_Format_ProducesSameMarkdownAsPreRefactoringGenerateMarkdownSection`
+was not added. Instead, the existing `DiagnosticContextTests.Format_WithAllDiagnostics_ReturnsFormattedMarkdown`
+and the full suite of `Format_*` tests in `DiagnosticContextTests.cs` were updated to use
+`DiagnosticMarkdownFormatter.Format(context.CreateSnapshot())` (via the `Render` helper). Since
+`GenerateMarkdownSection()` has been deleted from the codebase, these tests now serve as the
+definitive regression guard for formatter output. This is an acceptable implementation of TC-38's
+intent.
+
+### TC-41 (AzApi intermediate model carries policy decisions)
+
+The exact test name `AzApiRenderPolicy_Evaluate_ProducesIntermediateModelWithPolicyDecisions`
+was not added. TC-45 (`AzApiBodyComparisonPolicy_Evaluate_ScenarioMatrix`) directly calls
+`AzApiBodyRenderPlanner.BuildUpdatePlan` and asserts the returned `AzApiUpdateRenderPlan` model
+properties — verifying that comparison result, grouping, and sensitivity mask are captured in
+the render-ready model before any markdown emission, which satisfies TC-41's acceptance criterion.
+
+---
+
+## Review 4 — Adversarial Testing
+
+| Test Case | Result | Notes |
+|-----------|--------|-------|
+| Empty diagnostic sink | Pass | `Format_EmptyDiagnostics_ReturnsHeaderWithNoData` covers this edge case |
+| AzApi identical bodies | Pass | TC-45 `identical-bodies` scenario |
+| AzApi all-paths-deleted | Pass | TC-45 `all-paths-deleted` scenario |
+| AzApi sensitive masking | Pass | TC-45 `sensitive-value-masked` scenario |
+| `DefaultResourceRenderPolicy` no-op parent | Pass | `DefaultResourceRenderPolicyTests.ResolvePolicy_NoOpParentSecurityRuleScenario_SetsCompatibilityFlags` |
+| Sequential `CompositionRoot` compositions | Pass | TC-25 existing test |
+| Debug section with `--debug` flag | Pass | `DebugOutputIntegrationTests.WithDebugFlag_DebugSectionAppended` uses `DiagnosticMarkdownFormatter.Format` |
+
+---
+
+## Review 4 — Issues Found
+
+### Blockers
+
+None.
+
+### Major Issues
+
+None.
+
+### Minor Issues
+
+**m-1 (carry-forward from Review 3): `GetActionSymbol` wrapper methods still duplicated.**
+
+`ReportModelBuilder.ResourceChanges.cs` and `ResourceChangeStage.Helpers.cs` each define a
+private `GetActionSymbol(string action)` method that does nothing except `return TerraformActions.GetSymbol(action)`.
+The duplication is reduced (the logic is centralized in `TerraformActions.GetSymbol`) but the
+local wrapper shim is still technically present in two places. This is a carry-forward of
+Review 3's m-2 suggestion.
+
+**m-2: `RoleAssignmentViewModelFactory.cs` uses literal action strings.**
+
+`private const string DeleteAction = "delete"` and `private const string UpdateAction = "update"`
+at lines 23/30 remain as inline literals rather than using `TerraformActions.Delete` and
+`TerraformActions.Update`. This is a pre-existing inconsistency outside the scope of the
+current rework.
+
+**m-3: `ArchitectureBoundaryTests.cs` remains at 395 lines (pre-existing).**
+
+This file was 395 lines before the rework and is unchanged. It's a pre-existing excess that
+was not introduced by this feature.
+
+### Suggestions
+
+None additional.
+
+---
+
+## Review 4 — Checklist Summary
+
+| Category | Tasks 1–5 | Tasks 7–9 |
+|----------|-----------|-----------|
+| Correctness | ✅ | ✅ |
+| Spec Compliance | ✅ | ✅ |
+| Code Quality | ✅ | ✅ |
+| Architecture | ✅ | ✅ |
+| Testing | ✅ | ✅ |
+| Documentation | ✅ | ✅ |
+| Committed to git | ✅ | ✅ |
+
+---
+
+## Review 4 — Review Decision
+
+**Status: Approved**
+
+All Review-3 blockers and major issues are resolved. Tests pass (1186), markdownlint is clean,
+and the implementation correctly executes all Tasks 7–9 acceptance criteria. Task 6 remains as
+explicitly open follow-up work and is not a blocker for this approval.
+
+---
+
+## Review 4 — Work Protocol & Documentation Verification
+
+### Agent Work Log Verification
+
+| Required Agent | Entry Present | Notes |
+|---------------|---------------|-------|
+| Architect | ✅ | Architecture for top-three refactorings |
+| Task Planner | ✅ | Task breakdown with dependency ordering |
+| Developer | ✅ (10 entries) | Tasks 1–5, 7–9 implemented incrementally and rework addressed |
+| Technical Writer | ✅ (2 entries) | Specification and global architecture doc alignment |
+| Quality Engineer | ✅ | Test plan with TC-01–TC-48 |
+| Code Reviewer | ✅ (4 entries, this being #4) | Structural review + 3 implementation reviews |
+| Requirements Engineer | ⚠️ Minor — explained: feature originates from an internal structural review; Technical Writer entry #1 covers the specification/requirements role |
+| UAT Tester | N/A — internal-only refactoring, no user-facing changes |
+| Release Manager | ⏳ Expected next |
+
+### Global Documentation
+
+| Document | Check | Status |
+|----------|-------|--------|
+| `docs/architecture.md` | Updated for new stages, diagnostics, IProvider model | ✅ Updated by Technical Writer Entry 2 |
+| `docs/features.md` | Updated with `IProvider` + optional capability interfaces | ✅ Updated by Developer Entry 9 |
+| `docs/testing-strategy.md` | Updated for new test approaches | ✅ N/A — no new patterns |
+| `README.md` | Updated for CLI changes | ✅ N/A — no CLI changes |
+| `docs/agents.md` | Updated for workflow changes | ✅ N/A — no workflow changes |
+| `docs/adr-006-dependency-injection.md` | Updated for current provider contract | ✅ Updated by Developer Entry 9 |
+| `CONTRIBUTING.md` | Updated provider contract guidance | ✅ Updated by Developer Entry 10 |
+
+---
+
+## Review 4 — Critical Questions Answered
+
+- **What could make this code fail?** The only remaining shared-state risk is the pre-existing
+  `ReportModelBuilder` constructor's stage null-coalescing pattern (creates stages on first
+  `Build` call if not injected). This is a design trade-off documented in the architecture and
+  unchanged from Review 2; it is not a regression.
+- **What edge cases might not be handled?** AzApi render planner with a null or empty before/after
+  body returns early in `BuildUpdatePlan`; this is exercised via the `identical-bodies` scenario
+  in TC-45 (an empty change set is the degenerate case where both bodies are equal).
+- **Are all error paths tested?** Role resolution error paths and debug formatter error paths are
+  well tested. AzApi planner with structurally missing JSON properties is not explicitly tested
+  but is only reachable via malformed provider output — not a user-input concern.
+
+---
+
+## Review 4 — Next Steps
+
+Feature is approved for Tasks 1–5 and 7–9 scope. Task 6 is open follow-up work.
+
+Hand off to the **Release Manager** to prepare the PR for merge.

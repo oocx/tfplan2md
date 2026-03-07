@@ -61,7 +61,7 @@ public class ProviderResourceRenderersTests
             new ServicePrincipalRenderer(),
             new InvitationRenderer(),
             new VariableGroupRenderer(LargeValueFormat.InlineDiff),
-            new BuildDefinitionRenderer()
+            new AzureDevOpsDelegatingRenderer("azuredevops_build_definition")
         };
 
         renderers.Select(renderer => renderer.ResourceType).Should().BeEquivalentTo(ExpectedResourceTypes);

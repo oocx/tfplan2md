@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
@@ -15,20 +14,6 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFactoryRegistry
 {
     private readonly Dictionary<string, IResourceViewModelFactory> _factories = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ResourceViewModelFactoryRegistry"/> class.
-    /// </summary>
-    /// <param name="largeValueFormat">The format to use for large values (unused, kept for potential future core factories).</param>
-    /// <param name="principalMapper">The mapper for resolving principal names (unused, kept for potential future core factories).</param>
-#pragma warning disable IDE0060 // Remove unused parameter - kept for future extensibility
-    public ResourceViewModelFactoryRegistry(LargeValueFormat largeValueFormat, IPrincipalMapper principalMapper)
-#pragma warning restore IDE0060
-    {
-        // All resource-specific factories are now registered via ProviderRegistry
-        // This registry only holds factories registered by provider modules
-        // Related feature: docs/features/047-provider-code-separation/specification.md
-    }
 
     /// <summary>
     /// Tries to get a factory for the specified resource type.

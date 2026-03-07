@@ -155,8 +155,6 @@ internal partial class ReportModelBuilder(
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
         CreateFactoryRegistry(
-            ConvertRenderTargetToLargeValueFormat(renderTarget),
-            principalMapper ?? new NullPrincipalMapper(),
             CreateProviderContributions(providerContributions, providerRegistry));
 
     /// <summary>
@@ -246,16 +244,12 @@ internal partial class ReportModelBuilder(
     /// <summary>
     /// Creates and configures the resource view model factory registry.
     /// </summary>
-    /// <param name="largeValueFormat">Preferred rendering format for large attribute values.</param>
-    /// <param name="principalMapper">Mapper for resolving principal names.</param>
     /// <param name="providerContributions">Optional centralized provider contribution set.</param>
     /// <returns>Configured factory registry.</returns>
     private static ResourceViewModelFactoryRegistry CreateFactoryRegistry(
-        LargeValueFormat largeValueFormat,
-        Platforms.Azure.IPrincipalMapper principalMapper,
         Services.ProviderContributionSet? providerContributions)
     {
-        var registry = new ResourceViewModelFactoryRegistry(largeValueFormat, principalMapper);
+        var registry = new ResourceViewModelFactoryRegistry();
 
         providerContributions?.RegisterFactories(registry);
 

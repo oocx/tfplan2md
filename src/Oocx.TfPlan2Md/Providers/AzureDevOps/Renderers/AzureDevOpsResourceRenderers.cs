@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Renderers;
 /// Base class for Azure DevOps resource renderers that currently delegate to the default renderer.
 /// Related feature: docs/features/107-remove-scriban/specification.md.
 /// </summary>
-internal abstract class AzureDevOpsDelegatingRenderer(string resourceType) : IResourceRenderer
+internal class AzureDevOpsDelegatingRenderer(string resourceType) : IResourceRenderer
 {
     /// <summary>
     /// Default fallback renderer.
@@ -172,16 +172,3 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
     }
 }
 
-/// <summary>
-/// Renders <c>azuredevops_build_definition</c> resources.
-/// </summary>
-internal sealed class BuildDefinitionRenderer : AzureDevOpsDelegatingRenderer
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BuildDefinitionRenderer"/> class.
-    /// </summary>
-    public BuildDefinitionRenderer()
-        : base("azuredevops_build_definition")
-    {
-    }
-}

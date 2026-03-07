@@ -87,8 +87,7 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
     /// <param name="registry">The factory registry to register with.</param>
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
-        registry.RegisterFactory("azuredevops_variable_group", new VariableGroupFactory(_largeValueFormat));
-        registry.RegisterFactory("azuredevops_build_definition", new BuildDefinitionFactory(_largeValueFormat, _azdoRepositoryMapper));
+        // No AzureDevOps factories are needed — rendering is handled by dedicated renderer classes.
     }
 
     /// <summary>
@@ -232,7 +231,7 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
     public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
         registry.Register(new VariableGroupRenderer(_largeValueFormat));
-        registry.Register(new BuildDefinitionRenderer());
+        registry.Register(new AzureDevOpsDelegatingRenderer("azuredevops_build_definition"));
     }
 }
 #pragma warning restore CA1506

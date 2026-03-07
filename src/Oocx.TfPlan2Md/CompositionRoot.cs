@@ -190,7 +190,6 @@ internal sealed class CompositionRoot(CliOptions options)
             entityMapper: entityMapper,
             roleDefinitionResolver: roleDefinitionResolver));
         registry.RegisterProvider(new AzureDevOpsModule(
-            largeValueFormat: largeValueFormat,
             entityMapper: entityMapper,
             azdoUserMapper: azdoUserMapper,
             azdoGroupMapper: azdoGroupMapper,
@@ -263,8 +262,8 @@ internal sealed class CompositionRoot(CliOptions options)
         ValueFormatterRegistry valueFormatterRegistry,
         IconProviderRegistry iconProviderRegistry)
     {
+        _ = principalMapper;
         return new MarkdownRenderer(
-            principalMapper,
             diagnosticContext,
             providerRegistry,
             providerContributions: providerContributionSet,

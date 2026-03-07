@@ -34,11 +34,10 @@ public class DebugOutputIntegrationTests
             showUnchangedValues: false,
             renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
-            principalMapper: principalMapper,
             hideMetadata: false);
         var model = modelBuilder.Build(plan);
 
-        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext: null);
+        var renderer = new MarkdownRenderer();
 
         // Act
         var markdown = renderer.Render(model);
@@ -73,11 +72,10 @@ public class DebugOutputIntegrationTests
             showUnchangedValues: false,
             renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
-            principalMapper: principalMapper,
             hideMetadata: false);
         var model = modelBuilder.Build(plan);
 
-        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext);
+        var renderer = new MarkdownRenderer(diagnosticContext);
 
         // Act
         var markdown = renderer.Render(model);
@@ -123,11 +121,10 @@ public class DebugOutputIntegrationTests
             showUnchangedValues: false,
             renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
-            principalMapper: principalMapper,
             hideMetadata: false);
         var model = modelBuilder.Build(plan);
 
-        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext);
+        var renderer = new MarkdownRenderer(diagnosticContext);
 
         // Act
         var markdown = renderer.Render(model);
@@ -167,11 +164,10 @@ public class DebugOutputIntegrationTests
             showUnchangedValues: false,
             renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
-            principalMapper: principalMapper,
             hideMetadata: false);
         var model = modelBuilder.Build(plan);
 
-        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext);
+        var renderer = new MarkdownRenderer(diagnosticContext);
 
         // Act
         var markdown = renderer.Render(model);
@@ -205,11 +201,10 @@ public class DebugOutputIntegrationTests
             showUnchangedValues: false,
             renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
-            principalMapper: principalMapper,
             hideMetadata: false);
         var model = modelBuilder.Build(plan);
 
-        var renderer = new MarkdownRenderer(principalMapper);
+        var renderer = new MarkdownRenderer();
 
         // Act
         var markdown = renderer.Render(model);

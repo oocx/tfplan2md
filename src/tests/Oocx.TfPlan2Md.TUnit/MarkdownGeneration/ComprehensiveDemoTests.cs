@@ -27,7 +27,6 @@ public class ComprehensiveDemoTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: _principalMapper));
         _renderer = new MarkdownRenderer(
-            principalMapper: _principalMapper,
             providerRegistry: providerRegistry);
     }
 
@@ -39,7 +38,6 @@ public class ComprehensiveDemoTests
             principalMapper: _principalMapper));
         return new ReportModelBuilder(
             showSensitive: showSensitive,
-            principalMapper: _principalMapper,
             providerRegistry: providerRegistry);
     }
 

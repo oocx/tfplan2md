@@ -22,43 +22,17 @@ internal static class DefaultResourceRenderPolicy
         var useKnownAfterApplyFormatting = (scenarioContext?.IsKnownAfterApplyScenario == true)
             || ShouldUseKnownAfterApplyFormatting(change);
         var isNoOpParentWithChildren = IsNoOpParentSecurityRuleScenario(change);
-        var useMultilineDetailsSummary = ShouldUseMultilineDetailsSummary(
-            change,
-            isNoOpParentWithChildren,
-            useOutputsFocusedFormatting,
-            useKnownAfterApplyFormatting);
         var useExtraBlankLineBeforeSummary = ShouldUseExtraBlankLineBeforeSummary(
             change,
-            useMultilineDetailsSummary,
+            true,
             useKnownAfterApplyFormatting);
 
         return new DefaultResourceRenderPolicyResult(
             isNoOpParentWithChildren,
             useOutputsFocusedFormatting,
             useKnownAfterApplyFormatting,
-            useMultilineDetailsSummary,
+            true,
             useExtraBlankLineBeforeSummary);
-    }
-
-    /// <summary>
-    /// Determines whether multiline details-summary formatting should be used.
-    /// </summary>
-    /// <param name="change">Resource change model.</param>
-    /// <param name="isNoOpParentWithChildren">Whether the resource is a no-op parent with changed children.</param>
-    /// <param name="useOutputsFocusedFormatting">Whether outputs-focused formatting is enabled.</param>
-    /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    /// <returns>True when multiline formatting should be preserved.</returns>
-    private static bool ShouldUseMultilineDetailsSummary(
-        ResourceChangeModel change,
-        bool isNoOpParentWithChildren,
-        bool useOutputsFocusedFormatting,
-        bool useKnownAfterApplyFormatting)
-    {
-        _ = change;
-        _ = isNoOpParentWithChildren;
-        _ = useOutputsFocusedFormatting;
-        _ = useKnownAfterApplyFormatting;
-        return true;
     }
 
     /// <summary>

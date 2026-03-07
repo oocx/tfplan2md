@@ -178,7 +178,7 @@ public class ProviderValueFormatterRegistryTests
     {
         var registry = new ValueFormatterRegistry();
         var entityMapper = CreateEntityMapper();
-        var module = new AzureDevOpsModule(LargeValueFormat.SimpleDiff, entityMapper);
+        var module = new AzureDevOpsModule(entityMapper);
 
         module.RegisterValueFormatters(registry);
 

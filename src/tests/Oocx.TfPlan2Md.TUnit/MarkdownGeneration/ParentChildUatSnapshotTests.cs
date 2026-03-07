@@ -56,7 +56,7 @@ public class ParentChildUatSnapshotTests
 
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new AzureADModule());
-        providerRegistry.RegisterProvider(new AzureDevOpsModule(LargeValueFormat.SimpleDiff));
+        providerRegistry.RegisterProvider(new AzureDevOpsModule());
         var providerContributions = providerRegistry.CreateContributionSet();
 
         var valueFormatterRegistry = providerContributions.CreateValueFormatterRegistry();

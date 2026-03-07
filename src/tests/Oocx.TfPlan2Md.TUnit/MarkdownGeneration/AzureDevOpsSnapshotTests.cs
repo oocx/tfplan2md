@@ -135,7 +135,6 @@ public class AzureDevOpsSnapshotTests
         }
 
         registry.RegisterProvider(new AzureDevOpsModule(
-            LargeValueFormat.SimpleDiff,
             entityMapper: null,
             azdoUserMapper: azdoUserMapper,
             azdoGroupMapper: azdoGroupMapper,

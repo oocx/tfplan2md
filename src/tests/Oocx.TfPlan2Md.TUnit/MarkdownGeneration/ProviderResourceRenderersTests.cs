@@ -60,7 +60,7 @@ public class ProviderResourceRenderersTests
             new GroupMemberRenderer(),
             new ServicePrincipalRenderer(),
             new InvitationRenderer(),
-            new VariableGroupRenderer(LargeValueFormat.InlineDiff),
+            new VariableGroupRenderer(),
             new AzureDevOpsDelegatingRenderer("azuredevops_build_definition")
         };
 

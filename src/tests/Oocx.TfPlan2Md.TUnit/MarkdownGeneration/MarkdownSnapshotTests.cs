@@ -52,12 +52,10 @@ public class MarkdownSnapshotTests
         var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
         var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
         var model = new ReportModelBuilder(
-            principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry).Build(plan);
         var renderer = new MarkdownRenderer(
-            principalMapper: principalMapper,
-            providerRegistry: providerRegistry);
+                        providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -91,9 +89,8 @@ public class MarkdownSnapshotTests
         providerRegistry.RegisterProvider(new AzureADModule());
         providerRegistry.RegisterProvider(new AzureRMModule(
             largeValueFormat: LargeValueFormat.InlineDiff,
-            principalMapper: principalMapper,
             scopeFormatter: scopeFormatter));
-        providerRegistry.RegisterProvider(new AzureDevOpsModule(LargeValueFormat.InlineDiff));
+        providerRegistry.RegisterProvider(new AzureDevOpsModule());
         var providerContributions = providerRegistry.CreateContributionSet();
 
         var valueFormatterRegistry = providerContributions.CreateValueFormatterRegistry();
@@ -114,7 +111,6 @@ public class MarkdownSnapshotTests
         // Build model with all features enabled
         var model = new ReportModelBuilder(
             summaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
-            principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
             providerContributions: providerContributions,
@@ -123,8 +119,7 @@ public class MarkdownSnapshotTests
 
         // Render with all providers
         var renderer = new MarkdownRenderer(
-            principalMapper: principalMapper,
-            providerRegistry: providerRegistry,
+                        providerRegistry: providerRegistry,
             providerContributions: providerContributions,
             valueFormatterRegistry: valueFormatterRegistry,
             iconProviderRegistry: iconProviderRegistry);
@@ -193,12 +188,10 @@ public class MarkdownSnapshotTests
         var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
         var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
         var model = new ReportModelBuilder(
-            principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry).Build(plan);
         var renderer = new MarkdownRenderer(
-            principalMapper: principalMapper,
-            providerRegistry: providerRegistry);
+                        providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -228,12 +221,10 @@ public class MarkdownSnapshotTests
         var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter, roleDefinitionResolver);
 
         var model = new ReportModelBuilder(
-            principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry).Build(plan);
         var renderer = new MarkdownRenderer(
-            principalMapper: principalMapper,
-            providerRegistry: providerRegistry);
+                        providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -312,7 +303,6 @@ public class MarkdownSnapshotTests
         var registry = new ProviderRegistry();
         registry.RegisterProvider(new AzureRMModule(
             largeValueFormat: LargeValueFormat.InlineDiff,
-            principalMapper: principalMapper ?? new NullPrincipalMapper(),
             scopeFormatter: scopeFormatter,
             roleDefinitionResolver: roleDefinitionResolver));
         return registry;

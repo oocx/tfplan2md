@@ -109,31 +109,14 @@ internal sealed class ReportRenderer
         writer.Raw("| Action | Count | Resource Types |\n");
         writer.Raw("| -------- | ------- | ---------------- |\n");
 
-        writer.TableRow(["➕\u00A0Add", summary.ToAdd.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatSummaryBreakdown(summary.ToAdd.Breakdown)]);
-        writer.TableRow(["🔄\u00A0Change", summary.ToChange.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatSummaryBreakdown(summary.ToChange.Breakdown)]);
-        writer.TableRow(["♻️\u00A0Replace", summary.ToReplace.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatSummaryBreakdown(summary.ToReplace.Breakdown)]);
-        writer.TableRow(["❌\u00A0Destroy", summary.ToDestroy.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatSummaryBreakdown(summary.ToDestroy.Breakdown)]);
+        writer.TableRow(["➕\u00A0Add", summary.ToAdd.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToAdd.Breakdown)]);
+        writer.TableRow(["🔄\u00A0Change", summary.ToChange.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToChange.Breakdown)]);
+        writer.TableRow(["♻️\u00A0Replace", summary.ToReplace.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToReplace.Breakdown)]);
+        writer.TableRow(["❌\u00A0Destroy", summary.ToDestroy.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToDestroy.Breakdown)]);
 
         var totalText = summary.Total.ToString(System.Globalization.CultureInfo.InvariantCulture);
         writer.Raw($"| **Total** | **{totalText}** | |\n");
         writer.BlankLine();
-    }
-
-    /// <summary>
-    /// Formats summary breakdown values for table cells.
-    /// </summary>
-    /// <param name="breakdown">Resource type breakdown entries.</param>
-    /// <returns>Markdown-safe breakdown string.</returns>
-    private static string FormatSummaryBreakdown(IReadOnlyList<ResourceTypeBreakdown> breakdown)
-    {
-        if (breakdown.Count == 0)
-        {
-            return string.Empty;
-        }
-
-        return string.Join(
-            "<br/>",
-            breakdown.Select(entry => $"{entry.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)} {MarkdownHelpers.EscapeMarkdown(entry.Type)}"));
     }
 
     /// <summary>

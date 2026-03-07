@@ -29,23 +29,13 @@ internal sealed class IconProviderRegistry
     }
 
     /// <summary>
-    /// Attempts to resolve an icon by iterating providers in specificity order.
+    /// Attempts to resolve an icon by returning the first non-null result from registered providers.
     /// </summary>
     /// <param name="context">The resolution context to evaluate.</param>
     /// <returns>An icon string when handled; otherwise null.</returns>
     public string? TryGetIcon(ServiceResolutionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
-
-        foreach (var provider in _registry.ResolveAll(context))
-        {
-            var icon = provider.TryGetIcon(context);
-            if (icon is not null)
-            {
-                return icon;
-            }
-        }
-
-        return null;
+        return _registry.TryResolveFirst(context, static (provider, ctx) => provider.TryGetIcon(ctx));
     }
 }

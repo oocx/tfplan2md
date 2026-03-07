@@ -64,10 +64,6 @@ internal static partial class MarkdownHelpers
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <returns>Plain text value with semantic icons, no markdown or HTML wrapping.</returns>
-    [SuppressMessage(
-        "Maintainability",
-        "CA1502:Avoid excessive complexity",
-        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     public static string FormatAttributeValuePlain(string? attributeName, string? value, string? providerName)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -84,64 +80,11 @@ internal static partial class MarkdownHelpers
             return $"{registryIcon}{NonBreakingSpace}{normalizedValue}";
         }
 
-        if (TryFormatBoolean(normalizedValue, ValueFormatContext.Table, out var booleanFormatted))
+        // Delegate to TryFormatSemanticValue and strip any backtick wrapping from the result,
+        // so callers receive plain text suitable for custom wrapping.
+        if (TryFormatSemanticValue(normalizedName, normalizedValue, ValueFormatContext.Table, out var semanticFormatted))
         {
-            return booleanFormatted.Trim('`');
-        }
-
-        if (TryFormatAccess(normalizedName, normalizedValue, ValueFormatContext.Table, out var accessFormatted))
-        {
-            return accessFormatted.Trim('`');
-        }
-
-        if (TryFormatDirection(normalizedName, normalizedValue, ValueFormatContext.Table, out var directionFormatted))
-        {
-            return directionFormatted.Trim('`');
-        }
-
-        if (TryFormatProtocol(normalizedName, normalizedValue, ValueFormatContext.Table, out var protocolFormatted))
-        {
-            return protocolFormatted.Trim('`');
-        }
-
-        if (TryFormatPort(normalizedName, normalizedValue, ValueFormatContext.Table, out var portFormatted))
-        {
-            return portFormatted.Trim('`');
-        }
-
-        if (TryFormatPrincipalType(normalizedName, normalizedValue, ValueFormatContext.Table, out var principalTypeFormatted))
-        {
-            return principalTypeFormatted.Trim('`');
-        }
-
-        if (TryFormatRoleDefinition(normalizedName, normalizedValue, ValueFormatContext.Table, out var roleFormatted))
-        {
-            return roleFormatted.Trim('`');
-        }
-
-        if (TryFormatIdentityAttributePlain(normalizedName, normalizedValue, out var identityFormatted))
-        {
-            return identityFormatted;
-        }
-
-        if (TryFormatSubscriptionAttributePlain(normalizedName, normalizedValue, out var subscriptionFormatted))
-        {
-            return subscriptionFormatted;
-        }
-
-        if (TryFormatRepositoryAttributePlain(normalizedName, normalizedValue, out var repositoryFormatted))
-        {
-            return repositoryFormatted;
-        }
-
-        if (TryFormatBranchAttributePlain(normalizedName, normalizedValue, out var branchFormatted))
-        {
-            return branchFormatted;
-        }
-
-        if (TryFormatNameAttributePlain(normalizedName, normalizedValue, out var nameFormatted))
-        {
-            return nameFormatted;
+            return semanticFormatted.Trim('`');
         }
 
         if (value.Equals("*", StringComparison.OrdinalIgnoreCase))

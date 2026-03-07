@@ -55,4 +55,29 @@ internal sealed class PatternMatchingRegistry<TService>
             .Select(registration => registration.Service)
             .ToList();
     }
+
+    /// <summary>
+    /// Returns the first non-null result produced by iterating registered services in specificity order.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of <paramref name="selector"/>.</typeparam>
+    /// <param name="context">The resolution context to evaluate.</param>
+    /// <param name="selector">Delegate that attempts to produce a result from a service.</param>
+    /// <returns>The first non-null result, or <c>null</c> when no service produces a result.</returns>
+    public TResult? TryResolveFirst<TResult>(ServiceResolutionContext context, Func<TService, ServiceResolutionContext, TResult?> selector)
+        where TResult : class
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(selector);
+
+        foreach (var service in ResolveAll(context))
+        {
+            var result = selector(service, context);
+            if (result is not null)
+            {
+                return result;
+            }
+        }
+
+        return null;
+    }
 }

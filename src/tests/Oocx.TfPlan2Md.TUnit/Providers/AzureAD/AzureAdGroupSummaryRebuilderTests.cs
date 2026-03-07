@@ -38,7 +38,6 @@ public class AzureAdGroupSummaryRebuilderTests
         var principalMapper = new PrincipalMapper(principals, principalTypes);
 
         var builder = new ReportModelBuilder(
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
 
         // Override the callback to detect invocation
@@ -579,7 +578,6 @@ public class AzureAdGroupSummaryRebuilderTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         var builder = new ReportModelBuilder(
-            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
 
         return builder.Build(plan);

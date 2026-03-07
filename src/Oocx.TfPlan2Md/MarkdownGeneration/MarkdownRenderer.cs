@@ -29,21 +29,18 @@ internal sealed class MarkdownRenderer
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class.
     /// </summary>
-    /// <param name="principalMapper">Unused in pure C# mode; preserved for API compatibility.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for template/render tracking.</param>
     /// <param name="providerRegistry">Optional provider registry for formatter/icon registrations.</param>
     /// <param name="providerContributions">Optional centralized provider contribution set.</param>
     /// <param name="valueFormatterRegistry">Optional preconfigured value formatter registry.</param>
     /// <param name="iconProviderRegistry">Optional preconfigured icon provider registry.</param>
     public MarkdownRenderer(
-        IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         ProviderRegistry? providerRegistry = null,
         ProviderContributionSet? providerContributions = null,
         ValueFormatterRegistry? valueFormatterRegistry = null,
         IconProviderRegistry? iconProviderRegistry = null)
     {
-        _ = principalMapper;
         _diagnosticContext = diagnosticContext;
         var contributions = providerContributions ?? providerRegistry?.CreateContributionSet();
         _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(contributions);
@@ -57,7 +54,6 @@ internal sealed class MarkdownRenderer
     /// that still provide a legacy template-directory argument.
     /// </summary>
     /// <param name="customTemplateDirectory">Legacy directory argument retained for source compatibility.</param>
-    /// <param name="principalMapper">Principal mapper parameter kept for caller signature compatibility.</param>
     /// <param name="diagnosticContext">Diagnostic sink used for template-resolution events.</param>
     /// <param name="providerRegistry">Provider module registry used to build formatter and icon registries.</param>
     /// <param name="providerContributions">Optional centralized provider contribution set.</param>
@@ -65,13 +61,12 @@ internal sealed class MarkdownRenderer
     /// <param name="iconProviderRegistry">Optional explicit icon provider registry override.</param>
     public MarkdownRenderer(
         string customTemplateDirectory,
-        IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         ProviderRegistry? providerRegistry = null,
         ProviderContributionSet? providerContributions = null,
         ValueFormatterRegistry? valueFormatterRegistry = null,
         IconProviderRegistry? iconProviderRegistry = null)
-        : this(principalMapper, diagnosticContext, providerRegistry, providerContributions, valueFormatterRegistry, iconProviderRegistry)
+        : this(diagnosticContext, providerRegistry, providerContributions, valueFormatterRegistry, iconProviderRegistry)
     {
         _ = customTemplateDirectory;
     }

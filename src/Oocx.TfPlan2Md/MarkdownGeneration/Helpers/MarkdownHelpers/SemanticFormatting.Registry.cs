@@ -30,7 +30,7 @@ internal static partial class MarkdownHelpers
         ValueFormatContext context,
         IconProviderRegistry? iconProviderRegistry)
     {
-        return FormatAttributeValueCore(attributeName, value, providerName, null, context, iconProviderRegistry);
+        return FormatAttributeValueCore(attributeName, value, providerName, context, iconProviderRegistry);
     }
 
     /// <summary>
@@ -44,10 +44,6 @@ internal static partial class MarkdownHelpers
     /// <param name="context">The rendering context (table or summary).</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Formatted value respecting semantic icon rules and context-specific code wrapping.</returns>
-    [SuppressMessage(
-        "Maintainability",
-        "CA1502:Avoid excessive complexity",
-        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     private static string FormatAttributeValueWithResource(
         string? attributeName,
         string? value,
@@ -56,7 +52,7 @@ internal static partial class MarkdownHelpers
         ValueFormatContext context,
         IconProviderRegistry? iconProviderRegistry)
     {
-        return FormatAttributeValueCore(attributeName, value, providerName, resourceType, context, iconProviderRegistry);
+        return FormatAttributeValueCore(attributeName, value, providerName, context, iconProviderRegistry, resourceType);
     }
 
     /// <summary>
@@ -214,13 +210,14 @@ internal static partial class MarkdownHelpers
 
     /// <summary>
     /// Formats attribute values with shared semantic rules, optionally scoped by resource type.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
-    /// <param name="resourceType">Optional resource type for resource-scoped icon resolution.</param>
     /// <param name="context">The rendering context (table or summary).</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <param name="resourceType">Optional resource type for resource-scoped icon resolution.</param>
     /// <returns>Formatted value respecting semantic icon rules and context-specific code wrapping.</returns>
     [SuppressMessage(
         "Maintainability",
@@ -230,9 +227,9 @@ internal static partial class MarkdownHelpers
         string? attributeName,
         string? value,
         string? providerName,
-        string? resourceType,
         ValueFormatContext context,
-        IconProviderRegistry? iconProviderRegistry)
+        IconProviderRegistry? iconProviderRegistry,
+        string? resourceType = null)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

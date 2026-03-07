@@ -50,7 +50,7 @@ public class MarkdownLintIntegrationTests
 
         var plan = _parser.Parse(await File.ReadAllTextAsync(DemoPaths.DemoPlanPath, cancellationToken));
         var model = new ReportModelBuilder().Build(plan);
-        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer();
 
         var markdown = renderer.Render(model);
         var result = await Fixture.LintAsync(markdown);

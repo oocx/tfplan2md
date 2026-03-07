@@ -86,7 +86,6 @@ public class ReportModelBuilderSummaryTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         var builder = new ReportModelBuilder(
-            principalMapper: new NullPrincipalMapper(),
             providerRegistry: providerRegistry);
 
         // Act

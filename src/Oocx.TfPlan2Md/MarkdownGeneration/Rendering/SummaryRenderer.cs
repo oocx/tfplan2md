@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
@@ -52,10 +54,12 @@ internal static class SummaryRenderer
 
     /// <summary>
     /// Formats resource type breakdown for summary tables.
+    /// Used by both <see cref="SummaryRenderer"/> and <see cref="ReportRenderer"/>.
+    /// Related feature: docs/features/111-code-simplification/specification.md (Finding 1.1).
     /// </summary>
     /// <param name="breakdown">Breakdown entries.</param>
     /// <returns>Markdown-safe table cell content.</returns>
-    private static string FormatBreakdown(IReadOnlyList<ResourceTypeBreakdown> breakdown)
+    internal static string FormatBreakdown(IReadOnlyList<ResourceTypeBreakdown> breakdown)
     {
         if (breakdown.Count == 0)
         {

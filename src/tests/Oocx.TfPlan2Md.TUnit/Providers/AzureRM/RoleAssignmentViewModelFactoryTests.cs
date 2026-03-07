@@ -110,7 +110,6 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "create",
             attributeChanges: attributes,
-            principalMapper: new NullPrincipalMapper(),
             scopeFormatter: null);
 
         viewModel.LargeAttributes.Should().ContainSingle(item => item.Name == "description");
@@ -183,7 +182,7 @@ public class RoleAssignmentViewModelFactoryTests
                 change,
                 action: "create",
                 attributeChanges: [],
-                principalMapper: mapper,
+            principalMapper: new NullPrincipalMapper(),
                 scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
@@ -229,7 +228,7 @@ public class RoleAssignmentViewModelFactoryTests
                 change,
                 action: "create",
                 attributeChanges: [],
-                principalMapper: mapper,
+            principalMapper: new NullPrincipalMapper(),
                 scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
@@ -384,7 +383,6 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "update",
             attributeChanges: [], // intentionally empty — all filtered
-            principalMapper: new NullPrincipalMapper(),
             scopeFormatter: null);
 
         viewModel.SmallAttributes.Should().BeEmpty(
@@ -422,7 +420,6 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "replace",
             attributeChanges: [], // intentionally empty — all filtered
-            principalMapper: new NullPrincipalMapper(),
             scopeFormatter: null);
 
         viewModel.SmallAttributes.Should().BeEmpty(

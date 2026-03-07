@@ -1,5 +1,4 @@
 using System;
-using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
@@ -35,19 +34,6 @@ internal sealed class AzdoRepositoryIdFormatter : IValueFormatter
     public string? TryFormat(ServiceResolutionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
-
-        if (string.IsNullOrWhiteSpace(context.Value))
-        {
-            return null;
-        }
-
-        var displayName = _repositoryMapper.GetName(context.Value);
-        if (string.IsNullOrWhiteSpace(displayName) || displayName.Equals(context.Value, StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
-
-        var enriched = $"🗃️\u00A0{displayName} ({context.Value})";
-        return MarkdownHelpers.FormatCodeTable(enriched);
+        return AzdoFormatterHelper.TryFormat(context.Value, _repositoryMapper.GetName, "🗃️");
     }
 }

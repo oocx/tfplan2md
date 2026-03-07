@@ -360,7 +360,7 @@ public class PrincipalMapperDiagnosticsTests
             context.PrincipalMappingFileProvided.Should().BeTrue();
             context.PrincipalMappingLoadedSuccessfully.Should().BeTrue(); // Empty is technically successful
             context.PrincipalMappingFilePath.Should().Be(mappingFile);
-            context.PrincipalTypeCount[PrincipalsKey].Should().Be(0); // But count is 0
+            context.PrincipalTypeCount.Should().NotContainKey(PrincipalsKey);
         }
         finally
         {

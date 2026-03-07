@@ -311,7 +311,7 @@ Each provider is self-contained:
 - **Templates** (`.sbn` files): Provider-specific Scriban templates
 - **Models**: Resource view models and factories for complex resources
 - **Helpers**: Provider-specific Scriban helper functions
-- **Module**: `IProviderModule` implementation for registration
+- **Provider contract**: `IProvider` implementation plus any optional capability interfaces needed for registration
 
 **Adding a new provider?** See [src/Oocx.TfPlan2Md/Providers/README.md](src/Oocx.TfPlan2Md/Providers/README.md) for a comprehensive guide.
 

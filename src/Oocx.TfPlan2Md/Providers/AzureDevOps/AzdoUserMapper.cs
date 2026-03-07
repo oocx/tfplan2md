@@ -21,14 +21,14 @@ internal sealed class AzdoUserMapper
     /// <summary>
     /// Optional diagnostics for recording failed resolutions.
     /// </summary>
-    private readonly DiagnosticContext? _diagnostics;
+    private readonly IDiagnosticSink? _diagnostics;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AzdoUserMapper"/> class.
     /// </summary>
     /// <param name="userMappings">Mapping of user IDs to display names.</param>
-    /// <param name="diagnostics">Optional diagnostic context for recording failed resolutions.</param>
-    public AzdoUserMapper(FrozenDictionary<string, string> userMappings, DiagnosticContext? diagnostics)
+    /// <param name="diagnostics">Optional diagnostic sink for recording failed resolutions.</param>
+    public AzdoUserMapper(FrozenDictionary<string, string> userMappings, IDiagnosticSink? diagnostics)
     {
         _userMappings = userMappings;
         _diagnostics = diagnostics;
@@ -75,7 +75,7 @@ internal sealed class AzdoUserMapper
         // Record failed resolution for diagnostics
         if (!found && _diagnostics != null && resourceAddress != null)
         {
-            _diagnostics.FailedResolutions.Add(
+            _diagnostics.RecordFailedResolution(
                 new FailedResolution(
                     FailedResolutionType.AzdoUser,
                     userId,

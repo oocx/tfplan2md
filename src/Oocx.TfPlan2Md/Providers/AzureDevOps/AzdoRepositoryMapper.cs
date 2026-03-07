@@ -21,14 +21,14 @@ internal sealed class AzdoRepositoryMapper
     /// <summary>
     /// Optional diagnostics for recording failed resolutions.
     /// </summary>
-    private readonly DiagnosticContext? _diagnostics;
+    private readonly IDiagnosticSink? _diagnostics;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AzdoRepositoryMapper"/> class.
     /// </summary>
     /// <param name="repositoryMappings">Mapping of repository IDs to display names.</param>
-    /// <param name="diagnostics">Optional diagnostic context for recording failed resolutions.</param>
-    public AzdoRepositoryMapper(FrozenDictionary<string, string> repositoryMappings, DiagnosticContext? diagnostics)
+    /// <param name="diagnostics">Optional diagnostic sink for recording failed resolutions.</param>
+    public AzdoRepositoryMapper(FrozenDictionary<string, string> repositoryMappings, IDiagnosticSink? diagnostics)
     {
         _repositoryMappings = repositoryMappings;
         _diagnostics = diagnostics;
@@ -75,7 +75,7 @@ internal sealed class AzdoRepositoryMapper
         // Record failed resolution for diagnostics
         if (!found && _diagnostics != null && resourceAddress != null)
         {
-            _diagnostics.FailedResolutions.Add(
+            _diagnostics.RecordFailedResolution(
                 new FailedResolution(
                     FailedResolutionType.AzdoRepository,
                     repositoryId,

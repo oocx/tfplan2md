@@ -4,6 +4,7 @@
 
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
+using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.RenderTargets;
@@ -128,7 +129,7 @@ internal static class ProgramEntry
         // Append debug section if diagnostic context exists
         if (services.DiagnosticContext is not null)
         {
-            markdown += "\n\n" + services.DiagnosticContext.GenerateMarkdownSection();
+            markdown += "\n\n" + DiagnosticMarkdownFormatter.Format(services.DiagnosticContext.CreateSnapshot());
         }
 
         // Write output

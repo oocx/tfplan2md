@@ -273,3 +273,27 @@
   - `docs/features/110-refactoring-opportunities/work-protocol.md`
 - **Problems Encountered:**
   - Developer Entry 8 had already updated the architecture doc to include Stages/ and ProviderContributionSet, but the Stages listing still contained entries for planned-but-not-implemented stages; this required a targeted reconciliation pass rather than a full rewrite.
+
+### Developer Entry 10
+
+- **Date:** 2026-03-07
+- **Summary:** Addressed the remaining Review 3 findings by adding the missing Task 7-9 regression tests (diagnostic sink boundary, diagnostic-model structure, ProgramEntry formatter usage, AzApi policy matrix, AzApi pre-emission planning guard, and active documentation alignment), splitting the oversized AzApi planner/renderer, default renderer, and diagnostic formatter into helper files, and trimming the oversized test files by moving policy and diagnostic collection cases into dedicated suites. Updated the active architecture/contribution docs so they no longer present `IProviderModule` as the current extension contract.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticMarkdownFormatter.Helpers.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderPlanner.Helpers.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderPlans.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.Helpers.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderer.Helpers.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/DiagnosticContextCollectionTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/DiagnosticEventModelStructureTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzApi/AzApiBodyComparisonPolicyTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Architecture/DocumentationAlignmentTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/DefaultResourceRenderPolicyTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/DiagnosticContextTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/DefaultResourceRendererScenarioTests.cs`
+  - `docs/architecture.md`
+  - `CONTRIBUTING.md`
+  - `docs/features/110-refactoring-opportunities/work-protocol.md`
+- **Problems Encountered:**
+  - The active documentation tests had to be scoped to current, normative docs rather than historical feature records because older feature documents intentionally describe superseded architecture.
+  - The file-size cleanup exposed that the provider contract still lives in the legacy `IProviderModule.cs` filename even though the active interface is `IProvider`, so the documentation needed to describe the contract without repeating the stale type name.

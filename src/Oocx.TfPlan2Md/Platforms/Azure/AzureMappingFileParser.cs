@@ -19,9 +19,9 @@ internal static class AzureMappingFileParser
     /// Attempts to parse mapping file content in nested or flat formats.
     /// </summary>
     /// <param name="content">The JSON file content.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for tracking load results.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for tracking load results.</param>
     /// <returns>The parsed mapping file result, or null when parsing fails.</returns>
-    public static AzureMappingFileResult? TryParse(string content, DiagnosticContext? diagnosticContext)
+    public static AzureMappingFileResult? TryParse(string content, IDiagnosticSink? diagnosticContext)
     {
         var nested = TryParseNested(content, diagnosticContext);
         if (nested is not null)
@@ -36,9 +36,9 @@ internal static class AzureMappingFileParser
     /// Attempts to parse the mapping file in nested format.
     /// </summary>
     /// <param name="content">The JSON file content.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for tracking load results.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for tracking load results.</param>
     /// <returns>The parsed mapping file result when nested parsing succeeds; otherwise null.</returns>
-    private static AzureMappingFileResult? TryParseNested(string content, DiagnosticContext? diagnosticContext)
+    private static AzureMappingFileResult? TryParseNested(string content, IDiagnosticSink? diagnosticContext)
     {
         try
         {
@@ -90,9 +90,9 @@ internal static class AzureMappingFileParser
     /// Attempts to parse the mapping file in flat format.
     /// </summary>
     /// <param name="content">The JSON file content.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for tracking load results.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for tracking load results.</param>
     /// <returns>The parsed mapping file result when flat parsing succeeds; otherwise null.</returns>
-    private static AzureMappingFileResult? TryParseFlat(string content, DiagnosticContext? diagnosticContext)
+    private static AzureMappingFileResult? TryParseFlat(string content, IDiagnosticSink? diagnosticContext)
     {
         var parsed = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.DictionaryStringString);
         if (parsed == null)
@@ -102,8 +102,8 @@ internal static class AzureMappingFileParser
 
         if (diagnosticContext != null)
         {
-            diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
-            diagnosticContext.PrincipalTypeCount["principals"] = parsed.Count;
+            diagnosticContext.RecordPrincipalMappingLoadedSuccessfully();
+            diagnosticContext.RecordPrincipalTypeCount("principals", parsed.Count);
         }
 
         return new AzureMappingFileResult(
@@ -167,10 +167,10 @@ internal static class AzureMappingFileParser
     /// <summary>
     /// Records diagnostics for successfully parsed nested mapping files.
     /// </summary>
-    /// <param name="diagnosticContext">Optional diagnostic context to update.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink to update.</param>
     /// <param name="nestedMapping">The parsed mapping file.</param>
 #pragma warning disable CA1502 // Avoid excessive complexity - adding azdo entity counts increases complexity slightly but keeps related logic together
-    private static void RecordNestedDiagnostics(DiagnosticContext? diagnosticContext, PrincipalMappingFile nestedMapping)
+    private static void RecordNestedDiagnostics(IDiagnosticSink? diagnosticContext, PrincipalMappingFile nestedMapping)
 #pragma warning restore CA1502
     {
         if (diagnosticContext == null)
@@ -178,37 +178,36 @@ internal static class AzureMappingFileParser
             return;
         }
 
-        diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
+        diagnosticContext.RecordPrincipalMappingLoadedSuccessfully();
 
         AddPrincipalTypeCount(diagnosticContext, "users", nestedMapping.Users?.Count);
         AddPrincipalTypeCount(diagnosticContext, "groups", nestedMapping.Groups?.Count);
         AddPrincipalTypeCount(diagnosticContext, "servicePrincipals", nestedMapping.ServicePrincipals?.Count);
 
-        diagnosticContext.SubscriptionCount = nestedMapping.Subscriptions?.Count ?? 0;
-        diagnosticContext.ManagementGroupCount = nestedMapping.ManagementGroups?.Count ?? 0;
-        diagnosticContext.TenantCount = nestedMapping.Tenants?.Count ?? 0;
-        diagnosticContext.RoleCount = nestedMapping.Roles?.Count ?? 0;
-
-        // Azure DevOps entity counts
-        diagnosticContext.AzdoUserCount = nestedMapping.AzdoUsers?.Count ?? 0;
-        diagnosticContext.AzdoGroupCount = nestedMapping.AzdoGroups?.Count ?? 0;
-        diagnosticContext.AzdoProjectCount = nestedMapping.AzdoProjects?.Count ?? 0;
-        diagnosticContext.AzdoRepositoryCount = nestedMapping.AzdoRepositories?.Count ?? 0;
+        diagnosticContext.RecordPrincipalEntityCounts(
+            nestedMapping.Subscriptions?.Count ?? 0,
+            nestedMapping.ManagementGroups?.Count ?? 0,
+            nestedMapping.Tenants?.Count ?? 0,
+            nestedMapping.Roles?.Count ?? 0,
+            nestedMapping.AzdoUsers?.Count ?? 0,
+            nestedMapping.AzdoGroups?.Count ?? 0,
+            nestedMapping.AzdoProjects?.Count ?? 0,
+            nestedMapping.AzdoRepositories?.Count ?? 0);
     }
 
     /// <summary>
     /// Records principal type counts only when the section is present.
     /// </summary>
-    /// <param name="diagnosticContext">The diagnostic context to update.</param>
+    /// <param name="diagnosticContext">The diagnostic sink to update.</param>
     /// <param name="key">The principal type key.</param>
     /// <param name="count">The count of principals in the section.</param>
-    private static void AddPrincipalTypeCount(DiagnosticContext diagnosticContext, string key, int? count)
+    private static void AddPrincipalTypeCount(IDiagnosticSink diagnosticContext, string key, int? count)
     {
         if (!count.HasValue || count.Value == 0)
         {
             return;
         }
 
-        diagnosticContext.PrincipalTypeCount[key] = count.Value;
+        diagnosticContext.RecordPrincipalTypeCount(key, count.Value);
     }
 }

@@ -56,7 +56,7 @@ using System.Diagnostics.CodeAnalysis;
     "CA1502:Avoid excessive complexity",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "member",
-    Target = "~M:Oocx.TfPlan2Md.Diagnostics.DiagnosticContext.GenerateMarkdownSection")]
+    Target = "~M:Oocx.TfPlan2Md.Diagnostics.DiagnosticMarkdownFormatter.Format(Oocx.TfPlan2Md.Diagnostics.DiagnosticReport)")]
 
 [assembly: SuppressMessage(
     "Maintainability",

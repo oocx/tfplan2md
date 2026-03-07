@@ -83,7 +83,7 @@ internal sealed class MarkdownRenderer
     /// <returns>Rendered markdown.</returns>
     public string Render(ReportModel model)
     {
-        _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: default"));
+        _diagnosticContext?.RecordTemplateResolution(new TemplateResolution("_main", "Built-in template: default"));
         var context = CreateContext(model);
         try
         {
@@ -116,7 +116,7 @@ internal sealed class MarkdownRenderer
         {
             if (string.Equals(templateNameOrPath, "summary", StringComparison.OrdinalIgnoreCase))
             {
-                _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution("_main", "Built-in template: summary"));
+                _diagnosticContext?.RecordTemplateResolution(new TemplateResolution("_main", "Built-in template: summary"));
                 return RenderSummaryTemplate(model);
             }
 
@@ -160,11 +160,11 @@ internal sealed class MarkdownRenderer
         var renderer = _resourceRendererRegistry.GetRenderer(change.Type);
         if (renderer is null)
         {
-            _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution(change.Type, "Default renderer"));
+            _diagnosticContext?.RecordTemplateResolution(new TemplateResolution(change.Type, "Default renderer"));
             return null;
         }
 
-        _diagnosticContext?.TemplateResolutions.Add(new TemplateResolution(change.Type, "C# resource renderer"));
+        _diagnosticContext?.RecordTemplateResolution(new TemplateResolution(change.Type, "C# resource renderer"));
 
         var writer = new MarkdownWriter();
         var context = new RenderContext(

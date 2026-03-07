@@ -83,7 +83,7 @@ public class DebugOutputIntegrationTests
         var markdown = renderer.Render(model);
 
         // Append debug section (simulating what Program.cs does)
-        markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
+        markdown += "\n\n" + DiagnosticMarkdownFormatter.Format(diagnosticContext.CreateSnapshot());
 
         // Assert - Debug section exists in collapsible format
         await Assert.That(markdown).Contains("<details>");
@@ -131,7 +131,7 @@ public class DebugOutputIntegrationTests
 
         // Act
         var markdown = renderer.Render(model);
-        markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
+        markdown += "\n\n" + DiagnosticMarkdownFormatter.Format(diagnosticContext.CreateSnapshot());
 
         // Assert - Template resolutions are recorded
         await Assert.That(markdown).Contains("### Template Resolution");
@@ -175,7 +175,7 @@ public class DebugOutputIntegrationTests
 
         // Act
         var markdown = renderer.Render(model);
-        markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
+        markdown += "\n\n" + DiagnosticMarkdownFormatter.Format(diagnosticContext.CreateSnapshot());
 
         // Assert - Failed principal resolutions are recorded if any exist
         if (diagnosticContext.FailedResolutions.Count > 0)

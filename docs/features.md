@@ -2489,7 +2489,7 @@ The codebase is now organized with clear separation between Terraform provider-s
 **Key Changes:**
 
 - **Provider modules**: All provider-specific code (templates, helpers, view models) is now isolated in dedicated `Providers/` folders with matching namespaces
-- **Explicit registration**: Each provider implements `IProviderModule` and registers explicitly via `ProviderRegistry` (no reflection, maintains AOT compatibility)
+- **Explicit registration**: Each provider implements the narrow `IProvider` contract and any optional capability interfaces it needs, then registers explicitly via `ProviderRegistry` (no reflection, maintains AOT compatibility)
 - **Render target abstraction**: Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` interface
 - **CLI update**: The `--render-target` flag replaces `--large-value-format` for clearer intent
 
@@ -2511,7 +2511,7 @@ src/Oocx.TfPlan2Md/
 **Benefits for Contributors:**
 
 - **Easy navigation**: All code for a specific provider is in one place
-- **Clear boundaries**: Explicit interfaces define provider responsibilities
+- **Clear boundaries**: The base `IProvider` contract handles factory registration, while optional capability interfaces cover value formatters, icons, parent-child relationships, post-merge callbacks, attribute filters, and custom resource renderers
 - **Maintainability**: Adding support for new providers follows a clear pattern
 - **Discoverability**: Folder structure makes it obvious which providers are supported
 

@@ -15,7 +15,7 @@ This ADR investigates whether introducing a formal DI mechanism would benefit th
 The codebase already follows several DI-friendly patterns:
 
 - **Constructor injection** is used consistently — all major classes (`ReportModelBuilder`, `MarkdownRenderer`, `PrincipalMapper`) accept dependencies via constructor parameters.
-- **Interfaces exist** for key abstractions: `IPrincipalMapper`, `IProviderModule`, `IResourceSummaryBuilder`, `IMetadataProvider`, `IResourceViewModelFactoryRegistry`.
+- **Interfaces exist** for key abstractions: `IPrincipalMapper`, `IProvider`, optional provider capability interfaces (`IValueFormatterProvider`, `IIconRegistrationProvider`, `IParentChildRelationshipProvider`, `IPostMergeCallbackProvider`, `IResourceRendererProvider`), `IResourceSummaryBuilder`, `IMetadataProvider`, `IResourceViewModelFactoryRegistry`.
 - **Registry pattern** is used for extensible service resolution: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`.
 - **Composition root** is centralized in `ProgramEntry.RunWorkflowAsync()`.
 - **No circular dependencies** exist in the object graph.
@@ -32,7 +32,7 @@ The codebase already follows several DI-friendly patterns:
 ### Related Decisions
 
 - [ADR-003](adr-003-modern-csharp-patterns.md): Modern C# patterns (primary constructors, records)
-- [Feature 047](features/047-provider-code-separation/): Provider code separation with `IProviderModule`
+- [Feature 047](features/047-provider-code-separation/): Provider code separation with explicit provider registration
 - [Feature 061](features/061-extensible-provider-registry/): Extensible provider registry with pattern-based matching
 
 ## Options Considered
@@ -253,7 +253,7 @@ Keep the existing pattern in `ProgramEntry.RunWorkflowAsync()` unchanged.
 
 5. **Compile-time safety already exists**: Manual wiring catches all dependency errors at compile time. Source-generated DI would provide the same guarantee but through a different mechanism.
 
-6. **Feature 061 alignment**: The upcoming extensible provider registry (Feature 061) uses explicit registration patterns that are naturally compatible with Pure DI. The `IProviderModule` interface already defines a registration contract that doesn't need container integration.
+6. **Feature 061 alignment**: The extensible provider registry uses explicit registration patterns that are naturally compatible with Pure DI. The current `IProvider` contract plus optional capability interfaces already define the provider contribution surface without needing container integration.
 
 ### When to reconsider
 
@@ -318,7 +318,7 @@ High-level guidance for the Developer agent:
 - Use **primary constructors** for the `CompositionRoot` class (per ADR-003)
 - Keep factory methods **internal** for test access via `InternalsVisibleTo`
 - Follow existing **nullable reference type** patterns for optional dependencies (`DiagnosticContext?`, `IPrincipalMapper?`)
-- Maintain the **explicit provider registration** pattern from `IProviderModule`
+- Maintain the **explicit provider registration** pattern from `IProvider` plus optional capability interfaces
 
 ### Testing Strategy
 

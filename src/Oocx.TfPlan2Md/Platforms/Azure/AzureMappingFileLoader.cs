@@ -15,30 +15,22 @@ internal static class AzureMappingFileLoader
     /// Loads the mapping file and returns a parsed result for downstream mappers.
     /// </summary>
     /// <param name="mappingFile">Path to the JSON mapping file.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for recording load status.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for recording load status.</param>
     /// <returns>The parsed mapping file result.</returns>
-    internal static AzureMappingFileResult Load(string? mappingFile, DiagnosticContext? diagnosticContext)
+    internal static AzureMappingFileResult Load(string? mappingFile, IDiagnosticSink? diagnosticContext)
     {
         if (string.IsNullOrWhiteSpace(mappingFile))
         {
             return AzureMappingFileResult.Empty;
         }
 
-        if (diagnosticContext != null)
-        {
-            diagnosticContext.PrincipalMappingFileProvided = true;
-            diagnosticContext.PrincipalMappingFilePath = mappingFile;
-        }
+        diagnosticContext?.RecordPrincipalMappingFileProvided(mappingFile);
 
         var fileExists = File.Exists(mappingFile);
         var directory = Path.GetDirectoryName(mappingFile);
         var directoryExists = !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
 
-        if (diagnosticContext != null)
-        {
-            diagnosticContext.PrincipalMappingFileExists = fileExists;
-            diagnosticContext.PrincipalMappingDirectoryExists = directoryExists;
-        }
+        diagnosticContext?.RecordPrincipalMappingPathStatus(fileExists, directoryExists);
 
         if (!fileExists)
         {
@@ -89,7 +81,7 @@ internal static class AzureMappingFileLoader
     /// <param name="directoryExists">Whether the parent directory exists.</param>
     /// <param name="directory">The parent directory path.</param>
     private static void RecordMissingFileDiagnostics(
-        DiagnosticContext? diagnosticContext,
+        IDiagnosticSink? diagnosticContext,
         string mappingFile,
         bool directoryExists,
         string? directory)
@@ -99,19 +91,19 @@ internal static class AzureMappingFileLoader
             return;
         }
 
-        diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
-
         if (!directoryExists)
         {
-            diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.DirectoryNotFound;
-            diagnosticContext.PrincipalMappingErrorMessage = "Directory not found";
-            diagnosticContext.PrincipalMappingErrorDetails = $"Could not find directory '{directory}'";
+            diagnosticContext.RecordPrincipalMappingLoadFailure(
+                PrincipalLoadError.DirectoryNotFound,
+                "Directory not found",
+                $"Could not find directory '{directory}'");
         }
         else
         {
-            diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.FileNotFound;
-            diagnosticContext.PrincipalMappingErrorMessage = "File not found";
-            diagnosticContext.PrincipalMappingErrorDetails = $"Could not find file '{mappingFile}'";
+            diagnosticContext.RecordPrincipalMappingLoadFailure(
+                PrincipalLoadError.FileNotFound,
+                "File not found",
+                $"Could not find file '{mappingFile}'");
         }
     }
 
@@ -119,17 +111,17 @@ internal static class AzureMappingFileLoader
     /// Records diagnostics when the mapping file is empty or deserializes to null.
     /// </summary>
     /// <param name="diagnosticContext">Optional diagnostic context to update.</param>
-    private static void RecordEmptyFileDiagnostics(DiagnosticContext? diagnosticContext)
+    private static void RecordEmptyFileDiagnostics(IDiagnosticSink? diagnosticContext)
     {
         if (diagnosticContext == null)
         {
             return;
         }
 
-        diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
-        diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.EmptyFile;
-        diagnosticContext.PrincipalMappingErrorMessage = "File is empty or contains null";
-        diagnosticContext.PrincipalMappingErrorDetails = "The JSON file was parsed but resulted in null";
+        diagnosticContext.RecordPrincipalMappingLoadFailure(
+            PrincipalLoadError.EmptyFile,
+            "File is empty or contains null",
+            "The JSON file was parsed but resulted in null");
     }
 
     /// <summary>
@@ -137,16 +129,12 @@ internal static class AzureMappingFileLoader
     /// </summary>
     /// <param name="diagnosticContext">Optional diagnostic context to update.</param>
     /// <param name="exception">The JSON exception encountered.</param>
-    private static void RecordJsonErrorDiagnostics(DiagnosticContext? diagnosticContext, JsonException exception)
+    private static void RecordJsonErrorDiagnostics(IDiagnosticSink? diagnosticContext, JsonException exception)
     {
         if (diagnosticContext == null)
         {
             return;
         }
-
-        diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
-        diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.JsonParseError;
-        diagnosticContext.PrincipalMappingErrorMessage = "Invalid JSON syntax";
 
         var details = exception.Message;
         if (exception.LineNumber.HasValue || exception.BytePositionInLine.HasValue)
@@ -154,7 +142,10 @@ internal static class AzureMappingFileLoader
             details = $"{exception.Message} at line {exception.LineNumber}, column {exception.BytePositionInLine}";
         }
 
-        diagnosticContext.PrincipalMappingErrorDetails = details;
+        diagnosticContext.RecordPrincipalMappingLoadFailure(
+            PrincipalLoadError.JsonParseError,
+            "Invalid JSON syntax",
+            details);
     }
 
     /// <summary>
@@ -162,17 +153,17 @@ internal static class AzureMappingFileLoader
     /// </summary>
     /// <param name="diagnosticContext">Optional diagnostic context to update.</param>
     /// <param name="exception">The exception encountered.</param>
-    private static void RecordAccessDeniedDiagnostics(DiagnosticContext? diagnosticContext, UnauthorizedAccessException exception)
+    private static void RecordAccessDeniedDiagnostics(IDiagnosticSink? diagnosticContext, UnauthorizedAccessException exception)
     {
         if (diagnosticContext == null)
         {
             return;
         }
 
-        diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
-        diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.AccessDenied;
-        diagnosticContext.PrincipalMappingErrorMessage = "Access denied";
-        diagnosticContext.PrincipalMappingErrorDetails = exception.Message;
+        diagnosticContext.RecordPrincipalMappingLoadFailure(
+            PrincipalLoadError.AccessDenied,
+            "Access denied",
+            exception.Message);
     }
 
     /// <summary>
@@ -180,17 +171,17 @@ internal static class AzureMappingFileLoader
     /// </summary>
     /// <param name="diagnosticContext">Optional diagnostic context to update.</param>
     /// <param name="exception">The exception encountered.</param>
-    private static void RecordUnexpectedErrorDiagnostics(DiagnosticContext? diagnosticContext, Exception exception)
+    private static void RecordUnexpectedErrorDiagnostics(IDiagnosticSink? diagnosticContext, Exception exception)
     {
         if (diagnosticContext == null)
         {
             return;
         }
 
-        diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
-        diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.UnknownError;
-        diagnosticContext.PrincipalMappingErrorMessage = exception.GetType().Name;
-        diagnosticContext.PrincipalMappingErrorDetails = exception.Message;
+        diagnosticContext.RecordPrincipalMappingLoadFailure(
+            PrincipalLoadError.UnknownError,
+            exception.GetType().Name,
+            exception.Message);
     }
 
 }

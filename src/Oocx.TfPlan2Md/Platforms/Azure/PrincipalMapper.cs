@@ -27,14 +27,14 @@ internal class PrincipalMapper : IPrincipalMapper
     /// <summary>
     /// Optional diagnostics for recording failed resolutions.
     /// </summary>
-    private readonly DiagnosticContext? _diagnosticContext;
+    private readonly IDiagnosticSink? _diagnosticSink;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PrincipalMapper"/> class.
     /// </summary>
     /// <param name="principals">Mapping of principal IDs to display names.</param>
     /// <param name="principalTypes">Mapping of principal IDs to resolved principal types.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for recording load status and failed resolutions.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for recording load status and failed resolutions.</param>
     /// <remarks>
     /// The mapper uses pre-parsed data so file I/O and diagnostics are handled upstream.
     /// Failed resolutions are recorded when a diagnostic context is provided.
@@ -42,9 +42,9 @@ internal class PrincipalMapper : IPrincipalMapper
     public PrincipalMapper(
         IReadOnlyDictionary<string, string> principals,
         IReadOnlyDictionary<string, string> principalTypes,
-        DiagnosticContext? diagnosticContext = null)
+        IDiagnosticSink? diagnosticContext = null)
     {
-        _diagnosticContext = diagnosticContext;
+        _diagnosticSink = diagnosticContext;
         _principals = principals.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
         _principalTypes = principalTypes.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
     }
@@ -139,9 +139,9 @@ internal class PrincipalMapper : IPrincipalMapper
         var found = _principals.TryGetValue(principalId, out var name);
 
         // Record failed resolution for diagnostics
-        if (!found && _diagnosticContext != null && resourceAddress != null)
+        if (!found && _diagnosticSink != null && resourceAddress != null)
         {
-            _diagnosticContext.FailedResolutions.Add(
+            _diagnosticSink.RecordFailedResolution(
                 new FailedResolution(
                     FailedResolutionType.Principal,
                     principalId,

@@ -220,14 +220,13 @@ tfplan2md/
 │   ├── ReportModelBuilder.CodeAnalysis.cs
 │   ├── ReportModelBuilder.Summaries.cs
 │   ├── ReportModelBuilder.ParentChildMerging.cs
+│   ├── ReportModelBuilder.Outputs.cs
 │   ├── TerraformActions.cs      # Canonical Terraform action names and symbols
 │   ├── Stages/                  # Explicit report-generation stages
-│   │   ├── IResourceChangeStage.cs, ResourceChangeStage.cs
+│   │   ├── IResourceChangeStage.cs, ResourceChangeStage.cs, ResourceChangeStage.Helpers.cs
 │   │   ├── IAttributeFilteringStage.cs, AttributeFilteringStage.cs
-│   │   ├── IParentChildMergeStage.cs, ParentChildMergeStage.cs
 │   │   ├── ISummaryEnrichmentStage.cs, SummaryEnrichmentStage.cs
 │   │   ├── IDisplayFilteringStage.cs, DisplayFilteringStage.cs
-│   │   ├── ICodeAnalysisEnrichmentStage.cs, CodeAnalysisEnrichmentStage.cs
 │   │   └── IReportAssemblyStage.cs, ReportAssemblyStage.cs
 │   ├── Rendering/               # Pure C# rendering pipeline
 │   │   ├── IResourceRenderer.cs       # Renderer contract
@@ -238,6 +237,7 @@ tfplan2md/
 │   │   ├── ReportRenderer.cs          # Top-level orchestrator
 │   │   ├── HeaderRenderer.cs          # Report header section
 │   │   ├── SummaryRenderer.cs         # Summary section
+│   │   ├── DefaultResourceRenderPolicy.cs  # Scenario heuristics for default rendering
 │   │   ├── DefaultResourceRenderer.cs # Fallback for unmapped resource types
 │   │   └── CodeAnalysisSectionRenderer.cs  # Code analysis section
 │   ├── Models/                  # Core model interfaces and data types
@@ -288,14 +288,17 @@ tfplan2md/
 │   └── WildcardExpander.cs      # Glob pattern matching
 │
 ├── Diagnostics/                 # Debug and diagnostic support
-│   ├── DiagnosticContext.cs     # Collects diagnostic info in debug mode
+│   ├── DiagnosticContext.cs     # Collects diagnostic events/state in debug mode
+│   ├── IDiagnosticSink.cs       # Typed append-only diagnostics boundary
+│   ├── DiagnosticReport.cs      # Immutable diagnostics snapshot for formatting
+│   ├── DiagnosticMarkdownFormatter.cs  # Debug markdown rendering
 │   ├── TemplateResolution.cs    # Template resolution tracking
 │   ├── FailedResolution.cs      # Failed lookup details
 │   ├── FailedResolutionType.cs  # Resolution error types
 │   └── PrincipalLoadError.cs    # Principal mapping errors
 │
 ├── Providers/                   # Provider-specific implementations (modular)
-│   ├── IProviderModule.cs       # Core provider and optional capability contracts
+│   ├── Provider contract file   # Defines IProvider and optional provider capability interfaces
 │   ├── AzApi/                   # AzApi provider (azapi_resource, azapi_update_resource)
 │   ├── AzureAD/                 # Azure AD provider (azuread_*)
 │   ├── AzureRM/                 # AzureRM provider (azurerm_*)
@@ -312,7 +315,9 @@ tfplan2md/
 │       ├── IPrincipalMapper.cs, PrincipalMapper.cs, NullPrincipalMapper.cs
 │       ├── AzureEntityMapper.cs # Map subscriptions/management groups/tenants
 │       ├── AzureScopeParser.cs  # Parse Azure resource scopes
-│       ├── AzureRoleDefinitionResolver.cs, AzureRoleDefinitionsRegistry.cs
+│       ├── IRoleDefinitionResolver.cs, AzureRoleDefinitionResolver.cs
+│       ├── AzureRoleDefinitionMapper.Roles.cs  # AzureRoleDefinitionsRegistry (built-in roles)
+│       ├── AzureRoleDefinitionsJsonContext.cs   # AOT-safe JSON serialization context
 │       ├── EnrichedAzureScopeFormatter.cs
 │       ├── AzureMappingFileLoader.cs, AzureMappingFileParser.cs
 │       ├── AzureValueFormatterRegistration.cs
@@ -328,7 +333,7 @@ tfplan2md/
 - **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
 - **C# Renderer Dispatch:** `ResourceRendererRegistry` maps resource type strings to `IResourceRenderer` implementations; the provider-supplied renderers override `DefaultResourceRenderer`.
 - **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry`, which aggregates optional capabilities into `ProviderContributionSet` (AOT-compatible).
-- **Staged Report Pipeline:** `ReportModelBuilder` orchestrates dedicated stages for resource-change extraction, attribute filtering, parent-child merging, summary enrichment, code-analysis enrichment, display filtering, and report assembly.
+- **Staged Report Pipeline:** `ReportModelBuilder` orchestrates five dedicated stages: resource-change extraction (`ResourceChangeStage`), attribute filtering (`AttributeFilteringStage`), summary enrichment (`SummaryEnrichmentStage`), display filtering (`DisplayFilteringStage`), and report assembly (`ReportAssemblyStage`). Parent-child merging and code-analysis enrichment remain in `ReportModelBuilder`.
 - **Pure DI:** `CompositionRoot` wires all services without a DI container (ADR-006).
 - **Code Analysis Integration:** SARIF-based static analysis results integrated into markdown reports.
 - **Parent-Child Resource Merging:** Resources can be grouped hierarchically (e.g., NSG rules under NSG) via `ParentChildRelationshipRegistry`.
@@ -446,7 +451,7 @@ flowchart LR
 
 | Class | Responsibility |
 |-------|---------------|
-| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 5 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging) |
+| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 6 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging, Outputs) |
 | `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations) |
 | `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info |
 | `AttributeChangeModel` | Single attribute change |
@@ -893,8 +898,8 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 | `AzureEntityMapper` | Map subscriptions, management groups, and tenants to display names |
 | `AzureScopeParser` | Parse Azure resource scope strings into structured data |
 | `EnrichedAzureScopeFormatter` | Format scopes with human-readable display names |
-| `AzureRoleDefinitionMapper` | Map Azure role definition IDs to role names |
-| `AzureRoleDefinitionsRegistry` | Static registry of Azure built-in role definitions |
+| `IRoleDefinitionResolver` / `AzureRoleDefinitionResolver` | Run-scoped resolver for Azure role definition IDs; supports built-in and custom role definitions |
+| `AzureRoleDefinitionsRegistry` | Static registry of Azure built-in role definitions (immutable, in `AzureRoleDefinitionMapper.Roles.cs`) |
 | `AzureMappingFileLoader` / `AzureMappingFileParser` | Load and parse principal mapping JSON files |
 | `MarkdownHelpers.Azure` | Azure-specific formatting helper methods |
 
@@ -960,7 +965,10 @@ flowchart LR
 
 | Class | Responsibility |
 |-------|---------------|
-| `DiagnosticContext` | Central diagnostic collector; active only in `--debug` mode |
+| `DiagnosticContext` | Central diagnostic collector; active only in `--debug` mode; implements `IDiagnosticSink` |
+| `IDiagnosticSink` | Typed append-only boundary for recording diagnostic events during a run |
+| `DiagnosticReport` (record) | Immutable snapshot of collected diagnostics; passed to the formatter |
+| `DiagnosticMarkdownFormatter` | Renders a `DiagnosticReport` snapshot as a debug markdown section |
 | `TemplateResolution` (record) | Tracks which template was selected for a resource type |
 | `FailedResolution` (record) | Records failed lookup details (what was searched, where) |
 | `FailedResolutionType` (enum) | Type of failed resolution: Principal, Subscription, ManagementGroup, Tenant |

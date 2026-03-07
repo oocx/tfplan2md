@@ -32,16 +32,16 @@ internal sealed class AzureRoleDefinitionResolver : IRoleDefinitionResolver
     /// <summary>
     /// Optional diagnostic context used to record failed role resolutions for the current run.
     /// </summary>
-    private readonly DiagnosticContext? _diagnosticContext;
+    private readonly IDiagnosticSink? _diagnosticSink;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AzureRoleDefinitionResolver"/> class.
     /// </summary>
     /// <param name="customRoles">Custom role mappings loaded for the current application run.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for failed lookup tracking.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for failed lookup tracking.</param>
     internal AzureRoleDefinitionResolver(
         IReadOnlyList<MappingEntry> customRoles,
-        DiagnosticContext? diagnosticContext = null)
+        IDiagnosticSink? diagnosticContext = null)
         : this(
             AzureRoleDefinitionsRegistry.Load(),
             CreateCustomRoleLookup(customRoles),
@@ -115,15 +115,15 @@ internal sealed class AzureRoleDefinitionResolver : IRoleDefinitionResolver
     /// </summary>
     /// <param name="builtInRoles">The immutable built-in role lookup.</param>
     /// <param name="customRoles">The immutable custom role lookup.</param>
-    /// <param name="diagnosticContext">Optional diagnostic context for failed lookup tracking.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink for failed lookup tracking.</param>
     private AzureRoleDefinitionResolver(
         FrozenDictionary<string, string> builtInRoles,
         FrozenDictionary<string, string> customRoles,
-        DiagnosticContext? diagnosticContext)
+        IDiagnosticSink? diagnosticContext)
     {
         _builtInRoles = builtInRoles;
         _customRoles = customRoles;
-        _diagnosticContext = diagnosticContext;
+        _diagnosticSink = diagnosticContext;
     }
 
     /// <summary>
@@ -173,7 +173,7 @@ internal sealed class AzureRoleDefinitionResolver : IRoleDefinitionResolver
         string? roleDefinitionId,
         string? resourceAddress)
     {
-        if (hasMapping || _diagnosticContext == null || string.IsNullOrWhiteSpace(resourceAddress))
+        if (hasMapping || _diagnosticSink == null || string.IsNullOrWhiteSpace(resourceAddress))
         {
             return;
         }
@@ -184,7 +184,7 @@ internal sealed class AzureRoleDefinitionResolver : IRoleDefinitionResolver
             return;
         }
 
-        _diagnosticContext.FailedResolutions.Add(new FailedResolution(
+        _diagnosticSink.RecordFailedResolution(new FailedResolution(
             FailedResolutionType.RoleDefinition,
             id,
             resourceAddress,

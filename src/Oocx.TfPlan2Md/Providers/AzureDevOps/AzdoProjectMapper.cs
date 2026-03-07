@@ -21,14 +21,14 @@ internal sealed class AzdoProjectMapper
     /// <summary>
     /// Optional diagnostics for recording failed resolutions.
     /// </summary>
-    private readonly DiagnosticContext? _diagnostics;
+    private readonly IDiagnosticSink? _diagnostics;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AzdoProjectMapper"/> class.
     /// </summary>
     /// <param name="projectMappings">Mapping of project IDs to display names.</param>
-    /// <param name="diagnostics">Optional diagnostic context for recording failed resolutions.</param>
-    public AzdoProjectMapper(FrozenDictionary<string, string> projectMappings, DiagnosticContext? diagnostics)
+    /// <param name="diagnostics">Optional diagnostic sink for recording failed resolutions.</param>
+    public AzdoProjectMapper(FrozenDictionary<string, string> projectMappings, IDiagnosticSink? diagnostics)
     {
         _projectMappings = projectMappings;
         _diagnostics = diagnostics;
@@ -75,7 +75,7 @@ internal sealed class AzdoProjectMapper
         // Record failed resolution for diagnostics
         if (!found && _diagnostics != null && resourceAddress != null)
         {
-            _diagnostics.FailedResolutions.Add(
+            _diagnostics.RecordFailedResolution(
                 new FailedResolution(
                     FailedResolutionType.AzdoProject,
                     projectId,

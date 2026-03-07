@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.RenderTargets;
@@ -13,6 +14,8 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// </summary>
 public class DefaultResourceRendererScenarioTests
 {
+    private const string KnownAfterApply = "(known after apply)";
+
     /// <summary>
     /// Verifies root-module AzureRM resources with known-after-apply markers enable known-after-apply formatting.
     /// </summary>
@@ -24,7 +27,7 @@ public class DefaultResourceRendererScenarioTests
             moduleAddress: null,
             attributes:
             [
-                new AttributeChangeModel { Name = "id", Before = null, After = "(known after apply)" }
+                new AttributeChangeModel { Name = "id", Before = null, After = KnownAfterApply }
             ]);
 
         var result = DefaultResourceRenderer.ResolveScenarioFormatting(change, CreateContext());
@@ -44,7 +47,7 @@ public class DefaultResourceRendererScenarioTests
             moduleAddress: "module.network",
             attributes:
             [
-                new AttributeChangeModel { Name = "id", Before = null, After = "(known after apply)" }
+                new AttributeChangeModel { Name = "id", Before = null, After = KnownAfterApply }
             ]);
 
         var result = DefaultResourceRenderer.ResolveScenarioFormatting(change, CreateContext());
@@ -63,7 +66,7 @@ public class DefaultResourceRendererScenarioTests
             moduleAddress: null,
             attributes:
             [
-                new AttributeChangeModel { Name = "id", Before = null, After = "(known after apply)" }
+                new AttributeChangeModel { Name = "id", Before = null, After = KnownAfterApply }
             ]);
 
         var result = DefaultResourceRenderer.ResolveScenarioFormatting(change, CreateContext());
@@ -83,7 +86,7 @@ public class DefaultResourceRendererScenarioTests
             moduleAddress: null,
             attributes:
             [
-                new AttributeChangeModel { Name = "group_object_id", Before = null, After = "(known after apply)" },
+                new AttributeChangeModel { Name = "group_object_id", Before = null, After = KnownAfterApply },
                 new AttributeChangeModel { Name = "member_object_id", Before = null, After = "user-123" }
             ],
             configurationReferences: new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase)
@@ -108,7 +111,7 @@ public class DefaultResourceRendererScenarioTests
             moduleAddress: null,
             attributes:
             [
-                new AttributeChangeModel { Name = "group_object_id", Before = null, After = "(known after apply)" },
+                new AttributeChangeModel { Name = "group_object_id", Before = null, After = KnownAfterApply },
                 new AttributeChangeModel { Name = "member_object_id", Before = null, After = "user-123" }
             ]);
 

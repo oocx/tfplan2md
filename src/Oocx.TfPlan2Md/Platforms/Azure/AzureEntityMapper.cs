@@ -32,7 +32,7 @@ internal sealed class AzureEntityMapper
     /// <summary>
     /// Optional diagnostics for recording failed resolutions.
     /// </summary>
-    private readonly DiagnosticContext? _diagnosticContext;
+    private readonly IDiagnosticSink? _diagnosticSink;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AzureEntityMapper"/> class.
@@ -40,7 +40,7 @@ internal sealed class AzureEntityMapper
     /// <param name="subscriptions">Subscription mappings for display name resolution.</param>
     /// <param name="managementGroups">Management group mappings for display name resolution.</param>
     /// <param name="tenants">Tenant mappings for display name resolution.</param>
-    /// <param name="diagnosticContext">Optional diagnostics used to record missing mappings.</param>
+    /// <param name="diagnosticContext">Optional diagnostic sink used to record missing mappings.</param>
     /// <remarks>
     /// The mappings are cached in case-insensitive dictionaries for fast lookups.
     /// </remarks>
@@ -48,9 +48,9 @@ internal sealed class AzureEntityMapper
         IReadOnlyList<MappingEntry> subscriptions,
         IReadOnlyList<MappingEntry> managementGroups,
         IReadOnlyList<MappingEntry> tenants,
-        DiagnosticContext? diagnosticContext = null)
+        IDiagnosticSink? diagnosticContext = null)
     {
-        _diagnosticContext = diagnosticContext;
+        _diagnosticSink = diagnosticContext;
         _subscriptions = CreateLookup(subscriptions);
         _managementGroups = CreateLookup(managementGroups);
         _tenants = CreateLookup(tenants);
@@ -161,12 +161,12 @@ internal sealed class AzureEntityMapper
     /// <param name="resourceAddress">The Terraform resource address referencing the ID.</param>
     private void RecordFailure(FailedResolutionType type, string id, string? resourceAddress)
     {
-        if (_diagnosticContext == null || string.IsNullOrWhiteSpace(resourceAddress))
+        if (_diagnosticSink == null || string.IsNullOrWhiteSpace(resourceAddress))
         {
             return;
         }
 
-        _diagnosticContext.FailedResolutions.Add(new FailedResolution(
+        _diagnosticSink.RecordFailedResolution(new FailedResolution(
             type,
             id,
             resourceAddress,

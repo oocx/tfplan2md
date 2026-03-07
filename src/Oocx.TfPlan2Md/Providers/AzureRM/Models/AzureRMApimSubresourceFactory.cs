@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
@@ -26,25 +23,17 @@ internal sealed class AzureRMApimSubresourceFactory : IResourceViewModelFactory
     }
 
     /// <inheritdoc />
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = attributeChanges;
-        _ = principalMapper;
-        _ = iconProviderRegistry;
+        ArgumentNullException.ThrowIfNull(context);
 
-        if (!_resourceTypes.Contains(model.Type))
+        if (!_resourceTypes.Contains(context.Model.Type))
         {
             return;
         }
 
-        var state = ResolveActiveState(resourceChange, action);
-        model.SummaryHtml = AzureRMApimSummaryBuilder.BuildSubresourceSummaryHtml(model, state);
+        var state = ResolveActiveState(context.ResourceChange, context.Action);
+        context.Model.SummaryHtml = AzureRMApimSummaryBuilder.BuildSubresourceSummaryHtml(context.Model, state);
     }
 
     /// <summary>

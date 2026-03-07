@@ -187,7 +187,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
 
         if (_viewModelFactoryRegistry.TryGetFactory(resourceChange.Type, out var factory) && factory is not null)
         {
-            factory.ApplyViewModel(model, resourceChange, action, attributeChanges, _principalMapper, _iconProviderRegistry);
+            factory.ApplyViewModel(new ApplyViewModelContext(model, resourceChange, action, attributeChanges, _principalMapper, _iconProviderRegistry));
         }
 
         if (string.IsNullOrWhiteSpace(model.Summary))

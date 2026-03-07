@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Platforms.Azure;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -27,21 +25,14 @@ internal sealed class AzureRMApimNamedValueFactory : IResourceViewModelFactory
     private const string SecretAttributeName = "secret";
 
     /// <inheritdoc />
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
+        ArgumentNullException.ThrowIfNull(context);
 
-        var state = ResolveActiveState(resourceChange, action);
-        model.SummaryHtml = AzureRMApimSummaryBuilder.BuildSubresourceSummaryHtml(model, state);
+        var state = ResolveActiveState(context.ResourceChange, context.Action);
+        context.Model.SummaryHtml = AzureRMApimSummaryBuilder.BuildSubresourceSummaryHtml(context.Model, state);
 
-        OverrideSensitiveValueWhenNotSecret(resourceChange, attributeChanges);
+        OverrideSensitiveValueWhenNotSecret(context.ResourceChange, context.AttributeChanges);
     }
 
     /// <summary>

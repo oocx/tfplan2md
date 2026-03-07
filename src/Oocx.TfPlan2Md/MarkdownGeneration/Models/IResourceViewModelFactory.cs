@@ -1,7 +1,3 @@
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
-using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Platforms.Azure;
-
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
@@ -18,19 +14,8 @@ internal interface IResourceViewModelFactory
     /// Applies resource-specific view model to the provided model.
     /// The default implementation is a no-op; override only when the factory enriches the model.
     /// </summary>
-    /// <param name="model">The resource change model to populate.</param>
-    /// <param name="resourceChange">The resource change data from the Terraform plan.</param>
-    /// <param name="action">The determined action for this resource (create, update, delete, replace).</param>
-    /// <param name="attributeChanges">Pre-computed attribute changes for the resource.</param>
-    /// <param name="principalMapper">Mapper used for Azure principal resolution.</param>
-    /// <param name="iconProviderRegistry">Optional registry of icon providers for summary rendering.</param>
-    void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    /// <param name="context">All contextual data needed to enrich the view model.</param>
+    void ApplyViewModel(ApplyViewModelContext context)
     {
         // Default no-op: factories that do not enrich the model skip this method.
     }

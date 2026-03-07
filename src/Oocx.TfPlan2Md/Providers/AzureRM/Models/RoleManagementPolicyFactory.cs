@@ -4,7 +4,6 @@ using System.Text;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
@@ -61,30 +60,22 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
     }
 
     /// <inheritdoc />
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = attributeChanges;
-        _ = principalMapper;
-        _ = iconProviderRegistry;
+        ArgumentNullException.ThrowIfNull(context);
 
-        if (!string.Equals(model.Type, ResourceType, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(context.Model.Type, ResourceType, StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
 
-        var state = ResolveActiveState(resourceChange, action);
+        var state = ResolveActiveState(context.ResourceChange, context.Action);
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
         var roleInfo = _roleDefinitionResolver.GetRoleDefinition(
             GetValue(flatState, RoleDefinitionIdAttribute),
             GetValue(flatState, RoleDefinitionNameAttribute),
-            resourceChange.Address);
+            context.ResourceChange.Address);
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;
@@ -92,15 +83,15 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
         var roleSummaryHtml = FormatAttributeValueSummary(RoleDefinitionNameAttribute, roleName, null);
 
         var scopeValue = GetValue(flatState, ScopeAttribute);
-        var scopeText = FormatScopeMarkdown(scopeValue, resourceChange.Address);
+        var scopeText = FormatScopeMarkdown(scopeValue, context.ResourceChange.Address);
 
         if (string.IsNullOrWhiteSpace(roleName) || string.IsNullOrWhiteSpace(scopeText))
         {
             return;
         }
 
-        model.Summary = $"{roleSummary} in {scopeText}";
-        model.SummaryHtml = BuildSummaryHtml(model, roleSummaryHtml, scopeText);
+        context.Model.Summary = $"{roleSummary} in {scopeText}";
+        context.Model.SummaryHtml = BuildSummaryHtml(context.Model, roleSummaryHtml, scopeText);
     }
 
     /// <summary>

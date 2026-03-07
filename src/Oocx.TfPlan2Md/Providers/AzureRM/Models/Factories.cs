@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -48,23 +48,15 @@ internal sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelF
     }
 
     /// <inheritdoc/>
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        Parsing.ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
-        _ = attributeChanges;
+        ArgumentNullException.ThrowIfNull(context);
 
         // Create view model and populate ChangedAttributesSummary
-        var (_, changedAttributesSummary) = CreateViewModel(resourceChange, action);
+        var (_, changedAttributesSummary) = CreateViewModel(context.ResourceChange, context.Action);
         if (!string.IsNullOrWhiteSpace(changedAttributesSummary))
         {
-            model.ChangedAttributesSummary = changedAttributesSummary;
+            context.Model.ChangedAttributesSummary = changedAttributesSummary;
         }
     }
 
@@ -108,23 +100,15 @@ internal sealed class FirewallApplicationRuleCollectionFactory : IResourceViewMo
     }
 
     /// <inheritdoc/>
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        Parsing.ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = principalMapper;
-        _ = iconProviderRegistry;
-        _ = attributeChanges;
+        ArgumentNullException.ThrowIfNull(context);
 
         // Create view model and populate ChangedAttributesSummary
-        var (_, changedAttributesSummary) = CreateViewModel(resourceChange, action);
+        var (_, changedAttributesSummary) = CreateViewModel(context.ResourceChange, context.Action);
         if (!string.IsNullOrWhiteSpace(changedAttributesSummary))
         {
-            model.ChangedAttributesSummary = changedAttributesSummary;
+            context.Model.ChangedAttributesSummary = changedAttributesSummary;
         }
     }
 

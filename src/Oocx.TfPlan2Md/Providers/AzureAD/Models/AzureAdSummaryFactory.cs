@@ -1,9 +1,6 @@
-using System.Collections.Generic;
+using System;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
-using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 
@@ -14,21 +11,15 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 internal sealed class AzureAdSummaryFactory : IResourceViewModelFactory
 {
     /// <inheritdoc />
-    public void ApplyViewModel(
-        ResourceChangeModel model,
-        ResourceChange resourceChange,
-        string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+    public void ApplyViewModel(ApplyViewModelContext context)
     {
-        _ = attributeChanges;
+        ArgumentNullException.ThrowIfNull(context);
 
-        model.SummaryHtml = AzureAdSummaryBuilder.BuildSummaryHtml(
-            model,
-            resourceChange,
-            action,
-            principalMapper,
-            iconProviderRegistry);
+        context.Model.SummaryHtml = AzureAdSummaryBuilder.BuildSummaryHtml(
+            context.Model,
+            context.ResourceChange,
+            context.Action,
+            context.PrincipalMapper,
+            context.IconProviderRegistry);
     }
 }

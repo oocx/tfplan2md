@@ -72,7 +72,7 @@ public class ResourceChangeStageTests
             new ResourceSummaryBuilder(),
             showSensitive: false,
             showUnchangedValues: false,
-            new ResourceViewModelFactoryRegistry(LargeValueFormat.InlineDiff, new NullPrincipalMapper()),
+            new ResourceViewModelFactoryRegistry(),
             new NullPrincipalMapper(),
             iconProviderRegistry: null);
     }

@@ -24,7 +24,7 @@ public class ProviderContributionSetTests
         registry.RegisterProvider(new SyntheticProvider());
         var contributions = registry.CreateContributionSet();
 
-        var factoryRegistry = new ResourceViewModelFactoryRegistry(LargeValueFormat.InlineDiff, new NullPrincipalMapper());
+        var factoryRegistry = new ResourceViewModelFactoryRegistry();
         contributions.RegisterFactories(factoryRegistry);
         factoryRegistry.TryGetFactory(SyntheticProvider.ResourceType, out var factory).Should().BeTrue();
         factory.Should().NotBeNull();

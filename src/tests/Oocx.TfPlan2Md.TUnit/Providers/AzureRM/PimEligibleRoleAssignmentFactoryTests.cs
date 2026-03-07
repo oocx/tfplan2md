@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -56,7 +57,7 @@ public class PimEligibleRoleAssignmentFactoryTests
         };
         var factory = new PimEligibleRoleAssignmentFactory(principalMapper);
 
-        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, principalMapper, null);
+        factory.ApplyViewModel(new ApplyViewModelContext(model, resourceChange, CreateAction, model.AttributeChanges, principalMapper, null));
 
         model.Summary.Should().Be($"Assign `🛡️{Nbsp}Owner` to `👤{Nbsp}Jane Doe`");
         model.SummaryHtml.Should().Be(

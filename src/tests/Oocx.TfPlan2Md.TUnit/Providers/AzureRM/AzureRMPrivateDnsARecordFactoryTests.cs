@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -51,7 +52,7 @@ public class AzureRMPrivateDnsARecordFactoryTests
         };
         var factory = new AzureRMPrivateDnsARecordFactory();
 
-        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null);
+        factory.ApplyViewModel(new ApplyViewModelContext(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null));
 
         model.Summary.Should().Be("`🆔\u00A0record1` — `record1.contoso.local` `🌐\u00A010.0.0.4` `🌐\u00A010.0.0.5` `🌐\u00A010.0.0.6`");
         model.SummaryHtml.Should().Be(

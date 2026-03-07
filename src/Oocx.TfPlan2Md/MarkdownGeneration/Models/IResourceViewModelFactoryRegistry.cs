@@ -16,4 +16,12 @@ internal interface IResourceViewModelFactoryRegistry
     /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_network_security_group").</param>
     /// <param name="factory">The factory instance to register.</param>
     void RegisterFactory(string resourceType, IResourceViewModelFactory factory);
+
+    /// <summary>
+    /// Tries to get a factory for the specified resource type.
+    /// </summary>
+    /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_network_security_group").</param>
+    /// <param name="factory">The factory if one is registered for this type; otherwise, null.</param>
+    /// <returns>True if a factory was found; otherwise, false.</returns>
+    bool TryGetFactory(string resourceType, out IResourceViewModelFactory? factory);
 }

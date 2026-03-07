@@ -34,6 +34,6 @@ internal sealed class AzdoGroupDescriptorFormatter : IValueFormatter
     public string? TryFormat(ServiceResolutionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
-        return AzdoFormatterHelper.TryFormat(context.Value, _groupMapper.GetName, "��");
+        return AzdoFormatterHelper.TryFormat(context.Value, _groupMapper.GetName, "👥");
     }
 }

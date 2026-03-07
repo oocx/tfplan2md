@@ -88,7 +88,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     /// <summary>
     /// Registry of provider-specific view model factories.
     /// </summary>
-    private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry;
+    private readonly IResourceViewModelFactoryRegistry _viewModelFactoryRegistry;
 
     /// <summary>
     /// Principal mapper used by provider-specific factories.
@@ -113,7 +113,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         IResourceSummaryBuilder summaryBuilder,
         bool showSensitive,
         bool showUnchangedValues,
-        ResourceViewModelFactoryRegistry viewModelFactoryRegistry,
+        IResourceViewModelFactoryRegistry viewModelFactoryRegistry,
         IPrincipalMapper principalMapper,
         IconProviderRegistry? iconProviderRegistry)
     {

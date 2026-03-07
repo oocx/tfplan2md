@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -58,7 +59,7 @@ public class RoleManagementPolicyFactoryTests
         };
         var factory = new RoleManagementPolicyFactory(scopeFormatter);
 
-        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null);
+        factory.ApplyViewModel(new ApplyViewModelContext(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null));
 
         model.Summary.Should().Be("`🛡️\u00A0Owner` in `📁\u00A0rg1` in subscription `🔑\u00A0Production (sub-123)`");
         model.SummaryHtml.Should().Be(

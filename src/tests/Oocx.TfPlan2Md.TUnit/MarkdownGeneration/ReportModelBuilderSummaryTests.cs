@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
@@ -291,21 +292,11 @@ public class ReportModelBuilderSummaryTests
 
         public const string OverrideSummaryHtml = "<code>factory-summary</code>";
 
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges,
-            Oocx.TfPlan2Md.Platforms.Azure.IPrincipalMapper principalMapper,
-            Oocx.TfPlan2Md.MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry)
+        public void ApplyViewModel(ApplyViewModelContext context)
         {
-            _ = principalMapper;
-            _ = iconProviderRegistry;
-            _ = resourceChange;
-            _ = action;
-            _ = attributeChanges;
-            model.Summary = OverrideSummary;
-            model.SummaryHtml = OverrideSummaryHtml;
+            ArgumentNullException.ThrowIfNull(context);
+            context.Model.Summary = OverrideSummary;
+            context.Model.SummaryHtml = OverrideSummaryHtml;
         }
     }
 }

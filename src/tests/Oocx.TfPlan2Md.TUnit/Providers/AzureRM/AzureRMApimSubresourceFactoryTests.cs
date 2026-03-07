@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -57,7 +58,7 @@ public class AzureRMApimSubresourceFactoryTests
                 ActionSymbol = ActionIcons.Add,
                 AttributeChanges = []
             };
-            factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null);
+            factory.ApplyViewModel(new ApplyViewModelContext(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null));
 
             model.SummaryHtml.Should().Be(
                 $"{ActionIcons.Add}{Nbsp}{resourceType} <b><code>this</code></b> — <code>🆔{Nbsp}sample</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim</code>");

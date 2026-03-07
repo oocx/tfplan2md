@@ -29,21 +29,21 @@ internal sealed class AzdoRepositoryMapper : AzdoEntityMapper
     /// <summary>
     /// Gets the formatted repository name prefixed with the repository icon.
     /// </summary>
-    /// <param name="repositoryId">The GUID of the repository.</param>
+    /// <param name="id">The GUID of the repository.</param>
     /// <returns>
     /// Repository icon followed by display name and repository ID in parentheses when a mapping exists;
     /// otherwise the repository icon followed by just the identifier.
     /// </returns>
-    public override string GetEntityName(string repositoryId)
+    public override string GetEntityName(string id)
     {
-        if (string.IsNullOrWhiteSpace(repositoryId))
+        if (string.IsNullOrWhiteSpace(id))
         {
-            return repositoryId ?? string.Empty;
+            return id ?? string.Empty;
         }
 
-        var displayName = GetName(repositoryId);
+        var displayName = GetName(id);
         return displayName is null
-            ? $"🗃️ {repositoryId}"
-            : $"🗃️ {displayName} ({repositoryId})";
+            ? $"🗃️ {id}"
+            : $"🗃️ {displayName} ({id})";
     }
 }

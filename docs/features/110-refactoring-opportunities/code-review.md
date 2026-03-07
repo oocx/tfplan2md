@@ -1,6 +1,34 @@
 # Code Review: Refactoring the Core Report Pipeline and Provider Architecture
 
-## Summary
+## Review 3 Summary (2026-03-07)
+
+This review covers two things: (1) confirming all issues from Review 2 (Changes Requested) are
+resolved, and (2) reviewing the Tasks 6–9 scope additions against the updated test plan and
+tasks.md.
+
+**Key finding:** All three Review-2 issues are resolved. However, the entire implementation of
+Tasks 7, 8, and 9 (12+ files) plus three documentation updates for Task 9 are **not committed to
+git** — they exist only in the working tree. This is a Blocker. Additionally, Task 6 is not yet
+implemented, and several TC-30–TC-48 test cases specified as "Must be added" in the test plan are
+absent.
+
+All 1174 tests pass from the working tree. Build succeeds with zero errors. Comprehensive demo
+generates clean Markdown (0 markdownlint errors). No snapshot data changes.
+
+---
+
+## Review 2 Issue Resolution
+
+| Issue | Status | Notes |
+|-------|--------|-------|
+| **Blocker: Untracked `ProviderContributionSet.cs`** | ✅ Resolved | File is now tracked |
+| **Major: `ReportModelBuilderRefactoringTests.cs` (844 lines)** | ✅ Resolved | Replaced by three files each ≤284 lines |
+| **Major: Missing TC-18, TC-19, TC-23, TC-24, TC-25, TC-26** | ✅ Resolved | All six test cases now exist |
+| **Major: `docs/architecture.md` not updated** | ✅ Resolved | `Stages/`, diagnostics decomposition, and `IProvider` model are documented |
+
+---
+
+## Original Summary (Review 2 — 2026-03-06)
 
 Reviewed the implementation of feature 110 — an internal architectural refactoring decomposing
 `ReportModelBuilder` into explicit pipeline stages, replacing `IProviderModule` with narrow
@@ -203,10 +231,208 @@ internal-only feature.
 | Testing | ⚠️ (missing test plan test cases) |
 | Documentation | ❌ (global `docs/architecture.md` outdated) |
 
-## Next Steps
+## Review 2 Next Steps (superseded — all resolved)
 
-1. **Blocker**: Stage `ProviderContributionSet.cs` with `git add`
-2. **Major**: Split `ReportModelBuilderRefactoringTests.cs` (844 lines → ≤300 each)
-3. **Major**: Add missing test plan test cases or update test plan Definition of Done
-4. **Major**: Update `docs/architecture.md` file tree and component descriptions
-5. After rework: return to Code Reviewer for re-approval
+1. ~~**Blocker**: Stage `ProviderContributionSet.cs` with `git add`~~
+2. ~~**Major**: Split `ReportModelBuilderRefactoringTests.cs` (844 lines → ≤300 each)~~
+3. ~~**Major**: Add missing test plan test cases or update test plan Definition of Done~~
+4. ~~**Major**: Update `docs/architecture.md` file tree and component descriptions~~
+
+---
+
+## Review 3 — Verification Results (2026-03-07)
+
+- Tests: **Pass** (1174 succeeded, 0 failed, 0 skipped — includes uncommitted working-tree changes)
+- Build: **Success** — 0 errors, 0 warnings
+- Markdownlint: **0 errors** on `artifacts/comprehensive-demo.md`
+- Snapshots: **No snapshot data changes** — `SNAPSHOT_UPDATE_OK` not required
+- Docker: Not re-verified (pre-existing issue on `main` unrelated to this feature)
+
+---
+
+## Review 3 — Specification Compliance
+
+### Tasks 1–5
+
+All Tasks 1–5 acceptance criteria remain satisfied. Review 2 issues are fully resolved.
+No regressions introduced.
+
+### Task 6 — Extract remaining builder-owned pipeline stages
+
+**Finding:** Task 6 is **not implemented**. The `tasks.md` acceptance criteria still have `[ ]`
+checkboxes. No `IParentChildConsolidationStage` or `ICodeAnalysisEnrichmentStage` types exist.
+TC-30–TC-35 are in the test plan as "Must be added" with no corresponding tests. This is
+consistent with the tasks.md listing Task 6 without a `**Status: Completed**` marker; it is
+genuinely open work and is expected to be addressed in a follow-up.
+
+### Tasks 7, 8, 9 — Implemented but NOT committed
+
+Implementation is complete in the working tree and all 1174 tests pass. However, 6 new source
+files are untracked and 16+ tracked source/test/doc files are modified but uncommitted.
+
+| Acceptance Criterion | Implemented | Committed |
+|---------------------|-------------|-----------|
+| `IDiagnosticSink` typed append-only abstraction | ✅ | ❌ |
+| `DiagnosticReport` immutable snapshot | ✅ | ❌ |
+| `DiagnosticMarkdownFormatter` dedicated formatter | ✅ | ❌ |
+| Producers migrated to sink boundary | ✅ | ❌ |
+| `ProgramEntry` uses formatter (not `GenerateMarkdownSection`) | ✅ | ❌ |
+| Debug markdown behaviorally unchanged | ✅ | ❌ |
+| `AzApiBodyRenderPlanner` separates AzApi policy from emission | ✅ | ❌ |
+| `DefaultResourceRenderPolicy` delegates DefaultResourceRenderer scenario detection | ✅ | ❌ |
+| Active docs no longer instruct `IProviderModule` | ✅ | ❌ |
+| `docs/features.md` updated with `IProvider` model | ✅ | ❌ |
+| `docs/adr-006-dependency-injection.md` updated | ✅ | ❌ |
+
+---
+
+## Review 3 — Review Decision
+
+**Status: Changes Requested**
+
+---
+
+## Review 3 — Issues Found
+
+### Blockers
+
+**B-1: All Tasks 7, 8, and 9 implementation is not committed to git.**
+
+The following new source files are **untracked** (`??` in `git status`) and will be excluded
+from any commit or PR:
+- `src/Oocx.TfPlan2Md/Diagnostics/IDiagnosticSink.cs`
+- `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticReport.cs`
+- `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticMarkdownFormatter.cs`
+- `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderPolicy.cs`
+- `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderPlanner.cs`
+- `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzApi/AzApiBodyRenderPlannerTests.cs`
+
+The following **modified tracked files** for Tasks 7–9 are also uncommitted:
+`DiagnosticContext.cs`, `ProgramEntry.cs`, `MarkdownRenderer.cs`,
+`DefaultResourceRenderer.cs`, `GlobalSuppressions.cs`, `AzureEntityMapper.cs`,
+`AzureMappingFileLoader.cs`, `AzureMappingFileParser.cs`, `AzureRoleDefinitionResolver.cs`,
+`PrincipalMapper.cs`, `AzApiBodyRenderer.cs`, `AzdoGroupMapper.cs`, `AzdoProjectMapper.cs`,
+`AzdoRepositoryMapper.cs`, `AzdoUserMapper.cs`, `DiagnosticContextTests.cs`,
+`DebugOutputIntegrationTests.cs`, `DefaultResourceRendererScenarioTests.cs`,
+`PrincipalMapperDiagnosticsTests.cs`, `docs/architecture.md`, `docs/features.md`,
+`docs/adr-006-dependency-injection.md`, `tasks.md`, `work-protocol.md`.
+
+**Fix:** Stage all untracked files and commit all modified working-tree files with separate
+commit messages for Tasks 7, 8, and 9 before requesting re-review.
+
+---
+
+### Major Issues
+
+**M-1: Missing test cases TC-36, TC-37, TC-42, TC-45, TC-46, TC-47, TC-48.**
+
+These are all listed as "Must be added" in the test plan. None exist in the committed code and
+only some have partial coverage in the uncommitted working tree:
+
+| TC | Description | Status |
+|----|-------------|--------|
+| TC-36 | `DiagnosticSink_Append_RecordsEventWithoutExposingMutableCollection` — direct `IDiagnosticSink` interface-level test | ❌ Missing |
+| TC-37 | `DiagnosticEventTypes_DoNotContainMarkdownGenerationLogic` — structural NetArchTest/reflection test | ❌ Missing |
+| TC-42 | `AzApiRenderModel_AllPolicyCapturedBeforeEmission` — no policy branching after first write | ❌ Missing |
+| TC-45 | `AzApiBodyComparisonPolicy_Evaluate_*` — parametrized AzApi comparison scenario matrix | ❌ Missing |
+| TC-46 | `DocumentationFiles_DoNotReferToIProviderModuleAsActiveContract` | ❌ Missing |
+| TC-47 | `Adr006_DescribesIProvider_NotIProviderModule` | ❌ Missing |
+| TC-48 | `ActiveDocumentationFiles_DoNotInstructImplementingIProviderModule` | ❌ Missing |
+
+TC-38 and TC-39 have partial coverage through `DiagnosticContextTests.Format_*` and
+`DebugOutputIntegrationTests` but lack the explicit structural guard (TC-39a) that
+`ProgramEntry` no longer calls `GenerateMarkdownSection()`. Since that method was completely
+removed, the structural test could be simplified to "method does not exist in production
+assembly."
+
+**Fix:** Add the missing test cases, or explicitly mark them as deferred in the test plan with
+justification and a follow-up tracking issue.
+
+**M-2: Four new/modified files exceed the 300-line guideline.**
+
+| File | Lines | Limit | Excess |
+|------|-------|-------|--------|
+| `AzApiBodyRenderPlanner.cs` | 630 | 300 | +330 |
+| `DefaultResourceRenderer.cs` | 465 | 300 | +165 |
+| `AzApiBodyRenderer.cs` | 393 | 300 | +93 |
+| `DiagnosticMarkdownFormatter.cs` | 387 | 300 | +87 |
+
+`AzApiBodyRenderPlanner.cs` at 630 lines is the most severe — its `BuildUpdatePlan` path
+alone warrants a helpers partial (similar to `ResourceChangeStage.Helpers.cs`).
+`DefaultResourceRenderer.cs` may now be reducible now that policy logic moved to
+`DefaultResourceRenderPolicy`.
+
+**Fix:** Split `AzApiBodyRenderPlanner.cs` into `AzApiBodyRenderPlanner.cs` +
+`AzApiBodyRenderPlanner.Helpers.cs`. Reassess `DefaultResourceRenderer.cs` to see if the
+policy extraction already eliminates enough lines to reach the limit.
+
+**M-3: Work protocol not updated for Tasks 7–9 implementation work.**
+
+Developer Entry 7 only documents Task 5 verification. Tasks 7–9 are marked 
+`Status: Completed 2026-03-07` in `tasks.md` but there is no work-protocol entry for that work.
+
+**Fix:** Add Developer Entry 8 to `work-protocol.md` documenting the implementation of Tasks
+7, 8, and 9 once the code is committed.
+
+---
+
+### Minor Issues
+
+**m-1: Two test files are slightly over the 300-line limit.**
+
+| File | Lines |
+|------|-------|
+| `DiagnosticContextTests.cs` | 355 |
+| `DefaultResourceRendererScenarioTests.cs` | 317 |
+
+These are modest overages. Moving the snapshot-immutability test from `DiagnosticContextTests`
+to a dedcated file would likely bring it under limit.
+
+**m-2: Duplicate action constants still present.**
+
+The `CreateAction`, `DeleteAction`, etc. constants and `GetActionSymbol` remain duplicated
+across `ReportModelBuilder.ResourceChanges.cs`, `ResourceChangeStage.cs`, and
+`SummaryEnrichmentStage.cs`. (from Review 2 — not escalated since `TerraformActions.cs` was
+added in the feature commit but the other copies were not removed.)
+
+**Fix:** Consolidate by using `TerraformActions` constants from all three locations and removing
+the local copies.
+
+---
+
+## Review 3 — Critical Questions
+
+- **What could make this code fail?** If the 6 untracked files are not staged before the next
+  commit, Tasks 7–9 will be silently absent from the PR. This is the highest-risk issue.
+- **What edge cases might not be handled?** The `AzApiBodyRenderPlanner`'s nested sensitivity
+  masking logic at 630 lines warrants deeper unit coverage than the three tests in
+  `AzApiBodyRenderPlannerTests.cs`. TC-45's parametrized scenario matrix is specifically designed
+  to catch policy regressions there.
+- **Are all error paths tested?** Role resolution and debug formatter error paths are well tested.
+  AzApi render planner with empty body JSON, or missing before/after, is not explicitly tested.
+
+---
+
+## Review 3 — Checklist Summary
+
+| Category | Tasks 1–5 | Tasks 7–9 (Working Tree) |
+|----------|-----------|--------------------------|
+| Correctness | ✅ | ✅ |
+| Spec Compliance | ✅ | ⚠️ (TC-36, TC-37, TC-42, TC-45, TC-46–48 missing) |
+| Code Quality | ✅ | ⚠️ (file size violations in 4 files) |
+| Architecture | ✅ | ✅ |
+| Testing | ✅ | ⚠️ (7 required test cases absent) |
+| Documentation | ✅ | ⚠️ (uncommitted) |
+| Committed to git | ✅ | ❌ |
+
+---
+
+## Review 3 — Next Steps
+
+1. **Blocker B-1**: Stage all untracked files and commit all modified working-tree files for
+   Tasks 7, 8, 9, and documentation updates.
+2. **Major M-1**: Add (or explicitly defer with justification) missing test cases TC-36, TC-37,
+   TC-42, TC-45, TC-46, TC-47, TC-48.
+3. **Major M-2**: Split `AzApiBodyRenderPlanner.cs` (630 lines) into main + helpers file.
+4. **Major M-3**: Add Developer Entry 8 to `work-protocol.md`.
+5. After rework: return to Code Reviewer for re-approval.

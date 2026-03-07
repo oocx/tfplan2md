@@ -198,6 +198,17 @@
   - `ProviderContributionSet.cs` was untracked in git, which would prevent it from being included in any commit or PR.
   - `docs/architecture.md` still references deleted `IProviderModule` and missing `Stages/` directory.
 
+### Code Reviewer Entry 3
+
+- **Date:** 2026-03-07
+- **Summary:** Verified all three Review 2 issues are resolved: `ProviderContributionSet.cs` is tracked, `ReportModelBuilderRefactoringTests.cs` split into three files all ≤284 lines, TC-18/19/23/24/25/26 tests now exist, and `docs/architecture.md` updated. Reviewed Tasks 6–9 scope additions. 1174 tests pass from working tree. Identified 1 new blocker: the entire Tasks 7/8/9 implementation (6 untracked files, 16+ modified tracked files) is not committed to git. Also identified 3 major issues: 7 required test cases (TC-36/37/42/45/46/47/48) are absent; 4 files exceed the 300-line limit (AzApiBodyRenderPlanner.cs at 630 lines most critically); and the work protocol has no developer entry for Tasks 7–9. Review status: Changes Requested.
+- **Artifacts Produced:**
+  - `docs/features/110-refactoring-opportunities/code-review.md`
+  - `docs/features/110-refactoring-opportunities/work-protocol.md`
+- **Problems Encountered:**
+  - Task 6 is not yet implemented (no `IParentChildConsolidationStage` or `ICodeAnalysisEnrichmentStage`), consistent with its open status in tasks.md.
+  - The test plan was extended to TC-48 in the most recent commit but the implementation for TC-30–TC-35 (Task 6) is still missing.
+
 ### Developer Entry 8
 
 - **Date:** 2026-03-07
@@ -223,3 +234,42 @@
 - **Problems Encountered:**
   - The first full-suite validation surfaced follow-up issues introduced by the rework itself, including missing XML documentation on the new Terraform action constants and two failing regressions in the new delegation and architecture tests; these were fixed before rerunning the full suite.
   - The default test-wrapper timeout was too short for repeated full-solution validation, so the final successful run used the supported wrapper with a longer timeout.
+
+### Developer Entry 9
+
+- **Date:** 2026-03-07
+- **Summary:** Completed follow-up Tasks 7-9. Split diagnostics into an append-only sink (`IDiagnosticSink`), immutable snapshot (`DiagnosticReport`), and dedicated formatter (`DiagnosticMarkdownFormatter`), then migrated existing producers and debug output assembly to the new boundary. Extracted render-planning policy from `AzApiBodyRenderer` into `AzApiBodyRenderPlanner` with render-ready intermediate models, and moved `DefaultResourceRenderer` scenario heuristics into `DefaultResourceRenderPolicy` so the renderer focuses on layout/emission. Finished by aligning active architecture guidance with the current `IProvider` plus optional capability-interface model.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Diagnostics/IDiagnosticSink.cs`
+  - `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticReport.cs`
+  - `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticMarkdownFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticContext.cs`
+  - `src/Oocx.TfPlan2Md/ProgramEntry.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderPlanner.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/AzApiBodyRenderer.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderPolicy.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderer.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/DiagnosticContextTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/EndToEnd/DebugOutputIntegrationTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/PrincipalMapperDiagnosticsTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzApi/AzApiBodyRenderPlannerTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzApi/AzApiBodyRendererCasingTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/DefaultResourceRendererScenarioTests.cs`
+  - `docs/adr-006-dependency-injection.md`
+  - `docs/architecture.md`
+  - `docs/features.md`
+  - `docs/features/110-refactoring-opportunities/tasks.md`
+  - `docs/features/110-refactoring-opportunities/work-protocol.md`
+- **Problems Encountered:**
+  - The repository enforces analyzer cleanliness during test runs, so the initial Task 8 extraction needed a second pass for planner-specific CA/Roslynator issues before tests would execute.
+  - TUnit tree filters were initially too specific and matched zero tests; validation succeeded after switching to class-name-based filter patterns.
+
+### Technical Writer Entry 2
+
+- **Date:** 2026-03-07
+- **Summary:** Reviewed all nine Developer entries and Code Reviewer Entry 2 to identify remaining documentation gaps in the global `docs/architecture.md`. Updated the architecture document to accurately reflect the implemented design: removed two non-existent planned stages (`IParentChildMergeStage`, `ICodeAnalysisEnrichmentStage`) from the Stages directory listing, added `ResourceChangeStage.Helpers.cs` and `ReportModelBuilder.Outputs.cs` to the file tree, corrected the `Staged Report Pipeline` key pattern description to name the five actual stages, updated the Platform Utilities class table to replace `AzureRoleDefinitionMapper` with `IRoleDefinitionResolver`/`AzureRoleDefinitionResolver`, corrected the `Platforms/Azure/` file tree entry from `AzureRoleDefinitionsRegistry.cs` to `AzureRoleDefinitionMapper.Roles.cs`, updated `ReportModelBuilder` description from "5 files" to "6 files", added `DefaultResourceRenderPolicy.cs` to the Rendering directory listing, and added `IDiagnosticSink`, `DiagnosticReport`, and `DiagnosticMarkdownFormatter` to the Diagnostics Key Classes table.
+- **Artifacts Produced:**
+  - `docs/architecture.md`
+  - `docs/features/110-refactoring-opportunities/work-protocol.md`
+- **Problems Encountered:**
+  - Developer Entry 8 had already updated the architecture doc to include Stages/ and ProviderContributionSet, but the Stages listing still contained entries for planned-but-not-implemented stages; this required a targeted reconciliation pass rather than a full rewrite.

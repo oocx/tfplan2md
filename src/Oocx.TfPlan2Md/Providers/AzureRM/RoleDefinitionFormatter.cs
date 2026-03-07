@@ -14,6 +14,20 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM;
 internal sealed class RoleDefinitionFormatter : IValueFormatter
 {
     /// <summary>
+    /// Resolver used to format Azure role definition identifiers for the current run.
+    /// </summary>
+    private readonly IRoleDefinitionResolver _roleDefinitionResolver;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RoleDefinitionFormatter"/> class.
+    /// </summary>
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for role definitions.</param>
+    internal RoleDefinitionFormatter(IRoleDefinitionResolver? roleDefinitionResolver = null)
+    {
+        _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
+    }
+
+    /// <summary>
     /// Attempts to format role definition values into a human-readable form.
     /// </summary>
     /// <param name="context">The resolution context to evaluate.</param>
@@ -27,7 +41,7 @@ internal sealed class RoleDefinitionFormatter : IValueFormatter
             return null;
         }
 
-        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(context.Value, null);
+        var roleInfo = _roleDefinitionResolver.GetRoleDefinition(context.Value, null);
         if (string.IsNullOrWhiteSpace(roleInfo.FullName))
         {
             return null;

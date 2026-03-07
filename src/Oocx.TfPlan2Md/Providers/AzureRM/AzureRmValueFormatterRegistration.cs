@@ -19,11 +19,13 @@ internal static class AzureRmValueFormatterRegistration
     /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
     /// <param name="principalMapper">Optional mapper for enriching principal identifiers.</param>
     /// <param name="entityMapper">Optional mapper for tenant and management group formatting.</param>
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for role definition display names.</param>
     public static void Register(
         ValueFormatterRegistry registry,
         EnrichedAzureScopeFormatter? scopeFormatter = null,
         IPrincipalMapper? principalMapper = null,
-        AzureEntityMapper? entityMapper = null)
+        AzureEntityMapper? entityMapper = null,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         ArgumentNullException.ThrowIfNull(registry);
 
@@ -37,7 +39,7 @@ internal static class AzureRmValueFormatterRegistration
                 null,
                 "^role_definition_id$|^role_definition_resource_id$",
                 "(?i)^(?:/subscriptions/[^/]+/providers/Microsoft.Authorization/roleDefinitions/[^/]+|/providers/Microsoft.Authorization/roleDefinitions/[^/]+|[0-9a-f-]{36})$"),
-            new RoleDefinitionFormatter());
+            new RoleDefinitionFormatter(roleDefinitionResolver));
 
         if (principalMapper is not null)
         {

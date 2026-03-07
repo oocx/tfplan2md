@@ -14,11 +14,12 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM;
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </summary>
 [SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider registration module naturally references all provider-specific types (mappers, factories, formatters, icon providers). Coupling is marginally over threshold (22 vs 21) after mapper registry refactoring.")]
-internal sealed class AzureRMModule : IProviderModule
+internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IResourceRendererProvider, IAttributeChangeFilterProvider, IParentChildRelationshipProvider
 {
     private readonly LargeValueFormat _largeValueFormat;
     private readonly IPrincipalMapper _principalMapper;
     private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
+    private readonly IRoleDefinitionResolver _roleDefinitionResolver;
 
     /// <summary>
     /// Optional mapper for tenant and management group display names.
@@ -32,16 +33,19 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="principalMapper">Mapper for resolving principal names in role assignments.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched Azure scope display.</param>
     /// <param name="entityMapper">Optional mapper for tenant and management group display names.</param>
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for Azure role definition names.</param>
     public AzureRMModule(
         LargeValueFormat largeValueFormat,
         IPrincipalMapper principalMapper,
         EnrichedAzureScopeFormatter? scopeFormatter = null,
-        AzureEntityMapper? entityMapper = null)
+        AzureEntityMapper? entityMapper = null,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         _largeValueFormat = largeValueFormat;
         _principalMapper = principalMapper;
         _scopeFormatter = scopeFormatter;
         _entityMapper = entityMapper;
+        _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
     }
 
     /// <summary>
@@ -60,7 +64,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The factory registry to register with.</param>
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
-        AzureRmFactoryRegistration.Register(registry, _largeValueFormat, _principalMapper, _scopeFormatter);
+        AzureRmFactoryRegistration.Register(registry, _largeValueFormat, _principalMapper, _scopeFormatter, _roleDefinitionResolver);
     }
 
     /// <summary>
@@ -69,7 +73,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
-        AzureRmValueFormatterRegistration.Register(registry, _scopeFormatter, _principalMapper, _entityMapper);
+        AzureRmValueFormatterRegistration.Register(registry, _scopeFormatter, _principalMapper, _entityMapper, _roleDefinitionResolver);
     }
 
     /// <summary>
@@ -87,7 +91,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The resource renderer registry to register with.</param>
     public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
-        registry.Register(new RoleAssignmentRenderer(_principalMapper, _scopeFormatter));
+        registry.Register(new RoleAssignmentRenderer(_principalMapper, _scopeFormatter, _roleDefinitionResolver));
         registry.Register(new NsgRenderer());
         registry.Register(new FirewallNetworkRuleRenderer());
         registry.Register(new FirewallAppRuleRenderer());

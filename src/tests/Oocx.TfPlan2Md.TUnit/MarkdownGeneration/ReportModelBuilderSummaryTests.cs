@@ -270,7 +270,7 @@ public class ReportModelBuilderSummaryTests
         model.Changes.Single().Summary.Should().Be(SummaryOverrideFactory.OverrideSummary);
     }
 
-    private sealed class SummaryOverrideProviderModule : IProviderModule
+    private sealed class SummaryOverrideProviderModule : IProvider
     {
         public string ProviderName => "custom";
 

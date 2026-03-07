@@ -43,12 +43,21 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
     private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
 
     /// <summary>
+    /// Resolver used to format Azure role definition names for the current run.
+    /// </summary>
+    private readonly IRoleDefinitionResolver _roleDefinitionResolver;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RoleManagementPolicyFactory"/> class.
     /// </summary>
     /// <param name="scopeFormatter">Optional scope formatter for display name enrichment.</param>
-    internal RoleManagementPolicyFactory(EnrichedAzureScopeFormatter? scopeFormatter)
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for role definition names.</param>
+    internal RoleManagementPolicyFactory(
+        EnrichedAzureScopeFormatter? scopeFormatter,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         _scopeFormatter = scopeFormatter;
+        _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
     }
 
     /// <inheritdoc />
@@ -72,7 +81,7 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
         var state = ResolveActiveState(resourceChange, action);
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
-        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(
+        var roleInfo = _roleDefinitionResolver.GetRoleDefinition(
             GetValue(flatState, RoleDefinitionIdAttribute),
             GetValue(flatState, RoleDefinitionNameAttribute),
             resourceChange.Address);

@@ -143,12 +143,26 @@ internal sealed class CompositionRoot(CliOptions options)
     }
 
     /// <summary>
+    /// Creates the run-scoped Azure role definition resolver.
+    /// </summary>
+    /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
+    /// <param name="diagnostics">Optional diagnostic context for failed role resolution tracking.</param>
+    /// <returns>A configured role definition resolver instance.</returns>
+    internal IRoleDefinitionResolver CreateRoleDefinitionResolver(
+        AzureMappingFileResult mappingResult,
+        DiagnosticContext? diagnostics)
+    {
+        return new AzureRoleDefinitionResolver(mappingResult.Roles, diagnostics);
+    }
+
+    /// <summary>
     /// Creates and configures the provider registry with all supported Terraform providers.
     /// Registers AzApi, AzureAD, AzureRM, and AzureDevOps modules.
     /// </summary>
     /// <param name="principalMapper">The principal mapper for role assignment resolution.</param>
     /// <param name="scopeFormatter">The scope formatter for Azure resource scopes.</param>
     /// <param name="entityMapper">The mapper for tenant and management group display names.</param>
+    /// <param name="roleDefinitionResolver">The resolver for Azure role definition display names.</param>
     /// <param name="azdoUserMapper">The mapper for Azure DevOps user display names.</param>
     /// <param name="azdoGroupMapper">The mapper for Azure DevOps group display names.</param>
     /// <param name="azdoProjectMapper">The mapper for Azure DevOps project display names.</param>
@@ -158,6 +172,7 @@ internal sealed class CompositionRoot(CliOptions options)
         IPrincipalMapper principalMapper,
         EnrichedAzureScopeFormatter scopeFormatter,
         AzureEntityMapper entityMapper,
+        IRoleDefinitionResolver roleDefinitionResolver,
         AzdoUserMapper azdoUserMapper,
         AzdoGroupMapper azdoGroupMapper,
         AzdoProjectMapper azdoProjectMapper,
@@ -172,7 +187,8 @@ internal sealed class CompositionRoot(CliOptions options)
             largeValueFormat: largeValueFormat,
             principalMapper: principalMapper,
             scopeFormatter: scopeFormatter,
-            entityMapper: entityMapper));
+            entityMapper: entityMapper,
+            roleDefinitionResolver: roleDefinitionResolver));
         registry.RegisterProvider(new AzureDevOpsModule(
             largeValueFormat: largeValueFormat,
             entityMapper: entityMapper,
@@ -185,40 +201,13 @@ internal sealed class CompositionRoot(CliOptions options)
     }
 
     /// <summary>
-    /// Creates the value formatter registry and populates it with all provider formatters.
+    /// Creates the centralized provider contribution set used by composition code.
     /// </summary>
-    /// <param name="providerRegistry">The provider registry containing registered modules.</param>
-    /// <returns>A configured value formatter registry.</returns>
-    internal ValueFormatterRegistry CreateValueFormatterRegistry(ProviderRegistry providerRegistry)
+    /// <param name="providerRegistry">The provider registry containing registered providers.</param>
+    /// <returns>A contribution set that can build provider-specific registries on demand.</returns>
+    internal ProviderContributionSet CreateProviderContributionSet(ProviderRegistry providerRegistry)
     {
-        var registry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(registry);
-        return registry;
-    }
-
-    /// <summary>
-    /// Creates the attribute change filter registry and populates it with all provider filters.
-    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
-    /// </summary>
-    /// <param name="providerRegistry">The provider registry containing registered modules.</param>
-    /// <returns>A configured attribute change filter registry.</returns>
-    internal AttributeChangeFilterRegistry CreateAttributeChangeFilterRegistry(ProviderRegistry providerRegistry)
-    {
-        var registry = new AttributeChangeFilterRegistry();
-        providerRegistry.RegisterAllAttributeChangeFilters(registry);
-        return registry;
-    }
-
-    /// <summary>
-    /// Creates the icon provider registry and populates it with all provider icon definitions.
-    /// </summary>
-    /// <param name="providerRegistry">The provider registry containing registered modules.</param>
-    /// <returns>A configured icon provider registry.</returns>
-    internal IconProviderRegistry CreateIconProviderRegistry(ProviderRegistry providerRegistry)
-    {
-        var registry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(registry);
-        return registry;
+        return providerRegistry.CreateContributionSet();
     }
 
     /// <summary>
@@ -227,6 +216,7 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <param name="valueFormatterRegistry">The value formatter registry for resource summaries.</param>
     /// <param name="principalMapper">The principal mapper for role assignment resolution.</param>
     /// <param name="providerRegistry">The provider registry for module-specific formatting.</param>
+    /// <param name="providerContributionSet">The centralized provider contribution set.</param>
     /// <param name="codeAnalysisInput">Optional code analysis results to include in the report.</param>
     /// <param name="iconProviderRegistry">The icon provider registry for resource icons.</param>
     /// <returns>A configured report model builder instance.</returns>
@@ -234,6 +224,7 @@ internal sealed class CompositionRoot(CliOptions options)
         ValueFormatterRegistry valueFormatterRegistry,
         IPrincipalMapper principalMapper,
         ProviderRegistry providerRegistry,
+        ProviderContributionSet providerContributionSet,
         CodeAnalysisInput? codeAnalysisInput,
         IconProviderRegistry iconProviderRegistry)
     {
@@ -246,11 +237,12 @@ internal sealed class CompositionRoot(CliOptions options)
             principalMapper: principalMapper,
             hideMetadata: options.HideMetadata,
             providerRegistry: providerRegistry,
+            providerContributions: providerContributionSet,
             codeAnalysisInput: codeAnalysisInput,
             iconProviderRegistry: iconProviderRegistry,
             detailsDisplayMode: options.DetailsDisplayMode,
             ignoreAzureIdCaseChanges: options.IgnoreAzureIdCaseChanges,
-            attributeChangeFilterRegistry: CreateAttributeChangeFilterRegistry(providerRegistry));
+            attributeChangeFilterRegistry: providerContributionSet.CreateAttributeChangeFilterRegistry());
     }
 
     /// <summary>
@@ -259,6 +251,7 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <param name="principalMapper">The principal mapper for role assignment resolution.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for troubleshooting.</param>
     /// <param name="providerRegistry">The provider registry for module-specific rendering.</param>
+    /// <param name="providerContributionSet">The centralized provider contribution set.</param>
     /// <param name="valueFormatterRegistry">The value formatter registry for value rendering.</param>
     /// <param name="iconProviderRegistry">The icon provider registry for resource icons.</param>
     /// <returns>A configured markdown renderer instance.</returns>
@@ -266,6 +259,7 @@ internal sealed class CompositionRoot(CliOptions options)
         IPrincipalMapper principalMapper,
         DiagnosticContext? diagnosticContext,
         ProviderRegistry providerRegistry,
+        ProviderContributionSet providerContributionSet,
         ValueFormatterRegistry valueFormatterRegistry,
         IconProviderRegistry iconProviderRegistry)
     {
@@ -273,6 +267,7 @@ internal sealed class CompositionRoot(CliOptions options)
             principalMapper,
             diagnosticContext,
             providerRegistry,
+            providerContributions: providerContributionSet,
             valueFormatterRegistry,
             iconProviderRegistry);
     }
@@ -319,9 +314,9 @@ internal sealed class CompositionRoot(CliOptions options)
         // Create code analysis input (independent of other services)
         var codeAnalysisInput = CreateCodeAnalysisInput();
 
-        // Load Azure mapping file and merge custom roles
+        // Load Azure mapping file and build run-scoped Azure lookup services
         var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
-        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles, diagnosticContext);
+        var roleDefinitionResolver = CreateRoleDefinitionResolver(mappingResult, diagnosticContext);
 
         // Create Azure-specific mappers and formatters
         var principalMapper = CreatePrincipalMapper(mappingResult, diagnosticContext);
@@ -339,18 +334,21 @@ internal sealed class CompositionRoot(CliOptions options)
             principalMapper,
             scopeFormatter,
             entityMapper,
+            roleDefinitionResolver,
             azdoUserMapper,
             azdoGroupMapper,
             azdoProjectMapper,
             azdoRepositoryMapper);
-        var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
-        var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
+        var providerContributionSet = CreateProviderContributionSet(providerRegistry);
+        var valueFormatterRegistry = providerContributionSet.CreateValueFormatterRegistry();
+        var iconProviderRegistry = providerContributionSet.CreateIconProviderRegistry();
 
         // Create model builder and renderer
         var modelBuilder = CreateReportModelBuilder(
             valueFormatterRegistry,
             principalMapper,
             providerRegistry,
+            providerContributionSet,
             codeAnalysisInput,
             iconProviderRegistry);
 
@@ -358,6 +356,7 @@ internal sealed class CompositionRoot(CliOptions options)
             principalMapper,
             diagnosticContext,
             providerRegistry,
+            providerContributionSet,
             valueFormatterRegistry,
             iconProviderRegistry);
 

@@ -96,14 +96,17 @@ internal static class RoleAssignmentViewModelFactory
     /// <param name="attributeChanges">The attribute changes for this resource.</param>
     /// <param name="principalMapper">Mapper for principal name resolution.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for Azure role definition names.</param>
     /// <returns>Populated <see cref="RoleAssignmentViewModel"/>.</returns>
     public static RoleAssignmentViewModel Build(
         ResourceChange change,
         string action,
         IReadOnlyList<AttributeChangeModel> attributeChanges,
         IPrincipalMapper principalMapper,
-        EnrichedAzureScopeFormatter? scopeFormatter = null)
+        EnrichedAzureScopeFormatter? scopeFormatter = null,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
+        var resolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
         var beforeState = change.Change.Before as JsonElement?;
         var afterState = change.Change.After as JsonElement?;
 
@@ -112,8 +115,8 @@ internal static class RoleAssignmentViewModelFactory
 
         var beforeScope = GetScopeInfo(beforeState);
         var afterScope = GetScopeInfo(afterState);
-        var beforeRole = GetRoleInfo(beforeState, change.Address);
-        var afterRole = GetRoleInfo(afterState, change.Address);
+        var beforeRole = GetRoleInfo(beforeState, change.Address, resolver);
+        var afterRole = GetRoleInfo(afterState, change.Address, resolver);
         var beforePrincipal = GetPrincipalInfo(beforeState, principalMapper, change.Address);
         var afterPrincipal = GetPrincipalInfo(afterState, principalMapper, change.Address);
 
@@ -594,7 +597,10 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Extracts role information from the state.
     /// </summary>
-    private static RoleInfo GetRoleInfo(JsonElement? state, string resourceAddress)
+    private static RoleInfo GetRoleInfo(
+        JsonElement? state,
+        string resourceAddress,
+        IRoleDefinitionResolver roleDefinitionResolver)
     {
         if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
         {
@@ -610,7 +616,7 @@ internal static class RoleAssignmentViewModelFactory
             : string.Empty;
 
         // Use the same logic as the template helper to get consistent output
-        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(roleDefId, roleDefName, resourceAddress);
+        var roleInfo = roleDefinitionResolver.GetRoleDefinition(roleDefId, roleDefName, resourceAddress);
 
         return new RoleInfo(roleInfo.Name, roleInfo.Id);
     }

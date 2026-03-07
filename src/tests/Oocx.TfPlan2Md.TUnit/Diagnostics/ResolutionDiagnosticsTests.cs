@@ -32,36 +32,28 @@ public class ResolutionDiagnosticsTests
             managementGroups: [],
             tenants: [],
             diagnosticContext: diagnosticContext);
+        var roleDefinitionResolver = new AzureRoleDefinitionResolver(Array.Empty<MappingEntry>(), diagnosticContext);
 
-        try
-        {
-            AzureRoleDefinitionMapper.MergeCustomRoles(Array.Empty<MappingEntry>(), diagnosticContext);
+        principalMapper.GetName("principal-1", "User", RoleAssignmentAddress);
+        entityMapper.GetSubscriptionDisplayName("sub-1", ResourceGroupAddress);
+        entityMapper.GetTenantDisplayName("tenant-1", ResourceGroupAddress);
+        roleDefinitionResolver.GetRoleDefinition("unknown-role", null, RoleAssignmentAddress);
 
-            principalMapper.GetName("principal-1", "User", RoleAssignmentAddress);
-            entityMapper.GetSubscriptionDisplayName("sub-1", ResourceGroupAddress);
-            entityMapper.GetTenantDisplayName("tenant-1", ResourceGroupAddress);
-            AzureRoleDefinitionMapper.GetRoleDefinition("unknown-role", null, RoleAssignmentAddress);
-
-            diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
-                failure.Type == FailedResolutionType.Principal
-                && failure.Id == "principal-1"
-                && failure.ResourceAddress == RoleAssignmentAddress);
-            diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
-                failure.Type == FailedResolutionType.Subscription
-                && failure.Id == "sub-1"
-                && failure.ResourceAddress == ResourceGroupAddress);
-            diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
-                failure.Type == FailedResolutionType.Tenant
-                && failure.Id == "tenant-1"
-                && failure.ResourceAddress == ResourceGroupAddress);
-            diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
-                failure.Type == FailedResolutionType.RoleDefinition
-                && failure.Id == "unknown-role"
-                && failure.ResourceAddress == RoleAssignmentAddress);
-        }
-        finally
-        {
-            AzureRoleDefinitionMapper.MergeCustomRoles(Array.Empty<MappingEntry>(), diagnosticContext: null);
-        }
+        diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
+            failure.Type == FailedResolutionType.Principal
+            && failure.Id == "principal-1"
+            && failure.ResourceAddress == RoleAssignmentAddress);
+        diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
+            failure.Type == FailedResolutionType.Subscription
+            && failure.Id == "sub-1"
+            && failure.ResourceAddress == ResourceGroupAddress);
+        diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
+            failure.Type == FailedResolutionType.Tenant
+            && failure.Id == "tenant-1"
+            && failure.ResourceAddress == ResourceGroupAddress);
+        diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
+            failure.Type == FailedResolutionType.RoleDefinition
+            && failure.Id == "unknown-role"
+            && failure.ResourceAddress == RoleAssignmentAddress);
     }
 }

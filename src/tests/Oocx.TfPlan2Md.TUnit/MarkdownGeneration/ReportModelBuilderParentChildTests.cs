@@ -601,7 +601,7 @@ public class ReportModelBuilderParentChildTests
     /// <summary>
     /// Test provider module that registers a parent-child relationship.
     /// </summary>
-    private sealed class ParentChildTestModule : IProviderModule
+    private sealed class ParentChildTestModule : IProvider, IParentChildRelationshipProvider
     {
         /// <summary>
         /// Gets the unique provider name for the test module.

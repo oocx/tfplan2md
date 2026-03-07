@@ -11,9 +11,10 @@ public class AzureRoleDefinitionMapperTests
     {
         // Arrange
         const string input = "/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7";
+        var resolver = AzureRoleDefinitionResolver.CreateBuiltIn();
 
         // Act
-        var result = AzureRoleDefinitionMapper.GetRoleName(input);
+        var result = resolver.GetRoleName(input);
 
         // Assert
         result.Should().Be("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)");
@@ -24,9 +25,10 @@ public class AzureRoleDefinitionMapperTests
     {
         // Arrange
         const string input = "/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/unknown-guid";
+        var resolver = AzureRoleDefinitionResolver.CreateBuiltIn();
 
         // Act
-        var result = AzureRoleDefinitionMapper.GetRoleName(input);
+        var result = resolver.GetRoleName(input);
 
         // Assert
         result.Should().Be(input);
@@ -37,9 +39,10 @@ public class AzureRoleDefinitionMapperTests
     {
         // Arrange
         const string input = "acdd72a7-3385-48ef-bd42-f606fba81ae7";
+        var resolver = AzureRoleDefinitionResolver.CreateBuiltIn();
 
         // Act
-        var result = AzureRoleDefinitionMapper.GetRoleName(input);
+        var result = resolver.GetRoleName(input);
 
         // Assert
         result.Should().Be("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)");
@@ -49,8 +52,9 @@ public class AzureRoleDefinitionMapperTests
     public void GetRoleDefinition_KnownGuid_ReturnsStructuredInfo()
     {
         const string input = "/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7";
+        var resolver = AzureRoleDefinitionResolver.CreateBuiltIn();
 
-        var result = AzureRoleDefinitionMapper.GetRoleDefinition(input, null);
+        var result = resolver.GetRoleDefinition(input, null);
 
         result.Name.Should().Be("Reader");
         result.Id.Should().Be("acdd72a7-3385-48ef-bd42-f606fba81ae7");
@@ -61,8 +65,9 @@ public class AzureRoleDefinitionMapperTests
     public void GetRoleDefinition_UnknownGuid_UsesId()
     {
         const string input = "/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/unknown-guid";
+        var resolver = AzureRoleDefinitionResolver.CreateBuiltIn();
 
-        var result = AzureRoleDefinitionMapper.GetRoleDefinition(input, null);
+        var result = resolver.GetRoleDefinition(input, null);
 
         result.Name.Should().Be("unknown-guid");
         result.Id.Should().Be("unknown-guid");
@@ -72,7 +77,8 @@ public class AzureRoleDefinitionMapperTests
     [Test]
     public void GetRoleDefinition_FallsBackToRoleDefinitionName_WhenIdMissing()
     {
-        var result = AzureRoleDefinitionMapper.GetRoleDefinition(null, "Custom Role");
+        var resolver = AzureRoleDefinitionResolver.CreateBuiltIn();
+        var result = resolver.GetRoleDefinition(null, "Custom Role");
 
         result.Name.Should().Be("Custom Role");
         result.Id.Should().Be(string.Empty);

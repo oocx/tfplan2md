@@ -32,20 +32,23 @@ internal sealed class MarkdownRenderer
     /// <param name="principalMapper">Unused in pure C# mode; preserved for API compatibility.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for template/render tracking.</param>
     /// <param name="providerRegistry">Optional provider registry for formatter/icon registrations.</param>
+    /// <param name="providerContributions">Optional centralized provider contribution set.</param>
     /// <param name="valueFormatterRegistry">Optional preconfigured value formatter registry.</param>
     /// <param name="iconProviderRegistry">Optional preconfigured icon provider registry.</param>
     public MarkdownRenderer(
         IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         ProviderRegistry? providerRegistry = null,
+        ProviderContributionSet? providerContributions = null,
         ValueFormatterRegistry? valueFormatterRegistry = null,
         IconProviderRegistry? iconProviderRegistry = null)
     {
         _ = principalMapper;
         _diagnosticContext = diagnosticContext;
-        _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(providerRegistry);
-        _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
-        _resourceRendererRegistry = CreateResourceRendererRegistry(providerRegistry);
+        var contributions = providerContributions ?? providerRegistry?.CreateContributionSet();
+        _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(contributions);
+        _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(contributions);
+        _resourceRendererRegistry = CreateResourceRendererRegistry(contributions);
         _reportRenderer = new ReportRenderer(resourceRendererRegistry: _resourceRendererRegistry);
     }
 
@@ -57,6 +60,7 @@ internal sealed class MarkdownRenderer
     /// <param name="principalMapper">Principal mapper parameter kept for caller signature compatibility.</param>
     /// <param name="diagnosticContext">Diagnostic sink used for template-resolution events.</param>
     /// <param name="providerRegistry">Provider module registry used to build formatter and icon registries.</param>
+    /// <param name="providerContributions">Optional centralized provider contribution set.</param>
     /// <param name="valueFormatterRegistry">Optional explicit value formatter registry override.</param>
     /// <param name="iconProviderRegistry">Optional explicit icon provider registry override.</param>
     public MarkdownRenderer(
@@ -64,9 +68,10 @@ internal sealed class MarkdownRenderer
         IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         ProviderRegistry? providerRegistry = null,
+        ProviderContributionSet? providerContributions = null,
         ValueFormatterRegistry? valueFormatterRegistry = null,
         IconProviderRegistry? iconProviderRegistry = null)
-        : this(principalMapper, diagnosticContext, providerRegistry, valueFormatterRegistry, iconProviderRegistry)
+        : this(principalMapper, diagnosticContext, providerRegistry, providerContributions, valueFormatterRegistry, iconProviderRegistry)
     {
         _ = customTemplateDirectory;
     }
@@ -204,36 +209,18 @@ internal sealed class MarkdownRenderer
             iconProviderRegistry: _iconProviderRegistry);
     }
 
-    private static ResourceRendererRegistry CreateResourceRendererRegistry(ProviderRegistry? providerRegistry)
+    private static ResourceRendererRegistry CreateResourceRendererRegistry(ProviderContributionSet? providerContributions)
     {
-        var registry = new ResourceRendererRegistry();
-
-        providerRegistry?.RegisterAllResourceRenderers(registry);
-
-        return registry;
+        return providerContributions?.CreateResourceRendererRegistry() ?? new ResourceRendererRegistry();
     }
 
-    private static IconProviderRegistry? CreateIconProviderRegistry(ProviderRegistry? providerRegistry)
+    private static IconProviderRegistry? CreateIconProviderRegistry(ProviderContributionSet? providerContributions)
     {
-        if (providerRegistry is null)
-        {
-            return null;
-        }
-
-        var registry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(registry);
-        return registry;
+        return providerContributions?.CreateIconProviderRegistry();
     }
 
-    private static ValueFormatterRegistry? CreateValueFormatterRegistry(ProviderRegistry? providerRegistry)
+    private static ValueFormatterRegistry? CreateValueFormatterRegistry(ProviderContributionSet? providerContributions)
     {
-        if (providerRegistry is null)
-        {
-            return null;
-        }
-
-        var registry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(registry);
-        return registry;
+        return providerContributions?.CreateValueFormatterRegistry();
     }
 }

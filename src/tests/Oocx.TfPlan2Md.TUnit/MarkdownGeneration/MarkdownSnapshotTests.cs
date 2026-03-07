@@ -94,12 +94,10 @@ public class MarkdownSnapshotTests
             principalMapper: principalMapper,
             scopeFormatter: scopeFormatter));
         providerRegistry.RegisterProvider(new AzureDevOpsModule(LargeValueFormat.InlineDiff));
+        var providerContributions = providerRegistry.CreateContributionSet();
 
-        var valueFormatterRegistry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(valueFormatterRegistry);
-
-        var iconProviderRegistry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(iconProviderRegistry);
+        var valueFormatterRegistry = providerContributions.CreateValueFormatterRegistry();
+        var iconProviderRegistry = providerContributions.CreateIconProviderRegistry();
 
         // Load SARIF code analysis results
         var sarifLoader = new CodeAnalysisLoader(new SarifParser());
@@ -119,6 +117,7 @@ public class MarkdownSnapshotTests
             principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
+            providerContributions: providerContributions,
             codeAnalysisInput: codeAnalysisInput,
             iconProviderRegistry: iconProviderRegistry).Build(plan);
 
@@ -126,6 +125,7 @@ public class MarkdownSnapshotTests
         var renderer = new MarkdownRenderer(
             principalMapper: principalMapper,
             providerRegistry: providerRegistry,
+            providerContributions: providerContributions,
             valueFormatterRegistry: valueFormatterRegistry,
             iconProviderRegistry: iconProviderRegistry);
 
@@ -216,7 +216,7 @@ public class MarkdownSnapshotTests
         var plan = _parser.Parse(json);
 
         var mappingResult = AzureMappingFileLoader.Load("TestData/azure-mappings-extended.json", diagnosticContext: null);
-        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles, diagnosticContext: null);
+        var roleDefinitionResolver = new AzureRoleDefinitionResolver(mappingResult.Roles, diagnosticContext: null);
 
         var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext: null);
         var entityMapper = new AzureEntityMapper(
@@ -225,7 +225,7 @@ public class MarkdownSnapshotTests
             mappingResult.Tenants,
             diagnosticContext: null);
         var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
-        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
+        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter, roleDefinitionResolver);
 
         var model = new ReportModelBuilder(
             principalMapper: principalMapper,
@@ -306,13 +306,15 @@ public class MarkdownSnapshotTests
     /// </summary>
     private static ProviderRegistry CreateProviderRegistry(
         IPrincipalMapper? principalMapper = null,
-        EnrichedAzureScopeFormatter? scopeFormatter = null)
+        EnrichedAzureScopeFormatter? scopeFormatter = null,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         var registry = new ProviderRegistry();
         registry.RegisterProvider(new AzureRMModule(
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: principalMapper ?? new NullPrincipalMapper(),
-            scopeFormatter: scopeFormatter));
+            scopeFormatter: scopeFormatter,
+            roleDefinitionResolver: roleDefinitionResolver));
         return registry;
     }
 }

@@ -4,19 +4,14 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 /// <summary>
-/// Represents a Terraform provider module that registers provider-specific functionality.
+/// Represents a core Terraform provider with factory registration.
 /// </summary>
 /// <remarks>
-/// Provider modules encapsulate all provider-specific logic including:
-/// - Resource view model factory registration
-/// - Template discovery prefixes
-/// 
-/// This interface enables explicit, AOT-compatible provider registration without reflection.
-/// Lives in MarkdownGeneration.Services to avoid circular dependency between
-/// MarkdownGeneration and Providers layers. Providers implement this interface.
-/// Related feature: docs/features/047-provider-code-separation/specification.md.
+/// This is the narrower, focused provider interface that all providers must implement.
+/// Additional capabilities are expressed through separate capability interfaces.
+/// Related feature: docs/features/110-refactoring-opportunities/specification.md.
 /// </remarks>
-internal interface IProviderModule
+internal interface IProvider
 {
     /// <summary>
     /// Gets the unique name of the Terraform provider (e.g., "azurerm", "azapi", "azuredevops").
@@ -36,69 +31,100 @@ internal interface IProviderModule
     /// </summary>
     /// <param name="registry">The factory registry to register into.</param>
     void RegisterFactories(MarkdownGeneration.Models.IResourceViewModelFactoryRegistry registry);
+}
 
+/// <summary>
+/// Represents a Terraform provider that provides custom value formatters.
+/// </summary>
+/// <remarks>
+/// Providers can optionally implement this interface to register value formatters.
+/// Related feature: docs/features/110-refactoring-opportunities/specification.md.
+/// </remarks>
+internal interface IValueFormatterProvider
+{
     /// <summary>
     /// Registers provider-specific value formatters.
     /// </summary>
     /// <param name="registry">The value formatter registry to register into.</param>
-    void RegisterValueFormatters(ValueFormatterRegistry registry)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
+    void RegisterValueFormatters(ValueFormatterRegistry registry);
+}
 
+/// <summary>
+/// Represents a Terraform provider that provides custom icon definitions.
+/// </summary>
+/// <remarks>
+/// Providers can optionally implement this interface to register icon providers.
+/// Related feature: docs/features/110-refactoring-opportunities/specification.md.
+/// </remarks>
+internal interface IIconRegistrationProvider
+{
     /// <summary>
     /// Registers provider-specific icon providers.
     /// </summary>
     /// <param name="registry">The icon provider registry to register into.</param>
-    void RegisterIconProviders(IconProviderRegistry registry)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
+    void RegisterIconProviders(IconProviderRegistry registry);
+}
 
+/// <summary>
+/// Represents a Terraform provider that defines parent-child resource relationships.
+/// </summary>
+/// <remarks>
+/// Providers can optionally implement this interface to register parent-child relationships.
+/// Related feature: docs/features/110-refactoring-opportunities/specification.md.
+/// </remarks>
+internal interface IParentChildRelationshipProvider
+{
     /// <summary>
     /// Registers provider-specific parent-child resource relationships.
     /// </summary>
     /// <param name="registry">The parent-child relationship registry to register into.</param>
-    void RegisterParentChildRelationships(MarkdownGeneration.Models.IParentChildRelationshipRegistry registry)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
+    void RegisterParentChildRelationships(MarkdownGeneration.Models.IParentChildRelationshipRegistry registry);
+}
 
+/// <summary>
+/// Represents a Terraform provider that provides attribute change filters.
+/// </summary>
+/// <remarks>
+/// Providers can optionally implement this interface to register attribute change filters.
+/// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+/// </remarks>
+internal interface IAttributeChangeFilterProvider
+{
     /// <summary>
     /// Registers provider-specific attribute change filters.
     /// </summary>
     /// <param name="registry">The attribute change filter registry to register into.</param>
-    /// <remarks>
-    /// Filters allow providers to suppress attribute change rows based on their own criteria
-    /// (e.g., Azure resource ID casing-only changes). The default no-op keeps all existing
-    /// provider modules source-compatible without changes.
-    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
-    /// </remarks>
-    void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
+    void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry);
+}
 
+/// <summary>
+/// Represents a Terraform provider that provides post-merge callbacks.
+/// </summary>
+/// <remarks>
+/// Providers can optionally implement this interface to register post-merge callbacks.
+/// Related feature: docs/features/110-refactoring-opportunities/specification.md.
+/// </remarks>
+internal interface IPostMergeCallbackProvider
+{
     /// <summary>
     /// Registers provider-specific callbacks to be invoked after parent-child merging.
     /// </summary>
     /// <param name="builder">The report model builder to register callbacks with.</param>
-    /// <remarks>
-    /// Allows providers to perform post-merge processing like updating summaries
-    /// without introducing dependencies from MarkdownGeneration to Providers.
-    /// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
-    /// </remarks>
-    void RegisterPostMergeCallbacks(ReportModelBuilder builder)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
+    void RegisterPostMergeCallbacks(ReportModelBuilder builder);
+}
 
+/// <summary>
+/// Represents a Terraform provider that provides custom resource renderers.
+/// </summary>
+/// <remarks>
+/// Providers can optionally implement this interface to register resource renderers.
+/// Related feature: docs/features/110-refactoring-opportunities/specification.md.
+/// </remarks>
+internal interface IResourceRendererProvider
+{
     /// <summary>
     /// Registers provider-specific C# resource renderers.
     /// </summary>
     /// <param name="registry">Resource renderer registry used by the pure C# markdown pipeline.</param>
-    void RegisterResourceRenderers(ResourceRendererRegistry registry)
-    {
-        // Default no-op keeps existing provider modules compatible.
-    }
+    void RegisterResourceRenderers(ResourceRendererRegistry registry);
 }

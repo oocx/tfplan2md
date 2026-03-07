@@ -13,7 +13,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD;
 /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 /// </summary>
 [SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider registration module aggregates provider-specific factories, formatters, and renderers.")]
-internal sealed class AzureADModule : IProviderModule
+internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IParentChildRelationshipProvider, IPostMergeCallbackProvider, IResourceRendererProvider
 {
     /// <summary>
     /// Optional mapper for tenant display name resolution.

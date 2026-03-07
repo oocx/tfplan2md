@@ -167,14 +167,24 @@ internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
     private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
 
     /// <summary>
+    /// Resolver used to format Azure role definition names for the current run.
+    /// </summary>
+    private readonly IRoleDefinitionResolver _roleDefinitionResolver;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RoleAssignmentFactory"/> class.
     /// </summary>
     /// <param name="principalMapper">The mapper for resolving principal names.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
-    internal RoleAssignmentFactory(IPrincipalMapper principalMapper, EnrichedAzureScopeFormatter? scopeFormatter)
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for role definition names.</param>
+    internal RoleAssignmentFactory(
+        IPrincipalMapper principalMapper,
+        EnrichedAzureScopeFormatter? scopeFormatter,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         _principalMapper = principalMapper;
         _scopeFormatter = scopeFormatter;
+        _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
     }
 
     /// <summary>
@@ -194,6 +204,7 @@ internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
             action,
             attributeChanges,
             _principalMapper,
-            _scopeFormatter);
+            _scopeFormatter,
+            _roleDefinitionResolver);
     }
 }

@@ -72,6 +72,7 @@ public class CompositionRootTests
         var principalMapper = root.CreatePrincipalMapper(mappingResult, diagnostics: null);
         var entityMapper = root.CreateEntityMapper(mappingResult, diagnostics: null);
         var scopeFormatter = root.CreateScopeFormatter(entityMapper);
+        var roleDefinitionResolver = root.CreateRoleDefinitionResolver(mappingResult, diagnostics: null);
         var azdoUserMapper = root.CreateAzdoUserMapper(mappingResult, diagnostics: null);
         var azdoGroupMapper = root.CreateAzdoGroupMapper(mappingResult, diagnostics: null);
         var azdoProjectMapper = root.CreateAzdoProjectMapper(mappingResult, diagnostics: null);
@@ -81,6 +82,7 @@ public class CompositionRootTests
             principalMapper,
             scopeFormatter,
             entityMapper,
+            roleDefinitionResolver,
             azdoUserMapper,
             azdoGroupMapper,
             azdoProjectMapper,
@@ -161,5 +163,24 @@ public class CompositionRootTests
 
         await Assert.That(markdown).Contains("# Terraform Plan Report");
         await Assert.That(markdown).Contains("## Summary");
+    }
+
+    /// <summary>
+    /// Verifies that sequential compositions do not share custom role definition state.
+    /// </summary>
+    [Test]
+    public async Task CreateRoleDefinitionResolver_SequentialRoots_DoNotShareCustomRoleState()
+    {
+        var customOptions = new CliOptions { PrincipalMappingFile = "TestData/azure-mappings-extended.json" };
+        var customRoot = new CompositionRoot(customOptions);
+        var customMappingResult = AzureMappingFileLoader.Load(customOptions.PrincipalMappingFile, diagnosticContext: null);
+        var customResolver = customRoot.CreateRoleDefinitionResolver(customMappingResult, diagnostics: null);
+
+        var defaultRoot = new CompositionRoot(new CliOptions());
+        var defaultMappingResult = AzureMappingFileLoader.Load(mappingFile: null, diagnosticContext: null);
+        var defaultResolver = defaultRoot.CreateRoleDefinitionResolver(defaultMappingResult, diagnostics: null);
+
+        await Assert.That(customResolver.GetRoleDefinition("custom-role-guid", null).Name).IsEqualTo("Custom Deployment Role");
+        await Assert.That(defaultResolver.GetRoleDefinition("custom-role-guid", null).Name).IsEqualTo("custom-role-guid");
     }
 }

@@ -994,10 +994,7 @@ internal partial class ReportModelBuilder
     {
         return action switch
         {
-            CreateAction => ActionIcons.Add,
-            DeleteAction => ActionIcons.Delete,
-            UpdateAction => ActionIcons.Update,
-            ReplaceAction => ActionIcons.Replace,
+            CreateAction or DeleteAction or UpdateAction or ReplaceAction => TerraformActions.GetSymbol(action),
             _ => ActionIcons.Unchanged
         };
     }

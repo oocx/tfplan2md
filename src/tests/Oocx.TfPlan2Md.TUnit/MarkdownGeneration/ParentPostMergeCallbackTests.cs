@@ -436,7 +436,7 @@ public class ParentPostMergeCallbackTests
     /// <summary>
     /// Test provider module for callback testing.
     /// </summary>
-    private sealed class TestProviderModule : IProviderModule
+    private sealed class TestProviderModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IParentChildRelationshipProvider, IPostMergeCallbackProvider
     {
         private readonly Action<ReportModelBuilder>? _callbackRegistration;
         private readonly Action<IParentChildRelationshipRegistry>? _relationshipRegistration;

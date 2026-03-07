@@ -13,7 +13,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </summary>
 #pragma warning disable CA1506 // Suppress class coupling - module integrates multiple mapper types
-internal sealed class AzureDevOpsModule : IProviderModule
+internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IParentChildRelationshipProvider, IResourceRendererProvider
 {
     private readonly LargeValueFormat _largeValueFormat;
 

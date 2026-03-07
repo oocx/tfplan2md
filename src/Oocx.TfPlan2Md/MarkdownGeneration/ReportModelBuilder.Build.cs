@@ -1,5 +1,5 @@
-using System;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 using Oocx.TfPlan2Md.Parsing;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
@@ -18,21 +18,24 @@ internal partial class ReportModelBuilder
     /// </summary>
     /// <param name="plan">Terraform plan to transform into a report model.</param>
     /// <returns>A model containing change details, summaries, and optional custom title.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Build remains the orchestration boundary while explicit report stages are extracted incrementally.")]
     public ReportModel Build(TerraformPlan plan)
     {
-        _configurationReferenceIndex = ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration);
+        _configurationReferenceIndex.Clear();
+        foreach (var (key, value) in ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration))
+        {
+            _configurationReferenceIndex[key] = value;
+        }
 
-        // Build secondary index grouped by address for O(1) lookups per resource
-        _configurationReferencesByAddress = _configurationReferenceIndex
-            .GroupBy(e => e.Key.Address, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(
-                g => g.Key,
-                g => g.ToDictionary(e => e.Key.Attribute, e => e.Value, StringComparer.OrdinalIgnoreCase),
-                StringComparer.OrdinalIgnoreCase);
+        var allChanges = (_resourceChangeStage ?? CreateResourceChangeStage())
+            .Build(plan)
+            .ToList();
 
-        // Build all resource change models first (for summary counting)
-        var allChanges = plan.ResourceChanges
-            .Select(BuildResourceChangeModel)
+        allChanges = (_attributeFilteringStage ?? CreateAttributeFilteringStage())
+            .Build(allChanges)
             .ToList();
 
         var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
@@ -41,300 +44,40 @@ internal partial class ReportModelBuilder
         // Parent-child grouping is visual only and must NOT affect resource counts.
         // The summary must reflect actual Terraform changes (all resources).
         // Related feature: docs/features/068-parent-child-resource-grouping/specification.md
-        var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
-        var toChange = BuildActionSummary(allChanges.Where(c => c.Action is "update" or "unknown"));
-        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action is "delete" or "forget"));
-        var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
-        var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
+        var summary = (_summaryEnrichmentStage ?? CreateSummaryEnrichmentStage()).Build(allChanges);
 
         // Now merge parent-child relationships (this removes children from allChanges for display)
         MergeParentChildRelationships(allChanges);
 
-        // Filter out no-op resources from the rendered changes list.
-        // No-op resources have no meaningful changes to display.
-        // Exception: Preserve no-op parents that have children with actual changes (not just no-op children)
-        var afterNoOpFilter = allChanges
-            .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null || HasChildrenWithChanges(c))
-            .ToList();
-
-        // Also filter out update/unknown resources where all attribute changes were suppressed
-        // by --ignore-azure-id-case-changes and there is nothing else meaningful to display.
-        // Only applies when casing filter is active; when disabled no additional suppression occurs.
-        // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md
-        var displayChanges = afterNoOpFilter
-            .Where(c => !_ignoreAzureIdCaseChanges
-                || c.Action is not (UpdateAction or UnknownAction)
-                || c.AttributeChanges.Count > 0
-                || c.CodeAnalysisFindings.Count > 0
-                || c.ImportId is not null
-                || c.MovedFromAddress is not null
-                || c.HasWholeResourceUnknownAfterApply
-                || HasChildrenWithChanges(c))
-            .ToList();
-
-        var filteredResourceCount = afterNoOpFilter.Count - displayChanges.Count;
-
-        // SonarAnalyzer S3267: Cannot simplify with LINQ - this loop mutates existing objects
-        // Justification: This loop modifies ModuleAddress property for null values, not filtering
-#pragma warning disable S3267 // Loops should be simplified using the "Where" LINQ method
-        foreach (var c in displayChanges)
-        {
-            if (c.ModuleAddress is null)
-            {
-                c.ModuleAddress = string.Empty;
-            }
-        }
-#pragma warning restore S3267
-
-        var summary = new SummaryModel
-        {
-            ToAdd = toAdd,
-            ToChange = toChange,
-            ToDestroy = toDestroy,
-            ToReplace = toReplace,
-            NoOp = noOp,
-            Total = toAdd.Count + toChange.Count + toDestroy.Count + toReplace.Count
-        };
-
-        // Group changes by module. Use empty string for root module. Sort so root comes first,
-        // then modules in lexicographic order which ensures parents precede children (flat grouping).
-        // Preserve the order of modules as they appear in the plan while ensuring the root
-        // module is listed first. This keeps child modules next to their parent modules
-        // (flat grouping but ordered by appearance).
+        // Filter merged changes for display (removes no-op resources and Azure ID case-only changes)
+        // and normalize module addresses. Runs after merging to ensure visual grouping doesn't
+        // affect which resources are displayed.
+        var filteringResult = (_displayFilteringStage ?? CreateDisplayFilteringStage()).Build(allChanges);
+        var displayChanges = filteringResult.DisplayChanges.ToList();
+        var filteredResourceCount = filteringResult.FilteredResourceCount;
 
         // Build output models from the plan
         // Related feature: docs/features/097-terraform-outputs/specification.md
         var allOutputs = BuildOutputModels(plan);
 
-        // Separate global vs module outputs
-        var globalOutputs = allOutputs
-            .Where(o => o.ModuleAddress == string.Empty)
-            .OrderBy(o => o.Name, StringComparer.Ordinal)
-            .ToList();
-
-        // Group module outputs by module address
-        var outputsByModule = allOutputs
-            .Where(o => o.ModuleAddress != string.Empty)
-            .GroupBy(o => o.ModuleAddress)
-            .ToDictionary(
-                g => g.Key,
-                g => (IReadOnlyList<OutputChangeModel>)g.OrderBy(o => o.Name, StringComparer.Ordinal).ToList());
-
-        var moduleGroups = BuildModuleGroups(displayChanges, outputsByModule);
-
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
-        var refactoringOperations = BuildRefactoringOperations(allChanges);
-
-        return new ReportModel
-        {
-            TerraformVersion = plan.TerraformVersion,
-            FormatVersion = plan.FormatVersion,
-            TfPlan2MdVersion = metadata.Version,
-            CommitHash = metadata.CommitHash,
-            GeneratedAtUtc = metadata.GeneratedAtUtc,
-            HideMetadata = _hideMetadata,
-            Timestamp = plan.Timestamp,
-            ReportTitle = escapedReportTitle,
-            Changes = displayChanges,
-            ModuleChanges = moduleGroups,
-            Summary = summary,
-            CodeAnalysis = codeAnalysisReport,
-            ShowUnchangedValues = _showUnchangedValues,
-            IgnoreAzureIdCaseChanges = _ignoreAzureIdCaseChanges,
-            ShowSensitive = _showSensitive,
-            RenderTarget = renderTarget,
-            DetailsDisplayMode = _detailsDisplayMode,
-            RefactoringOperations = refactoringOperations,
-            GlobalOutputs = globalOutputs,
-            FilteredResourceCount = filteredResourceCount
-        };
-    }
-
-    /// <summary>
-    /// Checks if a resource has child resources with actual changes (not just no-op children).
-    /// </summary>
-    /// <param name="resource">The resource to check.</param>
-    /// <returns><c>true</c> if the resource has children with changes; otherwise, <c>false</c>.</returns>
-    /// <remarks>
-    /// Related issue: docs/issues/088-no-op-parent-hides-child-changes/analysis.md.
-    /// This method ensures no-op parents are preserved only when their children have real changes,
-    /// avoiding the opposite error where no-op parents with only no-op children are displayed.
-    /// </remarks>
-    private static bool HasChildrenWithChanges(ResourceChangeModel resource)
-    {
-        if (resource.ChildResourceGroups.Count == 0)
-        {
-            return false;
-        }
-
-        // Check if any child row has a change indicator other than "Unchanged" (⏺️)
-        return resource.ChildResourceGroups
-            .SelectMany(group => group.Rows)
-            .Any(row => row.ChangeIndicator != ActionIcons.Unchanged);
-    }
-
-    /// <summary>
-    /// Builds module change groups with resource changes and outputs.
-    /// Related feature: docs/features/097-terraform-outputs/specification.md.
-    /// </summary>
-    /// <param name="displayChanges">Resource changes to group by module.</param>
-    /// <param name="outputsByModule">Outputs grouped by module address.</param>
-    /// <returns>List of module change groups with outputs.</returns>
-    private static List<ModuleChangeGroup> BuildModuleGroups(
-        List<ResourceChangeModel> displayChanges,
-        Dictionary<string, IReadOnlyList<OutputChangeModel>> outputsByModule)
-    {
-        // Pre-compute first-index lookup to avoid O(g×n) FindIndex calls in LINQ chain
-        var firstIndexByModule = new Dictionary<string, int>(StringComparer.Ordinal);
-        for (var i = 0; i < displayChanges.Count; i++)
-        {
-            var key = displayChanges[i].ModuleAddress ?? string.Empty;
-            firstIndexByModule.TryAdd(key, i);
-        }
-
-        var moduleGroups = displayChanges
-            .GroupBy(c => c.ModuleAddress ?? string.Empty)
-            .Select(g => new
-            {
-                Key = g.Key,
-                Changes = g.ToList(),
-                FirstIndex = firstIndexByModule[g.Key]
-            })
-            .OrderBy(g => g.Key == string.Empty ? 0 : 1)
-            .ThenBy(g => g.FirstIndex)
-            .Select(g => new ModuleChangeGroup
-            {
-                ModuleAddress = g.Key, // empty string represents root
-                Changes = g.Changes,
-                Outputs = outputsByModule.TryGetValue(g.Key, out var outputs) ? outputs : Array.Empty<OutputChangeModel>()
-            })
-            .ToList();
-
-        // Handle modules with ONLY outputs (no resource changes)
-        // Related feature: docs/features/097-terraform-outputs/specification.md
-        foreach (var (moduleAddress, outputs) in outputsByModule)
-        {
-            if (!moduleGroups.Exists(m => m.ModuleAddress == moduleAddress))
-            {
-                // Find the position to insert this module (maintain appearance order)
-                var insertIndex = moduleGroups.Count;
-                for (var i = 0; i < moduleGroups.Count; i++)
-                {
-                    if (string.Compare(moduleAddress, moduleGroups[i].ModuleAddress, StringComparison.Ordinal) < 0)
-                    {
-                        insertIndex = i;
-                        break;
-                    }
-                }
-
-                moduleGroups.Insert(insertIndex, new ModuleChangeGroup
-                {
-                    ModuleAddress = moduleAddress,
-                    Changes = Array.Empty<ResourceChangeModel>(),
-                    Outputs = outputs
-                });
-            }
-        }
-
-        return moduleGroups;
-    }
-
-    /// <summary>
-    /// Builds the list of refactoring operations (imports and moves) for the report summary.
-    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
-    /// </summary>
-    /// <param name="changes">Resource changes to inspect for refactoring metadata.</param>
-    /// <returns>Sorted list of refactoring operations for rendering.</returns>
-    private static List<Models.RefactoringOperationModel> BuildRefactoringOperations(
-        IEnumerable<ResourceChangeModel> changes)
-    {
-        var operations = new List<Models.RefactoringOperationModel>();
-
-        foreach (var change in changes)
-        {
-            var resourceName = ResolveRefactoringResourceName(change);
-
-            if (change.ImportId is not null)
-            {
-                operations.Add(new Models.RefactoringOperationModel
-                {
-                    Operation = "Import",
-                    Address = change.Address,
-                    ResourceType = change.Type,
-                    ResourceName = resourceName,
-                    Details = change.ImportId,
-                    Status = change.IsRefactoringAlreadyApplied ? "AlreadyApplied" : "Ready",
-                    IsAlreadyApplied = change.IsRefactoringAlreadyApplied
-                });
-            }
-
-            if (change.MovedFromAddress is not null)
-            {
-                operations.Add(new Models.RefactoringOperationModel
-                {
-                    Operation = "Move",
-                    Address = change.Address,
-                    ResourceType = change.Type,
-                    ResourceName = resourceName,
-                    Details = change.MovedFromAddress,
-                    Status = change.IsRefactoringAlreadyApplied ? "AlreadyApplied" : "Ready",
-                    IsAlreadyApplied = change.IsRefactoringAlreadyApplied
-                });
-            }
-        }
-
-        return operations
-            .OrderBy(o => o.Operation == "Import" ? 0 : 1)
-            .ThenBy(o => o.IsAlreadyApplied ? 0 : 1)
-            .ThenBy(o => o.Address, StringComparer.Ordinal)
-            .ToList();
-    }
-
-    /// <summary>
-    /// Resolves a human-friendly resource name for use in the Refactoring Summary table.
-    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
-    /// </summary>
-    /// <param name="change">Resource change containing before/after state.</param>
-    /// <returns>The best available display name for the resource.</returns>
-    private static string ResolveRefactoringResourceName(ResourceChangeModel change)
-    {
-        var state = change.AfterJson ?? change.BeforeJson;
-        var flatState = Helpers.JsonFlattener.ConvertToFlatDictionary(state);
-
-        static string? GetValue(Dictionary<string, string?> values, string key)
-        {
-            return values.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value)
-                ? value
-                : null;
-        }
-
-        var fromState = GetValue(flatState, "name")
-            ?? GetValue(flatState, "display_name")
-            ?? GetValue(flatState, "body.displayName")
-            ?? GetValue(flatState, "displayName")
-            ?? GetValue(flatState, "url");
-
-        if (fromState is not null)
-        {
-            return fromState;
-        }
-
-        return !string.IsNullOrWhiteSpace(change.Name)
-            ? change.Name
-            : change.Address;
-    }
-
-    private static ActionSummary BuildActionSummary(IEnumerable<ResourceChangeModel> changes)
-    {
-        var changeList = changes.ToList();
-
-        var breakdown = changeList
-            .GroupBy(c => c.Type)
-            .Select(g => new ResourceTypeBreakdown(g.Key, g.Count()))
-            .OrderBy(b => b.Type, StringComparer.Ordinal)
-            .ToList();
-
-        return new ActionSummary(changeList.Count, breakdown);
+        return (_reportAssemblyStage ?? CreateReportAssemblyStage()).Build(
+            new ReportAssemblyInput(
+                Plan: plan,
+                AllChanges: allChanges,
+                DisplayChanges: displayChanges,
+                AllOutputs: allOutputs,
+                Summary: summary,
+                CodeAnalysisReport: codeAnalysisReport,
+                FilteredResourceCount: filteredResourceCount,
+                EscapedReportTitle: escapedReportTitle,
+                Metadata: metadata,
+                HideMetadata: _hideMetadata,
+                ShowUnchangedValues: _showUnchangedValues,
+                IgnoreAzureIdCaseChanges: _ignoreAzureIdCaseChanges,
+                ShowSensitive: _showSensitive,
+                RenderTarget: renderTarget,
+                DetailsDisplayMode: _detailsDisplayMode));
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
@@ -10,7 +11,8 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 /// Provider module for Azure API (azapi) resources.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </summary>
-internal sealed class AzApiModule : IProviderModule
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider module implements multiple narrow capability interfaces (IProvider, IValueFormatterProvider, IIconRegistrationProvider) for contribution model. This design reduces overall coupling by removing need for a single monolithic interface.")]
+internal sealed class AzApiModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IResourceRendererProvider, IAttributeChangeFilterProvider
 {
     /// <summary>
     /// Optional formatter for enriched Azure scope display.

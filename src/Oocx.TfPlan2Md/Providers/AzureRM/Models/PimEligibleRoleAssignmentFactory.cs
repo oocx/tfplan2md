@@ -47,13 +47,22 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     private readonly IPrincipalMapper _principalMapper;
 
     /// <summary>
+    /// Resolver used to format Azure role definition names for the current run.
+    /// </summary>
+    private readonly IRoleDefinitionResolver _roleDefinitionResolver;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="PimEligibleRoleAssignmentFactory"/> class.
     /// </summary>
     /// <param name="principalMapper">Mapper used for principal name resolution.</param>
-    internal PimEligibleRoleAssignmentFactory(IPrincipalMapper principalMapper)
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for role definition names.</param>
+    internal PimEligibleRoleAssignmentFactory(
+        IPrincipalMapper principalMapper,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         ArgumentNullException.ThrowIfNull(principalMapper);
         _principalMapper = principalMapper;
+        _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
     }
 
     /// <inheritdoc />
@@ -77,7 +86,7 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
         var state = ResolveActiveState(resourceChange, action);
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
-        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(
+        var roleInfo = _roleDefinitionResolver.GetRoleDefinition(
             GetValue(flatState, RoleDefinitionIdAttribute),
             GetValue(flatState, RoleDefinitionNameAttribute),
             resourceChange.Address);

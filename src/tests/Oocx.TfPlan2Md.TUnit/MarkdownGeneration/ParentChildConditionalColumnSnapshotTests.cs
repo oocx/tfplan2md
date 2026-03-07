@@ -179,16 +179,15 @@ public class ParentChildConditionalColumnSnapshotTests
             principalMapper: new NullPrincipalMapper()));
         // Register Azure AD provider for parent-child UAT test
         providerRegistry.RegisterProvider(new AzureADModule());
+        var providerContributions = providerRegistry.CreateContributionSet();
 
-        var valueFormatterRegistry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(valueFormatterRegistry);
-
-        var iconProviderRegistry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(iconProviderRegistry);
+        var valueFormatterRegistry = providerContributions.CreateValueFormatterRegistry();
+        var iconProviderRegistry = providerContributions.CreateIconProviderRegistry();
 
         var model = new ReportModelBuilder(
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
+            providerContributions: providerContributions,
             codeAnalysisInput: null,
             iconProviderRegistry: iconProviderRegistry).Build(plan);
 

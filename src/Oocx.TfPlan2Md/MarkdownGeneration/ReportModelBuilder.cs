@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Platforms.Azure;
 
@@ -36,11 +37,17 @@ internal delegate void ParentPostMergeCallback(
 /// <param name="metadataProvider">Provider for tfplan2md version, commit, and generation timestamp metadata.</param>
 /// <param name="hideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
 /// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
+/// <param name="providerContributions">Optional centralized provider contribution set.</param>
 /// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
 /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
 /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
 /// <param name="ignoreAzureIdCaseChanges">Whether attribute change rows where before/after are Azure resource IDs differing only in casing are suppressed.</param>
 /// <param name="attributeChangeFilterRegistry">Optional registry of attribute change filters; defaults to an empty registry.</param>
+/// <param name="resourceChangeStage">Optional override for the resource-change construction stage.</param>
+/// <param name="attributeFilteringStage">Optional override for the attribute-filtering stage.</param>
+/// <param name="summaryEnrichmentStage">Optional override for the summary-enrichment stage.</param>
+/// <param name="displayFilteringStage">Optional override for the display-filtering stage.</param>
+/// <param name="reportAssemblyStage">Optional override for the report-assembly stage.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
@@ -54,11 +61,17 @@ internal partial class ReportModelBuilder(
     IMetadataProvider? metadataProvider = null,
     bool hideMetadata = false,
     Services.ProviderRegistry? providerRegistry = null,
+    Services.ProviderContributionSet? providerContributions = null,
     CodeAnalysisInput? codeAnalysisInput = null,
     MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
     RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto,
     bool ignoreAzureIdCaseChanges = true,
-    Services.AttributeChangeFilterRegistry? attributeChangeFilterRegistry = null)
+    Services.AttributeChangeFilterRegistry? attributeChangeFilterRegistry = null,
+    IResourceChangeStage? resourceChangeStage = null,
+    IAttributeFilteringStage? attributeFilteringStage = null,
+    ISummaryEnrichmentStage? summaryEnrichmentStage = null,
+    IDisplayFilteringStage? displayFilteringStage = null,
+    IReportAssemblyStage? reportAssemblyStage = null)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -114,13 +127,13 @@ internal partial class ReportModelBuilder(
     /// Registry for icon provider services.
     /// </summary>
     private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry =
-        iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
+        iconProviderRegistry ?? CreateIconProviderRegistry(CreateProviderContributions(providerContributions, providerRegistry));
 
     /// <summary>
     /// Registry for value formatter services.
     /// </summary>
     private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry =
-        CreateValueFormatterRegistry(providerRegistry);
+        CreateValueFormatterRegistry(CreateProviderContributions(providerContributions, providerRegistry));
 
     /// <summary>
     /// Mapper for resolving Azure principal names.
@@ -141,26 +154,47 @@ internal partial class ReportModelBuilder(
     /// Registry for resource-specific view model factories.
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
-        CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new NullPrincipalMapper(), providerRegistry);
+        CreateFactoryRegistry(
+            ConvertRenderTargetToLargeValueFormat(renderTarget),
+            principalMapper ?? new NullPrincipalMapper(),
+            CreateProviderContributions(providerContributions, providerRegistry));
+
+    /// <summary>
+    /// Optional override for the resource-change construction stage.
+    /// </summary>
+    private readonly IResourceChangeStage? _resourceChangeStage = resourceChangeStage;
+
+    /// <summary>
+    /// Optional override for the attribute-filtering stage.
+    /// </summary>
+    private readonly IAttributeFilteringStage? _attributeFilteringStage = attributeFilteringStage;
+
+    /// <summary>
+    /// Optional override for the summary-enrichment stage.
+    /// </summary>
+    private readonly ISummaryEnrichmentStage? _summaryEnrichmentStage = summaryEnrichmentStage;
+
+    /// <summary>
+    /// Optional override for the display-filtering stage.
+    /// </summary>
+    private readonly IDisplayFilteringStage? _displayFilteringStage = displayFilteringStage;
+
+    /// <summary>
+    /// Optional override for the report-assembly stage.
+    /// </summary>
+    private readonly IReportAssemblyStage? _reportAssemblyStage = reportAssemblyStage;
 
     /// <summary>
     /// Registry for parent-child resource relationships.
     /// </summary>
     private readonly ParentChildRelationshipRegistry _parentChildRelationshipRegistry =
-        CreateParentChildRelationshipRegistry(providerRegistry);
+        CreateParentChildRelationshipRegistry(CreateProviderContributions(providerContributions, providerRegistry));
 
     /// <summary>
     /// Cached configuration reference index for fallback parent-child matching.
     /// </summary>
-    private IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
-        new Dictionary<(string Address, string Attribute), IReadOnlyList<string>>();
-
-    /// <summary>
-    /// Secondary index for configuration references grouped by normalized address.
-    /// Enables O(1) lookup per resource instead of O(I) linear scan over all entries.
-    /// </summary>
-    private Dictionary<string, Dictionary<string, IReadOnlyList<string>>> _configurationReferencesByAddress =
-        new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
+        [];
 
     /// <summary>
     /// Collection of callbacks to invoke after parent-child merging completes.
@@ -193,7 +227,7 @@ internal partial class ReportModelBuilder(
         }
 
         _postMergeCallbacks = new List<ParentPostMergeCallback>();
-        providerRegistry?.RegisterAllPostMergeCallbacks(this);
+        CreateProviderContributions(providerContributions, providerRegistry)?.RegisterPostMergeCallbacks(this);
     }
 
     /// <summary>
@@ -214,17 +248,16 @@ internal partial class ReportModelBuilder(
     /// </summary>
     /// <param name="largeValueFormat">Preferred rendering format for large attribute values.</param>
     /// <param name="principalMapper">Mapper for resolving principal names.</param>
-    /// <param name="providerRegistry">Optional registry of provider modules.</param>
+    /// <param name="providerContributions">Optional centralized provider contribution set.</param>
     /// <returns>Configured factory registry.</returns>
     private static ResourceViewModelFactoryRegistry CreateFactoryRegistry(
         LargeValueFormat largeValueFormat,
         Platforms.Azure.IPrincipalMapper principalMapper,
-        Services.ProviderRegistry? providerRegistry)
+        Services.ProviderContributionSet? providerContributions)
     {
         var registry = new ResourceViewModelFactoryRegistry(largeValueFormat, principalMapper);
 
-        // Register provider-specific factories if a provider registry is available
-        providerRegistry?.RegisterAllFactories(registry);
+        providerContributions?.RegisterFactories(registry);
 
         return registry;
     }
@@ -233,51 +266,102 @@ internal partial class ReportModelBuilder(
     /// Builds an icon provider registry from the configured providers when not supplied explicitly.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
-    /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
+    /// <param name="providerContributions">The provider contribution set to pull icon providers from.</param>
     /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
     private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
-        Services.ProviderRegistry? providerRegistry)
+        Services.ProviderContributionSet? providerContributions)
     {
-        if (providerRegistry is null)
-        {
-            return null;
-        }
-
-        var registry = new MarkdownGeneration.Services.IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(registry);
-        return registry;
+        return providerContributions?.CreateIconProviderRegistry();
     }
 
     /// <summary>
     /// Builds a value formatter registry from the configured providers.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
-    /// <param name="providerRegistry">The provider registry to pull value formatters from.</param>
+    /// <param name="providerContributions">The provider contribution set to pull value formatters from.</param>
     /// <returns>The populated value formatter registry, or null when no providers are registered.</returns>
     private static MarkdownGeneration.Services.ValueFormatterRegistry? CreateValueFormatterRegistry(
-        Services.ProviderRegistry? providerRegistry)
+        Services.ProviderContributionSet? providerContributions)
     {
-        if (providerRegistry is null)
-        {
-            return null;
-        }
-
-        var registry = new MarkdownGeneration.Services.ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(registry);
-        return registry;
+        return providerContributions?.CreateValueFormatterRegistry();
     }
 
     /// <summary>
     /// Creates and populates the parent-child relationship registry.
     /// </summary>
-    /// <param name="providerRegistry">Optional provider registry to register relationships from.</param>
+    /// <param name="providerContributions">Optional provider contribution set to register relationships from.</param>
     /// <returns>The populated parent-child relationship registry.</returns>
     private static ParentChildRelationshipRegistry CreateParentChildRelationshipRegistry(
+        Services.ProviderContributionSet? providerContributions)
+    {
+        return providerContributions?.CreateParentChildRelationshipRegistry() ?? new ParentChildRelationshipRegistry();
+    }
+
+    /// <summary>
+    /// Resolves the effective provider contribution set.
+    /// </summary>
+    /// <param name="providerContributions">Explicit contribution set, when already built.</param>
+    /// <param name="providerRegistry">Provider registry used as a fallback source.</param>
+    /// <returns>The resolved provider contribution set, or null when no providers are configured.</returns>
+    private static Services.ProviderContributionSet? CreateProviderContributions(
+        Services.ProviderContributionSet? providerContributions,
         Services.ProviderRegistry? providerRegistry)
     {
-        var registry = new ParentChildRelationshipRegistry();
-        providerRegistry?.RegisterAllParentChildRelationships(registry);
-        return registry;
+        return providerContributions ?? providerRegistry?.CreateContributionSet();
+    }
+
+    /// <summary>
+    /// Creates the default resource-change construction stage for this builder instance.
+    /// </summary>
+    /// <returns>The default resource-change stage.</returns>
+    private ResourceChangeStage CreateResourceChangeStage()
+    {
+        return new ResourceChangeStage(
+            _summaryBuilder,
+            _showSensitive,
+            _showUnchangedValues,
+            _viewModelFactoryRegistry,
+            _principalMapper,
+            _iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Creates the default attribute-filtering stage for this builder instance.
+    /// </summary>
+    /// <returns>The default attribute-filtering stage.</returns>
+    private AttributeFilteringStage CreateAttributeFilteringStage()
+    {
+        return new AttributeFilteringStage(
+            _ignoreAzureIdCaseChanges,
+            _attributeChangeFilterRegistry,
+            _summaryBuilder);
+    }
+
+    /// <summary>
+    /// Creates the default summary-enrichment stage for this builder instance.
+    /// </summary>
+    /// <returns>The default summary-enrichment stage.</returns>
+    private static SummaryEnrichmentStage CreateSummaryEnrichmentStage()
+    {
+        return new SummaryEnrichmentStage();
+    }
+
+    /// <summary>
+    /// Creates the default display-filtering stage for this builder instance.
+    /// </summary>
+    /// <returns>The default display-filtering stage.</returns>
+    private DisplayFilteringStage CreateDisplayFilteringStage()
+    {
+        return new DisplayFilteringStage(_ignoreAzureIdCaseChanges);
+    }
+
+    /// <summary>
+    /// Creates the default report-assembly stage for this builder instance.
+    /// </summary>
+    /// <returns>The default report-assembly stage.</returns>
+    private static ReportAssemblyStage CreateReportAssemblyStage()
+    {
+        return new ReportAssemblyStage();
     }
 }
 

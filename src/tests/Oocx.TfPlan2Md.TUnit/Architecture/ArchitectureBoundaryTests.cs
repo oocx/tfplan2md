@@ -12,6 +12,10 @@ namespace Oocx.TfPlan2Md.TUnit.Architecture;
 /// </summary>
 public class ArchitectureBoundaryTests
 {
+    private const string ParsingNamespace = "Oocx.TfPlan2Md.Parsing";
+    private const string MarkdownGenerationNamespace = "Oocx.TfPlan2Md.MarkdownGeneration";
+    private const string ProvidersNamespace = "Oocx.TfPlan2Md.Providers";
+
     // === LAYER DEPENDENCY RULES (FORBIDDEN) ===
 
     /// <summary>
@@ -22,8 +26,8 @@ public class ArchitectureBoundaryTests
     public void Parsing_ShouldNotDependOn_MarkdownGeneration()
     {
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
+            .That().ResideInNamespace(ParsingNamespace)
+            .ShouldNot().HaveDependencyOn(MarkdownGenerationNamespace)
             .GetResult();
 
         if (!result.IsSuccessful)
@@ -43,7 +47,7 @@ public class ArchitectureBoundaryTests
     public void Parsing_ShouldNotDependOn_CLI()
     {
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
+            .That().ResideInNamespace(ParsingNamespace)
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.CLI")
             .GetResult();
 
@@ -64,8 +68,8 @@ public class ArchitectureBoundaryTests
     public void Parsing_ShouldNotDependOn_Providers()
     {
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Providers")
+            .That().ResideInNamespace(ParsingNamespace)
+            .ShouldNot().HaveDependencyOn(ProvidersNamespace)
             .GetResult();
 
         if (!result.IsSuccessful)
@@ -86,7 +90,7 @@ public class ArchitectureBoundaryTests
     public void Parsing_ShouldNotDependOn_Platforms()
     {
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
+            .That().ResideInNamespace(ParsingNamespace)
             .And().DoNotHaveNameMatching("TfPlanJsonContext") // Exempt: JSON source generation requires all types in one context (Issue #TBD)
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Platforms")
             .GetResult();
@@ -108,8 +112,8 @@ public class ArchitectureBoundaryTests
     public void MarkdownGeneration_ShouldNotDependOn_Providers()
     {
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Providers")
+            .That().ResideInNamespace(MarkdownGenerationNamespace)
+            .ShouldNot().HaveDependencyOn(ProvidersNamespace)
             .GetResult();
 
         if (!result.IsSuccessful)
@@ -130,7 +134,7 @@ public class ArchitectureBoundaryTests
     {
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.CodeAnalysis")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
+            .ShouldNot().HaveDependencyOn(MarkdownGenerationNamespace)
             .GetResult();
 
         if (!result.IsSuccessful)
@@ -154,7 +158,7 @@ public class ArchitectureBoundaryTests
             .ShouldNot().HaveDependencyOnAny(
                 "Oocx.TfPlan2Md.CLI",
                 "Oocx.TfPlan2Md.Parsing",
-                "Oocx.TfPlan2Md.MarkdownGeneration",
+                MarkdownGenerationNamespace,
                 "Oocx.TfPlan2Md.Providers",
                 "Oocx.TfPlan2Md.Platforms",
                 "Oocx.TfPlan2Md.CodeAnalysis")
@@ -205,8 +209,8 @@ public class ArchitectureBoundaryTests
         // This test documents that MarkdownGeneration SHOULD depend on Parsing.
         // Verify at least one type depends on Parsing (existential check).
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
+            .That().ResideInNamespace(MarkdownGenerationNamespace)
+            .ShouldNot().HaveDependencyOn(ParsingNamespace)
             .GetResult();
 
         // If ShouldNot succeeds, NO types depend on Parsing — that's wrong
@@ -228,7 +232,7 @@ public class ArchitectureBoundaryTests
         // Verify at least one type depends on MarkdownGeneration (existential check).
         var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Platforms")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
+            .ShouldNot().HaveDependencyOn(MarkdownGenerationNamespace)
             .GetResult();
 
         // If ShouldNot succeeds, NO types depend on MarkdownGeneration — that's wrong
@@ -249,13 +253,13 @@ public class ArchitectureBoundaryTests
         // This test documents that Providers SHOULD depend on both Parsing and MarkdownGeneration.
         // Verify at least one type depends on each (existential check).
         var parsingResult = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.Providers")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
+            .That().ResideInNamespace(ProvidersNamespace)
+            .ShouldNot().HaveDependencyOn(ParsingNamespace)
             .GetResult();
 
         var mdResult = Types.InAssembly(typeof(TerraformPlan).Assembly)
-            .That().ResideInNamespace("Oocx.TfPlan2Md.Providers")
-            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
+            .That().ResideInNamespace(ProvidersNamespace)
+            .ShouldNot().HaveDependencyOn(MarkdownGenerationNamespace)
             .GetResult();
 
         // If ShouldNot succeeds for either, NO types have the expected dependency
@@ -264,6 +268,24 @@ public class ArchitectureBoundaryTests
             throw new AssertionException(
                 "Providers should depend on both Parsing and MarkdownGeneration (provider-specific templates extend base rendering). If this test fails, the architecture may be incorrect.");
         }
+    }
+
+    /// <summary>
+    /// Verifies that architecture boundary exemptions do not increase without an explicit update.
+    /// </summary>
+    [Test]
+    public async Task Architecture_RefactoringDoesNotIncreaseExemptionCount()
+    {
+        var sourcePath = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory,
+            "../../../Architecture/ArchitectureBoundaryTests.cs"));
+        var source = await File.ReadAllTextAsync(sourcePath);
+        var exemptionCount = source
+            .Split('\n')
+            .Count(line => line.Contains("// Exempt:", StringComparison.Ordinal)
+                && !line.Contains("source", StringComparison.Ordinal));
+
+        await Assert.That(exemptionCount).IsEqualTo(1);
     }
 
     // === NAMING CONVENTION RULES ===

@@ -70,6 +70,9 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
     /// <summary>Optional scope formatter for enriched Azure scope display names.</summary>
     private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
 
+    /// <summary>Resolver used to format Azure role definition names for the current run.</summary>
+    private readonly IRoleDefinitionResolver _roleDefinitionResolver;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RoleAssignmentRenderer"/> class.
     /// </summary>
@@ -83,11 +86,16 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
     /// </summary>
     /// <param name="principalMapper">Mapper used for principal name resolution.</param>
     /// <param name="scopeFormatter">Optional formatter for scope display enrichment.</param>
-    public RoleAssignmentRenderer(IPrincipalMapper principalMapper, EnrichedAzureScopeFormatter? scopeFormatter = null)
+    /// <param name="roleDefinitionResolver">Optional run-scoped resolver for role definition names.</param>
+    public RoleAssignmentRenderer(
+        IPrincipalMapper principalMapper,
+        EnrichedAzureScopeFormatter? scopeFormatter = null,
+        IRoleDefinitionResolver? roleDefinitionResolver = null)
         : base("azurerm_role_assignment")
     {
         _principalMapper = principalMapper;
         _scopeFormatter = scopeFormatter;
+        _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
     }
 
     /// <inheritdoc />
@@ -104,7 +112,8 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
             change.Action,
             change.AttributeChanges,
             _principalMapper,
-            _scopeFormatter);
+            _scopeFormatter,
+            _roleDefinitionResolver);
 
         // Fall back to default renderer when the view model cannot produce meaningful content.
         if (viewModel.SmallAttributes.Count == 0 && viewModel.LargeAttributes.Count == 0)

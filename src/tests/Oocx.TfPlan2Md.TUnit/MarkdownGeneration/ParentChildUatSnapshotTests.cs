@@ -57,21 +57,21 @@ public class ParentChildUatSnapshotTests
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new AzureADModule());
         providerRegistry.RegisterProvider(new AzureDevOpsModule(LargeValueFormat.SimpleDiff));
+        var providerContributions = providerRegistry.CreateContributionSet();
 
-        var valueFormatterRegistry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(valueFormatterRegistry);
-
-        var iconProviderRegistry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(iconProviderRegistry);
+        var valueFormatterRegistry = providerContributions.CreateValueFormatterRegistry();
+        var iconProviderRegistry = providerContributions.CreateIconProviderRegistry();
 
         var model = new ReportModelBuilder(
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
+            providerContributions: providerContributions,
             codeAnalysisInput: codeAnalysisInput,
             iconProviderRegistry: iconProviderRegistry).Build(plan);
 
         var renderer = new MarkdownRenderer(
             providerRegistry: providerRegistry,
+            providerContributions: providerContributions,
             valueFormatterRegistry: valueFormatterRegistry,
             iconProviderRegistry: iconProviderRegistry);
 

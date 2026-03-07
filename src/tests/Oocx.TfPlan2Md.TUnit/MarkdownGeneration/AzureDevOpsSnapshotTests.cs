@@ -151,9 +151,7 @@ public class AzureDevOpsSnapshotTests
     /// <returns>The configured value formatter registry.</returns>
     private static ValueFormatterRegistry CreateValueFormatterRegistry(ProviderRegistry providerRegistry)
     {
-        var registry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(registry);
-        return registry;
+        return providerRegistry.CreateContributionSet().CreateValueFormatterRegistry();
     }
 
     /// <summary>
@@ -164,8 +162,6 @@ public class AzureDevOpsSnapshotTests
     /// <returns>The configured icon provider registry.</returns>
     private static IconProviderRegistry CreateIconProviderRegistry(ProviderRegistry providerRegistry)
     {
-        var registry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(registry);
-        return registry;
+        return providerRegistry.CreateContributionSet().CreateIconProviderRegistry();
     }
 }

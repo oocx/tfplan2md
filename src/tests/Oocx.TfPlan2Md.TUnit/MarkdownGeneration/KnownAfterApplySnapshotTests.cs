@@ -76,9 +76,7 @@ public class KnownAfterApplySnapshotTests
     /// <returns>Configured value formatter registry.</returns>
     private static ValueFormatterRegistry CreateValueFormatterRegistry(ProviderRegistry providerRegistry)
     {
-        var registry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(registry);
-        return registry;
+        return providerRegistry.CreateContributionSet().CreateValueFormatterRegistry();
     }
 
     /// <summary>
@@ -88,8 +86,6 @@ public class KnownAfterApplySnapshotTests
     /// <returns>Configured icon provider registry.</returns>
     private static IconProviderRegistry CreateIconProviderRegistry(ProviderRegistry providerRegistry)
     {
-        var registry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(registry);
-        return registry;
+        return providerRegistry.CreateContributionSet().CreateIconProviderRegistry();
     }
 }

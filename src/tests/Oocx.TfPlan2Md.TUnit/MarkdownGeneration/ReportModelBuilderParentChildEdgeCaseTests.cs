@@ -268,9 +268,9 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// Builds a report model using a custom provider module.
     /// </summary>
     /// <param name="plan">The Terraform plan to render.</param>
-    /// <param name="providerModule">The provider module to register.</param>
+    /// <param name="providerModule">The provider to register.</param>
     /// <returns>The built report model.</returns>
-    private static ReportModel BuildModel(TerraformPlan plan, IProviderModule providerModule)
+    private static ReportModel BuildModel(TerraformPlan plan, IProvider providerModule)
     {
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(providerModule);
@@ -357,7 +357,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// <summary>
     /// Provider module that registers a self-referencing relationship.
     /// </summary>
-    private sealed class SelfReferencingProviderModule : IProviderModule
+    private sealed class SelfReferencingProviderModule : IProvider, IParentChildRelationshipProvider
     {
         /// <summary>
         /// Gets the provider name for the self-referencing module.
@@ -400,7 +400,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// <summary>
     /// Provider module used for parent-child edge case tests.
     /// </summary>
-    private sealed class EdgeCaseProviderModule : IProviderModule
+    private sealed class EdgeCaseProviderModule : IProvider, IParentChildRelationshipProvider
     {
         /// <summary>
         /// Gets the provider name for the edge case test module.
@@ -478,7 +478,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// <summary>
     /// Provider module that uses a row extractor which always throws.
     /// </summary>
-    private sealed class ThrowingExtractorProviderModule : IProviderModule
+    private sealed class ThrowingExtractorProviderModule : IProvider, IParentChildRelationshipProvider
     {
         /// <summary>
         /// Gets the provider name for the throwing extractor module.
@@ -545,7 +545,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// <summary>
     /// Provider module that simulates invalid JSON in child payloads.
     /// </summary>
-    private sealed class InvalidJsonExtractorProviderModule : IProviderModule
+    private sealed class InvalidJsonExtractorProviderModule : IProvider, IParentChildRelationshipProvider
     {
         /// <summary>
         /// Gets the provider name for the invalid JSON module.

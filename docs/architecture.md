@@ -214,12 +214,21 @@ tfplan2md/
 │   ├── ReportModel.cs           # Report data models
 │   ├── MarkdownRenderer.cs      # C# rendering orchestration
 │   ├── MarkdownRenderException.cs
-│   ├── ReportModelBuilder.cs    # Transform domain → report model (partial, 5 files)
+│   ├── ReportModelBuilder.cs    # Transform domain → report model (staged orchestration)
 │   ├── ReportModelBuilder.Build.cs
 │   ├── ReportModelBuilder.ResourceChanges.cs
 │   ├── ReportModelBuilder.CodeAnalysis.cs
 │   ├── ReportModelBuilder.Summaries.cs
 │   ├── ReportModelBuilder.ParentChildMerging.cs
+│   ├── TerraformActions.cs      # Canonical Terraform action names and symbols
+│   ├── Stages/                  # Explicit report-generation stages
+│   │   ├── IResourceChangeStage.cs, ResourceChangeStage.cs
+│   │   ├── IAttributeFilteringStage.cs, AttributeFilteringStage.cs
+│   │   ├── IParentChildMergeStage.cs, ParentChildMergeStage.cs
+│   │   ├── ISummaryEnrichmentStage.cs, SummaryEnrichmentStage.cs
+│   │   ├── IDisplayFilteringStage.cs, DisplayFilteringStage.cs
+│   │   ├── ICodeAnalysisEnrichmentStage.cs, CodeAnalysisEnrichmentStage.cs
+│   │   └── IReportAssemblyStage.cs, ReportAssemblyStage.cs
 │   ├── Rendering/               # Pure C# rendering pipeline
 │   │   ├── IResourceRenderer.cs       # Renderer contract
 │   │   ├── IRenderContext.cs          # Read-only rendering context
@@ -257,14 +266,14 @@ tfplan2md/
 │   │       ├── AttributeCollection.cs, CodeAnalysis.cs
 │   │       └── AzApi.Metadata.cs
 │   ├── Services/                # Service registries and abstractions
-│   │   ├── ProviderRegistry.cs  # Central provider module manager
+│   │   ├── ProviderRegistry.cs  # Explicit provider registration and contribution aggregation
+│   │   ├── ProviderContributionSet.cs  # Aggregates optional provider capabilities
 │   │   ├── ValueFormatterRegistry.cs  # Pattern-matched value formatting
 │   │   ├── IconProviderRegistry.cs    # Pattern-matched icon resolution
-│   │   ├── ResourceModelMapperRegistry.cs  # View model enrichment
 │   │   ├── AttributeChangeFilterRegistry.cs  # Attribute change row suppression
 │   │   ├── IAttributeChangeFilter.cs, AttributeChangeFilterContext.cs
 │   │   ├── PatternMatchingRegistry.cs  # Generic specificity-based resolver
-│   │   ├── IValueFormatter.cs, IIconProvider.cs, IResourceModelMapper.cs
+│   │   ├── IValueFormatter.cs, IIconProvider.cs
 │   │   ├── FileBasedIconProvider.cs, StaticIconProvider.cs
 │   │   ├── AzureResourceIdFormatter.cs
 │   │   └── ServiceRegistrationException.cs
@@ -286,7 +295,7 @@ tfplan2md/
 │   └── PrincipalLoadError.cs    # Principal mapping errors
 │
 ├── Providers/                   # Provider-specific implementations (modular)
-│   ├── IProviderModule.cs       # Provider registration contract
+│   ├── IProviderModule.cs       # Core provider and optional capability contracts
 │   ├── AzApi/                   # AzApi provider (azapi_resource, azapi_update_resource)
 │   ├── AzureAD/                 # Azure AD provider (azuread_*)
 │   ├── AzureRM/                 # AzureRM provider (azurerm_*)
@@ -303,7 +312,7 @@ tfplan2md/
 │       ├── IPrincipalMapper.cs, PrincipalMapper.cs, NullPrincipalMapper.cs
 │       ├── AzureEntityMapper.cs # Map subscriptions/management groups/tenants
 │       ├── AzureScopeParser.cs  # Parse Azure resource scopes
-│       ├── AzureRoleDefinitionMapper.cs, AzureRoleDefinitionsRegistry.cs
+│       ├── AzureRoleDefinitionResolver.cs, AzureRoleDefinitionsRegistry.cs
 │       ├── EnrichedAzureScopeFormatter.cs
 │       ├── AzureMappingFileLoader.cs, AzureMappingFileParser.cs
 │       ├── AzureValueFormatterRegistration.cs
@@ -315,14 +324,15 @@ tfplan2md/
 ```
 
 **Key Architectural Patterns:**
-- **Provider Separation:** All Terraform provider-specific code (azapi, azuread, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProviderModule`.
+- **Provider Separation:** All Terraform provider-specific code (azapi, azuread, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProvider` plus optional capability interfaces.
 - **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
 - **C# Renderer Dispatch:** `ResourceRendererRegistry` maps resource type strings to `IResourceRenderer` implementations; the provider-supplied renderers override `DefaultResourceRenderer`.
-- **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry` (AOT-compatible).
+- **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry`, which aggregates optional capabilities into `ProviderContributionSet` (AOT-compatible).
+- **Staged Report Pipeline:** `ReportModelBuilder` orchestrates dedicated stages for resource-change extraction, attribute filtering, parent-child merging, summary enrichment, code-analysis enrichment, display filtering, and report assembly.
 - **Pure DI:** `CompositionRoot` wires all services without a DI container (ADR-006).
 - **Code Analysis Integration:** SARIF-based static analysis results integrated into markdown reports.
 - **Parent-Child Resource Merging:** Resources can be grouped hierarchically (e.g., NSG rules under NSG) via `ParentChildRelationshipRegistry`.
-- **Registry Pattern:** Generic `PatternMatchingRegistry<T>` enables specificity-based resolution for value formatters, icon providers, and model mappers.
+- **Registry Pattern:** Generic `PatternMatchingRegistry<T>` enables specificity-based resolution for value formatters and icon providers.
 
 ---
 
@@ -470,7 +480,7 @@ This ensures renderers are focused on layout.
 | `Models/` | Core model types: view model factories, parent-child relationships, child resources, code analysis report models, formatted values |
 | `Summaries/` | Resource summary generation: builders, mappings, path formatters |
 | `Helpers/` | JSON flattening, HTML summary builder, and `MarkdownHelpers/` (C# helper methods) |
-| `Services/` | Service registries: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`, `ResourceModelMapperRegistry`, `AttributeChangeFilterRegistry`, `PatternMatchingRegistry<T>` |
+| `Services/` | Service registries: `ProviderRegistry`, `ProviderContributionSet`, `ValueFormatterRegistry`, `IconProviderRegistry`, `AttributeChangeFilterRegistry`, `PatternMatchingRegistry<T>` |
 
 **Renderer Resolution Flow:**
 1. Check `ResourceRendererRegistry` for a provider-registered C# renderer matching the resource type
@@ -711,34 +721,59 @@ flowchart LR
 
 **Architecture:**
 
-Each provider is a self-contained module implementing the `IProviderModule` interface:
+Each provider is a self-contained module implementing the core `IProvider` contract and only the optional capability interfaces it needs:
 
 ```csharp
-public interface IProviderModule
+public interface IProvider
 {
     string ProviderName { get; }
-    void RegisterResourceRenderers(ResourceRendererRegistry registry) { }
+    string TemplateResourcePrefix { get; }
     void RegisterFactories(IResourceViewModelFactoryRegistry registry);
-    void RegisterValueFormatters(ValueFormatterRegistry registry) { }
-    void RegisterIconProviders(IconProviderRegistry registry) { }
-    void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry) { }
-    void RegisterResourceModelMappers(ResourceModelMapperRegistry registry) { }
-    void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry) { }
-    void RegisterPostMergeCallbacks(ReportModelBuilder builder) { }
+}
+
+public interface IValueFormatterProvider
+{
+    void RegisterValueFormatters(ValueFormatterRegistry registry);
+}
+
+public interface IIconRegistrationProvider
+{
+    void RegisterIconProviders(IconProviderRegistry registry);
+}
+
+public interface IParentChildRelationshipProvider
+{
+    void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry);
+}
+
+public interface IAttributeChangeFilterProvider
+{
+    void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry);
+}
+
+public interface IPostMergeCallbackProvider
+{
+    void RegisterPostMergeCallbacks(ReportModelBuilder builder);
+}
+
+public interface IResourceRendererProvider
+{
+    void RegisterResourceRenderers(ResourceRendererRegistry registry);
 }
 ```
 
 **Provider Registration:**
 
-Providers are explicitly registered in `ProviderRegistry` at application startup (no reflection, AOT-compatible):
+Providers are explicitly registered in `ProviderRegistry` at application startup (no reflection, AOT-compatible), then folded into a `ProviderContributionSet` that creates the concrete registries used by the pipeline:
 
 ```csharp
-ProviderRegistry.RegisterProviders(
-    new AzApiModule(),
-    new AzureADModule(),
-    new AzureRMModule(),
-    new AzureDevOpsModule()
-);
+var providerRegistry = new ProviderRegistry();
+providerRegistry.RegisterProvider(new AzApiModule());
+providerRegistry.RegisterProvider(new AzureADModule());
+providerRegistry.RegisterProvider(new AzureRMModule(...));
+providerRegistry.RegisterProvider(new AzureDevOpsModule(...));
+
+var contributions = providerRegistry.CreateContributionSet();
 ```
 
 **Current Providers:**
@@ -754,7 +789,7 @@ ProviderRegistry.RegisterProviders(
 
 ```
 Providers/AzureRM/
-├── AzureRMModule.cs              # IProviderModule implementation
+├── AzureRMModule.cs              # IProvider implementation + optional capabilities
 ├── Models/                       # View models and factories
 │   ├── FirewallNetworkRuleCollectionMapper.cs
 │   ├── FirewallApplicationRuleCollectionMapper.cs
@@ -1327,7 +1362,7 @@ Resource type strings are resolved to C# renderers via `ResourceRendererRegistry
 1. Check registry for a provider-registered `IResourceRenderer` matching the resource type
 2. Fall back to `DefaultResourceRenderer` if no match
 
-Provider-specific renderers are registered during startup via `IProviderModule.RegisterResourceRenderers(registry)`.
+Provider-specific renderers are registered during startup via `IResourceRendererProvider.RegisterResourceRenderers(registry)`.
 
 #### Built-in Output Formats
 
@@ -1608,7 +1643,7 @@ All significant architecture decisions are documented as ADRs:
 | **Pure DI** | Dependency injection without a container; services wired explicitly in code |
 | **Conventional Commits** | A commit message format for automated versioning |
 | **Versionize** | A tool that automates semantic versioning from commit messages |
-| **Provider Module** | A self-contained module implementing `IProviderModule` for a Terraform provider |
+| **Provider Module** | A self-contained Terraform provider implementation using `IProvider` plus optional capability interfaces |
 
 ---
 

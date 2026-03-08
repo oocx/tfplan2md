@@ -74,3 +74,18 @@ Production path passes the pre-built index; test paths pass `null` and self-comp
 ### Verification
 - All tests pass (run `scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --solution src/tfplan2md.slnx`)
 - No new compiler warnings introduced
+
+## Technical Writer
+
+**Date:** 2026-03-08
+**Agent:** technical-writer-coding-agent
+
+### Work Done
+- Added Feature 111 entry to `docs/features.md` as an internal-refactoring maintenance feature
+- Confirmed no README, CLI reference, or user-facing documentation changes are needed (pure internal refactoring)
+
+### Documentation Coverage
+- `docs/features.md`: Updated ✅
+- `README.md`: No changes needed (no CLI/API changes) ✅
+- `docs/architecture.md`: No changes needed (no new architectural patterns introduced at the doc level) ✅
+- `docs/testing-strategy.md`: No changes needed (no new test patterns) ✅

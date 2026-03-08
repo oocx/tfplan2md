@@ -3003,6 +3003,28 @@ steps:
 
 See [docs/features/109-azdo-has-changes-variable/](features/109-azdo-has-changes-variable/) for specification, architecture, and implementation details.
 
+## Code Simplification (Feature 111)
+
+**Status:** ✅ Implemented
+
+Internal refactoring to eliminate duplicate code, dead code, and unused parameters across the codebase. This is a maintenance feature with **no user-visible output or behaviour changes**.
+
+### Changes Made
+
+- Removed duplicate mapper logic by introducing a shared `AzdoEntityMapper` base class
+- Consolidated repeated formatter patterns into a shared `AzdoFormatterHelper` static helper
+- Introduced `ApplyViewModelContext` record to reduce parameter list duplication in view-model factory methods
+- Removed vestigial no-op factory classes (`VariableGroupFactory`, `BuildDefinitionFactory`) that were never invoked through the factory interface
+- Removed `BuildDefinitionRenderer` subclass by making `AzureDevOpsDelegatingRenderer` concrete
+- Eliminated a redundant `BuildReferenceIndex` call by threading the pre-built index through `IResourceChangeStage.Build`
+- Removed an unused `principalMapper` parameter from `CompositionRoot.CreateMarkdownRenderer`
+
+### Impact
+
+No changes to CLI options, output format, report content, or behaviour. All existing tests continue to pass without modification.
+
+See [docs/features/111-code-simplification/](features/111-code-simplification/) for specification, architecture, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

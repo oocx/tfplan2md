@@ -475,11 +475,11 @@ Replace the explicit constructor body of `ServiceResolutionContext` with a posit
 declaration. Update all construction call sites to use positional or named-argument syntax.
 
 **Acceptance Criteria:**
-- [ ] `ServiceResolutionContext` is a positional `sealed record` with four positional parameters:
+- [x] `ServiceResolutionContext` is a positional `sealed record` with four positional parameters:
       `string? ProviderName`, `string? ResourceType`, `string? AttributeName`, `string? Value`.
-- [ ] The explicit constructor body is removed.
-- [ ] All construction call sites compile with positional or named-argument syntax.
-- [ ] Full test suite passes with no regressions.
+- [x] The explicit constructor body is removed.
+- [x] All construction call sites compile with positional or named-argument syntax.
+- [x] Full test suite passes with no regressions.
 
 **Dependencies:** None
 

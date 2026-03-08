@@ -1,25 +1,25 @@
 namespace Oocx.TfPlan2Md.RenderTargets;
 
 /// <summary>
-/// String extension methods for escaping markdown special characters in diff output.
+/// String extension methods for escaping markdown special characters.
 /// </summary>
 /// <remarks>
 /// This extension provides a broader escape set than <c>MarkdownHelpers.EscapeMarkdown</c>:
 /// all characters that could trigger markdown rendering in a code-span or table cell are
-/// escaped so that raw diff values are displayed literally.
+/// escaped so that raw values are displayed literally.
 /// </remarks>
-internal static class DiffFormatterStringExtensions
+internal static class MarkdownStringExtensions
 {
     /// <summary>
     /// Escapes markdown special characters so that a raw value renders literally inside a
-    /// code span or markdown table cell used by diff formatters.
+    /// code span or markdown table cell.
     /// </summary>
     /// <param name="value">The value to escape, or <c>null</c>.</param>
     /// <returns>The escaped string, or an empty string when <paramref name="value"/> is null or empty.</returns>
     /// <remarks>
     /// The full character set (including <c>+</c> and <c>-</c>) is escaped here because
-    /// the diff formatters wrap values in HTML code spans; the +/- diff markers are emitted
-    /// by the formatter itself outside the escaped value, not by the value content.
+    /// callers wrap values in HTML code spans; the +/- markers are emitted by the caller
+    /// outside the escaped value, not by the value content.
     /// </remarks>
     internal static string EscapeMarkdown(this string? value)
     {

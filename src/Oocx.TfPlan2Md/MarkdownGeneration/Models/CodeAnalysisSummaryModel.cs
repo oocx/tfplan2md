@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// Summarizes code analysis findings by severity.
 /// Related feature: docs/features/056-static-analysis-integration/specification.md.
 /// </summary>
-public sealed class CodeAnalysisSummaryModel
+internal sealed class CodeAnalysisSummaryModel
 {
     /// <summary>
     /// Gets the number of critical findings.

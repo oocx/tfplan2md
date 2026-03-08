@@ -51,8 +51,7 @@ internal sealed class MatchPattern
         AttributeNamePattern = CompilePattern(attributeNamePattern, "attribute name");
         ValuePattern = CompilePattern(valuePattern, "value");
 
-        Specificity = CountSpecificity();
-        DimensionPriority = CalculateDimensionPriority();
+        (Specificity, DimensionPriority) = ComputeSpecificityAndPriority();
     }
 
     /// <summary>
@@ -154,62 +153,43 @@ internal sealed class MatchPattern
     }
 
     /// <summary>
-    /// Counts the number of non-null patterns to determine specificity.
+    /// Computes both the specificity score and dimension priority score in a single pass over the four pattern dimensions.
     /// </summary>
-    /// <returns>The specificity score.</returns>
-    private int CountSpecificity()
+    /// <remarks>
+    /// Combining both calculations avoids iterating the same set of nullable properties twice,
+    /// replacing the former <c>CountSpecificity</c> and <c>CalculateDimensionPriority</c> methods.
+    /// </remarks>
+    /// <returns>A tuple of (specificity, dimensionPriority).</returns>
+    private (int Specificity, int DimensionPriority) ComputeSpecificityAndPriority()
     {
-        var count = 0;
-        if (ProviderPattern is not null)
-        {
-            count++;
-        }
-
-        if (ResourceTypePattern is not null)
-        {
-            count++;
-        }
-
-        if (AttributeNamePattern is not null)
-        {
-            count++;
-        }
-
-        if (ValuePattern is not null)
-        {
-            count++;
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Calculates the dimension priority score used for tie-breaking.
-    /// </summary>
-    /// <returns>The dimension priority score.</returns>
-    private int CalculateDimensionPriority()
-    {
+        var specificity = 0;
         var priority = 0;
+
         if (ProviderPattern is not null)
         {
+            specificity++;
             priority += ProviderPriority;
         }
 
         if (ResourceTypePattern is not null)
         {
+            specificity++;
             priority += ResourceTypePriority;
         }
 
         if (AttributeNamePattern is not null)
         {
+            specificity++;
             priority += AttributeNamePriority;
         }
 
         if (ValuePattern is not null)
         {
+            specificity++;
             priority += ValuePriority;
         }
 
-        return priority;
+        return (specificity, priority);
     }
 }
+

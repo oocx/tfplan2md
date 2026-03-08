@@ -77,6 +77,7 @@ public class AzureAdSnapshotTests
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
         var model = new ReportModelBuilder(
+            principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
             iconProviderRegistry: iconProviderRegistry).Build(plan);

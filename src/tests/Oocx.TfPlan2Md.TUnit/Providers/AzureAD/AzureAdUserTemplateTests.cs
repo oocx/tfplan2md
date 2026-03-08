@@ -40,7 +40,6 @@ public class AzureAdUserTemplateTests
 
     private string Render()
     {
-        var principalMapper = new NullPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdUserPlanPath));
 
         var providerRegistry = new ProviderRegistry();

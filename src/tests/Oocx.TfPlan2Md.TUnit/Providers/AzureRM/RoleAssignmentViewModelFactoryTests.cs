@@ -182,7 +182,7 @@ public class RoleAssignmentViewModelFactoryTests
                 change,
                 action: "create",
                 attributeChanges: [],
-            principalMapper: new NullPrincipalMapper(),
+                principalMapper: mapper,
                 scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
@@ -228,7 +228,7 @@ public class RoleAssignmentViewModelFactoryTests
                 change,
                 action: "create",
                 attributeChanges: [],
-            principalMapper: new NullPrincipalMapper(),
+                principalMapper: mapper,
                 scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");

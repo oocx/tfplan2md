@@ -49,7 +49,7 @@ public class MarkdownInvariantTests
     /// <summary>
     /// Renders a plan file to markdown.
     /// </summary>
-    private string RenderPlan(string planPath, string? principalsPath = null)
+    private string RenderPlan(string planPath)
     {
         var json = File.ReadAllText(planPath);
         var plan = _parser.Parse(json);
@@ -91,7 +91,7 @@ public class MarkdownInvariantTests
     [Test]
     public void Invariant_NoConsecutiveBlankLines_ComprehensiveDemo()
     {
-        var markdown = RenderPlan(DemoPaths.DemoPlanPath, DemoPaths.DemoPrincipalsPath);
+        var markdown = RenderPlan(DemoPaths.DemoPlanPath);
         var (maxBlanks, lineNumber) = CountMaxConsecutiveBlanks(markdown);
 
         maxBlanks.Should().BeLessThanOrEqualTo(1,

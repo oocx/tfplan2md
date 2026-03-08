@@ -127,6 +127,7 @@ public class AzureAdGroupSummaryMemberCountTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         var builder = new ReportModelBuilder(
+            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
 
         return builder.Build(plan);

@@ -30,19 +30,19 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
     /// Initializes a new instance of the <see cref="AzureRMModule"/> class.
     /// </summary>
     /// <param name="largeValueFormat">Format for rendering large values (inline-diff or simple-diff).</param>
-    /// <param name="principalMapper">Mapper for resolving principal names in role assignments.</param>
+    /// <param name="principalMapper">Mapper for resolving principal names in role assignments. Defaults to a no-op mapper when null.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched Azure scope display.</param>
     /// <param name="entityMapper">Optional mapper for tenant and management group display names.</param>
     /// <param name="roleDefinitionResolver">Optional run-scoped resolver for Azure role definition names.</param>
     public AzureRMModule(
         LargeValueFormat largeValueFormat,
-        IPrincipalMapper principalMapper,
+        IPrincipalMapper? principalMapper = null,
         EnrichedAzureScopeFormatter? scopeFormatter = null,
         AzureEntityMapper? entityMapper = null,
         IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         _largeValueFormat = largeValueFormat;
-        _principalMapper = principalMapper;
+        _principalMapper = principalMapper ?? new NullPrincipalMapper();
         _scopeFormatter = scopeFormatter;
         _entityMapper = entityMapper;
         _roleDefinitionResolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();

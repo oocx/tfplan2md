@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// Represents aggregated code analysis data for report rendering.
 /// Related feature: docs/features/056-static-analysis-integration/specification.md.
 /// </summary>
-public sealed class CodeAnalysisReportModel
+internal sealed class CodeAnalysisReportModel
 {
     /// <summary>
     /// Gets the summary metrics for code analysis findings.

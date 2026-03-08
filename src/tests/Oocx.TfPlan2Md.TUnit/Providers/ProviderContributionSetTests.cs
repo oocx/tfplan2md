@@ -54,7 +54,7 @@ public class ProviderContributionSetTests
         var registry = new ProviderRegistry();
         registry.RegisterProvider(new Oocx.TfPlan2Md.Providers.AzApi.AzApiModule());
         registry.RegisterProvider(new Oocx.TfPlan2Md.Providers.AzureAD.AzureADModule());
-        registry.RegisterProvider(new Oocx.TfPlan2Md.Providers.AzureDevOps.AzureDevOpsModule(LargeValueFormat.InlineDiff));
+        registry.RegisterProvider(new Oocx.TfPlan2Md.Providers.AzureDevOps.AzureDevOpsModule());
         registry.RegisterProvider(new Oocx.TfPlan2Md.Providers.AzureRM.AzureRMModule(LargeValueFormat.InlineDiff, new NullPrincipalMapper()));
 
         var contributions = registry.CreateContributionSet();

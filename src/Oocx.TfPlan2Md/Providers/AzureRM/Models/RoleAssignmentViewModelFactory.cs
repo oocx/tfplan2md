@@ -94,7 +94,7 @@ internal static class RoleAssignmentViewModelFactory
     /// <param name="change">The resource change containing before/after state.</param>
     /// <param name="action">The Terraform action string.</param>
     /// <param name="attributeChanges">The attribute changes for this resource.</param>
-    /// <param name="principalMapper">Mapper for principal name resolution.</param>
+    /// <param name="principalMapper">Mapper for principal name resolution. Defaults to a no-op mapper when null.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
     /// <param name="roleDefinitionResolver">Optional run-scoped resolver for Azure role definition names.</param>
     /// <returns>Populated <see cref="RoleAssignmentViewModel"/>.</returns>
@@ -102,11 +102,12 @@ internal static class RoleAssignmentViewModelFactory
         ResourceChange change,
         string action,
         IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper,
+        IPrincipalMapper? principalMapper = null,
         EnrichedAzureScopeFormatter? scopeFormatter = null,
         IRoleDefinitionResolver? roleDefinitionResolver = null)
     {
         var resolver = roleDefinitionResolver ?? AzureRoleDefinitionResolver.CreateBuiltIn();
+        var effectivePrincipalMapper = principalMapper ?? new NullPrincipalMapper();
         var beforeState = change.Change.Before as JsonElement?;
         var afterState = change.Change.After as JsonElement?;
 
@@ -117,8 +118,8 @@ internal static class RoleAssignmentViewModelFactory
         var afterScope = GetScopeInfo(afterState);
         var beforeRole = GetRoleInfo(beforeState, change.Address, resolver);
         var afterRole = GetRoleInfo(afterState, change.Address, resolver);
-        var beforePrincipal = GetPrincipalInfo(beforeState, principalMapper, change.Address);
-        var afterPrincipal = GetPrincipalInfo(afterState, principalMapper, change.Address);
+        var beforePrincipal = GetPrincipalInfo(beforeState, effectivePrincipalMapper, change.Address);
+        var afterPrincipal = GetPrincipalInfo(afterState, effectivePrincipalMapper, change.Address);
 
         var activeScope = action == DeleteAction ? beforeScope : afterScope;
         var activeRole = action == DeleteAction ? beforeRole : afterRole;

@@ -3025,6 +3025,24 @@ No changes to CLI options, output format, report content, or behaviour. All exis
 
 See [docs/features/111-code-simplification/](features/111-code-simplification/) for specification, architecture, and implementation details.
 
+## Low-Risk Code Quality Improvements (Feature 112)
+
+**Status:** ✅ Implemented
+
+Internal refactoring to consolidate duplicated markdown-escaping logic used by the GitHub and Azure DevOps diff formatters. This is a maintenance feature with **no user-visible output or behaviour changes**.
+
+### Changes Made
+
+- Extracted shared diff formatter markdown escaping into one internal `DiffFormatterMarkdownEscaper` helper
+- Updated the GitHub and Azure DevOps diff formatters to use the shared helper while preserving render-target-specific output
+- Strengthened unchanged-value formatter regression tests to cover the shared escape set
+
+### Impact
+
+No changes to CLI options, output format, report content, or behaviour. The refactoring only reduces duplication in the render-target layer and keeps existing formatter output intact.
+
+See [docs/features/112-low-risk-code-quality-improvements/](features/112-low-risk-code-quality-improvements/) for specification, architecture, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

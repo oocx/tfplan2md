@@ -405,12 +405,12 @@ properties are replaced by a single private helper that computes both the specif
 the dimension priority in one pass.
 
 **Acceptance Criteria:**
-- [ ] A single private helper method in `MatchPattern` iterates `ProviderPattern`,
+- [x] A single private helper method in `MatchPattern` iterates `ProviderPattern`,
       `ResourceTypePattern`, `AttributeNamePattern`, and `ValuePattern` exactly once.
-- [ ] `CountSpecificity()` and `CalculateDimensionPriority()` (or their replacements) obtain
+- [x] `CountSpecificity()` and `CalculateDimensionPriority()` (or their replacements) obtain
       their results from this single-pass helper.
-- [ ] The four nullable properties are no longer iterated twice independently.
-- [ ] The computed values of `CountSpecificity` and `CalculateDimensionPriority` are identical
+- [x] The four nullable properties are no longer iterated twice independently.
+- [x] The computed values of `CountSpecificity` and `CalculateDimensionPriority` are identical
       to before for all inputs.
 - [ ] Full test suite passes with no regressions.
 
@@ -429,9 +429,9 @@ early-exit paths with a single shared empty-dictionary variable (or a single sha
 empty instance).
 
 **Acceptance Criteria:**
-- [ ] `BuildConfigurationReferencesForResource` constructs at most one empty
+- [x] `BuildConfigurationReferencesForResource` constructs at most one empty
       `Dictionary<string, IReadOnlyList<string>>` instance.
-- [ ] There is no second `return new Dictionary<...>(...)` path in the method.
+- [x] There is no second `return new Dictionary<...>(...)` path in the method.
 - [ ] Runtime behaviour (return value) is identical to before.
 - [ ] Full test suite passes with no regressions.
 
@@ -449,13 +449,13 @@ Add an optional `preBuiltReferenceIndex` parameter to `IResourceChangeStage.Buil
 index. Existing test call sites pass `null` and self-compute as before.
 
 **Acceptance Criteria:**
-- [ ] `IResourceChangeStage.Build` signature is:
+- [x] `IResourceChangeStage.Build` signature is:
       `IReadOnlyList<ResourceChangeModel> Build(TerraformPlan plan, IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>>? preBuiltReferenceIndex = null)`.
-- [ ] `ResourceChangeStage.Build` uses `preBuiltReferenceIndex ?? ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration)`.
-- [ ] `ReportModelBuilder.Build.cs` passes `_configurationReferenceIndex` to the `Build` call.
-- [ ] `ConfigurationReferenceResolver.BuildReferenceIndex` is called exactly once per
+- [x] `ResourceChangeStage.Build` uses `preBuiltReferenceIndex ?? ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration)`.
+- [x] `ReportModelBuilder.Build.cs` passes `_configurationReferenceIndex` to the `Build` call.
+- [x] `ConfigurationReferenceResolver.BuildReferenceIndex` is called exactly once per
       `ReportModelBuilder.Build` invocation in production.
-- [ ] Existing test call sites that pass only `plan` continue to compile and pass without
+- [x] Existing test call sites that pass only `plan` continue to compile and pass without
       modification (default `null` ensures backward compatibility).
 - [ ] Full test suite passes with no regressions.
 
@@ -494,8 +494,8 @@ Convert `SummaryModel` from a plain `class` with `required init` properties to a
 (positional or with `required init` properties). Update construction call sites as needed.
 
 **Acceptance Criteria:**
-- [ ] `SummaryModel` is declared as a `sealed record`.
-- [ ] All construction call sites compile without modification (or with minimal, mechanical updates).
+- [x] `SummaryModel` is declared as a `sealed record`.
+- [x] All construction call sites compile without modification (or with minimal, mechanical updates).
 - [ ] Full test suite passes with no regressions.
 
 **Dependencies:** None
@@ -517,8 +517,8 @@ from `public` to `internal`. Verify that no tests or other assemblies reference 
 via a `public` access path.
 
 **Acceptance Criteria:**
-- [ ] `ActionSummary`, `SummaryModel`, and `ResourceTypeBreakdown` are all declared `internal`.
-- [ ] No external assembly (test projects or otherwise) fails to compile due to visibility.
+- [x] `ActionSummary`, `SummaryModel`, and `ResourceTypeBreakdown` are all declared `internal`.
+- [x] No external assembly (test projects or otherwise) fails to compile due to visibility.
 - [ ] Full test suite passes with no regressions.
 
 **Dependencies:** Task 21 (for `SummaryModel` — must be a record before or at the same time as

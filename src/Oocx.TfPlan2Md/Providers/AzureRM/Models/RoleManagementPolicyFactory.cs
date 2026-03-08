@@ -22,16 +22,6 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
     private const string ResourceType = "azurerm_role_management_policy";
 
     /// <summary>
-    /// Attribute name for role definition IDs.
-    /// </summary>
-    private const string RoleDefinitionIdAttribute = "role_definition_id";
-
-    /// <summary>
-    /// Attribute name for role definition names.
-    /// </summary>
-    private const string RoleDefinitionNameAttribute = "role_definition_name";
-
-    /// <summary>
     /// Attribute name for scope values.
     /// </summary>
     private const string ScopeAttribute = "scope";
@@ -69,20 +59,20 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
             return;
         }
 
-        var state = ResolveActiveState(context.ResourceChange, context.Action);
+        var state = ResourceChangeHelpers.ResolveActiveState(context.ResourceChange, context.Action);
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
         var roleInfo = _roleDefinitionResolver.GetRoleDefinition(
-            GetValue(flatState, RoleDefinitionIdAttribute),
-            GetValue(flatState, RoleDefinitionNameAttribute),
+            JsonFlattener.GetValue(flatState, AzureRoleAssignmentAttributes.RoleDefinitionId),
+            JsonFlattener.GetValue(flatState, AzureRoleAssignmentAttributes.RoleDefinitionName),
             context.ResourceChange.Address);
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;
-        var roleSummary = FormatAttributeValueTable(RoleDefinitionNameAttribute, roleName, null);
-        var roleSummaryHtml = FormatAttributeValueSummary(RoleDefinitionNameAttribute, roleName, null);
+        var roleSummary = FormatAttributeValueTable(AzureRoleAssignmentAttributes.RoleDefinitionName, roleName, null);
+        var roleSummaryHtml = FormatAttributeValueSummary(AzureRoleAssignmentAttributes.RoleDefinitionName, roleName, null);
 
-        var scopeValue = GetValue(flatState, ScopeAttribute);
+        var scopeValue = JsonFlattener.GetValue(flatState, ScopeAttribute);
         var scopeText = FormatScopeMarkdown(scopeValue, context.ResourceChange.Address);
 
         if (string.IsNullOrWhiteSpace(roleName) || string.IsNullOrWhiteSpace(scopeText))
@@ -92,18 +82,6 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
 
         context.Model.Summary = $"{roleSummary} in {scopeText}";
         context.Model.SummaryHtml = BuildSummaryHtml(context.Model, roleSummaryHtml, scopeText);
-    }
-
-    /// <summary>
-    /// Resolves the state object to use for summary generation based on the action.
-    /// </summary>
-    /// <param name="resourceChange">The resource change data.</param>
-    /// <param name="action">The normalized Terraform action.</param>
-    /// <returns>The resolved state object.</returns>
-    private static object? ResolveActiveState(ResourceChange resourceChange, string action)
-    {
-        var state = action == "delete" ? resourceChange.Change.Before : resourceChange.Change.After;
-        return state ?? resourceChange.Change.After ?? resourceChange.Change.Before;
     }
 
     /// <summary>
@@ -170,16 +148,5 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
         }
 
         return builder.ToString();
-    }
-
-    /// <summary>
-    /// Gets a flattened state value by key.
-    /// </summary>
-    /// <param name="state">The flattened state dictionary.</param>
-    /// <param name="key">The key to look up.</param>
-    /// <returns>The value when present; otherwise null.</returns>
-    private static string? GetValue(Dictionary<string, string?> state, string key)
-    {
-        return state.TryGetValue(key, out var value) ? value : null;
     }
 }

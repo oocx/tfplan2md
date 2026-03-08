@@ -9,6 +9,23 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 internal static partial class MarkdownHelpers
 {
     /// <summary>
+    /// Returns the emoji icon associated with the given principal type, or an empty string for unknown types.
+    /// Centralises the <c>"User" → 👤</c>, <c>"Group" → 👥</c>, and <c>"ServicePrincipal" → 💻</c>
+    /// mapping that is otherwise duplicated across provider factory files.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
+    /// </summary>
+    /// <param name="principalType">The principal type string (e.g. "User", "Group", "ServicePrincipal").</param>
+    /// <returns>The matching emoji, or an empty string when the type is unknown or null.</returns>
+    public static string GetPrincipalIcon(string? principalType) =>
+        principalType switch
+        {
+            "User" => "👤",
+            "Group" => "👥",
+            "ServicePrincipal" => "💻",
+            _ => string.Empty
+        };
+
+    /// <summary>
     /// Determines whether an attribute represents a principal type and formats it with the appropriate icon.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>

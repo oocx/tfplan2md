@@ -21,26 +21,6 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     private const string ResourceType = "azurerm_pim_eligible_role_assignment";
 
     /// <summary>
-    /// Attribute name for role definition IDs.
-    /// </summary>
-    private const string RoleDefinitionIdAttribute = "role_definition_id";
-
-    /// <summary>
-    /// Attribute name for role definition names.
-    /// </summary>
-    private const string RoleDefinitionNameAttribute = "role_definition_name";
-
-    /// <summary>
-    /// Attribute name for principal IDs.
-    /// </summary>
-    private const string PrincipalIdAttribute = "principal_id";
-
-    /// <summary>
-    /// Attribute name for principal types.
-    /// </summary>
-    private const string PrincipalTypeAttribute = "principal_type";
-
-    /// <summary>
     /// Mapper used for resolving principal display names.
     /// </summary>
     private readonly IPrincipalMapper _principalMapper;
@@ -74,19 +54,19 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
             return;
         }
 
-        var state = ResolveActiveState(context.ResourceChange, context.Action);
+        var state = ResourceChangeHelpers.ResolveActiveState(context.ResourceChange, context.Action);
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
         var roleInfo = _roleDefinitionResolver.GetRoleDefinition(
-            GetValue(flatState, RoleDefinitionIdAttribute),
-            GetValue(flatState, RoleDefinitionNameAttribute),
+            JsonFlattener.GetValue(flatState, AzureRoleAssignmentAttributes.RoleDefinitionId),
+            JsonFlattener.GetValue(flatState, AzureRoleAssignmentAttributes.RoleDefinitionName),
             context.ResourceChange.Address);
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;
 
-        var principalId = GetValue(flatState, PrincipalIdAttribute);
-        var principalType = GetValue(flatState, PrincipalTypeAttribute);
+        var principalId = JsonFlattener.GetValue(flatState, AzureRoleAssignmentAttributes.PrincipalId);
+        var principalType = JsonFlattener.GetValue(flatState, AzureRoleAssignmentAttributes.PrincipalType);
         if (string.IsNullOrWhiteSpace(principalType)
             && !string.IsNullOrWhiteSpace(principalId)
             && _principalMapper.TryGetPrincipalType(principalId, out var inferredType)
@@ -105,8 +85,8 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
         }
 
         var roleAttributeName = !string.IsNullOrWhiteSpace(roleInfo.Name)
-            ? RoleDefinitionNameAttribute
-            : RoleDefinitionIdAttribute;
+            ? AzureRoleAssignmentAttributes.RoleDefinitionName
+            : AzureRoleAssignmentAttributes.RoleDefinitionId;
         var roleSummary = FormatAttributeValueTable(roleAttributeName, roleName, null);
         var roleSummaryHtml = FormatAttributeValueSummary(roleAttributeName, roleName, null);
         var principalSummary = FormatPrincipalSummary(principalType, principalName, isSummaryHtml: false);
@@ -114,18 +94,6 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
 
         context.Model.Summary = $"Assign {roleSummary} to {principalSummary}";
         context.Model.SummaryHtml = BuildSummaryHtml(context.Model, roleSummaryHtml, principalSummaryHtml);
-    }
-
-    /// <summary>
-    /// Resolves the state object to use for summary generation based on the action.
-    /// </summary>
-    /// <param name="resourceChange">The resource change data.</param>
-    /// <param name="action">The normalized Terraform action.</param>
-    /// <returns>The resolved state object.</returns>
-    private static object? ResolveActiveState(ResourceChange resourceChange, string action)
-    {
-        var state = action == "delete" ? resourceChange.Change.Before : resourceChange.Change.After;
-        return state ?? resourceChange.Change.After ?? resourceChange.Change.Before;
     }
 
     /// <summary>
@@ -150,13 +118,7 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     /// <returns>Formatted principal summary value.</returns>
     private static string FormatPrincipalSummary(string? principalType, string principalName, bool isSummaryHtml)
     {
-        var icon = principalType switch
-        {
-            "User" => "👤",
-            "Group" => "👥",
-            "ServicePrincipal" => "💻",
-            _ => string.Empty
-        };
+        var icon = MarkdownHelpers.GetPrincipalIcon(principalType);
 
         if (string.IsNullOrWhiteSpace(icon))
         {
@@ -165,17 +127,6 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
 
         var iconValue = $"{icon} {principalName}";
         return isSummaryHtml ? FormatIconValueSummary(iconValue) : FormatIconValueTable(iconValue);
-    }
-
-    /// <summary>
-    /// Gets a flattened state value by key.
-    /// </summary>
-    /// <param name="state">The flattened state dictionary.</param>
-    /// <param name="key">The key to look up.</param>
-    /// <returns>The value when present; otherwise null.</returns>
-    private static string? GetValue(Dictionary<string, string?> state, string key)
-    {
-        return state.TryGetValue(key, out var value) ? value : null;
     }
 
 }

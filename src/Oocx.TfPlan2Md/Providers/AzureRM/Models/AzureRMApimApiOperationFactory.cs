@@ -32,19 +32,7 @@ internal sealed class AzureRMApimApiOperationFactory : IResourceViewModelFactory
             return;
         }
 
-        var state = ResolveActiveState(context.ResourceChange, context.Action);
+        var state = ResourceChangeHelpers.ResolveActiveState(context.ResourceChange, context.Action);
         context.Model.SummaryHtml = AzureRMApimSummaryBuilder.BuildApiOperationSummaryHtml(context.Model, state);
-    }
-
-    /// <summary>
-    /// Resolves the state object to use for summary generation based on the action.
-    /// </summary>
-    /// <param name="resourceChange">The resource change.</param>
-    /// <param name="action">The normalized action string.</param>
-    /// <returns>The state object to summarize.</returns>
-    private static object? ResolveActiveState(ResourceChange resourceChange, string action)
-    {
-        var state = action == "delete" ? resourceChange.Change.Before : resourceChange.Change.After;
-        return state ?? resourceChange.Change.After ?? resourceChange.Change.Before;
     }
 }

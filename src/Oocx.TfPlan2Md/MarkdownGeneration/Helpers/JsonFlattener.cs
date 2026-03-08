@@ -68,4 +68,13 @@ internal static class JsonFlattener
                 break;
         }
     }
+
+    /// <summary>
+    /// Gets a value from a flattened state dictionary, returning <c>null</c> when the key is absent.
+    /// </summary>
+    /// <param name="state">The flattened state dictionary produced by <see cref="ConvertToFlatDictionary"/>.</param>
+    /// <param name="key">The attribute key to look up.</param>
+    /// <returns>The stored value when the key is present; otherwise <c>null</c>.</returns>
+    public static string? GetValue(Dictionary<string, string?> state, string key)
+        => state.TryGetValue(key, out var value) ? value : null;
 }

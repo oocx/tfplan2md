@@ -85,7 +85,7 @@ internal static partial class AzureAdSummaryBuilder
         IPrincipalMapper principalMapper,
         IconProviderRegistry? iconProviderRegistry)
     {
-        var state = ResolveActiveState(resourceChange, action);
+        var state = ResourceChangeHelpers.ResolveActiveState(resourceChange, action);
         if (string.Equals(model.Type, UserResourceType, StringComparison.OrdinalIgnoreCase))
         {
             return BuildUserSummaryHtml(model, state, iconProviderRegistry);
@@ -118,19 +118,6 @@ internal static partial class AzureAdSummaryBuilder
 
         return ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
     }
-
-    /// <summary>
-    /// Resolves the JSON state object to use for summary generation based on the action.
-    /// </summary>
-    /// <param name="resourceChange">The resource change data.</param>
-    /// <param name="action">The normalized Terraform action.</param>
-    /// <returns>The resolved state object.</returns>
-    private static object? ResolveActiveState(ResourceChange resourceChange, string action)
-    {
-        var state = action == "delete" ? resourceChange.Change.Before : resourceChange.Change.After;
-        return state ?? resourceChange.Change.After ?? resourceChange.Change.Before;
-    }
-
 
     /// <summary>
     /// Builds the summary HTML prefix and appends the detail text.

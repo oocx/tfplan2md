@@ -65,7 +65,7 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
             return;
         }
 
-        var state = ResolveActiveState(context.ResourceChange, context.Action);
+        var state = ResourceChangeHelpers.ResolveActiveState(context.ResourceChange, context.Action);
         if (!TryBuildSummaryData(state, out var recordName, out var fqdn, out var recordValues))
         {
             return;
@@ -78,18 +78,6 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
 
         context.Model.Summary = $"{recordNameToken} — {fqdnToken}{recordSuffix}";
         context.Model.SummaryHtml = BuildSummaryHtml(context.Model, recordName, fqdn, recordValues);
-    }
-
-    /// <summary>
-    /// Resolves the state object to use for summary generation based on the action.
-    /// </summary>
-    /// <param name="resourceChange">The resource change data.</param>
-    /// <param name="action">The normalized Terraform action.</param>
-    /// <returns>The resolved state object.</returns>
-    private static object? ResolveActiveState(ResourceChange resourceChange, string action)
-    {
-        var state = action == "delete" ? resourceChange.Change.Before : resourceChange.Change.After;
-        return state ?? resourceChange.Change.After ?? resourceChange.Change.Before;
     }
 
     /// <summary>

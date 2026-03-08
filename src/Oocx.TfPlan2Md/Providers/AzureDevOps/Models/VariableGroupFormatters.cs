@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
+using static Oocx.TfPlan2Md.Providers.AzureDevOps.Models.AzureDevOpsFormatterHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
@@ -15,30 +16,6 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 /// </remarks>
 internal static class VariableGroupFormatters
 {
-    /// <summary>
-    /// Change label used for added variables.
-    /// </summary>
-    private const string AddedChange = "add";
-
-
-    /// <summary>
-    /// Change label used for removed variables.
-    /// </summary>
-    private const string RemovedChange = "remove";
-
-
-    /// <summary>
-    /// Change label used for unchanged variables.
-    /// </summary>
-    private const string UnchangedChange = "unchanged";
-
-
-    /// <summary>
-    /// Change label used for modified variables.
-    /// </summary>
-    private const string ModifiedChange = "update";
-
-
     /// <summary>
     /// Formats variable values for create/delete tables.
     /// </summary>
@@ -210,36 +187,6 @@ internal static class VariableGroupFormatters
         }
 
         return FormatDiff(beforeStr, afterStr, format);
-    }
-
-    /// <summary>
-    /// Converts a nullable boolean to its string representation for display.
-    /// </summary>
-    /// <param name="value">Boolean value to convert.</param>
-    /// <returns>"true", "false", or "-" for null.</returns>
-    private static string ConvertBoolToString(bool? value)
-    {
-        if (value == null)
-        {
-            return "-";
-        }
-
-        return value.Value ? "true" : "false";
-    }
-
-    /// <summary>
-    /// Formats an optional string value (content_type, expires).
-    /// </summary>
-    /// <param name="value">The value.</param>
-    /// <returns>Formatted string or dash.</returns>
-    private static string FormatOptionalString(string? value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return "-";
-        }
-
-        return $"`{EscapeMarkdown(value)}`";
     }
 
     /// <summary>

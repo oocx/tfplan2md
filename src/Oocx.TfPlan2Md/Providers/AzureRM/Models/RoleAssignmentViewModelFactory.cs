@@ -43,22 +43,22 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Attribute name for role definition IDs.
     /// </summary>
-    private const string RoleDefinitionIdAttribute = "role_definition_id";
+    private const string RoleDefinitionIdAttribute = AzureRoleAssignmentAttributes.RoleDefinitionId;
 
     /// <summary>
     /// Attribute name for role definition names.
     /// </summary>
-    private const string RoleDefinitionNameAttribute = "role_definition_name";
+    private const string RoleDefinitionNameAttribute = AzureRoleAssignmentAttributes.RoleDefinitionName;
 
     /// <summary>
     /// Attribute name for principal IDs.
     /// </summary>
-    private const string PrincipalIdAttribute = "principal_id";
+    private const string PrincipalIdAttribute = AzureRoleAssignmentAttributes.PrincipalId;
 
     /// <summary>
     /// Attribute name for principal types.
     /// </summary>
-    private const string PrincipalTypeAttribute = "principal_type";
+    private const string PrincipalTypeAttribute = AzureRoleAssignmentAttributes.PrincipalType;
 
     /// <summary>
     /// Principal type label for users.
@@ -251,13 +251,8 @@ internal static class RoleAssignmentViewModelFactory
     {
         var scopeSummary = BuildScopeSummary(scope, scopeFormatter, resourceAddress);
         var roleSummary = $"<code>🛡️{NonBreakingSpace}{EscapeMarkdown(role.Name)}</code>";
-        var principalIcon = principal.Type switch
-        {
-            UserPrincipalType => $"👤{NonBreakingSpace}",
-            GroupPrincipalType => $"👥{NonBreakingSpace}",
-            ServicePrincipalType => $"💻{NonBreakingSpace}",
-            _ => string.Empty
-        };
+        var rawPrincipalIcon = GetPrincipalIcon(principal.Type);
+        var principalIcon = string.IsNullOrEmpty(rawPrincipalIcon) ? string.Empty : $"{rawPrincipalIcon}{NonBreakingSpace}";
         var principalSummary = $"<code>{principalIcon}{EscapeMarkdown(principal.Name)}</code>";
 
         return action switch
@@ -399,13 +394,7 @@ internal static class RoleAssignmentViewModelFactory
     /// <returns>Formatted principal string.</returns>
     private static string? FormatPrincipalIdValue(PrincipalInfo principal)
     {
-        var principalIcon = principal.Type switch
-        {
-            UserPrincipalType => "👤",
-            GroupPrincipalType => "👥",
-            ServicePrincipalType => "💻",
-            _ => string.Empty
-        };
+        var principalIcon = GetPrincipalIcon(principal.Type);
         var typeLabel = principal.Type switch
         {
             UserPrincipalType => UserPrincipalType,

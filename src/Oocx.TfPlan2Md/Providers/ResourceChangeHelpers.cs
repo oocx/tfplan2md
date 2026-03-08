@@ -17,7 +17,7 @@ internal static class ResourceChangeHelpers
     /// <returns>The active state object to use for summary generation.</returns>
     internal static object? ResolveActiveState(ResourceChange resourceChange, string action)
     {
-        var state = action == "delete" ? resourceChange.Change.Before : resourceChange.Change.After;
+        var state = string.Equals(action, "delete", StringComparison.Ordinal) ? resourceChange.Change.Before : resourceChange.Change.After;
         return state ?? resourceChange.Change.After ?? resourceChange.Change.Before;
     }
 }

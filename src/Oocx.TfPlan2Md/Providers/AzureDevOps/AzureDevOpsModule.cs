@@ -230,4 +230,3 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
         registry.Register(new AzureDevOpsDelegatingRenderer("azuredevops_build_definition"));
     }
 }
-#pragma warning restore CA1506

@@ -230,5 +230,3 @@ internal static class ProgramEntry
         return true;
     }
 }
-
-#pragma warning restore CA1506

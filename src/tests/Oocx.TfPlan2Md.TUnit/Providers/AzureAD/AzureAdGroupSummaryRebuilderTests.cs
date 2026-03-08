@@ -33,9 +33,6 @@ public class AzureAdGroupSummaryRebuilderTests
 
         // Create a plan that will trigger parent-child merging
         var plan = BuildPlanWithAzureAdGroupAndMembers();
-        var principals = new Dictionary<string, string> { ["user-1"] = "Alice" };
-        var principalTypes = new Dictionary<string, string> { ["user-1"] = "User" };
-        var principalMapper = new PrincipalMapper(principals, principalTypes);
 
         var builder = new ReportModelBuilder(
             providerRegistry: providerRegistry);
@@ -339,10 +336,7 @@ public class AzureAdGroupSummaryRebuilderTests
             });
 
         // Principal mapper that doesn't know about "unknown-1"
-        var principals = new Dictionary<string, string>();
-        var principalTypes = new Dictionary<string, string>();
-        var principalMapper = new PrincipalMapper(principals, principalTypes);
-        var model = BuildModelWithCallback(plan, principalMapper);
+        var model = BuildModelWithCallback(plan);
 
         // Act
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
@@ -578,6 +572,7 @@ public class AzureAdGroupSummaryRebuilderTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         var builder = new ReportModelBuilder(
+            principalMapper: principalMapper,
             providerRegistry: providerRegistry);
 
         return builder.Build(plan);

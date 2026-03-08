@@ -3,7 +3,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Summary of changes in the Terraform plan.
 /// </summary>
-public class SummaryModel
+internal sealed record SummaryModel
 {
     /// <summary>
     /// Gets the summary of resources to be added.

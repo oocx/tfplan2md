@@ -38,7 +38,6 @@ public class AzureAdGroupWithoutMembersTemplateTests
 
     private string Render()
     {
-        var principalMapper = new NullPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdGroupWithoutMembersPlanPath));
 
         var providerRegistry = new ProviderRegistry();

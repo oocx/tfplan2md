@@ -28,7 +28,6 @@ public class AzureAdInvitationTemplateTests
 
     private string Render()
     {
-        var principalMapper = new NullPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdInvitationPlanPath));
 
         var providerRegistry = new ProviderRegistry();

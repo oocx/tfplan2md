@@ -126,9 +126,12 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<ResourceChangeModel> Build(TerraformPlan plan)
+    public IReadOnlyList<ResourceChangeModel> Build(
+        TerraformPlan plan,
+        IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>>? preBuiltReferenceIndex = null)
     {
-        var configurationReferenceIndex = ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration);
+        var configurationReferenceIndex = preBuiltReferenceIndex
+            ?? ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration);
         var configurationReferencesByAddress = configurationReferenceIndex
             .GroupBy(e => e.Key.Address, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(

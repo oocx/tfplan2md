@@ -172,9 +172,12 @@ public class ReportModelBuilderStageDelegationTests
     {
         public int Invocations { get; private set; }
 
-        public IReadOnlyList<ResourceChangeModel> Build(TerraformPlan plan)
+        public IReadOnlyList<ResourceChangeModel> Build(
+            TerraformPlan plan,
+            IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>>? preBuiltReferenceIndex = null)
         {
             _ = plan;
+            _ = preBuiltReferenceIndex;
             Invocations++;
             return resourceChanges;
         }

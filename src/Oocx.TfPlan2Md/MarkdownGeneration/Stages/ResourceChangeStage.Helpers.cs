@@ -14,6 +14,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 internal sealed partial class ResourceChangeStage
 {
     /// <summary>
+    /// A shared empty configuration reference dictionary returned when no references are found.
+    /// Avoids allocating a new instance for every no-op lookup.
+    /// </summary>
+    private static readonly Dictionary<string, IReadOnlyList<string>> EmptyConfigurationReferences =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
     /// Resolves the display label for a computed known-after-apply attribute.
     /// </summary>
     /// <param name="configurationReferences">Configuration references grouped by top-level attribute.</param>
@@ -235,7 +242,7 @@ internal sealed partial class ResourceChangeStage
     {
         if (string.IsNullOrWhiteSpace(normalizedAddress) || configurationReferencesByAddress.Count == 0)
         {
-            return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+            return EmptyConfigurationReferences;
         }
 
         if (configurationReferencesByAddress.TryGetValue(normalizedAddress, out var references))
@@ -243,7 +250,7 @@ internal sealed partial class ResourceChangeStage
             return references;
         }
 
-        return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+        return EmptyConfigurationReferences;
     }
 
     /// <summary>

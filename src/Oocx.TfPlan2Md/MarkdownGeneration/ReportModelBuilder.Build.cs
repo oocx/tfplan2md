@@ -31,7 +31,7 @@ internal partial class ReportModelBuilder
         }
 
         var allChanges = (_resourceChangeStage ?? CreateResourceChangeStage())
-            .Build(plan)
+            .Build(plan, _configurationReferenceIndex)
             .ToList();
 
         allChanges = (_attributeFilteringStage ?? CreateAttributeFilteringStage())

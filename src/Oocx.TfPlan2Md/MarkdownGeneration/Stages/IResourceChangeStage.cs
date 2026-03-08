@@ -13,6 +13,13 @@ internal interface IResourceChangeStage
     /// Creates one <see cref="ResourceChangeModel"/> per plan resource change.
     /// </summary>
     /// <param name="plan">The parsed Terraform plan.</param>
+    /// <param name="preBuiltReferenceIndex">
+    /// An optional pre-built configuration reference index. When provided, this index is reused
+    /// instead of rebuilding it from <paramref name="plan"/>, avoiding a duplicate pass over the
+    /// plan configuration. Pass <c>null</c> to let the stage build the index itself.
+    /// </param>
     /// <returns>The initial resource change models for downstream pipeline stages.</returns>
-    IReadOnlyList<ResourceChangeModel> Build(TerraformPlan plan);
+    IReadOnlyList<ResourceChangeModel> Build(
+        TerraformPlan plan,
+        IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>>? preBuiltReferenceIndex = null);
 }

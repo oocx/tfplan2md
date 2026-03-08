@@ -255,6 +255,7 @@ public class AzureAdGroupMemberComputedTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         return new ReportModelBuilder(
+            principalMapper: principalMapper,
             providerRegistry: providerRegistry).Build(plan);
     }
 }

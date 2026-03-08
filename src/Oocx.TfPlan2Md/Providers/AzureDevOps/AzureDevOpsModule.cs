@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
@@ -12,7 +13,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 /// Provider module for Azure DevOps (azuredevops) resources.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </summary>
-#pragma warning disable CA1506 // Suppress class coupling - module integrates multiple mapper types
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider registration module aggregates provider-specific factories, formatters, and renderers.")]
 internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IParentChildRelationshipProvider, IResourceRendererProvider
 {
     /// <summary>

@@ -1,7 +1,4 @@
-// Baseline suppression for code-quality metrics rollout.
-// Related feature: docs/features/046-code-quality-metrics-enforcement/.
-#pragma warning disable CA1506
-
+using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.Diagnostics;
@@ -14,6 +11,7 @@ namespace Oocx.TfPlan2Md;
 /// <summary>
 /// Executes the tfplan2md CLI workflow using explicit entry point helpers.
 /// </summary>
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Entry point orchestrates CLI, parsing, markdown generation, and rendering — coupling is intentional.")]
 internal static class ProgramEntry
 {
     /// <summary>

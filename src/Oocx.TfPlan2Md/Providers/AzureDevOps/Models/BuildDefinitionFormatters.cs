@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
@@ -14,9 +15,8 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 /// Follows the pattern from VariableGroupFormatters to improve maintainability.
 /// Related feature: docs/features/094-build-definition-tables/specification.md.
 /// </remarks>
-#pragma warning disable CA1506 // Suppress class coupling - formatters need many view model types
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Formatters need many view model types to produce the correct rendering.")]
 internal static class BuildDefinitionFormatters
-#pragma warning restore CA1506
 {
     /// <summary>
     /// Formats variable values for create/delete tables.

@@ -365,22 +365,22 @@ internal static class RoleAssignmentViewModelFactory
     /// <returns>Formatted role definition string.</returns>
     private static string? FormatRoleDefinitionIdValue(RoleInfo role)
     {
-        var roleName = !string.IsNullOrEmpty(role.Name)
+        var roleName = !string.IsNullOrWhiteSpace(role.Name)
             ? FormatAttributeValueTable(RoleDefinitionNameAttribute, role.Name, null)
             : string.Empty;
-        var roleId = !string.IsNullOrEmpty(role.Id)
+        var roleId = !string.IsNullOrWhiteSpace(role.Id)
             ? FormatCodeTable(role.Id)
             : string.Empty;
 
-        if (string.IsNullOrEmpty(roleName) && string.IsNullOrEmpty(roleId))
+        if (string.IsNullOrWhiteSpace(roleName) && string.IsNullOrWhiteSpace(roleId))
         {
             return null;
         }
-        if (string.IsNullOrEmpty(roleId))
+        if (string.IsNullOrWhiteSpace(roleId))
         {
             return roleName;
         }
-        if (string.IsNullOrEmpty(roleName))
+        if (string.IsNullOrWhiteSpace(roleName))
         {
             return roleId;
         }
@@ -405,20 +405,20 @@ internal static class RoleAssignmentViewModelFactory
         };
 
         var namePart = principal.Name;
-        var hasTypeAlready = !string.IsNullOrEmpty(namePart)
-            && !string.IsNullOrEmpty(typeLabel)
+        var hasTypeAlready = !string.IsNullOrWhiteSpace(namePart)
+            && !string.IsNullOrWhiteSpace(typeLabel)
             && namePart.TrimEnd().EndsWith($"({typeLabel})", StringComparison.Ordinal);
 
-        var decoratedName = !string.IsNullOrEmpty(namePart) && !string.IsNullOrEmpty(typeLabel) && !hasTypeAlready
+        var decoratedName = !string.IsNullOrWhiteSpace(namePart) && !string.IsNullOrWhiteSpace(typeLabel) && !hasTypeAlready
             ? $"{namePart} ({typeLabel})"
             : namePart;
 
-        var needsIconPrefix = !string.IsNullOrEmpty(principalIcon)
-            && !string.IsNullOrEmpty(decoratedName)
+        var needsIconPrefix = !string.IsNullOrWhiteSpace(principalIcon)
+            && !string.IsNullOrWhiteSpace(decoratedName)
             && !decoratedName.StartsWith(principalIcon, StringComparison.Ordinal);
 
         string nameAndType;
-        if (string.IsNullOrEmpty(decoratedName))
+        if (string.IsNullOrWhiteSpace(decoratedName))
         {
             nameAndType = string.Empty;
         }
@@ -431,21 +431,21 @@ internal static class RoleAssignmentViewModelFactory
             nameAndType = decoratedName;
         }
 
-        var nameValue = !string.IsNullOrEmpty(nameAndType)
+        var nameValue = !string.IsNullOrWhiteSpace(nameAndType)
             ? FormatCodeTable(nameAndType)
             : string.Empty;
 
-        var idValue = !string.IsNullOrEmpty(principal.Id)
+        var idValue = !string.IsNullOrWhiteSpace(principal.Id)
             ? $"[{FormatCodeTable(principal.Id)}]"
             : string.Empty;
 
         var text = nameValue;
-        if (!string.IsNullOrEmpty(idValue))
+        if (!string.IsNullOrWhiteSpace(idValue))
         {
-            text = string.IsNullOrEmpty(text) ? idValue : $"{text} {idValue}";
+            text = string.IsNullOrWhiteSpace(text) ? idValue : $"{text} {idValue}";
         }
 
-        return !string.IsNullOrEmpty(text) ? text : null;
+        return !string.IsNullOrWhiteSpace(text) ? text : null;
     }
 
     /// <summary>
@@ -499,7 +499,7 @@ internal static class RoleAssignmentViewModelFactory
             _ => prop.ToString()
         };
 
-        return string.IsNullOrEmpty(value) ? null : FormatAttributeValueTable(attrName, value, null);
+        return string.IsNullOrWhiteSpace(value) ? null : FormatAttributeValueTable(attrName, value, null);
     }
 
     /// <summary>
@@ -533,15 +533,15 @@ internal static class RoleAssignmentViewModelFactory
     /// </summary>
     private static AttributeChangeModel[] BuildDefaultAttributes()
     {
-        return new[]
-        {
+        return
+        [
             new AttributeChangeModel { Name = ScopeAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = RoleDefinitionIdAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = PrincipalIdAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = PrincipalTypeAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = "name", Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = "description", Before = null, After = null, IsSensitive = false, IsLarge = false }
-        };
+        ];
     }
 
     /// <summary>

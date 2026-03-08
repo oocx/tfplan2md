@@ -133,7 +133,7 @@ internal partial class ReportModelBuilder
         var mergedGroups = new List<ChildResourceGroup>();
         foreach (var labelGroup in groupsByLabel)
         {
-            if (labelGroup.Count() == 1)
+            if (!labelGroup.Skip(1).Any())
             {
                 mergedGroups.Add(labelGroup.First());
                 continue;

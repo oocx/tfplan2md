@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -10,9 +11,8 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 /// Builds <see cref="BuildDefinitionViewModel"/> instances from Terraform plan data.
 /// Related feature: docs/features/094-build-definition-tables/specification.md.
 /// </summary>
-#pragma warning disable CA1506 // Suppress class coupling - factory orchestrates many view model types
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Factory orchestrates many view model types, extractors, and formatters by design.")]
 internal static class BuildDefinitionViewModelFactory
-#pragma warning restore CA1506
 {
     /// <summary>
     /// Creates a view model for the provided build definition change.
@@ -22,9 +22,7 @@ internal static class BuildDefinitionViewModelFactory
     /// <param name="largeValueFormat">Preferred large value format for diff rendering.</param>
     /// <param name="repositoryMapper">Optional mapper for resolving repository display names.</param>
     /// <returns>Populated <see cref="BuildDefinitionViewModel"/>.</returns>
-#pragma warning disable CA1506 // Suppress class coupling - Build method orchestrates many extractors/formatters
     public static BuildDefinitionViewModel Build(ResourceChange change, string providerName, LargeValueFormat largeValueFormat, AzdoRepositoryMapper? repositoryMapper = null)
-#pragma warning restore CA1506
     {
         // Extract metadata
         var name = BuildDefinitionExtractors.ExtractName(change.Change.After)

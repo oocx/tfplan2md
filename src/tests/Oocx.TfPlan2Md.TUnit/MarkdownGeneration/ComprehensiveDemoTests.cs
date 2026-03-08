@@ -37,8 +37,8 @@ public class ComprehensiveDemoTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: _principalMapper));
         return new ReportModelBuilder(
-            showSensitive: showSensitive,
-            providerRegistry: providerRegistry);
+            options: new ReportModelBuilderOptions(ShowSensitive: showSensitive),
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
     }
 
     [Test]

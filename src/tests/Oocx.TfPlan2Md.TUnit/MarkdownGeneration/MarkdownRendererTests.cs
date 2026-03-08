@@ -38,7 +38,7 @@ public class MarkdownRendererTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         return new ReportModelBuilder(
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
     }
 
     private static string Escape(string value) => EscapeMarkdown(value);
@@ -132,7 +132,7 @@ public class MarkdownRendererTests
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
         var metadata = new ReportMetadata("2.0.0", "abc1234", DateTimeOffset.Parse("2026-01-02T03:04:05Z", CultureInfo.InvariantCulture));
-        var builder = new ReportModelBuilder(metadataProvider: new FakeMetadataProvider(metadata));
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(MetadataProvider: new FakeMetadataProvider(metadata)));
         var model = builder.Build(plan);
 
         // Act
@@ -148,7 +148,7 @@ public class MarkdownRendererTests
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
         var metadata = new ReportMetadata("2.0.0", "abc1234", DateTimeOffset.Parse("2026-01-02T03:04:05Z", CultureInfo.InvariantCulture));
-        var builder = new ReportModelBuilder(metadataProvider: new FakeMetadataProvider(metadata), hideMetadata: true);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(HideMetadata: true), services: new ReportModelBuilderServices(MetadataProvider: new FakeMetadataProvider(metadata)));
         var model = builder.Build(plan);
 
         // Act
@@ -201,7 +201,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/minimal-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(reportTitle: "Custom Title");
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ReportTitle: "Custom Title"));
         var model = builder.Build(plan);
 
         // Act
@@ -260,7 +260,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/minimal-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(reportTitle: "Custom Report Title");
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ReportTitle: "Custom Report Title"));
         var model = builder.Build(plan);
 
         var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".sbn");

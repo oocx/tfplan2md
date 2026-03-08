@@ -35,7 +35,7 @@ public class AzureAdGroupSummaryRebuilderTests
         var plan = BuildPlanWithAzureAdGroupAndMembers();
 
         var builder = new ReportModelBuilder(
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
 
         // Override the callback to detect invocation
         builder.RegisterPostMergeCallback((changes, mapper) =>
@@ -572,8 +572,7 @@ public class AzureAdGroupSummaryRebuilderTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         var builder = new ReportModelBuilder(
-            principalMapper: principalMapper,
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(PrincipalMapper: principalMapper, ProviderRegistry: providerRegistry));
 
         return builder.Build(plan);
     }

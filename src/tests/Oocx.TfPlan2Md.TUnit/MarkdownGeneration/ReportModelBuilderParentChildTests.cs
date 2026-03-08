@@ -576,7 +576,7 @@ public class ReportModelBuilderParentChildTests
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new ParentChildTestModule());
 
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry, codeAnalysisInput: codeAnalysisInput);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry, CodeAnalysisInput: codeAnalysisInput));
         return builder.Build(plan);
     }
 

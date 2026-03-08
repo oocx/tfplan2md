@@ -324,8 +324,7 @@ public class AzapiSnapshotTests
         var plan = _parser.Parse(json);
         var providerRegistry = CreateProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         return renderer.Render(model);

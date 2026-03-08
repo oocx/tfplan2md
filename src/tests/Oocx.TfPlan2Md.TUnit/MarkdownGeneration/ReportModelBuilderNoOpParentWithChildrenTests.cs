@@ -152,8 +152,7 @@ public class ReportModelBuilderNoOpParentWithChildrenTests
     {
         var providerRegistry = CreateProviderRegistry();
         var builder = new ReportModelBuilder(
-            providerRegistry: providerRegistry,
-            metadataProvider: TestMetadataProvider.Instance);
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry, MetadataProvider: TestMetadataProvider.Instance));
         return builder.Build(plan);
     }
 

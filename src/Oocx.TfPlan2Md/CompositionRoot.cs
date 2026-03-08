@@ -228,20 +228,22 @@ internal sealed class CompositionRoot(CliOptions options)
         IconProviderRegistry iconProviderRegistry)
     {
         return new ReportModelBuilder(
-            summaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
-            showSensitive: options.ShowSensitive,
-            showUnchangedValues: options.ShowUnchangedValues,
-            renderTarget: options.RenderTarget,
-            reportTitle: options.ReportTitle,
-            principalMapper: principalMapper,
-            hideMetadata: options.HideMetadata,
-            providerRegistry: providerRegistry,
-            providerContributions: providerContributionSet,
-            codeAnalysisInput: codeAnalysisInput,
-            iconProviderRegistry: iconProviderRegistry,
-            detailsDisplayMode: options.DetailsDisplayMode,
-            ignoreAzureIdCaseChanges: options.IgnoreAzureIdCaseChanges,
-            attributeChangeFilterRegistry: providerContributionSet.CreateAttributeChangeFilterRegistry());
+            options: new ReportModelBuilderOptions(
+                ShowSensitive: options.ShowSensitive,
+                ShowUnchangedValues: options.ShowUnchangedValues,
+                RenderTarget: options.RenderTarget,
+                ReportTitle: options.ReportTitle,
+                HideMetadata: options.HideMetadata,
+                DetailsDisplayMode: options.DetailsDisplayMode,
+                IgnoreAzureIdCaseChanges: options.IgnoreAzureIdCaseChanges),
+            services: new ReportModelBuilderServices(
+                SummaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
+                PrincipalMapper: principalMapper,
+                ProviderRegistry: providerRegistry,
+                ProviderContributions: providerContributionSet,
+                CodeAnalysisInput: codeAnalysisInput,
+                IconProviderRegistry: iconProviderRegistry,
+                AttributeChangeFilterRegistry: providerContributionSet.CreateAttributeChangeFilterRegistry()));
     }
 
     /// <summary>

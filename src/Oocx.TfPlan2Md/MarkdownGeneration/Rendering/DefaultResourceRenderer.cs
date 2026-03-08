@@ -36,62 +36,27 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
     public string ResourceType => "*";
 
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Render orchestrates multiple scenario branches and rendering phases that cannot be further simplified without introducing fragmentation.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "Render remains the top-level orchestration point after policy extraction.")]
     public void Render(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(writer);
         ArgumentNullException.ThrowIfNull(change);
         ArgumentNullException.ThrowIfNull(context);
 
-        var detailsTag = context.DetailsDisplayMode switch
-        {
-            RenderTargets.DetailsDisplayMode.Open => "<details open",
-            RenderTargets.DetailsDisplayMode.Closed => "<details",
-            _ => change.CodeAnalysisFindings.Count > 0 ? "<details open" : "<details"
-        };
-
-        var summary = string.IsNullOrWhiteSpace(change.SummaryHtml)
-            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.Name)}"
-            : change.SummaryHtml;
-
+        var detailsTag = ResolveDetailsTag(change, context);
+        var summary = ResolveSummary(change);
         var policy = DefaultResourceRenderPolicy.Resolve(change, context);
 
-        writer.Raw(detailsTag + DetailsStyle + (policy.UseMultilineDetailsSummary ? ">\n" : ">"));
-        if (policy.UseExtraBlankLineBeforeSummary)
-        {
-            writer.BlankLine();
-        }
-
-        writer.Raw("<summary>");
-        writer.Raw(summary);
-        writer.Raw("</summary>\n");
-        writer.Raw(policy.UseMultilineDetailsSummary ? "<br>\n\n" : "<br>\n");
-
+        WriteDetailsHeader(writer, detailsTag, summary, policy);
         RenderCodeAnalysisMetadata(writer, change.CodeAnalysisFindings);
 
         var smallAttributes = change.AttributeChanges.Where(attribute => !attribute.IsLarge).ToArray();
         var largeAttributes = change.AttributeChanges.Where(attribute => attribute.IsLarge).ToArray();
 
         RenderAttributeTable(writer, change, smallAttributes, policy.UseKnownAfterApplyFormatting, context.ValueFormatterRegistry, context.IconProviderRegistry, _useResourceTypeForAttributeIcons);
+        WriteTagsBadgesSection(writer, change);
+        WriteNoChangesMessage(writer, change, smallAttributes, largeAttributes, policy);
 
-        if (!string.IsNullOrWhiteSpace(change.TagsBadges))
-        {
-            writer.Paragraph(change.TagsBadges);
-            writer.BlankLine();
-        }
-
-        if (smallAttributes.Length == 0
-            && largeAttributes.Length == 0
-            && (change.ChildResourceGroups.Count == 0 || (!policy.IsNoOpParentWithChildren && !_suppressNoAttributeChangesForNoOpParents))
-            && string.IsNullOrWhiteSpace(change.TagsBadges))
-        {
-            writer.Paragraph(change.HasWholeResourceUnknownAfterApply
-                ? "_(all values known after apply)_"
-                : "_No attribute changes._");
-        }
-
-        RenderChildResources(writer, change.ChildResourceGroups, policy.IsNoOpParentWithChildren);
+        RenderChildResources(writer, change.ChildResourceGroups);
         RenderCodeAnalysisFindings(writer, change);
         RenderLargeAttributes(writer, largeAttributes, smallAttributes.Length > 0 || !string.IsNullOrWhiteSpace(change.TagsBadges), context);
 
@@ -102,6 +67,69 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
 
         writer.DetailsClose();
         writer.BlankLine();
+    }
+
+    /// <summary>Determines the appropriate details opening tag.</summary>
+    private static string ResolveDetailsTag(ResourceChangeModel change, IRenderContext context)
+    {
+        return context.DetailsDisplayMode switch
+        {
+            RenderTargets.DetailsDisplayMode.Open => "<details open",
+            RenderTargets.DetailsDisplayMode.Closed => "<details",
+            _ => change.CodeAnalysisFindings.Count > 0 ? "<details open" : "<details"
+        };
+    }
+
+    /// <summary>Resolves the HTML summary content for the details block.</summary>
+    private static string ResolveSummary(ResourceChangeModel change)
+    {
+        return string.IsNullOrWhiteSpace(change.SummaryHtml)
+            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.Name)}"
+            : change.SummaryHtml;
+    }
+
+    /// <summary>Writes the opening details block including the summary line.</summary>
+    private static void WriteDetailsHeader(MarkdownWriter writer, string detailsTag, string summary, DefaultResourceRenderPolicyResult policy)
+    {
+        writer.Raw(detailsTag + DetailsStyle + (policy.UseMultilineDetailsSummary ? ">\n" : ">"));
+        if (policy.UseExtraBlankLineBeforeSummary)
+        {
+            writer.BlankLine();
+        }
+
+        writer.Raw("<summary>");
+        writer.Raw(summary);
+        writer.Raw("</summary>\n");
+        writer.Raw(policy.UseMultilineDetailsSummary ? "<br>\n\n" : "<br>\n");
+    }
+
+    /// <summary>Writes the tags badges paragraph when present.</summary>
+    private static void WriteTagsBadgesSection(MarkdownWriter writer, ResourceChangeModel change)
+    {
+        if (!string.IsNullOrWhiteSpace(change.TagsBadges))
+        {
+            writer.Paragraph(change.TagsBadges);
+            writer.BlankLine();
+        }
+    }
+
+    /// <summary>Writes the "No attribute changes" or "all values known after apply" message when applicable.</summary>
+    private void WriteNoChangesMessage(
+        MarkdownWriter writer,
+        ResourceChangeModel change,
+        AttributeChangeModel[] smallAttributes,
+        AttributeChangeModel[] largeAttributes,
+        DefaultResourceRenderPolicyResult policy)
+    {
+        if (smallAttributes.Length == 0
+            && largeAttributes.Length == 0
+            && (change.ChildResourceGroups.Count == 0 || (!policy.IsNoOpParentWithChildren && !_suppressNoAttributeChangesForNoOpParents))
+            && string.IsNullOrWhiteSpace(change.TagsBadges))
+        {
+            writer.Paragraph(change.HasWholeResourceUnknownAfterApply
+                ? "_(all values known after apply)_"
+                : "_No attribute changes._");
+        }
     }
 
     /// <summary>

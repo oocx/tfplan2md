@@ -27,12 +27,7 @@ public class DebugOutputIntegrationTests
         var plan = parser.Parse(planJson);
 
         // Create components WITHOUT diagnostic context (simulating no --debug flag)
-        var modelBuilder = new ReportModelBuilder(
-            showSensitive: false,
-            showUnchangedValues: false,
-            renderTarget: RenderTarget.AzureDevOps,
-            reportTitle: null,
-            hideMetadata: false);
+        var modelBuilder = new ReportModelBuilder();
         var model = modelBuilder.Build(plan);
 
         var renderer = new MarkdownRenderer();
@@ -64,12 +59,7 @@ public class DebugOutputIntegrationTests
         AzureMappingFileLoader.Load(
             mappingFile: "TestData/principal-mapping.json",
             diagnosticContext: diagnosticContext);
-        var modelBuilder = new ReportModelBuilder(
-            showSensitive: false,
-            showUnchangedValues: false,
-            renderTarget: RenderTarget.AzureDevOps,
-            reportTitle: null,
-            hideMetadata: false);
+        var modelBuilder = new ReportModelBuilder();
         var model = modelBuilder.Build(plan);
 
         var renderer = new MarkdownRenderer(diagnosticContext);
@@ -112,12 +102,7 @@ public class DebugOutputIntegrationTests
         var plan = parser.Parse(planJson);
 
         var diagnosticContext = new DiagnosticContext();
-        var modelBuilder = new ReportModelBuilder(
-            showSensitive: false,
-            showUnchangedValues: false,
-            renderTarget: RenderTarget.AzureDevOps,
-            reportTitle: null,
-            hideMetadata: false);
+        var modelBuilder = new ReportModelBuilder();
         var model = modelBuilder.Build(plan);
 
         var renderer = new MarkdownRenderer(diagnosticContext);
@@ -154,12 +139,7 @@ public class DebugOutputIntegrationTests
         AzureMappingFileLoader.Load(
             mappingFile: "TestData/partial-principal-mapping.json",
             diagnosticContext: diagnosticContext);
-        var modelBuilder = new ReportModelBuilder(
-            showSensitive: false,
-            showUnchangedValues: false,
-            renderTarget: RenderTarget.AzureDevOps,
-            reportTitle: null,
-            hideMetadata: false);
+        var modelBuilder = new ReportModelBuilder();
         var model = modelBuilder.Build(plan);
 
         var renderer = new MarkdownRenderer(diagnosticContext);
@@ -190,12 +170,7 @@ public class DebugOutputIntegrationTests
         var plan = parser.Parse(planJson);
 
         // Without diagnostic context
-        var modelBuilder = new ReportModelBuilder(
-            showSensitive: false,
-            showUnchangedValues: false,
-            renderTarget: RenderTarget.AzureDevOps,
-            reportTitle: null,
-            hideMetadata: false);
+        var modelBuilder = new ReportModelBuilder();
         var model = modelBuilder.Build(plan);
 
         var renderer = new MarkdownRenderer();

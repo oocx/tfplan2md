@@ -214,7 +214,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
 
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new SelfReferencingProviderModule());
-        var model = new ReportModelBuilder(providerRegistry: providerRegistry).Build(plan);
+        var model = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry)).Build(plan);
 
         model.Changes.Should().ContainSingle();
     }
@@ -274,7 +274,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     {
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(providerModule);
-        return new ReportModelBuilder(providerRegistry: providerRegistry).Build(plan);
+        return new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry)).Build(plan);
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     {
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new EdgeCaseProviderModule());
-        return new ReportModelBuilder(providerRegistry: providerRegistry);
+        return new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
     }
 
     /// <summary>

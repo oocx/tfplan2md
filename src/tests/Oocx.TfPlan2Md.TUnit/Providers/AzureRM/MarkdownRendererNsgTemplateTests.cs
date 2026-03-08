@@ -34,7 +34,7 @@ public class MarkdownRendererNsgTemplateTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         return new ReportModelBuilder(
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
     }
 
     private static string Normalize(string markdown)

@@ -84,39 +84,15 @@ internal sealed class ReportRenderer
 
     /// <summary>
     /// Renders the summary section using the canonical style for the current report shape.
+    /// Delegates to <see cref="SummaryRenderer.Render"/> for all report shapes.
     /// </summary>
     /// <param name="writer">Markdown writer.</param>
     /// <param name="summary">Summary model.</param>
-    /// <param name="useWideSeparators">Whether wide separator rows should be emitted.</param>
+    /// <param name="useWideSeparators">Parameter retained for API compatibility; the canonical renderer handles all shapes.</param>
     private static void RenderSummary(MarkdownWriter writer, SummaryModel summary, bool useWideSeparators)
     {
-        if (!useWideSeparators)
-        {
-            SummaryRenderer.Render(writer, summary, boldTotal: true);
-            return;
-        }
-
-        writer.Heading("Summary", 2);
-        writer.BlankLine();
-
-        if (summary.Total == 0)
-        {
-            writer.Paragraph("No changes");
-            writer.BlankLine();
-            return;
-        }
-
-        writer.Raw("| Action | Count | Resource Types |\n");
-        writer.Raw("| -------- | ------- | ---------------- |\n");
-
-        writer.TableRow(["➕\u00A0Add", summary.ToAdd.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToAdd.Breakdown)]);
-        writer.TableRow(["🔄\u00A0Change", summary.ToChange.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToChange.Breakdown)]);
-        writer.TableRow(["♻️\u00A0Replace", summary.ToReplace.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToReplace.Breakdown)]);
-        writer.TableRow(["❌\u00A0Destroy", summary.ToDestroy.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), SummaryRenderer.FormatBreakdown(summary.ToDestroy.Breakdown)]);
-
-        var totalText = summary.Total.ToString(System.Globalization.CultureInfo.InvariantCulture);
-        writer.Raw($"| **Total** | **{totalText}** | |\n");
-        writer.BlankLine();
+        _ = useWideSeparators;
+        SummaryRenderer.Render(writer, summary, boldTotal: true);
     }
 
     /// <summary>

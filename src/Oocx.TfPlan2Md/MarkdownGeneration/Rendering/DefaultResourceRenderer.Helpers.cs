@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
@@ -16,36 +18,20 @@ internal sealed partial class DefaultResourceRenderer
             return;
         }
 
-        var criticalCount = findings.Count(finding => string.Equals(finding.Severity, "Critical", StringComparison.Ordinal));
-        var highCount = findings.Count(finding => string.Equals(finding.Severity, "High", StringComparison.Ordinal));
-        var mediumCount = findings.Count(finding => string.Equals(finding.Severity, "Medium", StringComparison.Ordinal));
-        var lowCount = findings.Count(finding => string.Equals(finding.Severity, "Low", StringComparison.Ordinal));
-        var informationalCount = findings.Count(finding => string.Equals(finding.Severity, "Informational", StringComparison.Ordinal));
+        var countBySeverity = findings
+            .GroupBy(f => f.Severity, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key ?? string.Empty, g => g.Count(), StringComparer.OrdinalIgnoreCase);
+
+        string[] severityOrder = ["Critical", "High", "Medium", "Low", "Informational"];
+        string[] severityIcons = ["🚨", "⚠️", "⚠️", "ℹ️", "ℹ️"];
 
         var parts = new List<string>();
-        if (criticalCount > 0)
+        for (var i = 0; i < severityOrder.Length; i++)
         {
-            parts.Add($"🚨\u00A0{criticalCount} Critical");
-        }
-
-        if (highCount > 0)
-        {
-            parts.Add($"⚠️\u00A0{highCount} High");
-        }
-
-        if (mediumCount > 0)
-        {
-            parts.Add($"⚠️\u00A0{mediumCount} Medium");
-        }
-
-        if (lowCount > 0)
-        {
-            parts.Add($"ℹ️\u00A0{lowCount} Low");
-        }
-
-        if (informationalCount > 0)
-        {
-            parts.Add($"ℹ️\u00A0{informationalCount} Informational");
+            if (countBySeverity.TryGetValue(severityOrder[i], out var count) && count > 0)
+            {
+                parts.Add($"{severityIcons[i]}\u00A0{count} {severityOrder[i]}");
+            }
         }
 
         if (parts.Count == 0)
@@ -101,11 +87,9 @@ internal sealed partial class DefaultResourceRenderer
         writer.BlankLine();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3776:Cognitive Complexity of methods should not be too high", Justification = "Child resource tables preserve multiple compatibility branches for current markdown baselines.")]
     private static void RenderChildResources(
         MarkdownWriter writer,
-        IReadOnlyList<ChildResourceGroup> childResourceGroups,
-        bool useWideNoOpSecurityRuleTable)
+        IReadOnlyList<ChildResourceGroup> childResourceGroups)
     {
         foreach (var group in childResourceGroups)
         {
@@ -126,18 +110,10 @@ internal sealed partial class DefaultResourceRenderer
                 headers.Add("Terraform Resource");
             }
 
-            if (useWideNoOpSecurityRuleTable && string.Equals(group.Label, "Security Rules", StringComparison.Ordinal))
-            {
-                writer.Raw($"| {string.Join(" | ", headers)} |\n");
-                writer.Raw("| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------------------- |\n");
-            }
-            else
-            {
-                var separators = headers.Select(header =>
-                    string.Equals(header, "Terraform Resource", StringComparison.Ordinal) ? "--------------------" : "--------");
-                writer.Raw($"| {string.Join(" | ", headers)} |\n");
-                writer.Raw($"| {string.Join(" | ", separators)} |\n");
-            }
+            var separators = headers.Select(header =>
+                string.Equals(header, "Terraform Resource", StringComparison.Ordinal) ? "--------------------" : "--------");
+            writer.Raw($"| {string.Join(" | ", headers)} |\n");
+            writer.Raw($"| {string.Join(" | ", separators)} |\n");
 
             foreach (var row in group.Rows)
             {

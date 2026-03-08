@@ -63,11 +63,12 @@ public class ParentChildUatSnapshotTests
         var iconProviderRegistry = providerContributions.CreateIconProviderRegistry();
 
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry,
-            providerContributions: providerContributions,
-            codeAnalysisInput: codeAnalysisInput,
-            iconProviderRegistry: iconProviderRegistry).Build(plan);
+            services: new ReportModelBuilderServices(
+                MetadataProvider: TestMetadataProvider.Instance,
+                ProviderRegistry: providerRegistry,
+                ProviderContributions: providerContributions,
+                CodeAnalysisInput: codeAnalysisInput,
+                IconProviderRegistry: iconProviderRegistry)).Build(plan);
 
         var renderer = new MarkdownRenderer(
             providerRegistry: providerRegistry,

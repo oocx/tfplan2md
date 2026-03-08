@@ -26,7 +26,7 @@ public class MarkdownRendererRoleAssignmentTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: principalMapper));
         return new ReportModelBuilder(
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
     }
 
     private static MarkdownRenderer CreateRenderer(IPrincipalMapper principalMapper)

@@ -86,7 +86,7 @@ public class ParentPostMergeCallbackTests
 
         var plan = BuildPlanWithParentAndChild();
         var providerRegistry = CreateProviderRegistryWithParentChildRelationship();
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
         builder.RegisterPostMergeCallback(callback);
 
         // Act
@@ -171,7 +171,7 @@ public class ParentPostMergeCallbackTests
         var principalMapper = new PrincipalMapper(principals, principalTypes);
 
         var plan = BuildPlanWithParentAndChild();
-        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(PrincipalMapper: principalMapper));
         builder.RegisterPostMergeCallback(callback);
 
         // Act
@@ -193,7 +193,7 @@ public class ParentPostMergeCallbackTests
         ParentPostMergeCallback callback = (changes, mapper) => { receivedMapper = mapper; };
 
         var plan = BuildPlanWithParentAndChild();
-        var builder = new ReportModelBuilder(principalMapper: null);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(PrincipalMapper: null));
         builder.RegisterPostMergeCallback(callback);
 
         // Act
@@ -213,7 +213,7 @@ public class ParentPostMergeCallbackTests
         // Arrange
         var plan = BuildPlanWithParentAndChild();
         var providerRegistry = CreateProviderRegistryWithParentChildRelationship();
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
         // No callbacks registered
 
         // Act
@@ -291,7 +291,7 @@ public class ParentPostMergeCallbackTests
         providerRegistry.RegisterProvider(testModule);
 
         var plan = BuildPlanWithParentAndChild();
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
 
         // Act
         builder.Build(plan);
@@ -325,7 +325,7 @@ public class ParentPostMergeCallbackTests
         providerRegistry.RegisterProvider(testModule2);
 
         var plan = BuildPlanWithParentAndChild();
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
 
         // Act
         builder.Build(plan);

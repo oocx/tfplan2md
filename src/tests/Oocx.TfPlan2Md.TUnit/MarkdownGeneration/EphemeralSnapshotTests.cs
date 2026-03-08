@@ -47,8 +47,7 @@ public class EphemeralSnapshotTests
         var plan = _parser.Parse(json);
         var providerRegistry = new ProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);

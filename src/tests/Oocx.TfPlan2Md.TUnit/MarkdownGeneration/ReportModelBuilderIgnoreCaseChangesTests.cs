@@ -46,9 +46,8 @@ public class ReportModelBuilderIgnoreAzureIdCaseChangesTests
         azureRmModule.RegisterAttributeChangeFilters(filterRegistry);
 
         return new ReportModelBuilder(
-            ignoreAzureIdCaseChanges: ignoreCaseChanges,
-            showUnchangedValues: showUnchangedValues,
-            attributeChangeFilterRegistry: filterRegistry);
+            options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: ignoreCaseChanges, ShowUnchangedValues: showUnchangedValues),
+            services: new ReportModelBuilderServices(AttributeChangeFilterRegistry: filterRegistry));
     }
 
     // -------------------------------------------------------------------------

@@ -15,7 +15,7 @@ public class ReportModelBuilderUnchangedValuesTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: false, showUnchangedValues: false);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: false, ShowUnchangedValues: false));
 
         // Act
         var model = builder.Build(plan);
@@ -37,7 +37,7 @@ public class ReportModelBuilderUnchangedValuesTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: false, showUnchangedValues: true);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: false, ShowUnchangedValues: true));
 
         // Act
         var model = builder.Build(plan);

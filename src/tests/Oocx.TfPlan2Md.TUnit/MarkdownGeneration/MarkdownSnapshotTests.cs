@@ -52,9 +52,7 @@ public class MarkdownSnapshotTests
         var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
         var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
         var model = new ReportModelBuilder(
-            principalMapper: principalMapper,
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(PrincipalMapper: principalMapper, MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
@@ -111,13 +109,14 @@ public class MarkdownSnapshotTests
 
         // Build model with all features enabled
         var model = new ReportModelBuilder(
-            summaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
-            principalMapper: principalMapper,
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry,
-            providerContributions: providerContributions,
-            codeAnalysisInput: codeAnalysisInput,
-            iconProviderRegistry: iconProviderRegistry).Build(plan);
+            services: new ReportModelBuilderServices(
+                SummaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
+                PrincipalMapper: principalMapper,
+                MetadataProvider: TestMetadataProvider.Instance,
+                ProviderRegistry: providerRegistry,
+                ProviderContributions: providerContributions,
+                CodeAnalysisInput: codeAnalysisInput,
+                IconProviderRegistry: iconProviderRegistry)).Build(plan);
 
         // Render with all providers
         var renderer = new MarkdownRenderer(
@@ -141,8 +140,7 @@ public class MarkdownSnapshotTests
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
         var providerRegistry = CreateProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model, "summary");
@@ -162,8 +160,7 @@ public class MarkdownSnapshotTests
         var plan = _parser.Parse(json);
         var providerRegistry = CreateProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
@@ -190,9 +187,7 @@ public class MarkdownSnapshotTests
         var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
         var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
         var model = new ReportModelBuilder(
-            principalMapper: principalMapper,
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(PrincipalMapper: principalMapper, MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
@@ -223,8 +218,7 @@ public class MarkdownSnapshotTests
         var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter, roleDefinitionResolver);
 
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
@@ -243,8 +237,7 @@ public class MarkdownSnapshotTests
         var plan = _parser.Parse(json);
         var providerRegistry = CreateProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
@@ -263,8 +256,7 @@ public class MarkdownSnapshotTests
         var plan = _parser.Parse(json);
         var providerRegistry = CreateProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
@@ -283,8 +275,7 @@ public class MarkdownSnapshotTests
         var plan = _parser.Parse(json);
         var providerRegistry = CreateProviderRegistry();
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry).Build(plan);
+            services: new ReportModelBuilderServices(MetadataProvider: TestMetadataProvider.Instance, ProviderRegistry: providerRegistry)).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);

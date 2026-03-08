@@ -17,7 +17,7 @@ public class ReportModelBuilderMetadataTests
         var metadata = new ReportMetadata("9.9.9", "abcdef0", DateTimeOffset.Parse("2026-01-01T12:30:00Z", CultureInfo.InvariantCulture));
         var provider = new FakeMetadataProvider(metadata);
 
-        var builder = new ReportModelBuilder(metadataProvider: provider);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(MetadataProvider: provider));
 
         var model = builder.Build(plan);
 

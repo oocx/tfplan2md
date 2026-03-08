@@ -185,11 +185,12 @@ public class ParentChildConditionalColumnSnapshotTests
         var iconProviderRegistry = providerContributions.CreateIconProviderRegistry();
 
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry,
-            providerContributions: providerContributions,
-            codeAnalysisInput: null,
-            iconProviderRegistry: iconProviderRegistry).Build(plan);
+            services: new ReportModelBuilderServices(
+                MetadataProvider: TestMetadataProvider.Instance,
+                ProviderRegistry: providerRegistry,
+                ProviderContributions: providerContributions,
+                CodeAnalysisInput: null,
+                IconProviderRegistry: iconProviderRegistry)).Build(plan);
 
         var renderer = new MarkdownRenderer(
             providerRegistry: providerRegistry,

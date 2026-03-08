@@ -86,7 +86,7 @@ public class ReportModelBuilderSummaryTests
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         var builder = new ReportModelBuilder(
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
 
         // Act
         var model = builder.Build(plan);
@@ -196,7 +196,7 @@ public class ReportModelBuilderSummaryTests
             });
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new SummaryOverrideProviderModule());
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
 
         var model = builder.Build(plan);
 
@@ -262,7 +262,7 @@ public class ReportModelBuilderSummaryTests
             });
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new SummaryOverrideProviderModule());
-        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
 
         var model = builder.Build(plan);
 

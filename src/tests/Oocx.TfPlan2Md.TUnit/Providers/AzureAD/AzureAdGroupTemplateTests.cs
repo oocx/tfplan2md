@@ -35,8 +35,7 @@ public class AzureAdGroupTemplateTests
         providerRegistry.RegisterProvider(new AzureADModule());
 
         var builder = new ReportModelBuilder(
-            principalMapper: principalMapper,
-            providerRegistry: providerRegistry);
+            services: new ReportModelBuilderServices(PrincipalMapper: principalMapper, ProviderRegistry: providerRegistry));
         var model = builder.Build(plan);
         var renderer = new MarkdownRenderer(
             providerRegistry: providerRegistry);

@@ -40,7 +40,7 @@ public class ReportModelBuilderStageDelegationTests
             }
         ]);
 
-        var model = new ReportModelBuilder(resourceChangeStage: stage, ignoreAzureIdCaseChanges: false)
+        var model = new ReportModelBuilder(options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: false), services: new ReportModelBuilderServices(ResourceChangeStage: stage))
             .Build(new TerraformPlan("1.0", "1.0", []));
 
         stage.Invocations.Should().Be(1);
@@ -52,30 +52,31 @@ public class ReportModelBuilderStageDelegationTests
     public void Build_UsesInjectedAttributeFilteringStage()
     {
         var model = new ReportModelBuilder(
-            resourceChangeStage: new StubResourceChangeStage(
-            [
-                new ResourceChangeModel
-                {
-                    Address = "azurerm_role_assignment.example",
-                    ModuleAddress = string.Empty,
-                    Type = "azurerm_role_assignment",
-                    Name = ExampleName,
-                    ProviderName = "azurerm",
-                    Action = TerraformActions.Update,
-                    ActionSymbol = ActionIcons.Update,
-                    AttributeChanges =
-                    [
-                        new AttributeChangeModel
-                        {
-                            Name = "scope",
-                            Before = "/subscriptions/ABC123/resourceGroups/my-rg",
-                            After = "/subscriptions/abc123/resourceGroups/my-rg"
-                        }
-                    ]
-                }
-            ]),
-            attributeFilteringStage: new StubAttributeFilteringStage(),
-            ignoreAzureIdCaseChanges: false)
+            options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: false),
+            services: new ReportModelBuilderServices(
+                ResourceChangeStage: new StubResourceChangeStage(
+                [
+                    new ResourceChangeModel
+                    {
+                        Address = "azurerm_role_assignment.example",
+                        ModuleAddress = string.Empty,
+                        Type = "azurerm_role_assignment",
+                        Name = ExampleName,
+                        ProviderName = "azurerm",
+                        Action = TerraformActions.Update,
+                        ActionSymbol = ActionIcons.Update,
+                        AttributeChanges =
+                        [
+                            new AttributeChangeModel
+                            {
+                                Name = "scope",
+                                Before = "/subscriptions/ABC123/resourceGroups/my-rg",
+                                After = "/subscriptions/abc123/resourceGroups/my-rg"
+                            }
+                        ]
+                    }
+                ]),
+                AttributeFilteringStage: new StubAttributeFilteringStage()))
             .Build(new TerraformPlan("1.0", "1.0", []));
 
         model.Changes.Should().ContainSingle();
@@ -88,22 +89,23 @@ public class ReportModelBuilderStageDelegationTests
         var stage = new StubSummaryEnrichmentStage();
 
         var model = new ReportModelBuilder(
-            resourceChangeStage: new StubResourceChangeStage(
-            [
-                new ResourceChangeModel
-                {
-                    Address = "type_a.example",
-                    ModuleAddress = string.Empty,
-                    Type = TypeA,
-                    Name = ExampleName,
-                    ProviderName = ProviderName,
-                    Action = TerraformActions.Create,
-                    ActionSymbol = ActionIcons.Add,
-                    AttributeChanges = []
-                }
-            ]),
-            summaryEnrichmentStage: stage,
-            ignoreAzureIdCaseChanges: false)
+            options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: false),
+            services: new ReportModelBuilderServices(
+                ResourceChangeStage: new StubResourceChangeStage(
+                [
+                    new ResourceChangeModel
+                    {
+                        Address = "type_a.example",
+                        ModuleAddress = string.Empty,
+                        Type = TypeA,
+                        Name = ExampleName,
+                        ProviderName = ProviderName,
+                        Action = TerraformActions.Create,
+                        ActionSymbol = ActionIcons.Add,
+                        AttributeChanges = []
+                    }
+                ]),
+                SummaryEnrichmentStage: stage))
             .Build(new TerraformPlan("1.0", "1.0", []));
 
         stage.Invocations.Should().Be(1);
@@ -117,22 +119,23 @@ public class ReportModelBuilderStageDelegationTests
         var stage = new StubDisplayFilteringStage();
 
         var model = new ReportModelBuilder(
-            resourceChangeStage: new StubResourceChangeStage(
-            [
-                new ResourceChangeModel
-                {
-                    Address = "type_a.example",
-                    ModuleAddress = string.Empty,
-                    Type = TypeA,
-                    Name = ExampleName,
-                    ProviderName = ProviderName,
-                    Action = TerraformActions.Create,
-                    ActionSymbol = ActionIcons.Add,
-                    AttributeChanges = []
-                }
-            ]),
-            displayFilteringStage: stage,
-            ignoreAzureIdCaseChanges: false)
+            options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: false),
+            services: new ReportModelBuilderServices(
+                ResourceChangeStage: new StubResourceChangeStage(
+                [
+                    new ResourceChangeModel
+                    {
+                        Address = "type_a.example",
+                        ModuleAddress = string.Empty,
+                        Type = TypeA,
+                        Name = ExampleName,
+                        ProviderName = ProviderName,
+                        Action = TerraformActions.Create,
+                        ActionSymbol = ActionIcons.Add,
+                        AttributeChanges = []
+                    }
+                ]),
+                DisplayFilteringStage: stage))
             .Build(new TerraformPlan("1.0", "1.0", []));
 
         stage.Invocations.Should().Be(1);
@@ -145,22 +148,23 @@ public class ReportModelBuilderStageDelegationTests
         var stage = new StubReportAssemblyStage();
 
         var model = new ReportModelBuilder(
-            resourceChangeStage: new StubResourceChangeStage(
-            [
-                new ResourceChangeModel
-                {
-                    Address = "type_a.example",
-                    ModuleAddress = string.Empty,
-                    Type = TypeA,
-                    Name = ExampleName,
-                    ProviderName = ProviderName,
-                    Action = TerraformActions.Create,
-                    ActionSymbol = ActionIcons.Add,
-                    AttributeChanges = []
-                }
-            ]),
-            reportAssemblyStage: stage,
-            ignoreAzureIdCaseChanges: false)
+            options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: false),
+            services: new ReportModelBuilderServices(
+                ResourceChangeStage: new StubResourceChangeStage(
+                [
+                    new ResourceChangeModel
+                    {
+                        Address = "type_a.example",
+                        ModuleAddress = string.Empty,
+                        Type = TypeA,
+                        Name = ExampleName,
+                        ProviderName = ProviderName,
+                        Action = TerraformActions.Create,
+                        ActionSymbol = ActionIcons.Add,
+                        AttributeChanges = []
+                    }
+                ]),
+                ReportAssemblyStage: stage))
             .Build(new TerraformPlan("1.0", "1.0", []));
 
         stage.Invocations.Should().Be(1);

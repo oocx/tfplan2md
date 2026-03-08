@@ -80,7 +80,7 @@ public class ReportModelBuilderActionClassificationTests
                     new Change(["future-action"]))
             ]);
 
-        var model = new ReportModelBuilder(ignoreAzureIdCaseChanges: false).Build(plan);
+        var model = new ReportModelBuilder(options: new ReportModelBuilderOptions(IgnoreAzureIdCaseChanges: false)).Build(plan);
 
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.Unknown);

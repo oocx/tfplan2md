@@ -37,9 +37,10 @@ public class KnownAfterApplySnapshotTests
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
 
         var model = new ReportModelBuilder(
-            metadataProvider: TestMetadataProvider.Instance,
-            providerRegistry: providerRegistry,
-            iconProviderRegistry: iconProviderRegistry).Build(plan);
+            services: new ReportModelBuilderServices(
+                MetadataProvider: TestMetadataProvider.Instance,
+                ProviderRegistry: providerRegistry,
+                IconProviderRegistry: iconProviderRegistry)).Build(plan);
 
         var renderer = new MarkdownRenderer(
             providerRegistry: providerRegistry,

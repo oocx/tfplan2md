@@ -70,7 +70,7 @@ public class ReportModelBuilderTests
         // Arrange
         var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: false);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: false));
 
         // Act
         var model = builder.Build(plan);
@@ -90,7 +90,7 @@ public class ReportModelBuilderTests
         // For now, we verify the flag is being used
         var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: true);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: true));
 
         // Act
         var model = builder.Build(plan);
@@ -110,7 +110,7 @@ public class ReportModelBuilderTests
         // Arrange - test with plan1.json which has azuredevops_build_definition with sensitive variable array
         var json = File.ReadAllText("TestData/TerraformShow/plan1.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: false);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: false));
 
         // Act
         var model = builder.Build(plan);
@@ -142,7 +142,7 @@ public class ReportModelBuilderTests
         // Arrange - test with plan1.json which has azuredevops_build_definition with sensitive variable array
         var json = File.ReadAllText("TestData/TerraformShow/plan1.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: true);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: true));
 
         // Act
         var model = builder.Build(plan);
@@ -171,7 +171,7 @@ public class ReportModelBuilderTests
         // Arrange - test with plan1.json which has azuredevops_variable_group with sensitive secret_variable array
         var json = File.ReadAllText("TestData/TerraformShow/plan1.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(showSensitive: false, showUnchangedValues: true);
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: false, ShowUnchangedValues: true));
 
         // Act
         var model = builder.Build(plan);
@@ -336,7 +336,7 @@ public class ReportModelBuilderTests
         // Arrange
         var json = File.ReadAllText("TestData/minimal-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder(reportTitle: "My # Title [Draft]");
+        var builder = new ReportModelBuilder(options: new ReportModelBuilderOptions(ReportTitle: "My # Title [Draft]"));
 
         // Act
         var model = builder.Build(plan);

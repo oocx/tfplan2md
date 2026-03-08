@@ -28,7 +28,7 @@ public class ReportModelBuilderCodeAnalysisTests
             FailOnLevel = null
         };
 
-        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(CodeAnalysisInput: codeAnalysisInput));
 
         // Act
         var model = builder.Build(plan);
@@ -59,7 +59,7 @@ public class ReportModelBuilderCodeAnalysisTests
             FailOnLevel = CodeAnalysisSeverity.Low
         };
 
-        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var builder = new ReportModelBuilder(services: new ReportModelBuilderServices(CodeAnalysisInput: codeAnalysisInput));
 
         // Act
         var model = builder.Build(plan);

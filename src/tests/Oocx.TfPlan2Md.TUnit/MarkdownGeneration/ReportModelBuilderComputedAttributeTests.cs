@@ -387,7 +387,7 @@ public class ReportModelBuilderComputedAttributeTests
     private ReportModel BuildModel(string json, bool showSensitive = false, ProviderRegistry? providerRegistry = null)
     {
         var plan = _parser.Parse(json);
-        return new ReportModelBuilder(showSensitive: showSensitive, providerRegistry: providerRegistry).Build(plan);
+        return new ReportModelBuilder(options: new ReportModelBuilderOptions(ShowSensitive: showSensitive), services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry)).Build(plan);
     }
 
     private static string RenderMarkdown(ReportModel model)

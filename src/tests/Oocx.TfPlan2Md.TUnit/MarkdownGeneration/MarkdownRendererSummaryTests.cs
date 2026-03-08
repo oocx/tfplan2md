@@ -31,7 +31,7 @@ public class MarkdownRendererSummaryTests
         // Arrange
         var json = File.ReadAllText("TestData/minimal-plan.json");
         var plan = new TerraformPlanParser().Parse(json);
-        var model = new ReportModelBuilder(reportTitle: "Summary Title").Build(plan);
+        var model = new ReportModelBuilder(options: new ReportModelBuilderOptions(ReportTitle: "Summary Title")).Build(plan);
         var renderer = new MarkdownRenderer();
 
         // Act

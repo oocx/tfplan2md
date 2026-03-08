@@ -22,177 +22,188 @@ internal delegate void ParentPostMergeCallback(
     List<ResourceChangeModel> allChanges,
     IPrincipalMapper? principalMapper);
 
-// Suppress parameter count warning to preserve existing constructor signature.
-#pragma warning disable S107
-
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
-/// <param name="summaryBuilder">Factory for resource summaries; defaults to <see cref="ResourceSummaryBuilder"/>.</param>
-/// <param name="showSensitive">Whether to show sensitive values without masking.</param>
-/// <param name="showUnchangedValues">Whether unchanged attributes should be included in tables.</param>
-/// <param name="renderTarget">Target platform for markdown rendering (GitHub or Azure DevOps).</param>
-/// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
-/// <param name="principalMapper">Optional mapper for resolving principal names in role assignments.</param>
-/// <param name="metadataProvider">Provider for tfplan2md version, commit, and generation timestamp metadata.</param>
-/// <param name="hideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
-/// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
-/// <param name="providerContributions">Optional centralized provider contribution set.</param>
-/// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
-/// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
-/// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
-/// <param name="ignoreAzureIdCaseChanges">Whether attribute change rows where before/after are Azure resource IDs differing only in casing are suppressed.</param>
-/// <param name="attributeChangeFilterRegistry">Optional registry of attribute change filters; defaults to an empty registry.</param>
-/// <param name="resourceChangeStage">Optional override for the resource-change construction stage.</param>
-/// <param name="attributeFilteringStage">Optional override for the attribute-filtering stage.</param>
-/// <param name="summaryEnrichmentStage">Optional override for the summary-enrichment stage.</param>
-/// <param name="displayFilteringStage">Optional override for the display-filtering stage.</param>
-/// <param name="reportAssemblyStage">Optional override for the report-assembly stage.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-internal partial class ReportModelBuilder(
-    IResourceSummaryBuilder? summaryBuilder = null,
-    bool showSensitive = false,
-    bool showUnchangedValues = false,
-    RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps,
-    string? reportTitle = null,
-    Platforms.Azure.IPrincipalMapper? principalMapper = null,
-    IMetadataProvider? metadataProvider = null,
-    bool hideMetadata = false,
-    Services.ProviderRegistry? providerRegistry = null,
-    Services.ProviderContributionSet? providerContributions = null,
-    CodeAnalysisInput? codeAnalysisInput = null,
-    MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
-    RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto,
-    bool ignoreAzureIdCaseChanges = true,
-    Services.AttributeChangeFilterRegistry? attributeChangeFilterRegistry = null,
-    IResourceChangeStage? resourceChangeStage = null,
-    IAttributeFilteringStage? attributeFilteringStage = null,
-    ISummaryEnrichmentStage? summaryEnrichmentStage = null,
-    IDisplayFilteringStage? displayFilteringStage = null,
-    IReportAssemblyStage? reportAssemblyStage = null)
+internal partial class ReportModelBuilder
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReportModelBuilder"/> class using grouped option and service records.
+    /// </summary>
+    /// <param name="options">Scalar configuration options; defaults to <see cref="ReportModelBuilderOptions"/> with all defaults.</param>
+    /// <param name="services">Injected service dependencies; defaults to <see cref="ReportModelBuilderServices"/> with all defaults.</param>
+    internal ReportModelBuilder(
+        ReportModelBuilderOptions? options = null,
+        ReportModelBuilderServices? services = null)
+    {
+        var opts = options ?? new ReportModelBuilderOptions();
+        var svcs = services ?? new ReportModelBuilderServices();
+
+        // Resolve provider contributions once to avoid repeated computation across field initialisations.
+        var resolvedContributions = CreateProviderContributions(svcs.ProviderContributions, svcs.ProviderRegistry);
+        _resolvedProviderContributions = resolvedContributions;
+
+        // Option fields
+        _showSensitive = opts.ShowSensitive;
+        _showUnchangedValues = opts.ShowUnchangedValues;
+        _ignoreAzureIdCaseChanges = opts.IgnoreAzureIdCaseChanges;
+        _reportTitle = opts.ReportTitle;
+        _hideMetadata = opts.HideMetadata;
+        _detailsDisplayMode = opts.DetailsDisplayMode;
+        _renderTarget = opts.RenderTarget;
+        _largeValueFormat = ConvertRenderTargetToLargeValueFormat(opts.RenderTarget);
+
+        // Service fields
+        _summaryBuilder = svcs.SummaryBuilder ?? new ResourceSummaryBuilder();
+        _metadataProvider = svcs.MetadataProvider ?? new AssemblyMetadataProvider();
+        _principalMapper = svcs.PrincipalMapper ?? new NullPrincipalMapper();
+        _codeAnalysisInput = svcs.CodeAnalysisInput;
+        _attributeChangeFilterRegistry = svcs.AttributeChangeFilterRegistry ?? new Services.AttributeChangeFilterRegistry();
+        _resourceChangeStage = svcs.ResourceChangeStage;
+        _attributeFilteringStage = svcs.AttributeFilteringStage;
+        _summaryEnrichmentStage = svcs.SummaryEnrichmentStage;
+        _displayFilteringStage = svcs.DisplayFilteringStage;
+        _reportAssemblyStage = svcs.ReportAssemblyStage;
+
+        // Computed fields derived from provider contributions
+        _iconProviderRegistry = svcs.IconProviderRegistry ?? CreateIconProviderRegistry(resolvedContributions);
+        _valueFormatterRegistry = CreateValueFormatterRegistry(resolvedContributions);
+        _viewModelFactoryRegistry = CreateFactoryRegistry(resolvedContributions);
+        _parentChildRelationshipRegistry = CreateParentChildRelationshipRegistry(resolvedContributions);
+
+        // Lazy-initialised fields
+        _configurationReferenceIndex = [];
+        _postMergeCallbacks = null;
+    }
+
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
     /// </summary>
-    private readonly bool _showSensitive = showSensitive;
+    private readonly bool _showSensitive;
 
     /// <summary>
     /// Indicates whether unchanged attribute values should be included in output tables.
     /// </summary>
-    private readonly bool _showUnchangedValues = showUnchangedValues;
+    private readonly bool _showUnchangedValues;
 
     /// <summary>
     /// Indicates whether attribute change rows where before/after are Azure resource IDs
     /// differing only in casing should be suppressed.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
-    private readonly bool _ignoreAzureIdCaseChanges = ignoreAzureIdCaseChanges;
+    private readonly bool _ignoreAzureIdCaseChanges;
 
     /// <summary>
     /// Registry of attribute change filters consulted when <see cref="_ignoreAzureIdCaseChanges"/> is active.
     /// Defaults to an empty registry (never suppresses anything) when not supplied.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
-    private readonly Services.AttributeChangeFilterRegistry _attributeChangeFilterRegistry =
-        attributeChangeFilterRegistry ?? new Services.AttributeChangeFilterRegistry();
+    private readonly Services.AttributeChangeFilterRegistry _attributeChangeFilterRegistry;
 
     /// <summary>
     /// Strategy for building resource summaries used in the report.
     /// </summary>
-    private readonly IResourceSummaryBuilder _summaryBuilder = summaryBuilder ?? new ResourceSummaryBuilder();
+    private readonly IResourceSummaryBuilder _summaryBuilder;
 
     /// <summary>
     /// Optional custom report title provided by the user.
     /// </summary>
-    private readonly string? _reportTitle = reportTitle;
+    private readonly string? _reportTitle;
 
     /// <summary>
     /// Provider for tfplan2md build metadata used in the report header.
     /// </summary>
-    private readonly IMetadataProvider _metadataProvider = metadataProvider ?? new AssemblyMetadataProvider();
+    private readonly IMetadataProvider _metadataProvider;
 
     /// <summary>
     /// Indicates whether metadata should be hidden from the rendered report.
     /// </summary>
-    private readonly bool _hideMetadata = hideMetadata;
+    private readonly bool _hideMetadata;
 
     /// <summary>
     /// Optional code analysis inputs to integrate into the report.
     /// </summary>
-    private readonly CodeAnalysisInput? _codeAnalysisInput = codeAnalysisInput;
+    private readonly CodeAnalysisInput? _codeAnalysisInput;
 
     /// <summary>
     /// Registry for icon provider services.
     /// </summary>
-    private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry =
-        iconProviderRegistry ?? CreateIconProviderRegistry(CreateProviderContributions(providerContributions, providerRegistry));
+    private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry;
 
     /// <summary>
     /// Registry for value formatter services.
     /// </summary>
-    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry =
-        CreateValueFormatterRegistry(CreateProviderContributions(providerContributions, providerRegistry));
+    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry;
 
     /// <summary>
     /// Mapper for resolving Azure principal names.
     /// </summary>
-    private readonly IPrincipalMapper _principalMapper = principalMapper ?? new NullPrincipalMapper();
+    private readonly IPrincipalMapper _principalMapper;
+
+    /// <summary>
+    /// Render target platform (GitHub or Azure DevOps).
+    /// Stored so it can be passed through to the report assembly stage.
+    /// </summary>
+    private readonly RenderTargets.RenderTarget _renderTarget;
 
     /// <summary>
     /// Format for rendering large value diffs in tables.
     /// </summary>
-    private readonly LargeValueFormat _largeValueFormat = ConvertRenderTargetToLargeValueFormat(renderTarget);
+    private readonly LargeValueFormat _largeValueFormat;
 
     /// <summary>
     /// Display mode for resource details blocks.
     /// </summary>
-    private readonly RenderTargets.DetailsDisplayMode _detailsDisplayMode = detailsDisplayMode;
+    private readonly RenderTargets.DetailsDisplayMode _detailsDisplayMode;
 
     /// <summary>
     /// Registry for resource-specific view model factories.
     /// </summary>
-    private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
-        CreateFactoryRegistry(
-            CreateProviderContributions(providerContributions, providerRegistry));
+    private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry;
 
     /// <summary>
     /// Optional override for the resource-change construction stage.
     /// </summary>
-    private readonly IResourceChangeStage? _resourceChangeStage = resourceChangeStage;
+    private readonly IResourceChangeStage? _resourceChangeStage;
 
     /// <summary>
     /// Optional override for the attribute-filtering stage.
     /// </summary>
-    private readonly IAttributeFilteringStage? _attributeFilteringStage = attributeFilteringStage;
+    private readonly IAttributeFilteringStage? _attributeFilteringStage;
 
     /// <summary>
     /// Optional override for the summary-enrichment stage.
     /// </summary>
-    private readonly ISummaryEnrichmentStage? _summaryEnrichmentStage = summaryEnrichmentStage;
+    private readonly ISummaryEnrichmentStage? _summaryEnrichmentStage;
 
     /// <summary>
     /// Optional override for the display-filtering stage.
     /// </summary>
-    private readonly IDisplayFilteringStage? _displayFilteringStage = displayFilteringStage;
+    private readonly IDisplayFilteringStage? _displayFilteringStage;
 
     /// <summary>
     /// Optional override for the report-assembly stage.
     /// </summary>
-    private readonly IReportAssemblyStage? _reportAssemblyStage = reportAssemblyStage;
+    private readonly IReportAssemblyStage? _reportAssemblyStage;
 
     /// <summary>
     /// Registry for parent-child resource relationships.
     /// </summary>
-    private readonly ParentChildRelationshipRegistry _parentChildRelationshipRegistry =
-        CreateParentChildRelationshipRegistry(CreateProviderContributions(providerContributions, providerRegistry));
+    private readonly ParentChildRelationshipRegistry _parentChildRelationshipRegistry;
+
+    /// <summary>
+    /// Resolved provider contribution set, computed once in the constructor and reused
+    /// for lazy callback initialisation to avoid repeated derivation from the registry.
+    /// </summary>
+    private readonly Services.ProviderContributionSet? _resolvedProviderContributions;
 
     /// <summary>
     /// Cached configuration reference index for fallback parent-child matching.
     /// </summary>
-    private readonly Dictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
-        [];
+    private readonly Dictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex;
 
     /// <summary>
     /// Collection of callbacks to invoke after parent-child merging completes.
@@ -225,7 +236,7 @@ internal partial class ReportModelBuilder(
         }
 
         _postMergeCallbacks = new List<ParentPostMergeCallback>();
-        CreateProviderContributions(providerContributions, providerRegistry)?.RegisterPostMergeCallbacks(this);
+        _resolvedProviderContributions?.RegisterPostMergeCallbacks(this);
     }
 
     /// <summary>
@@ -358,5 +369,3 @@ internal partial class ReportModelBuilder(
         return new ReportAssemblyStage();
     }
 }
-
-#pragma warning restore S107

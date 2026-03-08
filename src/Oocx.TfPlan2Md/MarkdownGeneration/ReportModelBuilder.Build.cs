@@ -77,7 +77,7 @@ internal partial class ReportModelBuilder
                 ShowUnchangedValues: _showUnchangedValues,
                 IgnoreAzureIdCaseChanges: _ignoreAzureIdCaseChanges,
                 ShowSensitive: _showSensitive,
-                RenderTarget: renderTarget,
+                RenderTarget: _renderTarget,
                 DetailsDisplayMode: _detailsDisplayMode));
     }
 }

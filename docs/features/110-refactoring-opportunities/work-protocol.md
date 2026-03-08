@@ -325,7 +325,7 @@
 - **Summary:** Implemented the code quality refactoring items 3.1, 3.2, 3.3, 3.4+6.4, 3.5, and 6.5 from `docs/code-quality-report.md`. All changes are pure refactoring with zero behavior changes. Build passes with 0 warnings/errors; all 1186 tests pass; CodeQL finds 0 alerts.
 - **Artifacts Produced:**
   - `src/Oocx.TfPlan2Md/Providers/ResourceChangeHelpers.cs` (new) — shared `ResolveActiveState` helper
-  - `src/Oocx.TfPlan2Md/RenderTargets/DiffFormatterStringExtensions.cs` (new) — `EscapeMarkdown` string extension
+  - `src/Oocx.TfPlan2Md/RenderTargets/MarkdownStringExtensions.cs` (new) — `EscapeMarkdown` string extension
   - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/AzureRoleAssignmentAttributes.cs` (new) — role attribute name constants
   - `src/Oocx.TfPlan2Md/Providers/AzureDevOps/Models/AzureDevOpsFormatterHelpers.cs` (new) — shared formatter constants/methods
   - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/MarkdownHelpers/SemanticFormatting.Identity.cs` — added `GetPrincipalIcon`

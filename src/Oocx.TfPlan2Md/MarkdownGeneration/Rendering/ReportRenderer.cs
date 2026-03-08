@@ -64,7 +64,7 @@ internal sealed class ReportRenderer
             false);
 
         _headerRenderer.Render(writer, model);
-        RenderSummary(writer, model.Summary);
+        SummaryRenderer.Render(writer, model.Summary, boldTotal: true);
         CodeAnalysisSectionRenderer.RenderSummary(writer, model.CodeAnalysis);
         RenderResourceChanges(writer, model, effectiveContext);
         CodeAnalysisSectionRenderer.RenderOtherFindings(writer, model.CodeAnalysis);
@@ -73,17 +73,6 @@ internal sealed class ReportRenderer
         RenderFilteredResourceInfo(writer, model);
 
         return writer.Build();
-    }
-
-    /// <summary>
-    /// Renders the summary section using the canonical style.
-    /// Delegates to <see cref="SummaryRenderer.Render"/> for all report shapes.
-    /// </summary>
-    /// <param name="writer">Markdown writer.</param>
-    /// <param name="summary">Summary model.</param>
-    private static void RenderSummary(MarkdownWriter writer, SummaryModel summary)
-    {
-        SummaryRenderer.Render(writer, summary, boldTotal: true);
     }
 
     /// <summary>

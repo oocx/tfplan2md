@@ -44,7 +44,7 @@ internal static class AzureDevOpsFormatterHelpers
     /// <returns>Inline code span, or "-" when the value is absent.</returns>
     internal static string FormatOptionalString(string? value)
     {
-        if (string.IsNullOrEmpty(value))
+        if (string.IsNullOrWhiteSpace(value))
         {
             return "-";
         }

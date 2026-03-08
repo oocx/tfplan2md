@@ -182,7 +182,7 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
         });
 
         // DNS Zone → DNS Records (public zone types)
-        var dnsRecordTypes = (string[])
+        string[] dnsRecordTypes =
         [
             "azurerm_dns_a_record",
             "azurerm_dns_aaaa_record",
@@ -196,7 +196,7 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
         ];
 
         var dnsRecordExtractor = new AzureRmDnsRecordRowExtractor();
-        var dnsColumns = (ChildTableColumn[])
+        ChildTableColumn[] dnsColumns =
         [
             new ChildTableColumn("Name", "name"),
             new ChildTableColumn("Type", "type"),
@@ -220,7 +220,7 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
         }
 
         // Private DNS Zone → Private DNS Records
-        var privateDnsRecordTypes = (string[])
+        string[] privateDnsRecordTypes =
         [
             "azurerm_private_dns_a_record",
             "azurerm_private_dns_aaaa_record",

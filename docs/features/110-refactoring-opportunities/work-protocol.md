@@ -318,3 +318,20 @@
 - **Problems Encountered:**
   - Commit `97343530` used `fix:` type for `.github/agents/` changes only — would have caused an unintended Versionize patch bump. Resolved by rebasing (it was absorbed cleanly into the main feature commit).
   - One duplicate `chore:` commit for `artifacts/comprehensive-demo.md` (new commit + existing chore) — squashed during rebase.
+
+### Developer Entry 12
+
+- **Date:** 2026-03-08
+- **Summary:** Implemented the code quality refactoring items 3.1, 3.2, 3.3, 3.4+6.4, 3.5, and 6.5 from `docs/code-quality-report.md`. All changes are pure refactoring with zero behavior changes. Build passes with 0 warnings/errors; all 1186 tests pass; CodeQL finds 0 alerts.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/ResourceChangeHelpers.cs` (new) — shared `ResolveActiveState` helper
+  - `src/Oocx.TfPlan2Md/RenderTargets/DiffFormatterStringExtensions.cs` (new) — `EscapeMarkdown` string extension
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/AzureRoleAssignmentAttributes.cs` (new) — role attribute name constants
+  - `src/Oocx.TfPlan2Md/Providers/AzureDevOps/Models/AzureDevOpsFormatterHelpers.cs` (new) — shared formatter constants/methods
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/MarkdownHelpers/SemanticFormatting.Identity.cs` — added `GetPrincipalIcon`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/JsonFlattener.cs` — added `GetValue` helper
+  - 12 modified factory/formatter files with duplicates removed
+- **Problems Encountered:**
+  - Stale comment fragments were left behind when removing private methods (fixed before commit via `--amend`)
+  - Extra closing brace in `GitHubDiffFormatter.cs` (fixed before commit)
+  - Code review suggested cleaner pattern for icon+NonBreakingSpace construction using C# pattern matching — applied and amended.

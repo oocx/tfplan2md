@@ -251,8 +251,9 @@ internal static class RoleAssignmentViewModelFactory
     {
         var scopeSummary = BuildScopeSummary(scope, scopeFormatter, resourceAddress);
         var roleSummary = $"<code>🛡️{NonBreakingSpace}{EscapeMarkdown(role.Name)}</code>";
-        var rawPrincipalIcon = GetPrincipalIcon(principal.Type);
-        var principalIcon = string.IsNullOrEmpty(rawPrincipalIcon) ? string.Empty : $"{rawPrincipalIcon}{NonBreakingSpace}";
+        var principalIcon = GetPrincipalIcon(principal.Type) is { Length: > 0 } icon
+            ? $"{icon}{NonBreakingSpace}"
+            : string.Empty;
         var principalSummary = $"<code>{principalIcon}{EscapeMarkdown(principal.Name)}</code>";
 
         return action switch

@@ -22,13 +22,14 @@ public class AzureDevOpsDiffFormatterTests
     }
 
     [Test]
-    public async Task FormatDiff_WhenValuesAreEqual_ReturnsEscapedInlineCode()
+    public async Task FormatDiff_WhenValuesAreEqualWithMarkdownSpecialCharacters_ReturnsEscapedInlineCode()
     {
         var formatter = new AzureDevOpsDiffFormatter();
+        const string value = "\\`*_{}[]()#+-.!|";
 
-        var result = formatter.FormatDiff("value*", "value*");
+        var result = formatter.FormatDiff(value, value);
 
-        result.Should().Be("<code>value\\*</code>");
+        result.Should().Be("<code>\\\\\\`\\*\\_\\{\\}\\[\\]\\(\\)\\#\\+\\-\\.\\!\\|</code>");
 
         await Task.CompletedTask;
     }

@@ -9,6 +9,13 @@ Implement the approved Feature 112 slice defined in
 `GitHubDiffFormatter` and `AzureDevOpsDiffFormatter` by introducing one shared internal helper
 under `src/Oocx.TfPlan2Md/RenderTargets/`, while preserving all current rendering behavior.
 
+## Status
+
+- [x] Task 1 complete
+- [x] Task 2 complete
+- [x] Task 3 complete
+- [x] Task 4 complete
+
 This plan intentionally stays surgical:
 
 - no CLI or output-format redesign

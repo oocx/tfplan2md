@@ -28,11 +28,13 @@ internal sealed class GitHubDiffFormatter : IDiffFormatter
         // Return the unchanged value wrapped in code when both are identical
         if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
         {
-            return WrapInlineCode(EscapeMarkdown(afterValue));
+            return WrapInlineCode(DiffFormatterMarkdownEscaper.Escape(afterValue));
         }
 
         // Build simple diff with +/- notation
-        return BuildSimpleDiffTable(EscapeMarkdown(beforeValue), EscapeMarkdown(afterValue));
+        return BuildSimpleDiffTable(
+            DiffFormatterMarkdownEscaper.Escape(beforeValue),
+            DiffFormatterMarkdownEscaper.Escape(afterValue));
     }
 
     /// <summary>
@@ -62,34 +64,4 @@ internal sealed class GitHubDiffFormatter : IDiffFormatter
         return $"- {escapedBefore}<br>+ {escapedAfter}";
     }
 
-    /// <summary>
-    /// Escapes markdown special characters to prevent rendering issues.
-    /// </summary>
-    /// <param name="value">Value to escape.</param>
-    /// <returns>Escaped string safe for markdown rendering.</returns>
-    private static string EscapeMarkdown(string? value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return string.Empty;
-        }
-
-        return value
-            .Replace("\\", "\\\\", StringComparison.Ordinal)
-            .Replace("`", "\\`", StringComparison.Ordinal)
-            .Replace("*", "\\*", StringComparison.Ordinal)
-            .Replace("_", "\\_", StringComparison.Ordinal)
-            .Replace("{", "\\{", StringComparison.Ordinal)
-            .Replace("}", "\\}", StringComparison.Ordinal)
-            .Replace("[", "\\[", StringComparison.Ordinal)
-            .Replace("]", "\\]", StringComparison.Ordinal)
-            .Replace("(", "\\(", StringComparison.Ordinal)
-            .Replace(")", "\\)", StringComparison.Ordinal)
-            .Replace("#", "\\#", StringComparison.Ordinal)
-            .Replace("+", "\\+", StringComparison.Ordinal)
-            .Replace("-", "\\-", StringComparison.Ordinal)
-            .Replace(".", "\\.", StringComparison.Ordinal)
-            .Replace("!", "\\!", StringComparison.Ordinal)
-            .Replace("|", "\\|", StringComparison.Ordinal);
-    }
 }

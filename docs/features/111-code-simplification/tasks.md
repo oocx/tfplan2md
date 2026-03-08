@@ -496,7 +496,7 @@ Convert `SummaryModel` from a plain `class` with `required init` properties to a
 **Acceptance Criteria:**
 - [x] `SummaryModel` is declared as a `sealed record`.
 - [x] All construction call sites compile without modification (or with minimal, mechanical updates).
-- [ ] Full test suite passes with no regressions.
+- [x] Full test suite passes with no regressions.
 
 **Dependencies:** None
 
@@ -519,7 +519,7 @@ via a `public` access path.
 **Acceptance Criteria:**
 - [x] `ActionSummary`, `SummaryModel`, and `ResourceTypeBreakdown` are all declared `internal`.
 - [x] No external assembly (test projects or otherwise) fails to compile due to visibility.
-- [ ] Full test suite passes with no regressions.
+- [x] Full test suite passes with no regressions.
 
 **Dependencies:** Task 21 (for `SummaryModel` — must be a record before or at the same time as
 the access-modifier change, to avoid two separate edits to the same type declaration)

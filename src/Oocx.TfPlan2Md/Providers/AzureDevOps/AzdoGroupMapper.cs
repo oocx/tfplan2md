@@ -17,10 +17,10 @@ internal sealed class AzdoGroupMapper : AzdoEntityMapper
     /// <summary>
     /// Initializes a new instance of the <see cref="AzdoGroupMapper"/> class.
     /// </summary>
-    /// <param name="groupMappings">Mapping of group descriptors to display names.</param>
+    /// <param name="mappings">Mapping of group descriptors to display names.</param>
     /// <param name="diagnostics">Optional diagnostic sink for recording failed resolutions.</param>
-    public AzdoGroupMapper(FrozenDictionary<string, string> groupMappings, IDiagnosticSink? diagnostics)
-        : base(groupMappings, diagnostics)
+    public AzdoGroupMapper(FrozenDictionary<string, string> mappings, IDiagnosticSink? diagnostics)
+        : base(mappings, diagnostics)
     {
     }
 

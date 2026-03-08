@@ -247,7 +247,6 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <summary>
     /// Creates the markdown renderer with all required dependencies.
     /// </summary>
-    /// <param name="principalMapper">The principal mapper for role assignment resolution.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for troubleshooting.</param>
     /// <param name="providerRegistry">The provider registry for module-specific rendering.</param>
     /// <param name="providerContributionSet">The centralized provider contribution set.</param>
@@ -255,14 +254,12 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <param name="iconProviderRegistry">The icon provider registry for resource icons.</param>
     /// <returns>A configured markdown renderer instance.</returns>
     internal MarkdownRenderer CreateMarkdownRenderer(
-        IPrincipalMapper principalMapper,
         DiagnosticContext? diagnosticContext,
         ProviderRegistry providerRegistry,
         ProviderContributionSet providerContributionSet,
         ValueFormatterRegistry valueFormatterRegistry,
         IconProviderRegistry iconProviderRegistry)
     {
-        _ = principalMapper;
         return new MarkdownRenderer(
             diagnosticContext,
             providerRegistry,
@@ -352,7 +349,6 @@ internal sealed class CompositionRoot(CliOptions options)
             iconProviderRegistry);
 
         var renderer = CreateMarkdownRenderer(
-            principalMapper,
             diagnosticContext,
             providerRegistry,
             providerContributionSet,

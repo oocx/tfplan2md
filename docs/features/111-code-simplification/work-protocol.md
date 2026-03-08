@@ -59,3 +59,18 @@ is deleted. `AzureDevOpsModule` registers `new AzureDevOpsDelegatingRenderer("az
 `IResourceChangeStage.Build` gains an optional parameter
 `IReadOnlyDictionary<(string, string), IReadOnlyList<string>>? preBuiltReferenceIndex = null`.
 Production path passes the pre-built index; test paths pass `null` and self-compute (no test changes needed).
+
+## Developer
+
+**Date:** 2026-03-08
+**Agent:** developer-coding-agent
+
+### Work Done
+- Fixed Minor Issue #1: Removed `principalMapper` parameter from `CompositionRoot.CreateMarkdownRenderer` and updated call site
+- Fixed Minor Issue #2: Marked Tasks 21 and 22 "Full test suite passes" checkboxes as complete in `tasks.md`
+- Applied Suggestion #1: Renamed `groupMappings` to `mappings` in `AzdoGroupMapper` constructor for consistency with base class
+- Applied Suggestion #2: Added inline comment on `resourceType` parameter in `SemanticFormatting.Registry.cs` explaining the reorder intent
+
+### Verification
+- All tests pass (run `scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --solution src/tfplan2md.slnx`)
+- No new compiler warnings introduced

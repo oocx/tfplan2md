@@ -229,7 +229,7 @@ internal static partial class MarkdownHelpers
         string? providerName,
         ValueFormatContext context,
         IconProviderRegistry? iconProviderRegistry,
-        string? resourceType = null)
+        string? resourceType = null) // optional; last to allow default value
     {
         if (string.IsNullOrWhiteSpace(value))
         {

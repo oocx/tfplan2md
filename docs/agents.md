@@ -672,6 +672,8 @@ Example: If the most recent feature is `025-...` and a workflow item `026-...` a
 | Workflow Improvements | `workflow/` | `workflow/028-improvement-opportunities` | Workflow Engineer |
 | Website Changes | `website/` | `website/homepage-redesign` | Web Designer |
 
+**GitHub Copilot PR branch exception:** When GitHub creates a coding-agent pull request, it may place the work on an auto-generated `copilot/*` branch. That branch name is an execution-context detail for the existing PR, not a replacement for the underlying `feature/`, `fix/`, `workflow/`, or `website/` work-item convention. Continue to use the matching work-item folder and workflow type, and do not treat `copilot/*` by itself as a workflow violation.
+
 **Note:** The Requirements Engineer creates the feature branch at the start of the feature workflow. The Issue Analyst creates the fix branch at the start of the bug fix workflow. All subsequent agents work on the same branch until Release Manager creates the pull request.
 
 **Commit Type Guardrails:** Pull requests that only change workflow/internal tooling (`.github/`, `scripts/`, `docs/`, `website/`) must NOT use `feat:` or `fix:` commit types — use `workflow:`, `docs:`, `chore:`, `ci:`, or `refactor:` instead. Using `feat:` or `fix:` for non-code changes causes incorrect Versionize version bumps. See [docs/spec.md § Commit Guardrails](spec.md#github-actions-workflows) for details.

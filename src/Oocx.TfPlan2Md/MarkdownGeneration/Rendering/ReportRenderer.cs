@@ -58,20 +58,13 @@ internal sealed class ReportRenderer
         var writer = new MarkdownWriter();
         var hasOutputs = model.GlobalOutputs.Count > 0 || model.ModuleChanges.Any(module => module.Outputs.Count > 0);
         var isOutputsFocusedReport = hasOutputs && model.ModuleChanges.Count <= 1 && model.ModuleChanges.All(module => module.Changes.Count <= 4);
-        var isNoOpParentChildScenario = model.ModuleChanges.Count == 1
-            && model.Summary.Total == 2
-            && model.ModuleChanges[0].Changes.Any(change =>
-                string.Equals(change.Action, "no-op", StringComparison.Ordinal)
-                && change.ChildResourceGroups.Count > 0);
-        var useWideSummarySeparators = isOutputsFocusedReport
-            || isNoOpParentChildScenario;
         var effectiveContext = new ScenarioRenderContext(
             context,
             isOutputsFocusedReport,
             false);
 
         _headerRenderer.Render(writer, model);
-        RenderSummary(writer, model.Summary, useWideSummarySeparators);
+        RenderSummary(writer, model.Summary);
         CodeAnalysisSectionRenderer.RenderSummary(writer, model.CodeAnalysis);
         RenderResourceChanges(writer, model, effectiveContext);
         CodeAnalysisSectionRenderer.RenderOtherFindings(writer, model.CodeAnalysis);
@@ -83,15 +76,13 @@ internal sealed class ReportRenderer
     }
 
     /// <summary>
-    /// Renders the summary section using the canonical style for the current report shape.
+    /// Renders the summary section using the canonical style.
     /// Delegates to <see cref="SummaryRenderer.Render"/> for all report shapes.
     /// </summary>
     /// <param name="writer">Markdown writer.</param>
     /// <param name="summary">Summary model.</param>
-    /// <param name="useWideSeparators">Parameter retained for API compatibility; the canonical renderer handles all shapes.</param>
-    private static void RenderSummary(MarkdownWriter writer, SummaryModel summary, bool useWideSeparators)
+    private static void RenderSummary(MarkdownWriter writer, SummaryModel summary)
     {
-        _ = useWideSeparators;
         SummaryRenderer.Render(writer, summary, boldTotal: true);
     }
 

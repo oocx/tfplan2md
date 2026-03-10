@@ -1,34 +1,34 @@
 {% macro providerCard(provider, rootPrefix="") %}
-<div class="feature-category-card">
-  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-    <div class="feature-icon" style="margin: 0; font-size: 32px;">{{ provider.icon }}</div>
+<div class="feature-category-card provider-card">
+  <div class="provider-card-header">
+    <div class="feature-icon provider-card-icon">{{ provider.icon }}</div>
     <div>
-      <h3 style="margin: 0;">{{ provider.title }}</h3>
-      <span style="display: inline-block; padding: 4px 12px; background: {{ provider.statusColor }}; color: white; border-radius: 12px; font-size: 12px; font-weight: 600; margin-top: 4px;">{{ provider.status }}</span>
+      <h3 class="provider-card-title">{{ provider.title }}</h3>
+      <span class="provider-status-badge {{ provider.statusClass }}">{{ provider.status }}</span>
     </div>
   </div>
 
   <p>{{ provider.description }}</p>
 
   {% for section in provider.sections %}
-  <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px;">{{ section.title }}</h4>
-  <ul style="margin-left: 20px; font-size: 14px;">
+  <h4 class="provider-card-section-title">{{ section.title }}</h4>
+  <ul class="provider-card-list">
     {% for item in section.items %}
-    <li style="margin-bottom: 8px;">{{ item | safe }}</li>
+    <li>{{ item | safe }}</li>
     {% endfor %}
   </ul>
   {% endfor %}
 
   {% if provider.note %}
-  <p style="margin-top: 24px; padding: 12px; background: var(--color-surface); border-left: 3px solid {{ provider.noteBorderColor or 'var(--color-primary)' }}; font-size: 14px;">
+  <p class="provider-card-note {{ provider.noteClass or 'provider-card-note-primary' }}">
     {{ provider.note | safe }}
   </p>
   {% endif %}
 
   {% if provider.actions and provider.actions.length %}
-  <div style="display: flex; gap: 12px; margin-top: 24px;">
+  <div class="provider-card-actions">
     {% for action in provider.actions %}
-    <a href="{{ action.href }}" class="btn btn-{{ action.variant or 'secondary' }}" style="{% if action.fullWidth %}width: 100%;{% else %}flex: 1;{% endif %} text-align: center;"{% if action.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ action.label }}</a>
+    <a href="{{ action.href }}" class="btn btn-{{ action.variant or 'secondary' }} provider-card-action{% if action.fullWidth %} provider-card-action-full{% else %} provider-card-action-flex{% endif %}"{% if action.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ action.label }}</a>
     {% endfor %}
   </div>
   {% endif %}

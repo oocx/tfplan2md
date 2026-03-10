@@ -29,7 +29,8 @@ export function initCarousel() {
   }
 
   function updateCarousel() {
-    const slideWidth = slides[0].offsetWidth + 24;
+    const gap = Number.parseInt(getComputedStyle(track).gap, 10) || 24;
+    const slideWidth = slides[0].offsetWidth + gap;
     track.style.transform = `translateX(-${currentIndex * slideWidth * slidesPerView}px)`;
     Array.from(dotsContainer.children).forEach((dot, index) => {
       dot.classList.toggle("active", index === currentIndex);

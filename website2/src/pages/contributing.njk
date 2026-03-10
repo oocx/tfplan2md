@@ -9,191 +9,54 @@ pageId: "contributing"
 ---
 <!-- markdownlint-disable MD033 MD022 MD025 MD034 -->
 {% from "components/content-blocks.njk" import heroBlock %}
-
 {{ heroBlock("Contributing", "Thank you for your interest in contributing! This guide covers development workflow, coding standards, and our AI-powered development process.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
 
-<section class="section" style="padding-top: 0;">
-  <div class="section-container">
-    <h2 class="section-title">Quick Links</h2>
-    <div class="features-grid" style="grid-template-columns: repeat(2, 1fr);">
-      <a href="https://github.com/oocx/tfplan2md" class="btn btn-primary" style="text-align: center;">GitHub Repository</a>
-      <a href="https://github.com/oocx/tfplan2md/issues" class="btn btn-secondary" style="text-align: center;">Issue Tracker</a>
-    </div>
-  </div>
-</section>
+<section class="section section-no-top-padding"><div class="section-container">
+  <h2 class="section-title">Quick Links</h2>
+  <div class="features-grid contributing-quick-links-grid">{% for link in contributingPage.quickLinks %}<a href="{{ link.href }}" class="btn btn-{{ link.variant }} contributing-quick-link"{% if link.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ link.label }}</a>{% endfor %}</div>
+</div></section>
 
-<section class="section section-alt">
-  <div class="section-container">
-    <h2 class="section-title">Development Workflow</h2>
-
-    <h3 class="doc-subtitle">Branch Strategy</h3>
-    <ul>
-      <li><strong>Main branch (<code>main</code>)</strong> - Always in a releasable state</li>
-      <li><strong>Feature branches</strong> - Created from <code>main</code> for new features or fixes</li>
-    </ul>
-
-    <h3 class="doc-subtitle">Creating a Feature Branch</h3>
-    <p>Use descriptive branch names with the following prefixes. Features and fixes use an issue number (for example, <code>feat/025-semantic-diff</code>, <code>fix/026-template-escape</code>), while other types use descriptive names:</p>
-    <table class="doc-table">
-      <thead>
-        <tr><th>Prefix</th><th>Purpose</th><th>Example</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>feat/</code></td><td>New features</td><td><code>feat/semantic-diff-firewall-rules</code></td></tr>
-        <tr><td><code>fix/</code></td><td>Bug fixes</td><td><code>fix/template-rendering-escape</code></td></tr>
-        <tr><td><code>docs/</code></td><td>Documentation changes</td><td><code>docs/update-installation-guide</code></td></tr>
-        <tr><td><code>refactor/</code></td><td>Code refactoring</td><td><code>refactor/parser-immutable-models</code></td></tr>
-        <tr><td><code>chore/</code></td><td>Maintenance tasks</td><td><code>chore/update-dependencies</code></td></tr>
-        <tr><td><code>workflow/</code></td><td>Agent/workflow changes</td><td><code>workflow/add-uat-skill</code></td></tr>
-        <tr><td><code>website/</code></td><td>Website changes</td><td><code>website/add-feature-page</code></td></tr>
-      </tbody>
-    </table>
-
-    <p><strong>Example workflow:</strong></p>
-    <div class="code-block"><pre><code>git checkout main
+<section class="section section-alt"><div class="section-container">
+  <h2 class="section-title">Development Workflow</h2>
+  <h3 class="doc-subtitle">Branch Strategy</h3>
+  <ul><li><strong>Main branch (<code>main</code>)</strong> - Always in a releasable state</li><li><strong>Feature branches</strong> - Created from <code>main</code> for new features or fixes</li></ul>
+  <h3 class="doc-subtitle">Creating a Feature Branch</h3>
+  <p>Use descriptive branch names with the following prefixes. Features and fixes use an issue number (for example, <code>feat/025-semantic-diff</code>, <code>fix/026-template-escape</code>), while other types use descriptive names:</p>
+  <table class="doc-table"><thead><tr><th>Prefix</th><th>Purpose</th><th>Example</th></tr></thead><tbody>{% for branch in contributingPage.branchPrefixes %}<tr><td><code>{{ branch.prefix }}</code></td><td>{{ branch.purpose }}</td><td><code>{{ branch.example }}</code></td></tr>{% endfor %}</tbody></table>
+  <p><strong>Example workflow:</strong></p>
+  <div class="code-block"><pre><code>git checkout main
 git pull origin main
 git checkout -b feat/your-feature-name</code></pre></div>
-  </div>
-</section>
+</div></section>
 
-<section class="section">
-  <div class="section-container">
-    <h2 class="section-title">Testing Requirements</h2>
-    <p class="section-description">All changes must include appropriate tests. The project uses a comprehensive testing strategy:</p>
-
-    <h3 class="doc-subtitle">Test Types</h3>
-    <ul>
-      <li><strong>Unit Tests</strong> - Test individual components in isolation</li>
-      <li><strong>Integration Tests</strong> - Test end-to-end workflows, including Docker-based tests</li>
-      <li><strong>Invariant Tests</strong> - Property-based tests that verify markdown invariants</li>
-      <li><strong>Snapshot Tests</strong> - Golden file tests that detect unexpected output changes</li>
-      <li><strong>Template Isolation Tests</strong> - Test each template independently</li>
-      <li><strong>Fuzz Tests</strong> - Test with edge-case inputs (special characters, Unicode)</li>
-      <li><strong>Markdownlint Integration</strong> - Docker-based linting with markdownlint-cli2</li>
-    </ul>
-
-    <h3 class="doc-subtitle">Running Tests</h3>
-    <div class="code-block"><pre><code># Run all tests
+<section class="section"><div class="section-container">
+  <h2 class="section-title">Testing Requirements</h2>
+  <p class="section-description">All changes must include appropriate tests. The project uses a comprehensive testing strategy:</p>
+  <h3 class="doc-subtitle">Test Types</h3>
+  <ul>{% for item in contributingPage.testTypes %}<li>{{ item }}</li>{% endfor %}</ul>
+  <h3 class="doc-subtitle">Running Tests</h3>
+  <div class="code-block"><pre><code># Run all tests
 dotnet test
 
 # Run specific test categories
 dotnet test --filter "FullyQualifiedName~MarkdownInvariantTests"
 dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"</code></pre></div>
+  <h3 class="doc-subtitle">Markdown Quality Requirements</h3>
+  <p>All generated markdown must:</p>
+  <ul>{% for item in contributingPage.markdownRequirements %}<li>{{ item | safe }}</li>{% endfor %}</ul>
+</div></section>
 
-    <h3 class="doc-subtitle">Markdown Quality Requirements</h3>
-    <p>All generated markdown must:</p>
-    <ul>
-      <li>Pass markdownlint validation (MD012 and other rules)</li>
-      <li>Parse correctly with Markdig</li>
-      <li>Render correctly on GitHub and Azure DevOps</li>
-      <li>Have proper table structure (no blank lines between rows)</li>
-      <li>Have proper heading spacing (blank lines before/after)</li>
-      <li>Have balanced HTML tags (<code>&lt;details&gt;</code>, <code>&lt;summary&gt;</code>)</li>
-    </ul>
-  </div>
-</section>
-
-<section class="section section-alt">
-  <div class="section-container">
-    <h2 class="section-title">Commit Messages</h2>
-    <p>This project uses <a href="https://www.conventionalcommits.org/">Conventional Commits</a> to automate versioning and changelog generation.</p>
-
-    <h3 class="doc-subtitle">Format</h3>
-    <div class="code-block"><pre><code>&lt;type&gt;[optional scope]: &lt;description&gt;
+<section class="section section-alt"><div class="section-container">
+  <h2 class="section-title">Commit Messages</h2>
+  <p>This project uses <a href="https://www.conventionalcommits.org/">Conventional Commits</a> to automate versioning and changelog generation.</p>
+  <h3 class="doc-subtitle">Format</h3>
+  <div class="code-block"><pre><code>&lt;type&gt;[optional scope]: &lt;description&gt;
 
 [optional body]
 
 [optional footer(s)]</code></pre></div>
-
-    <h3 class="doc-subtitle">Commit Types</h3>
-    <table class="doc-table">
-      <thead>
-        <tr><th>Type</th><th>Description</th><th>Version Bump</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>feat</code></td><td>A new feature</td><td>Minor (0.x.0)</td></tr>
-        <tr><td><code>fix</code></td><td>A bug fix</td><td>Patch (0.0.x)</td></tr>
-        <tr><td><code>docs</code></td><td>Documentation only</td><td>None</td></tr>
-        <tr><td><code>style</code></td><td>Code style changes</td><td>None</td></tr>
-        <tr><td><code>refactor</code></td><td>Code refactoring</td><td>None</td></tr>
-        <tr><td><code>test</code></td><td>Adding or modifying tests</td><td>None</td></tr>
-        <tr><td><code>chore</code></td><td>Other maintenance</td><td>None</td></tr>
-      </tbody>
-    </table>
-
-    <h3 class="doc-subtitle">Breaking Changes</h3>
-    <p>For breaking changes, add <code>BREAKING CHANGE:</code> in the commit footer or use <code>!</code> after the type:</p>
-    <div class="code-block"><pre><code>feat(parser)!: change output format to JSON
-
-BREAKING CHANGE: The output format has changed from plain text to JSON.</code></pre></div>
-
-    <h3 class="doc-subtitle">Commit Cohesion</h3>
-    <p>Each commit should focus on a single topic or change. If you find yourself using "and" repeatedly in a commit message, consider splitting it into multiple commits.</p>
-
-    <h3 class="doc-subtitle">Examples</h3>
-    <div class="code-block"><pre><code># Feature
-git commit -m "feat(cli): add --output flag for custom output path"
-
-# Bug fix
-git commit -m "fix(parser): handle empty resource changes array"
-
-# Documentation
-git commit -m "docs: update installation instructions"
-
-# Breaking change
-git commit -m "feat(api)!: rename TerraformPlan to PlanResult"</code></pre></div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-container">
-    <h2 class="section-title">Pull Request Process</h2>
-    <ol>
-      <li><strong>Create a feature branch</strong> from <code>main</code></li>
-      <li><strong>Make your changes</strong> following the coding guidelines</li>
-      <li><strong>Ensure all checks pass</strong>:<div class="code-block"><pre><code>dotnet format --verify-no-changes
-dotnet build
-dotnet test</code></pre></div></li>
-      <li><strong>Push your branch</strong> and create a Pull Request</li>
-      <li><strong>Wait for review</strong> - PR validation will run automatically</li>
-      <li><strong>Merge using "Rebase and merge"</strong> - This project requires a linear history</li>
-    </ol>
-
-    <h3 class="doc-subtitle">PR Requirements</h3>
-    <ul>
-      <li>All CI checks must pass (build, test, format, vulnerability scan)</li>
-      <li>Code follows the project's style guidelines (enforced by <code>.editorconfig</code>)</li>
-      <li>Commit messages follow Conventional Commits format</li>
-      <li>If conflicts occur, rebase onto main: <code>git pull --rebase origin main</code></li>
-      <li>Force-push your branch: <code>git push --force-with-lease</code></li>
-      <li>Do NOT use "Squash and merge" or "Create a merge commit"</li>
-    </ul>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-container">
-    <h2 class="section-title">Coding Standards</h2>
-
-    <h3 class="doc-subtitle">Access Modifiers</h3>
-    <p>tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:</p>
-    <ul>
-      <li>✅ <code>private</code> - Default for class members</li>
-      <li>✅ <code>internal</code> - For cross-assembly visibility within the solution</li>
-      <li>⚠️ <code>public</code> - Only for main entry points or when absolutely necessary</li>
-    </ul>
-    <p><strong>Never use <code>public</code> just for testing.</strong> Instead, use <code>InternalsVisibleTo</code> to expose <code>internal</code> members to test projects.</p>
-
-    <h3 class="doc-subtitle">Code Comments</h3>
-    <p>All code must be thoroughly documented with XML doc comments:</p>
-    <ul>
-      <li>All members (public, internal, private) require XML doc comments</li>
-      <li>Comments must explain <strong>"why"</strong> not just <strong>"what"</strong></li>
-      <li>Use standard XML tags: <code>&lt;summary&gt;</code>, <code>&lt;param&gt;</code>, <code>&lt;returns&gt;</code>, <code>&lt;remarks&gt;</code></li>
-      <li>Reference related features/specifications for traceability</li>
-    </ul>
-
-    <h3 class="doc-subtitle">Example</h3>
+  <h3 class="doc-subtitle">Commit Types</h3>
+  <table class="doc-table"><thead><tr><th>Type</th><th>Description</th><th>Version Bump</th></tr></thead><tbody>{% for commitType in contributingPage.commitTypes %}<tr><td><code>{{ commitType.type }}</code></td><td>{{ commitType.description }}</td><td>{{ commitType.versionBump }}</td></tr>{% endfor %}</tbody></table>
     <div class="code-block"><pre><code>/// &lt;summary&gt;
 /// Parses Terraform plan JSON and extracts resource changes.
 /// &lt;/summary&gt;
@@ -216,9 +79,9 @@ internal async Task&lt;IReadOnlyList&lt;ResourceChange&gt;&gt; ParseAsync(string
 
     <h3 class="doc-subtitle">Prerequisites</h3>
     <ul>
-      <li><a href="https://dotnet.microsoft.com/download">.NET 10 SDK</a></li>
-      <li><a href="https://git-scm.com/">Git</a></li>
-      <li><a href="https://www.docker.com/">Docker</a> (for running integration tests)</li>
+      {% for item in contributingPage.prerequisites %}
+      <li><a href="{{ item.href }}"{% if item.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.label }}</a>{{ item.suffix or "" }}</li>
+      {% endfor %}
     </ul>
 
     <h3 class="doc-subtitle">Getting Started</h3>
@@ -239,15 +102,16 @@ dotnet test</code></pre></div>
     <h3 class="doc-subtitle">Pre-commit Hooks</h3>
     <p>This project uses <a href="https://github.com/alirezanet/Husky.Net">Husky.Net</a> for git hooks:</p>
     <ul>
-      <li><strong>pre-commit</strong>: Runs <code>dotnet format --verify-no-changes</code> and <code>dotnet build</code></li>
-      <li><strong>commit-msg</strong>: Validates commit message follows Conventional Commits format</li>
+      {% for item in contributingPage.preCommitHooks %}
+      <li>{{ item }}</li>
+      {% endfor %}
     </ul>
 
     <p>If your commit is rejected:</p>
     <ol>
-      <li><strong>Format issues</strong>: Run <code>dotnet format</code> to fix formatting</li>
-      <li><strong>Build errors</strong>: Fix the build errors before committing</li>
-      <li><strong>Commit message</strong>: Ensure your message follows the format <code>type: description</code></li>
+      {% for item in contributingPage.hookFailureSteps %}
+      <li>{{ item | safe }}</li>
+      {% endfor %}
     </ol>
   </div>
 </section>
@@ -256,8 +120,8 @@ dotnet test</code></pre></div>
   <div class="section-container">
     <h2 class="section-title">AI-Powered Development Workflow</h2>
     <p>This project was built 100% using GitHub Copilot with a multi-agent AI workflow.</p>
-    <p style="text-align: center; margin-top: 32px;">
-      <a href="ai-workflow.html" class="btn btn-primary" style="display: inline-block;">Learn About the AI Workflow</a>
+    <p class="contributing-ai-workflow-cta">
+      <a href="ai-workflow.html" class="btn btn-primary contributing-ai-workflow-button">Learn About the AI Workflow</a>
     </p>
   </div>
 </section>
@@ -267,21 +131,15 @@ dotnet test</code></pre></div>
     <h2 class="section-title">Release Process</h2>
     <p>Releases are automated via GitHub Actions:</p>
     <ol>
-      <li>When commits are pushed to <code>main</code>, the CI workflow runs Versionize</li>
-      <li>Versionize only runs when Docker-relevant files changed (runtime code, examples, build config)</li>
-      <li>If there are <code>feat:</code>, <code>fix:</code>, or <code>BREAKING CHANGE</code> commits, Versionize:
+      {% for item in contributingPage.releaseSteps %}
+      <li>{{ item.text | safe }}{% if item.items %}
         <ul>
-          <li>Bumps the version in <code>.csproj</code></li>
-          <li>Updates <code>CHANGELOG.md</code></li>
-          <li>Creates a git tag (for example, <code>v0.2.0</code>)</li>
+          {% for subItem in item.items %}
+          <li>{{ subItem | safe }}</li>
+          {% endfor %}
         </ul>
-      </li>
-      <li>The tag push triggers the Release workflow which:
-        <ul>
-          <li>Creates a GitHub Release with changelog notes</li>
-          <li>Builds and pushes the Docker image to Docker Hub</li>
-        </ul>
-      </li>
+      {% endif %}</li>
+      {% endfor %}
     </ol>
     <p><strong>Note:</strong> Changes to tests, documentation, website, scripts, or GitHub workflows do not trigger releases, as they do not affect the published Docker image.</p>
   </div>

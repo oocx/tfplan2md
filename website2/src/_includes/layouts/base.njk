@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+  {% set pagePath = page.url or permalink or "/" %}
+  {% set canonicalPath = "/" if pagePath == "/index.html" else pagePath | replace("index.html", "") %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }}</title>
   {% if description %}
   <meta name="description" content="{{ description }}">
   {% endif %}
+  <link rel="canonical" href="{{ site.baseUrl }}{{ canonicalPath }}">
+  <meta property="og:title" content="{{ title }}">
+  {% if description %}
+  <meta property="og:description" content="{{ description }}">
+  {% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.baseUrl }}{{ canonicalPath }}">
+  <link rel="icon" href="{{ rootPrefix }}favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="{{ rootPrefix }}style.css">
 </head>
 <body>
   {% include "partials/nav.njk" %}
-  {{ content | safe }}
+  <main id="main-content">
+    {{ content | safe }}
+  </main>
   {% include "partials/footer.njk" %}
 
   <div id="lightbox" class="lightbox-modal" hidden>

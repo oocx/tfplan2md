@@ -8,68 +8,40 @@ navKey: "ai-workflow"
 pageId: "ai-workflow"
 ---
 <!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock %}
 
-<header class="hero">
-  <div class="hero-container">
-    <div class="hero-content">
-      <h1 class="hero-title">
-        AI Development <span class="hero-gradient">Workflow</span>
-      </h1>
-      <p class="hero-subtitle">
-        tfplan2md is developed using a multi-agent AI workflow where specialized agents handle different phases of the development lifecycle
-      </p>
-    </div>
-  </div>
-</header>
+{{ heroBlock(aiWorkflowPage.hero.title, aiWorkflowPage.hero.subtitle, "hero", "", "", { highlightText: aiWorkflowPage.hero.highlightText }) }}
 
 <section class="section">
   <div class="section-container">
     <h2 class="section-title">Overview</h2>
-    <p class="content-text">
-      This project uses an agent-based workflow for feature development, inspired by best practices from GitHub Copilot agents and modern software engineering principles. Each agent is a specialized AI assistant with a clear responsibility in the development process.
-    </p>
-    <p class="content-text">
-      The workflow is coordinated by a human <strong>Maintainer</strong> who manages handoffs between agents and provides clarifications as needed. Agents produce artifacts as markdown files in the repository, creating a traceable development history.
-    </p>
+    {% for paragraph in aiWorkflowPage.overview %}
+    <p class="content-text">{{ paragraph }}</p>
+    {% endfor %}
 
     <div class="workflow-benefits">
+      {% for benefit in aiWorkflowPage.benefits %}
       <div class="benefit-card">
-        <div class="benefit-icon">🎯</div>
-        <h3>Clear Responsibilities</h3>
-        <p>Each agent has a single, well-defined role in the workflow</p>
+        <div class="benefit-icon">{{ benefit.icon }}</div>
+        <h3>{{ benefit.title }}</h3>
+        <p>{{ benefit.description }}</p>
       </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">📝</div>
-        <h3>Traceable Artifacts</h3>
-        <p>All decisions and changes are documented in markdown files</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">🔄</div>
-        <h3>Consistent Process</h3>
-        <p>Standardized workflow ensures quality and completeness</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">🤖</div>
-        <h3>AI-Powered</h3>
-        <p>Leverages GitHub Copilot's multi-model capabilities</p>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
 
 <section class="section section-alt">
   <div class="section-container">
-    <h2 class="section-title">Workflow Diagram</h2>
-    <p class="content-text">
-      The diagram below shows the complete agent workflow from requirements to release. Each agent produces artifacts that are consumed by the next agent in the sequence.
-    </p>
+    <h2 class="section-title">{{ aiWorkflowPage.diagram.title }}</h2>
+    <p class="content-text">{{ aiWorkflowPage.diagram.description }}</p>
 
-    <div class="diagram-container" style="background: #0d1b2a; padding: 2rem; border-radius: 8px; overflow-x: auto;">
-      <object data="ai-workflow.svg" type="image/svg+xml" style="width: 100%; max-width: 700px; margin: 0 auto; display: block;"></object>
+    <div class="diagram-container ai-workflow-diagram-shell">
+      <object data="ai-workflow.svg" type="image/svg+xml" class="ai-workflow-diagram-object"></object>
     </div>
 
-    <p class="diagram-note" style="margin-top: 2rem;">
-      <em>Agents produce and consume artifacts. Solid arrows show artifact creation and consumption. Dashed arrows indicate rework/feedback loops.</em>
+    <p class="diagram-note ai-workflow-diagram-note">
+      <em>{{ aiWorkflowPage.diagram.note }}</em>
     </p>
   </div>
 </section>
@@ -78,18 +50,9 @@ pageId: "ai-workflow"
   <div class="section-container">
     <h2 class="section-title">Key Agents</h2>
     <div class="agent-grid">
-      <div class="agent-card"><div class="agent-emoji">📋</div><h3>Requirements Engineer</h3><p>Gathers and clarifies requirements for new features</p></div>
-      <div class="agent-card"><div class="agent-emoji">🔍</div><h3>Issue Analyst</h3><p>Investigates bugs and technical issues</p></div>
-      <div class="agent-card"><div class="agent-emoji">🏗️</div><h3>Architect</h3><p>Designs solutions and documents decisions</p></div>
-      <div class="agent-card"><div class="agent-emoji">✅</div><h3>Quality Engineer</h3><p>Defines test plans and acceptance criteria</p></div>
-      <div class="agent-card"><div class="agent-emoji">💻</div><h3>Developer</h3><p>Implements features and tests</p></div>
-      <div class="agent-card"><div class="agent-emoji">📝</div><h3>Technical Writer</h3><p>Updates and maintains documentation</p></div>
-      <div class="agent-card"><div class="agent-emoji">👀</div><h3>Code Reviewer</h3><p>Reviews code quality and standards</p></div>
-      <div class="agent-card"><div class="agent-emoji">🧪</div><h3>UAT Tester</h3><p>Validates user-facing features</p></div>
-      <div class="agent-card"><div class="agent-emoji">🚀</div><h3>Release Manager</h3><p>Prepares and executes releases</p></div>
-      <div class="agent-card"><div class="agent-emoji">🔄</div><h3>Retrospective</h3><p>Identifies improvement opportunities</p></div>
-      <div class="agent-card"><div class="agent-emoji">⚙️</div><h3>Workflow Engineer</h3><p>Improves the workflow itself</p></div>
-      <div class="agent-card"><div class="agent-emoji">🎨</div><h3>Web Designer</h3><p>Maintains the project website</p></div>
+      {% for agent in aiWorkflowPage.agents %}
+      <div class="agent-card"><div class="agent-emoji">{{ agent.emoji }}</div><h3>{{ agent.title }}</h3><p>{{ agent.description }}</p></div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -98,11 +61,9 @@ pageId: "ai-workflow"
   <div class="section-container">
     <h2 class="section-title">How It Works</h2>
     <div class="process-steps">
-      <div class="process-step"><div class="step-number">1</div><div class="step-content"><h3>Entry Point</h3><p>The Maintainer identifies a need (new feature, bug fix, or workflow improvement) and starts with the appropriate entry agent</p></div></div>
-      <div class="process-step"><div class="step-number">2</div><div class="step-content"><h3>Agent Collaboration</h3><p>Each agent produces artifacts (markdown documents) that serve as inputs for the next agent in the workflow</p></div></div>
-      <div class="process-step"><div class="step-number">3</div><div class="step-content"><h3>Traceability</h3><p>All decisions, requirements, and changes are documented in versioned artifact files in the repository</p></div></div>
-      <div class="process-step"><div class="step-number">4</div><div class="step-content"><h3>Quality Gates</h3><p>Code Reviewer and UAT Tester validate changes before Release Manager creates the pull request</p></div></div>
-      <div class="process-step"><div class="step-number">5</div><div class="step-content"><h3>Continuous Improvement</h3><p>Retrospective agent analyzes the process and provides feedback to the Workflow Engineer for improvements</p></div></div>
+      {% for step in aiWorkflowPage.processSteps %}
+      <div class="process-step"><div class="step-number">{{ step.number }}</div><div class="step-content"><h3>{{ step.title }}</h3><p>{{ step.description }}</p></div></div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -115,24 +76,16 @@ pageId: "ai-workflow"
     </p>
 
     <div class="execution-modes">
+      {% for mode in aiWorkflowPage.executionModes %}
       <div class="mode-card">
-        <h3>🖥️ Local Mode (VS Code)</h3>
+        <h3>{{ mode.title }}</h3>
         <ul>
-          <li>Interactive development with Maintainer</li>
-          <li>Design decisions and debugging</li>
-          <li>Full tool access (edit, execute, preview)</li>
-          <li>Best for complex tasks requiring guidance</li>
+          {% for item in mode.items %}
+          <li>{{ item }}</li>
+          {% endfor %}
         </ul>
       </div>
-      <div class="mode-card">
-        <h3>☁️ Cloud Mode (GitHub)</h3>
-        <ul>
-          <li>Automated execution from GitHub issues</li>
-          <li>Well-scoped batch updates</li>
-          <li>Creates pull requests autonomously</li>
-          <li>Best for routine, well-defined tasks</li>
-        </ul>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -145,8 +98,9 @@ pageId: "ai-workflow"
     </p>
 
     <div class="cta-buttons">
-      <a href="https://github.com/oocx/tfplan2md/blob/main/docs/agents.md" class="btn btn-primary btn-lg">📖 Read Full Documentation (agents.md)</a>
-      <a href="contributing.html" class="btn btn-secondary btn-lg">🤝 Contributing Guide</a>
+      {% for cta in aiWorkflowPage.ctas %}
+      <a href="{{ cta.href }}" class="btn btn-{{ cta.variant }} btn-lg"{% if cta.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ cta.label }}</a>
+      {% endfor %}
     </div>
   </div>
 </section>

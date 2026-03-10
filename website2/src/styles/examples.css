@@ -1,0 +1,133 @@
+/* Rendered View (Azure DevOps Style) */
+.rendered-view {
+    background: white;
+    color: rgba(0, 0, 0, 0.9);
+    padding: 24px;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Ubuntu, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+[data-theme="dark"] .rendered-view {
+    background: rgb(32, 31, 30);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.rendered-view h1, .rendered-view h2, .rendered-view h3, .rendered-view h4 {
+    margin: 24px 0 8px 0;
+    font-weight: 600;
+    line-height: 1.25;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme="dark"] .rendered-view h1,
+[data-theme="dark"] .rendered-view h2,
+[data-theme="dark"] .rendered-view h3,
+[data-theme="dark"] .rendered-view h4 {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.rendered-view h1 { font-size: 2em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
+.rendered-view h2 { font-size: 1.5em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
+.rendered-view h3 { font-size: 0.9375rem; }
+.rendered-view h4 { font-size: 0.875rem; }
+
+.rendered-view p {
+    margin: 0 0 16px 0;
+}
+
+.rendered-view table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.rendered-view th {
+    padding: 13px 11px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.rendered-view td {
+    padding: 10px 13px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    text-align: left;
+    min-width: 50px;
+    max-width: 1000px;
+}
+
+[data-theme="dark"] .rendered-view th {
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.80);
+}
+
+[data-theme="dark"] .rendered-view td {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.rendered-view code {
+    display: inline;
+    padding: 2px 4px;
+    margin: 0;
+    font-size: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.06);
+    color: rgba(0, 0, 0, 0.9);
+    border-radius: 2px;
+    font-family: Menlo, Consolas, "Courier New", monospace;
+}
+
+[data-theme="dark"] .rendered-view code {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.rendered-view details {
+    margin-bottom: 12px;
+    border: 1px solid #f0f0f0;
+    border-radius: 0;
+    padding: 12px;
+}
+
+[data-theme="dark"] .rendered-view details {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.rendered-view summary {
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.9);
+    margin: -12px;
+    padding: 12px;
+}
+
+[data-theme="dark"] .rendered-view summary {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Markdown Syntax Highlighting */
+.md-comment { color: #6a737d; }
+.md-heading { color: #0550ae; font-weight: bold; }
+.md-bold { font-weight: bold; color: #24292f; }
+.md-code { color: #0a3069; background-color: rgba(175, 184, 193, 0.2); border-radius: 3px; padding: 2px 4px; }
+.md-link { color: #0969da; }
+.md-list { color: #d73a49; font-weight: bold; }
+.md-quote { color: #57606a; border-left: 4px solid #d0d7de; padding-left: 8px; }
+.md-tag { color: #116329; }
+.md-table-sep { color: #6a737d; }
+
+[data-theme="dark"] .md-comment { color: #8b949e; }
+[data-theme="dark"] .md-heading { color: #79c0ff; }
+[data-theme="dark"] .md-bold { color: #e6edf3; }
+[data-theme="dark"] .md-code { color: #a5d6ff; background-color: rgba(110, 118, 129, 0.4); }
+[data-theme="dark"] .md-link { color: #58a6ff; }
+[data-theme="dark"] .md-list { color: #ff7b72; }
+[data-theme="dark"] .md-tag { color: #7ee787; }
+[data-theme="dark"] .md-table-sep { color: #8b949e; }
+

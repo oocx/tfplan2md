@@ -23,8 +23,8 @@ pageId: "docs"
 <div class="docs-layout">
   {{ docs.sidebar(docsPage.navSections) }}
 
-  <main class="docs-content">
-    {% call docs.pageSection("cli-reference", "CLI Reference", "", "padding-top: 0;") %}
+  <div class="docs-content">
+    {% call docs.pageSection("cli-reference", "CLI Reference", "", "section section-no-top-padding") %}
       {% call docs.subsection("basic-usage", "Basic Usage") %}
 {% call docs.codeBlock("Syntax") %}
 tfplan2md [options] [input-file]
@@ -72,7 +72,7 @@ tfplan2md plan.json --output plan.md --template my-template.sbn
       {% endcall %}
     {% endcall %}
 
-    {% call docs.pageSection("template-customization", "Template Customization", "tfplan2md uses [Scriban](https://github.com/scriban/scriban) templates to generate Markdown reports. You can create custom templates to match your team's reporting needs.", "background: var(--color-surface);") %}
+    {% call docs.pageSection("template-customization", "Template Customization", "tfplan2md uses [Scriban](https://github.com/scriban/scriban) templates to generate Markdown reports. You can create custom templates to match your team's reporting needs.", "section section-alt") %}
       <div class="doc-section" id="built-in-templates">
         <h3 class="doc-subtitle">Built-in Templates</h3>
         {{ docs.templateGrid(docsPage.builtInTemplates) }}
@@ -110,7 +110,7 @@ tfplan2md plan.json --template path/to/custom-template.sbn
 {{ change.after_sensitive }}
 {% endcall %}{% endraw %}
 
-{{ docs.minorHeading("Scriban Helper Functions", "h4", "margin-top: 40px; font-size: 20px; margin-bottom: 16px;") }}
+{{ docs.minorHeading("Scriban Helper Functions", "h4", "docs-minor-heading-xl") }}
 
 {% call docs.markdownBlock() %}
 tfplan2md provides custom Scriban functions to help with common formatting tasks:
@@ -147,13 +147,13 @@ Map Azure principal IDs to human-readable names for better role assignment repor
 }
 {% endcall %}
 
-{{ docs.minorHeading("Generating Mapping Files with Azure CLI", "h4", "margin-top: 40px; font-size: 20px; margin-bottom: 16px;") }}
+{{ docs.minorHeading("Generating Mapping Files with Azure CLI", "h4", "docs-minor-heading-xl") }}
 
 {% call docs.markdownBlock() %}
 Use Azure CLI to automatically generate principal mapping files from your Azure AD tenant:
 {% endcall %}
 
-{{ docs.minorHeading("Bash Script", "h5", "margin: 24px 0 12px 0; font-size: 16px; font-weight: 600;") }}
+{{ docs.minorHeading("Bash Script", "h5", "docs-minor-heading-script") }}
 {% call docs.codeBlock("generate-principals.sh") %}
 #!/bin/bash
 
@@ -180,7 +180,7 @@ echo '}'
 Run `bash generate-principals.sh > principals.json`.
 {% endcall %}
 
-{{ docs.minorHeading("PowerShell Script", "h5", "margin: 32px 0 12px 0; font-size: 16px; font-weight: 600;") }}
+{{ docs.minorHeading("PowerShell Script", "h5", "docs-minor-heading-script-spacious") }}
 {% call docs.codeBlock("Generate-Principals.ps1") %}
 $mapping = @{
     users = @{}
@@ -204,7 +204,7 @@ $mapping | ConvertTo-Json -Depth 3
 Run `./Generate-Principals.ps1 > principals.json`.
 {% endcall %}
 
-{{ docs.minorHeading("Filtering for Specific Principals", "h5", "margin: 32px 0 12px 0; font-size: 16px; font-weight: 600;") }}
+{{ docs.minorHeading("Filtering for Specific Principals", "h5", "docs-minor-heading-script-spacious") }}
 
 {% call docs.markdownBlock() %}
 For large tenants, you may want to filter for specific principals instead of fetching all:
@@ -233,7 +233,7 @@ Use the `--principal-mapping` option to replace GUIDs with names in role assignm
 tfplan2md plan.json --principal-mapping principals.json
 {% endcall %}
 
-{{ docs.minorHeading("Using Principal Mapping with Docker", "h4", "margin-top: 40px; font-size: 20px; margin-bottom: 16px;") }}
+{{ docs.minorHeading("Using Principal Mapping with Docker", "h4", "docs-minor-heading-xl") }}
 
 {% call docs.markdownBlock() %}
 When running tfplan2md in a Docker container, mount `principals.json` into the container:
@@ -281,7 +281,7 @@ tfplan2md plan.json \
   --output report.md
 {% endcall %}
 
-{{ docs.minorHeading("What You Get", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+{{ docs.minorHeading("What You Get", "h4", "docs-minor-heading-lg") }}
 
 {% call docs.markdownBlock() %}
 - **Summary Table:** High-level overview of findings by severity.
@@ -295,7 +295,7 @@ tfplan2md plan.json \
         <h3 class="doc-subtitle">CLI Options</h3>
         {{ docs.optionsTable(docsPage.codeAnalysisOptions) }}
 
-        {{ docs.minorHeading("Usage Examples", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+        {{ docs.minorHeading("Usage Examples", "h4", "docs-minor-heading-lg") }}
         {% call docs.codeBlock("Single tool") %}
 tfplan2md plan.json --code-analysis-results checkov.sarif
         {% endcall %}
@@ -315,7 +315,7 @@ tfplan2md plan.json \
   --fail-on-static-code-analysis-errors
         {% endcall %}
 
-        {{ docs.minorHeading("Docker Usage", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+        {{ docs.minorHeading("Docker Usage", "h4", "docs-minor-heading-lg") }}
         {% call docs.codeBlock("Mount directory with SARIF files") %}
 docker run -v $(pwd):/data oocx/tfplan2md \
   /data/plan.json \
@@ -331,7 +331,7 @@ tfplan2md works with any tool that outputs SARIF 2.1.0 format. Here are some pop
 
 {{ docs.toolCards(docsPage.supportedTools) }}
 
-{{ docs.minorHeading("CI/CD Integration Example", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+{{ docs.minorHeading("CI/CD Integration Example", "h4", "docs-minor-heading-lg") }}
 {% call docs.codeBlock("GitHub Actions Workflow") %}
 - name: Run security scans
   run: |
@@ -357,12 +357,12 @@ tfplan2md works with any tool that outputs SARIF 2.1.0 format. Here are some pop
 
     {% call docs.pageSection("render-targets", "Render Targets", "The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.") %}
       {{ docs.formatComparison(docsPage.renderTargets) }}
-      <div style="margin-top: 2rem; padding: 1rem; background: var(--color-surface-dark); border-radius: 8px;">
-        <p style="margin: 0; color: var(--color-text-secondary);"><strong>Migration note:</strong> The <code>--large-value-format</code> flag has been deprecated and replaced by <code>--render-target</code>. Use <code>--render-target azuredevops</code> for <code>inline-diff</code> behavior or <code>--render-target github</code> for <code>standard-diff</code> behavior.</p>
+      <div class="docs-migration-note">
+        <p class="docs-migration-note-text"><strong>Migration note:</strong> The <code>--large-value-format</code> flag has been deprecated and replaced by <code>--render-target</code>. Use <code>--render-target azuredevops</code> for <code>inline-diff</code> behavior or <code>--render-target github</code> for <code>standard-diff</code> behavior.</p>
       </div>
     {% endcall %}
 
-    {% call docs.pageSection("troubleshooting", "Troubleshooting", "", "background: var(--color-surface);") %}
+    {% call docs.pageSection("troubleshooting", "Troubleshooting", "", "section section-alt") %}
       {% call docs.troubleItem("no-valid-json", "❌ \"No valid JSON detected in input\"", "This error occurs when tfplan2md receives input that is not valid Terraform JSON.", "- Ensure you're using `terraform show -json plan.tfplan`, not `terraform plan`\n- Verify the plan file exists and is a valid Terraform plan\n- Check that stdin is not empty when piping from Terraform") %}
 {% call docs.codeBlock("Correct usage") %}
 # Generate plan file
@@ -381,7 +381,7 @@ terraform show -json plan.tfplan | tfplan2md
 
       {% call docs.troubleItem("", "💡 Need more help?", "", "- [Open an issue on GitHub](https://github.com/oocx/tfplan2md/issues) with your error message and command\n- Check [GitHub Discussions](https://github.com/oocx/tfplan2md/discussions) for community help\n- Review [examples](examples.html) for working configurations") %}{% endcall %}
     {% endcall %}
-  </main>
+  </div>
 </div>
 
 <section class="section">

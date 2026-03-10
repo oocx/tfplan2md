@@ -9,12 +9,14 @@ export function initLightbox() {
   const modal = document.getElementById("lightbox");
   const modalImage = document.getElementById("lightbox-img");
   const closeButton = modal?.querySelector(".lightbox-close");
+  let activeTrigger = null;
 
   if (!modal || !modalImage || !closeButton) {
     return;
   }
 
   function closeModal() {
+    activeTrigger = null;
     modal.hidden = true;
     modal.classList.remove("active");
     document.body.style.overflow = "";
@@ -26,6 +28,7 @@ export function initLightbox() {
       return;
     }
 
+    activeTrigger = sourceElement;
     modalImage.src = src1x;
     modalImage.srcset = src2x ? `${src1x} 1x, ${src2x} 2x` : "";
     modal.hidden = false;
@@ -50,15 +53,12 @@ export function initLightbox() {
     }
   });
   document.addEventListener("tfplan2md:themechange", () => {
-    if (modal.hidden) {
+    if (modal.hidden || !activeTrigger) {
       return;
     }
 
-    const trigger = document.querySelector(".screenshot-clickable, img[data-light1x]");
-    if (trigger) {
-      const { src1x, src2x } = getThemeAwareImageSource(trigger);
-      modalImage.src = src1x;
-      modalImage.srcset = src2x ? `${src1x} 1x, ${src2x} 2x` : "";
-    }
+    const { src1x, src2x } = getThemeAwareImageSource(activeTrigger);
+    modalImage.src = src1x;
+    modalImage.srcset = src2x ? `${src1x} 1x, ${src2x} 2x` : "";
   });
 }

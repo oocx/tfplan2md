@@ -89,22 +89,22 @@ module.exports = {
       title: "Checkov",
       description: "Infrastructure security scanning with 1000+ built-in policies.",
       command: String.raw`checkov -d terraform \
-  --framework terraform \\
-  --output sarif \\
+  --framework terraform \
+  --output sarif \
   -o checkov.sarif`
     },
     {
       title: "TfLint",
       description: "Terraform linter with pluggable rules for AWS, Azure, and GCP.",
       command: String.raw`tflint \
-  --format sarif \\
+  --format sarif \
   > tflint.sarif`
     },
     {
       title: "Trivy",
       description: "Comprehensive security scanner for IaC misconfigurations, vulnerabilities, and secrets.",
       command: String.raw`trivy config terraform \
-  --format sarif \\
+  --format sarif \
   --output trivy.sarif`
     }
   ],

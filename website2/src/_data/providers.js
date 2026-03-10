@@ -4,7 +4,7 @@ module.exports = [
     title: "Azure (azurerm)",
     icon: "☁️",
     status: "Implemented",
-    statusColor: "var(--color-success)",
+    statusClass: "provider-status-success",
     description: "Comprehensive support for Azure resources with inline diffing, resource ID formatting, and role assignment enhancements.",
     sections: [
       {
@@ -42,7 +42,7 @@ module.exports = [
     title: "Azure DevOps",
     icon: "🔧",
     status: "Partial Support",
-    statusColor: "var(--color-success)",
+    statusClass: "provider-status-success",
     description: "Specialized support for Azure DevOps variable groups with semantic diffing and secret protection.",
     sections: [
       {
@@ -61,7 +61,7 @@ module.exports = [
       }
     ],
     note: "<strong>Status:</strong> Variable groups implemented. Additional resources in planning phase.",
-    noteBorderColor: "var(--color-success)",
+    noteClass: "provider-card-note-success",
     actions: [
       {
         href: "azuredevops.html",
@@ -76,7 +76,7 @@ module.exports = [
     title: "Azure AD (azuread)",
     icon: "🔐",
     status: "Implemented",
-    statusColor: "var(--color-success)",
+    statusClass: "provider-status-success",
     description: "Enhanced support for Azure Active Directory resources with specialized rendering for Groups, Service Principals, Invitations, and App Roles.",
     sections: [
       {
@@ -111,7 +111,7 @@ module.exports = [
     title: "Microsoft Graph",
     icon: "📊",
     status: "Planned",
-    statusColor: "var(--color-text-secondary)",
+    statusClass: "provider-status-muted",
     description: "Planned support for Microsoft Graph resources including users, groups, and policies.",
     sections: [
       {
@@ -124,7 +124,7 @@ module.exports = [
       }
     ],
     note: "<strong>Status:</strong> In planning phase. Contributions welcome!",
-    noteBorderColor: "var(--color-primary)",
+    noteClass: "provider-card-note-primary",
     actions: [
       {
         href: "msgraph.html",
@@ -139,7 +139,7 @@ module.exports = [
     title: "Your Provider",
     icon: "💡",
     status: "We Need You!",
-    statusColor: "var(--color-primary)",
+    statusClass: "provider-status-primary",
     description: "Need support for a different Terraform provider? We'd love to hear from you!",
     sections: [
       {
@@ -152,7 +152,7 @@ module.exports = [
       }
     ],
     note: "<strong>Community-driven:</strong> Provider support grows based on user needs. Your input helps prioritize development!",
-    noteBorderColor: "var(--color-primary)",
+    noteClass: "provider-card-note-primary",
     actions: [
       {
         href: "https://github.com/oocx/tfplan2md/issues/new",

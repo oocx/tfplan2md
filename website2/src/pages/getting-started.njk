@@ -12,102 +12,50 @@ pageId: "getting-started"
 
 {{ heroBlock("Getting Started", "Get tfplan2md running in minutes with Docker, or integrate it into your CI/CD pipeline.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
 
-<section class="section" style="padding-top: 0;">
+<section class="section section-no-top-padding">
   <div class="section-container">
     {{ sectionHeader("Installation", "Choose your preferred installation method") }}
 
     <div class="install-methods">
+      {% for method in gettingStartedPage.installationMethods %}
       <div class="method-card">
-        <h3 class="method-title">🐳 Docker (Recommended)</h3>
-        <p class="method-description">
-          The easiest way to get started. Docker automatically pulls the image when you run it.
-        </p>
+        <h3 class="method-title">{{ method.title }}</h3>
+        <p class="method-description">{{ method.description }}</p>
         <div class="code-block">
-          <div class="code-header">
-            <span class="code-title">Run directly</span>
-          </div>
-          <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
+          <div class="code-header"><span class="code-title">{{ method.codeTitle }}</span></div>
+          <pre><code>{{ method.code }}</code></pre>
         </div>
-        <p class="method-note">
-          <strong>✅ Benefits:</strong> One command to run, no setup required, works everywhere Docker runs
-        </p>
+        <p class="method-note"><strong>{{ method.noteLabel }}:</strong> {{ method.noteText }}</p>
       </div>
-
-      <div class="method-card">
-        <h3 class="method-title">⚙️ From Source</h3>
-        <p class="method-description">
-          Build from source if you need the latest development version or want to contribute.
-        </p>
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-title">Clone and build</span>
-          </div>
-          <pre><code>git clone https://github.com/oocx/tfplan2md.git
-cd tfplan2md
-dotnet build</code></pre>
-        </div>
-        <p class="method-note">
-          <strong>📝 Requirements:</strong> .NET 10 SDK
-        </p>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
 
-<section class="section" style="background: var(--color-surface); padding-top: 40px;">
+<section class="section section-alt getting-started-quickstart-section">
   <div class="section-container">
     {{ sectionHeader("Quick Start", "Generate your first Markdown report in seconds") }}
 
     <div class="quickstart-steps">
+      {% for step in gettingStartedPage.quickStartSteps %}
       <div class="step-card">
-        <div class="step-number">1</div>
+        <div class="step-number">{{ step.number }}</div>
         <div class="step-content">
-          <h3 class="step-title">Create a Terraform Plan</h3>
-          <div class="code-block"><pre><code>terraform plan -out=plan.tfplan</code></pre></div>
+          <h3 class="step-title">{{ step.title }}</h3>
+          <div class="code-block"><pre><code>{{ step.code }}</code></pre></div>
         </div>
       </div>
-
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3 class="step-title">Convert to JSON</h3>
-          <div class="code-block"><pre><code>terraform show -json plan.tfplan &gt; plan.json</code></pre></div>
-        </div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3 class="step-title">Generate Markdown Report</h3>
-          <div class="code-block"><pre><code>cat plan.json | docker run -i oocx/tfplan2md &gt; plan.md</code></pre></div>
-        </div>
-      </div>
+      {% endfor %}
     </div>
 
     <div class="usage-examples">
-      <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 24px; color: var(--color-text);">Common Usage Patterns</h3>
-
+      <h3 class="getting-started-usage-title">Common Usage Patterns</h3>
+      {% for pattern in gettingStartedPage.usagePatterns %}
       <div class="example-card">
-        <h4 class="example-title">Pipe directly from Terraform</h4>
-        <div class="code-block"><pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre></div>
+        <h4 class="example-title">{{ pattern.title }}</h4>
+        <div class="code-block"><pre><code>{{ pattern.code }}</code></pre></div>
       </div>
-
-      <div class="example-card">
-        <h4 class="example-title">Read from file with mounted volume</h4>
-        <div class="code-block"><pre><code>docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json</code></pre></div>
-      </div>
-
-      <div class="example-card">
-        <h4 class="example-title">Write output to file</h4>
-        <div class="code-block"><pre><code>terraform show -json plan.tfplan | \
-  docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md</code></pre></div>
-      </div>
-
-      <div class="example-card">
-        <h4 class="example-title">Generate summary-only report</h4>
-        <div class="code-block"><pre><code>terraform show -json plan.tfplan | \
-  docker run -i oocx/tfplan2md --template summary</code></pre></div>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -123,164 +71,19 @@ dotnet build</code></pre>
     </div>
 
     <div class="cicd-content-wrapper">
-      <div class="cicd-tab-content active" id="github-actions">
-        <h3 class="cicd-section-title">GitHub Actions Workflow</h3>
-        <p class="cicd-description">
-          Add this job to your workflow to automatically comment on PRs with Terraform plans.
-        </p>
+      {% for example in cicdExamples.gettingStartedTabs %}
+      <div class="cicd-tab-content{% if loop.first %} active{% endif %}" id="{{ example.id }}">
+        <h3 class="cicd-section-title">{{ example.sectionTitle }}</h3>
+        <p class="cicd-description">{{ example.description }}</p>
         <div class="code-block">
-          <div class="code-header">
-            <span class="code-title">.github/workflows/terraform.yml</span>
-          </div>
-          <pre><code class="language-yaml">name: Terraform Plan
-
-on:
-  pull_request:
-    paths:
-      - 'terraform/**'
-
-jobs:
-  plan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.0
-
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ./terraform
-
-      - name: Terraform Plan
-        run: terraform plan -out=plan.tfplan
-        working-directory: ./terraform
-
-      - name: Convert plan to JSON
-        run: terraform show -json plan.tfplan &gt; plan.json
-        working-directory: ./terraform
-
-      - name: Generate markdown report
-        run: |
-          docker run -v $(pwd):/data oocx/tfplan2md \
-            /data/plan.json --output /data/plan.md
-        working-directory: ./terraform
-
-      - name: Post PR comment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const plan = fs.readFileSync('terraform/plan.md', 'utf8');
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: plan
-            });</code></pre>
+          <div class="code-header"><span class="code-title">{{ example.fileName }}</span></div>
+          <pre><code class="language-yaml">{{ example.code }}</code></pre>
         </div>
+        {% if example.note %}
+        <p class="cicd-note"><strong>{{ example.note.label }}:</strong> {{ example.note.text }}</p>
+        {% endif %}
       </div>
-
-      <div class="cicd-tab-content" id="azure-pipelines">
-        <h3 class="cicd-section-title">Azure Pipelines Configuration</h3>
-        <p class="cicd-description">
-          Use this pipeline template to post Terraform plans to Azure DevOps pull requests.
-        </p>
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-title">azure-pipelines.yml</span>
-          </div>
-          <pre><code class="language-yaml">trigger: none
-
-pr:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - terraform/*
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-  - task: TerraformInstaller@1
-    inputs:
-      terraformVersion: '1.9.0'
-
-  - script: terraform init
-    displayName: 'Terraform Init'
-    workingDirectory: terraform
-
-  - script: terraform plan -out=plan.tfplan
-    displayName: 'Terraform Plan'
-    workingDirectory: terraform
-
-  - script: terraform show -json plan.tfplan &gt; plan.json
-    displayName: 'Convert to JSON'
-    workingDirectory: terraform
-
-  - script: |
-      docker run -v $(pwd):/data oocx/tfplan2md \
-        /data/plan.json --output /data/plan.md
-    displayName: 'Generate markdown report'
-    workingDirectory: terraform
-
-  - bash: |
-      MARKDOWN=$(cat terraform/plan.md)
-      URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0"
-
-      BODY=$(jq -n \
-        --arg content "$MARKDOWN" \
-        '{comments: [{content: $content, commentType: 1}], status: 1}')
-
-      curl -X POST "$URL" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $(System.AccessToken)" \
-        -d "$BODY"
-    displayName: 'Post PR comment'</code></pre>
-        </div>
-      </div>
-
-      <div class="cicd-tab-content" id="gitlab-ci">
-        <h3 class="cicd-section-title">GitLab CI Configuration</h3>
-        <p class="cicd-description">
-          Configure GitLab CI to post Terraform plans as merge request comments.
-        </p>
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-title">.gitlab-ci.yml</span>
-          </div>
-          <pre><code class="language-yaml">terraform-plan:
-  stage: plan
-  image: hashicorp/terraform:1.9
-  only:
-    - merge_requests
-  script:
-    - cd terraform
-    - terraform init
-    - terraform plan -out=plan.tfplan
-    - terraform show -json plan.tfplan &gt; plan.json
-
-    - |
-      docker run -v $(pwd):/data oocx/tfplan2md \
-        /data/plan.json --output /data/plan.md
-
-    - |
-      MARKDOWN=$(cat plan.md)
-      curl --request POST \
-        --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-        --header "Content-Type: application/json" \
-        --data "{\"body\": \"$MARKDOWN\"}" \
-        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes"</code></pre>
-        </div>
-        <p class="cicd-note">
-          <strong>Note:</strong> Create a GitLab access token with <code>api</code> scope and add it as <code>GITLAB_TOKEN</code> in CI/CD variables.
-        </p>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -289,93 +92,54 @@ steps:
   <div class="section-container">
     {{ sectionHeader("Security Integration", "Combine Terraform plans with security findings from SARIF-compatible tools") }}
 
-    <p style="max-width: 800px; margin: 0 auto 40px auto; text-align: center; font-size: 16px;">
-      tfplan2md natively supports SARIF 2.1.0 format, enabling you to integrate security findings from tools like Checkov, TfLint, and Trivy directly into your Terraform plan reports.
-    </p>
+    <p class="getting-started-security-intro">{{ gettingStartedPage.securityIntro }}</p>
 
-    <div class="code-block" style="margin-bottom: 40px;">
+    <div class="code-block getting-started-security-code">
       <div class="code-header">
         <span class="code-title">Basic Security Integration</span>
       </div>
-      <pre><code># Generate plan
-terraform show -json plan.tfplan &gt; plan.json
-
-# Run security scans
-checkov -d terraform --framework terraform --output sarif -o checkov.sarif
-tflint --format sarif &gt; tflint.sarif
-trivy config terraform --format sarif --output trivy.sarif
-
-# Generate unified report
-docker run -v $(pwd):/data -i oocx/tfplan2md \
-  /data/plan.json \
-  --code-analysis-results "/data/*.sarif" \
-  --output /data/report.md</code></pre>
+      <pre><code>{{ gettingStartedPage.securityCode }}</code></pre>
     </div>
 
-    <h3 class="section-subtitle" style="margin-top: 40px; margin-bottom: 24px;">CLI Options</h3>
+    <h3 class="section-subtitle getting-started-security-options-title">CLI Options</h3>
 
-    <div class="features-grid" style="margin-top: 24px;">
+    <div class="features-grid getting-started-security-options-grid">
+      {% for option in gettingStartedPage.securityOptions %}
       <div class="feature-category-card">
-        <h4 style="margin-top: 0;"><code>--code-analysis-results</code></h4>
-        <p style="font-size: 14px; margin-bottom: 12px;">
-          File path or wildcard pattern for SARIF files. Supports wildcards like <code>*.sarif</code> or <code>**/*.sarif</code> for recursive search.
-        </p>
-        <div class="code-block" style="margin-top: 12px;"><pre><code>--code-analysis-results "/data/**/*.sarif"</code></pre></div>
+        <h4 class="getting-started-security-option-title"><code>{{ option.title }}</code></h4>
+        <p class="getting-started-security-option-description">{{ option.description }}</p>
+        <div class="code-block getting-started-security-option-code"><pre><code>{{ option.example }}</code></pre></div>
       </div>
-
-      <div class="feature-category-card">
-        <h4 style="margin-top: 0;"><code>--code-analysis-minimum-level</code></h4>
-        <p style="font-size: 14px; margin-bottom: 12px;">
-          Minimum severity level to include in the report. Options: <code>none</code>, <code>note</code>, <code>warning</code>, <code>error</code>. Default is <code>note</code>.
-        </p>
-        <div class="code-block" style="margin-top: 12px;"><pre><code>--code-analysis-minimum-level warning</code></pre></div>
-      </div>
-
-      <div class="feature-category-card">
-        <h4 style="margin-top: 0;"><code>--fail-on-static-code-analysis-errors</code></h4>
-        <p style="font-size: 14px; margin-bottom: 12px;">
-          Exit with non-zero status if high or critical security findings are detected. Useful for blocking PRs with critical issues.
-        </p>
-        <div class="code-block" style="margin-top: 12px;"><pre><code>--fail-on-static-code-analysis-errors</code></pre></div>
-      </div>
+      {% endfor %}
     </div>
 
-    <div style="margin-top: 40px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-success); border-radius: 4px;">
-      <h4 style="margin: 0 0 12px 0;">✨ Benefits</h4>
-      <ul style="margin: 0; padding-left: 20px;">
-        <li style="margin-bottom: 8px;">Security findings mapped to specific resources and attributes</li>
-        <li style="margin-bottom: 8px;">Unified view of infrastructure changes and security issues</li>
-        <li style="margin-bottom: 8px;">Support for multiple security tools in one report</li>
-        <li style="margin-bottom: 8px;">Summary view showing overall security posture</li>
+    <div class="getting-started-benefits-box">
+      <h4 class="getting-started-benefits-title">✨ Benefits</h4>
+      <ul class="getting-started-benefits-list">
+        {% for benefit in gettingStartedPage.securityBenefits %}
+        <li>{{ benefit }}</li>
+        {% endfor %}
       </ul>
     </div>
-
-    <div style="text-align: center; margin-top: 40px;">
-      <a href="features/static-analysis.html" class="btn btn-primary">Learn More About Security Integration</a>
+        <li><strong>{{ step.lead }}</strong>{% if step.text %} {{ step.text }}{% endif %}{% if step.showChecks %}:<div class="code-block"><pre><code>dotnet format --verify-no-changes
+    <div class="getting-started-security-cta">
+      dotnet test</code></pre></div>{% endif %}</li>
     </div>
   </div>
 </section>
 
-<section class="section" style="background: var(--color-surface);">
+<section class="section section-alt">
   <div class="section-container">
     {{ sectionHeader("Next Steps") }}
 
     <div class="next-steps-grid">
-      <a href="features/index.html" class="next-step-card">
-        <div class="next-step-icon">🔍</div>
-        <h3 class="next-step-title">Explore Features</h3>
-        <p class="next-step-description">Learn about inline diffs, module grouping, Azure optimizations, and more.</p>
+      {% for step in gettingStartedPage.nextSteps %}
+      <a href="{{ step.href }}" class="next-step-card">
+        <div class="next-step-icon">{{ step.icon }}</div>
+        <h3 class="next-step-title">{{ step.title }}</h3>
+        <p class="next-step-description">{{ step.description }}</p>
       </a>
-      <a href="examples.html" class="next-step-card">
-        <div class="next-step-icon">📊</div>
-        <h3 class="next-step-title">View Examples</h3>
-        <p class="next-step-description">See real-world examples of generated Markdown reports with screenshots.</p>
-      </a>
-      <a href="docs.html" class="next-step-card">
-        <div class="next-step-icon">📖</div>
-        <h3 class="next-step-title">Read Documentation</h3>
-        <p class="next-step-description">Dive into CLI options, custom templates, and advanced configuration.</p>
-      </a>
+      {% endfor %}
     </div>
   </div>
 </section>

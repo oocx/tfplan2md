@@ -1,8 +1,17 @@
-{% macro heroBlock(title, subtitle="", heroClass="hero", heroStyle="", titleStyle="") %}
+{% macro heroBlock(title, subtitle="", heroClass="hero", heroStyle="", titleStyle="", options={}) %}
 <header class="{{ heroClass }}"{% if heroStyle %} style="{{ heroStyle }}"{% endif %}>
   <div class="hero-container">
     <div class="hero-content">
-      <h1 class="hero-title"{% if titleStyle %} style="{{ titleStyle }}"{% endif %}>{{ title }}</h1>
+      {% if options.badges and options.badges.length %}
+      <div class="hero-badges">
+        {% for badge in options.badges %}
+        <a href="{{ badge.href }}" class="hero-badge"{% if badge.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ badge.label }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <h1 class="hero-title"{% if titleStyle %} style="{{ titleStyle }}"{% endif %}>
+        {{ title }}{% if options.highlightText %} <span class="{{ options.highlightClass or 'hero-gradient' }}">{{ options.highlightText }}</span>{% endif %}
+      </h1>
       {% if subtitle %}
       <p class="hero-subtitle">
         {{ subtitle }}

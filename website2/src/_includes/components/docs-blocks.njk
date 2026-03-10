@@ -20,8 +20,8 @@
 </aside>
 {% endmacro %}
 
-{% macro pageSection(id, title, description="", sectionStyle="") %}
-<section class="section" id="{{ id }}"{% if sectionStyle %} style="{{ sectionStyle }}"{% endif %}>
+{% macro pageSection(id, title, description="", sectionClass="section") %}
+<section class="{{ sectionClass }}" id="{{ id }}">
   <div class="section-container">
     <h2 class="section-title">{{ title }}</h2>
     {% if description %}
@@ -78,14 +78,14 @@
 {% endmacro %}
 
 {% macro helperCards(items) %}
-<div class="feature-grid" style="margin-top: 24px;">
+<div class="feature-grid docs-helper-grid">
   {% for item in items %}
-  <div class="feature-category-card" style="padding: 24px;">
-    <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>{{ item.title }}</code></h5>
+  <div class="feature-category-card docs-helper-card">
+    <h5 class="docs-helper-title"><code>{{ item.title }}</code></h5>
     <div class="doc-markdown doc-markdown-compact">{{ item.description | markdown | safe }}</div>
     {% if item.example %}
-    <div class="code-block" style="margin: 0;">
-      <pre style="margin: 0; font-size: 13px;"><code>{{ item.example | trim | escape }}</code></pre>
+    <div class="code-block docs-helper-example">
+      <pre class="docs-helper-pre"><code>{{ item.example | trim | escape }}</code></pre>
     </div>
     {% endif %}
   </div>
@@ -93,8 +93,8 @@
 </div>
 {% endmacro %}
 
-{% macro minorHeading(title, level="h4", style="") %}
-<{{ level }}{% if style %} style="{{ style }}"{% endif %}>{{ title }}</{{ level }}>
+{% macro minorHeading(title, level="h4", className="") %}
+<{{ level }} class="docs-minor-heading{% if className %} {{ className }}{% endif %}">{{ title }}</{{ level }}>
 {% endmacro %}
 
 {% macro callout(title, body="", linkHref="", linkLabel="") %}
@@ -104,18 +104,18 @@
   <div class="doc-markdown doc-markdown-compact">{{ body | markdown | safe }}</div>
   {% endif %}
   {% if linkHref and linkLabel %}
-  <a href="{{ linkHref }}" class="btn btn-secondary"{% if linkHref.startsWith("http") %} target="_blank" rel="noopener"{% endif %} style="display: inline-block;">{{ linkLabel }}</a>
+    <a href="{{ linkHref }}" class="btn btn-secondary docs-callout-link"{% if linkHref.startsWith("http") %} target="_blank" rel="noopener"{% endif %}>{{ linkLabel }}</a>
   {% endif %}
 </div>
 {% endmacro %}
 
 {% macro toolCards(items) %}
-<div class="features-grid" style="margin-top: 24px;">
+  <div class="features-grid docs-tool-grid">
   {% for item in items %}
   <div class="feature-category-card compact">
-    <h4 style="margin-top: 0;">{{ item.title }}</h4>
+      <h4 class="docs-tool-title">{{ item.title }}</h4>
     <div class="doc-markdown doc-markdown-compact">{{ item.description | markdown | safe }}</div>
-    <div class="code-block" style="margin-top: 12px;">
+      <div class="code-block docs-tool-code">
       <pre><code>{{ item.command | trim | escape }}</code></pre>
     </div>
   </div>

@@ -14,7 +14,7 @@ pageId: "features/index"
 {{ heroBlock("Features", "Powerful features that make Terraform plan reviews faster, easier, and more effective.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
 
 {% for section in features %}
-<section class="{{ section.sectionClass or 'section' }}" id="{{ section.id }}"{% if section.sectionStyle %} style="{{ section.sectionStyle }}"{% elseif loop.first %} style="padding-top: 0;"{% endif %}>
+<section class="{{ section.sectionClass or 'section' }}{% if loop.first %} section-no-top-padding{% endif %}" id="{{ section.id }}"{% if section.sectionStyle %} style="{{ section.sectionStyle }}"{% endif %}>
   <div class="section-container">
     {{ sectionHeader(section.title, section.description) }}
     <div class="{{ section.gridClass or 'features-grid' }}">

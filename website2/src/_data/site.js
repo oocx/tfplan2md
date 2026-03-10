@@ -1,6 +1,7 @@
 module.exports = {
   name: "tfplan2md",
   description: "Transform Terraform plans into readable pull request reports.",
+  baseUrl: "https://oocx.github.io/tfplan2md",
   repoUrl: "https://github.com/oocx/tfplan2md",
   dockerUrl: "https://hub.docker.com/r/oocx/tfplan2md",
   issuesUrl: "https://github.com/oocx/tfplan2md/issues",

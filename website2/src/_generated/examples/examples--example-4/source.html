@@ -1,0 +1,18 @@
+<pre><code>&lt;details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;🔄 azurerm_firewall_network_rule_collection &lt;b&gt;&lt;code&gt;network_rules&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 demo-network-rules&lt;/code&gt; in &lt;code&gt;📁 rg-firewall-demo&lt;/code&gt; | 9🔧 priority, rule[0].destination_addresses[0], rule[0].destination_ports[0], +6 more&lt;/summary&gt;
+&lt;br&gt;
+
+### 🔄 azurerm_firewall_network_rule_collection.network_rules
+
+**Collection:** `demo-network-rules` | **Priority:** `150` | **Action:** `✅ Allow`
+
+#### Rule Changes
+
+| Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
+| -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | `allow-dns` | `🔗 TCP`, `📨 UDP` | `🌐 10.1.0.0/24` | `🌐 168.63.129.16` | `🔌 53` | `` |
+| 🔄 | `allow-http` | 🔗 TCP | &lt;code style="display:block; white-space:normal; padding:0; margin:0;"&gt;&lt;span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;- 🌐 10.&lt;span style="background-color: #ffc0c0; color: #24292e;"&gt;1&lt;/span&gt;.0.0/&lt;span style="background-color: #ffc0c0; color: #24292e;"&gt;24&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;+ 🌐 10.&lt;span style="background-color: #acf2bd; color: #24292e;"&gt;0&lt;/span&gt;.0.0/&lt;span style="background-color: #acf2bd; color: #24292e;"&gt;8&lt;/span&gt;&lt;/span&gt;&lt;/code&gt; | &lt;code style="display:block; white-space:normal; padding:0; margin:0;"&gt;&lt;span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;- &lt;span style="background-color: #ffc0c0; color: #24292e;"&gt;🌐 0.0.0.0/0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;+ &lt;span style="background-color: #acf2bd; color: #24292e;"&gt;✳️&lt;/span&gt;&lt;/span&gt;&lt;/code&gt; | 🔌 80 |  |
+| ❌ | `allow-ssh-old` | `🔗 TCP` | `🌐 10.0.0.0/16` | `🌐 10.1.0.0/24` | `🔌 22` | `` |
+| ⏺️ | `allow-https` | `🔗 TCP` | `🌐 10.1.0.0/24` | `🌐 0.0.0.0/0` | `🔌 443` | `` |
+
+&lt;/details&gt;</code></pre>

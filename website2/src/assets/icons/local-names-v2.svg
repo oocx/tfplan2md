@@ -1,0 +1,7 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Folder representing local scope -->
+  <path d="M6 14L6 38L42 38L42 18L26 18L22 14L6 14Z" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Local badge/label -->
+  <rect x="14" y="22" width="20" height="10" rx="2" fill="#646cff" stroke="#646cff" stroke-width="1.5"/>
+  <line x1="18" y1="27" x2="30" y2="27" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+</svg>

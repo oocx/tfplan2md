@@ -1,0 +1,12 @@
+{% macro providerCard(provider, rootPrefix="") %}
+<div class="feature-category-card">
+  <h3>{{ provider.title }}</h3>
+  <p><strong>Status:</strong> {{ provider.status }}</p>
+  <div class="feature-list">
+    <a href="{{ rootPrefix }}{{ provider.href }}" class="feature-link">
+      <span class="feature-link-icon">→</span>
+      <span>View documentation</span>
+    </a>
+  </div>
+</div>
+{% endmacro %}

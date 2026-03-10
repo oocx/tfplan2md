@@ -1,0 +1,8 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Label with readable name - sparkle variant -->
+  <rect x="6" y="16" width="36" height="16" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <!-- ABC letters with padding -->
+  <text x="19" y="27" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#646cff" text-anchor="middle">ABC</text>
+  <!-- Sparkle at checkmark position -->
+  <path d="M35 23L36 26L39 27L36 28L35 31L34 28L31 27L34 26Z" fill="#646cff" stroke="#646cff" stroke-width="1" stroke-linejoin="round"/>
+</svg>

@@ -11,6 +11,81 @@ This file is the source of truth for all open website tasks.
 
 ## Open tasks
 
+### #28 — Implement website2 migration and cutover
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/website2/**`, deployment workflows, website verification scripts |
+| Effort | High |
+| Value | High |
+| Status | ✅ Done |
+| Depends On | #27 |
+
+**Description:** Implement the full `website2` Eleventy site, migrate all in-scope production routes with parity-focused shared components, wire verification/CI, and switch deployment to the generated `website2/dist` output.
+
+**Requirements:**
+- Scaffold Eleventy with shared data, layouts, components, and assets
+- Migrate all in-scope production pages from `website/` to `website2/src/`
+- Centralize shared shell behavior and interactive examples
+- Add `website2` build/lint/verify support and CI coverage
+- Switch GitHub Pages deployment from `website/` to `website2/dist`
+
+**Definition of Done:**
+- [x] `website2/` contains a working Eleventy implementation with generated output in `dist/`
+- [x] All in-scope production routes are emitted from `website2`
+- [x] Shared navbar, footer, theme, mobile nav, and example interactions are centralized
+- [x] Verification scripts and CI build `website2`
+- [x] Deployment workflow uploads `website2/dist`
+
+### #27 — Create website2 implementation plan
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/website2/**` |
+| Effort | Medium |
+| Value | High |
+| Status | ✅ Done |
+| Depends On | #26 |
+
+**Description:** Create a detailed implementation plan for `website2` that turns the accepted specification and architecture into executable migration phases, route batches, and verification gates.
+
+**Requirements:**
+- Define implementation phases from scaffolding through cutover
+- Inventory the real current website surface area that must be migrated
+- Define parity criteria for 1:1 migration
+- Separate production routes from prototypes and reference artifacts
+- Define verification, CI, and deployment milestones
+
+**Definition of Done:**
+- [x] `website2/` contains a detailed implementation plan document
+- [x] The plan covers route migration batches and component migration order
+- [x] The plan defines parity and verification gates for cutover
+- [x] Backlog updated to reflect completion
+
+### #26 — Define website2 specification and architecture
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/website2/**` |
+| Effort | Medium |
+| Value | High |
+| Status | ✅ Done |
+| Depends On | — |
+
+**Description:** Define the target specification and architecture for the new `website2` static site that will replace the current hand-authored website after migration is complete.
+
+**Requirements:**
+- Create a detailed specification covering goals, scope, constraints, content model, and migration boundaries
+- Create a detailed architecture covering source layout, build pipeline, reusable components, and progressive enhancement
+- Document open decisions as ADRs with alternatives, pros/cons, and a recommendation
+- Keep the plan aligned with the existing website content strategy and non-functional requirements
+
+**Definition of Done:**
+- [x] `website2/` contains a specification document
+- [x] `website2/` contains an architecture document
+- [x] Open decisions are documented as ADRs with recommendations
+- [x] Documentation explains how `website2` coexists with `website/` during migration
+
 ### #25 — Create tool to approximate "terraform show" output from JSON plans
 
 | Field | Value |

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  {% if description %}
+  <meta name="description" content="{{ description }}">
+  {% endif %}
+  <link rel="stylesheet" href="{{ rootPrefix }}style.css">
+</head>
+<body>
+  {% include "partials/nav.njk" %}
+  {{ content | safe }}
+  {% include "partials/footer.njk" %}
+
+  <div id="lightbox" class="lightbox-modal" hidden>
+    <button type="button" class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <img id="lightbox-img" class="lightbox-content" alt="Expanded website screenshot">
+  </div>
+
+  <script type="module" src="{{ rootPrefix }}assets/js/site.js"></script>
+</body>
+</html>

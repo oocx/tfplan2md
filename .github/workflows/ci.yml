@@ -8,6 +8,7 @@ on:
       - '.github/**'
       - 'scripts/**'
       - 'website/**'
+      - 'website2/**'
       - 'uat-repos/**'
       - 'TestData/**'
       - 'assets/**'

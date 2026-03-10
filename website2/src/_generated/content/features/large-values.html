@@ -1,0 +1,99 @@
+<header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Large Value Handling</h1>
+                <p class="hero-subtitle">
+                    Multi-line and long values are formatted clearly with line-by-line diffs in collapsible sections.
+                </p>
+            </div>
+        </div>
+    </header>
+
+<section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">all providers</span>
+                </div>
+                <p class="feature-detail-description">
+                    Configuration files, JSON policies, and user data scripts can be huge. tfplan2md automatically detects large values and moves them to a dedicated section with collapsible details, keeping the main report clean.
+                </p>
+                
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre style="white-space: pre-wrap; overflow-x: hidden;"><code># azurerm_api_management_policy.global will be updated in-place
+~ resource "azurerm_api_management_policy" "global" {
+    ~ xml_content = "&lt;policies&gt;\n  &lt;inbound&gt;\n    &lt;!-- Rate limiting policy --&gt;\n    &lt;rate-limit calls=\"100\" renewal-period=\"60\" /&gt;\n    &lt;!-- IP filtering --&gt;\n    &lt;ip-filter action=\"allow\"&gt;\n      &lt;address&gt;10.0.0.0/24&lt;/address&gt;\n      &lt;address&gt;172.16.0.0/16&lt;/address&gt;\n    &lt;/ip-filter&gt;\n    &lt;!-- CORS policy --&gt;\n    &lt;cors allow-credentials=\"true\"&gt;\n      &lt;allowed-origins&gt;\n        &lt;origin&gt;https://example.com&lt;/origin&gt;\n        &lt;origin&gt;https://app.example.com&lt;/origin&gt;\n      &lt;/allowed-origins&gt;\n      &lt;allowed-methods&gt;\n        &lt;method&gt;GET&lt;/method&gt;\n        &lt;method&gt;POST&lt;/method&gt;\n        &lt;method&gt;PUT&lt;/method&gt;\n        &lt;method&gt;DELETE&lt;/method&gt;\n      &lt;/allowed-methods&gt;\n      &lt;allowed-headers&gt;\n        &lt;header&gt;Content-Type&lt;/header&gt;\n        &lt;header&gt;Authorization&lt;/header&gt;\n        &lt;header&gt;X-Requested-With&lt;/header&gt;\n      &lt;/allowed-headers&gt;\n    &lt;/cors&gt;\n    &lt;!-- Authentication with Azure AD --&gt;\n    &lt;validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized\"&gt;\n      &lt;openid-config url=\"https://login.microsoftonline.com/common/.well-known/openid-configuration\" /&gt;\n      &lt;audiences&gt;\n        &lt;audience&gt;api://12345678-1234-1234-1234-123456789abc&lt;/audience&gt;\n      &lt;/audiences&gt;\n      &lt;required-claims&gt;\n        &lt;claim name=\"roles\" match=\"any\"&gt;\n          &lt;value&gt;Reader&lt;/value&gt;\n          &lt;value&gt;Writer&lt;/value&gt;\n        &lt;/claim&gt;\n      &lt;/required-claims&gt;\n    &lt;/validate-jwt&gt;\n    &lt;!-- Set backend service URL --&gt;\n    &lt;set-backend-service base-url=\"https://backend-old.example.com\" /&gt;\n    &lt;!-- Add custom headers --&gt;\n    &lt;set-header name=\"X-Environment\" exists-action=\"override\"&gt;\n      &lt;value&gt;Production&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-Request-Id\" exists-action=\"override\"&gt;\n      &lt;value&gt;@(Guid.NewGuid().ToString())&lt;/value&gt;\n    &lt;/set-header&gt;\n  &lt;/inbound&gt;\n  &lt;backend&gt;\n    &lt;base /&gt;\n  &lt;/backend&gt;\n  &lt;outbound&gt;\n    &lt;base /&gt;\n    &lt;!-- Response caching --&gt;\n    &lt;cache-store duration=\"3600\" /&gt;\n    &lt;!-- Remove internal headers --&gt;\n    &lt;set-header name=\"X-AspNet-Version\" exists-action=\"delete\" /&gt;\n    &lt;set-header name=\"X-Powered-By\" exists-action=\"delete\" /&gt;\n  &lt;/outbound&gt;\n  &lt;on-error&gt;\n    &lt;base /&gt;\n    &lt;!-- Log errors to Application Insights --&gt;\n    &lt;trace source=\"policy-error\" severity=\"error\"&gt;\n      &lt;message&gt;@(context.LastError.Message)&lt;/message&gt;\n      &lt;metadata name=\"request-id\" value=\"@(context.RequestId)\" /&gt;\n    &lt;/trace&gt;\n  &lt;/on-error&gt;\n&lt;/policies&gt;" -&gt;
+"&lt;policies&gt;\n  &lt;inbound&gt;\n    &lt;!-- Rate limiting policy with increased limits --&gt;\n    &lt;rate-limit calls=\"200\" renewal-period=\"60\" /&gt;\n    &lt;!-- IP filtering with additional networks --&gt;\n    &lt;ip-filter action=\"allow\"&gt;\n      &lt;address&gt;10.0.0.0/24&lt;/address&gt;\n      &lt;address&gt;172.16.0.0/16&lt;/address&gt;\n      &lt;address&gt;192.168.1.0/24&lt;/address&gt;\n    &lt;/ip-filter&gt;\n    &lt;!-- CORS policy with additional origins --&gt;\n    &lt;cors allow-credentials=\"true\"&gt;\n      &lt;allowed-origins&gt;\n        &lt;origin&gt;https://example.com&lt;/origin&gt;\n        &lt;origin&gt;https://app.example.com&lt;/origin&gt;\n        &lt;origin&gt;https://portal.example.com&lt;/origin&gt;\n      &lt;/allowed-origins&gt;\n      &lt;allowed-methods&gt;\n        &lt;method&gt;GET&lt;/method&gt;\n        &lt;method&gt;POST&lt;/method&gt;\n        &lt;method&gt;PUT&lt;/method&gt;\n        &lt;method&gt;DELETE&lt;/method&gt;\n        &lt;method&gt;PATCH&lt;/method&gt;\n      &lt;/allowed-methods&gt;\n      &lt;allowed-headers&gt;\n        &lt;header&gt;Content-Type&lt;/header&gt;\n        &lt;header&gt;Authorization&lt;/header&gt;\n        &lt;header&gt;X-Requested-With&lt;/header&gt;\n        &lt;header&gt;X-API-Key&lt;/header&gt;\n      &lt;/allowed-headers&gt;\n    &lt;/cors&gt;\n    &lt;!-- Authentication with Azure AD --&gt;\n    &lt;validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized\"&gt;\n      &lt;openid-config url=\"https://login.microsoftonline.com/common/.well-known/openid-configuration\" /&gt;\n      &lt;audiences&gt;\n        &lt;audience&gt;api://12345678-1234-1234-1234-123456789abc&lt;/audience&gt;\n      &lt;/audiences&gt;\n      &lt;required-claims&gt;\n        &lt;claim name=\"roles\" match=\"any\"&gt;\n          &lt;value&gt;Reader&lt;/value&gt;\n          &lt;value&gt;Writer&lt;/value&gt;\n          &lt;value&gt;Admin&lt;/value&gt;\n        &lt;/claim&gt;\n      &lt;/required-claims&gt;\n    &lt;/validate-jwt&gt;\n    &lt;!-- Set backend service URL to new endpoint --&gt;\n    &lt;set-backend-service base-url=\"https://backend-new.example.com\" /&gt;\n    &lt;!-- Add custom headers --&gt;\n    &lt;set-header name=\"X-Environment\" exists-action=\"override\"&gt;\n      &lt;value&gt;Production&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-Request-Id\" exists-action=\"override\"&gt;\n      &lt;value&gt;@(Guid.NewGuid().ToString())&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-API-Version\" exists-action=\"override\"&gt;\n      &lt;value&gt;2.0&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;!-- Request throttling per user --&gt;\n    &lt;quota-by-key calls=\"10000\" renewal-period=\"3600\" counter-key=\"@(context.Request.Headers.GetValueOrDefault(&amp;quot;Authorization&amp;quot;,&amp;quot;&amp;quot;))\" /&gt;\n  &lt;/inbound&gt;\n  &lt;backend&gt;\n    &lt;base /&gt;\n    &lt;!-- Retry policy for backend failures --&gt;\n    &lt;retry condition=\"@(context.Response.StatusCode &amp;gt;= 500)\" count=\"3\" interval=\"2\" first-fast-retry=\"true\" /&gt;\n  &lt;/backend&gt;\n  &lt;outbound&gt;\n    &lt;base /&gt;\n    &lt;!-- Response caching with vary-by headers --&gt;\n    &lt;cache-store duration=\"3600\" vary-by-developer=\"false\" vary-by-developer-groups=\"false\"&gt;\n      &lt;vary-by-header&gt;Accept&lt;/vary-by-header&gt;\n      &lt;vary-by-header&gt;Accept-Encoding&lt;/vary-by-header&gt;\n    &lt;/cache-store&gt;\n    &lt;!-- Remove internal headers --&gt;\n    &lt;set-header name=\"X-AspNet-Version\" exists-action=\"delete\" /&gt;\n    &lt;set-header name=\"X-Powered-By\" exists-action=\"delete\" /&gt;\n    &lt;!-- Add security headers --&gt;\n    &lt;set-header name=\"X-Content-Type-Options\" exists-action=\"override\"&gt;\n      &lt;value&gt;nosniff&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-Frame-Options\" exists-action=\"override\"&gt;\n      &lt;value&gt;DENY&lt;/value&gt;\n    &lt;/set-header&gt;\n  &lt;/outbound&gt;\n  &lt;on-error&gt;\n    &lt;base /&gt;\n    &lt;!-- Log errors to Application Insights with additional context --&gt;\n    &lt;trace source=\"policy-error\" severity=\"error\"&gt;\n      &lt;message&gt;@(context.LastError.Message)&lt;/message&gt;\n      &lt;metadata name=\"request-id\" value=\"@(context.RequestId)\" /&gt;\n      &lt;metadata name=\"operation-name\" value=\"@(context.Operation.Name)\" /&gt;\n      &lt;metadata name=\"status-code\" value=\"@(context.Response.StatusCode.ToString())\" /&gt;\n    &lt;/trace&gt;\n    &lt;!-- Send error notification --&gt;\n    &lt;send-one-way-request mode=\"new\"&gt;\n      &lt;set-url&gt;https://monitoring.example.com/api/alerts&lt;/set-url&gt;\n      &lt;set-method&gt;POST&lt;/set-method&gt;\n      &lt;set-header name=\"Content-Type\" exists-action=\"override\"&gt;\n        &lt;value&gt;application/json&lt;/value&gt;\n      &lt;/set-header&gt;\n      &lt;set-body&gt;@{\n        return new JObject(\n          new JProperty(&amp;quot;error&amp;quot;, context.LastError.Message),\n          new JProperty(&amp;quot;requestId&amp;quot;, context.RequestId),\n          new JProperty(&amp;quot;timestamp&amp;quot;, DateTime.UtcNow.ToString())\n        ).ToString();\n      }&lt;/set-body&gt;\n    &lt;/send-one-way-request&gt;\n  &lt;/on-error&gt;\n&lt;/policies&gt;"
+      # (1 unchanged attribute hidden)
+  }</code></pre>
+                            </div>
+                        </div>
+                        <p class="comparison-note">112-line XML policy embedded in strings with \n escape sequences—nearly impossible to spot changes.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <!-- EXAMPLE:features--large-values--example-1 -->
+                        <p class="comparison-note">Readable XML with character-level diff highlighting—every change is visible and reviewable.</p>
+                    </div>
+                </div>
+
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Smart Formatting</h3>
+                    <ul class="highlights-list">
+                        <li><strong>Automatic Detection:</strong> Values longer than a threshold are automatically moved.</li>
+                        <li><strong>Collapsible Sections:</strong> Details are hidden by default to reduce noise.</li>
+                        <li><strong>Line-by-Line Diffs:</strong> Changes within large text blocks are highlighted.</li>
+                        <li><strong>Syntax Highlighting:</strong> JSON, YAML, and scripts are formatted for readability.</li>
+                    </ul>
+                </div>
+
+                <div class="feature-example">
+                    <h3 class="example-title">Configuration</h3>
+                    <p class="feature-detail-description">
+                        Control the diff format for large values using the <code>--render-target</code> CLI option:
+                    </p>
+                    <div class="code-window">
+                        <div class="code-header">
+                            <span class="code-title">Command</span>
+                        </div>
+                        <pre><code># Default: azuredevops (HTML with character-level highlighting)
+tfplan2md plan.json
+
+# GitHub-compatible diff format (markdown code blocks)
+tfplan2md plan.json --render-target github</code></pre>
+                    </div>
+                    <p class="feature-detail-description" style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                        <em>Note: The <code>--large-value-format</code> flag has been deprecated. Use <code>--render-target azuredevops</code> instead of <code>inline-diff</code>, or <code>--render-target github</code> instead of <code>standard-diff</code>.</em>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Large value handling automatically detects and formats multi-line or long attribute values for better readability.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/017-large-attribute-value-display" target="_blank" rel="noopener noreferrer">Feature Specification: Large Attribute Value Display</a></li>
+                        <li><a href="../docs.html#cli-options">CLI Options Reference</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>

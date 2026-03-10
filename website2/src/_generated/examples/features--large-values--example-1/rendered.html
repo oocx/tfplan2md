@@ -1,0 +1,58 @@
+<h3>🔄 azurerm_api_management_policy.global</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Before</th>
+                                                <th>After</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>xml_content</td>
+                                                <td><em>(see below)</em></td>
+                                                <td><em>(see below)</em></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <p>Large values: xml_content (112 lines, 57 changed)</p>
+                                    <h5><strong>xml_content:</strong></h5>
+                                    <pre><code class="language-xml">&lt;policies&gt;
+  &lt;inbound&gt;
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;!-- Rate limiting policy --&gt;</span>
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;rate-limit calls="100" renewal-period="60" /&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;!-- <span style="background-color: #acf2bd; color: #24292e;">Rate limiting policy with increased limits</span> --&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;rate-limit calls="200" renewal-period="60" /&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;!-- IP filtering with additional networks --&gt;</span>
+    &lt;ip-filter action="allow"&gt;
+      &lt;address&gt;10.0.0.0/24&lt;/address&gt;
+      &lt;address&gt;172.16.0.0/16&lt;/address&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+       &lt;address&gt;192.168.1.0/24&lt;/address&gt;</span>
+    &lt;/ip-filter&gt;
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;!-- CORS policy --&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;!-- CORS policy <span style="background-color: #acf2bd; color: #24292e;">with additional origins</span> --&gt;</span>
+    &lt;cors allow-credentials="true"&gt;
+      &lt;allowed-origins&gt;
+        &lt;origin&gt;https://example.com&lt;/origin&gt;
+        &lt;origin&gt;https://app.example.com&lt;/origin&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+         &lt;origin&gt;https://portal.example.com&lt;/origin&gt;</span>
+      &lt;/allowed-origins&gt;
+      &lt;allowed-methods&gt;
+        &lt;method&gt;GET&lt;/method&gt;
+        &lt;method&gt;POST&lt;/method&gt;
+        &lt;method&gt;PUT&lt;/method&gt;
+        &lt;method&gt;DELETE&lt;/method&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+         &lt;method&gt;PATCH&lt;/method&gt;</span>
+      &lt;/allowed-methods&gt;
+      &lt;allowed-headers&gt;
+        &lt;header&gt;Content-Type&lt;/header&gt;
+        &lt;header&gt;Authorization&lt;/header&gt;
+        &lt;header&gt;X-Requested-With&lt;/header&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+         &lt;header&gt;X-API-Key&lt;/header&gt;</span>
+      &lt;/allowed-headers&gt;
+    &lt;/cors&gt;
+    &lt;!-- Authentication, backend, headers... --&gt;
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;set-backend-service base-url="https://<span style="background-color: #ffc0c0; color: #24292e;">backend-old</span>.example.com" /&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;set-backend-service base-url="https://<span style="background-color: #acf2bd; color: #24292e;">backend-new</span>.example.com" /&gt;</span>
+    <span style="opacity: 0.6;">... 80+ more lines with inline character-level highlighting ...</span>
+&lt;/policies&gt;</code></pre>

@@ -1,0 +1,35 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dashboard/summary panel -->
+  
+  <defs>
+    <g id="summary-panel">
+      <rect x="6" y="6" width="36" height="36" rx="3"/>
+      <line x1="6" y1="16" x2="42" y2="16"/>
+      <line x1="22" y1="16" x2="22" y2="42"/>
+    </g>
+    <g id="summary-stats">
+      <circle cx="14" cy="26" r="3"/>
+      <circle cx="14" cy="36" r="3"/>
+      <rect x="28" y="22" width="8" height="8" rx="1"/>
+      <path d="M28 36L31 39L38 32"/>
+    </g>
+  </defs>
+
+  <!-- Fills -->
+  <rect x="6" y="6" width="36" height="36" rx="3" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+  <circle cx="14" cy="26" r="3" fill="#646cff" stroke="none"/>
+  <circle cx="14" cy="36" r="3" fill="#646cff" fill-opacity="0.3" stroke="none"/>
+  <rect x="28" y="22" width="8" height="8" rx="1" fill="#646cff" fill-opacity="0.3" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#summary-panel" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <use href="#summary-stats" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#summary-panel" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <circle cx="14" cy="36" r="3" stroke="#646cff" stroke-width="1" fill="none"/>
+  <rect x="28" y="22" width="8" height="8" rx="1" stroke="#646cff" stroke-width="1" fill="none"/>
+  <path d="M28 36L31 39L38 32" stroke="#646cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>

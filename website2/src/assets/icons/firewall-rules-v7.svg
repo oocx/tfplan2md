@@ -1,0 +1,24 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Large Indicators -->
+  <!-- Wall Background (3 Rows) -->
+  <rect x="6" y="6" width="36" height="24" rx="1" fill="#646cff" fill-opacity="0.12" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="6" y1="14" x2="42" y2="14" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="6" y1="22" x2="42" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  
+  <!-- Vertical Lines -->
+  <line x1="18" y1="6" x2="18" y2="14" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="30" y1="6" x2="30" y2="14" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="12" y1="14" x2="12" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="24" y1="14" x2="24" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="36" y1="14" x2="36" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="18" y1="22" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="30" y1="22" x2="30" y2="30" stroke="currentColor" stroke-width="1.5"/>
+
+  <!-- Large Symbols -->
+  <!-- X -->
+  <path d="M10 36L18 44" stroke="#e53935" stroke-width="3" stroke-linecap="round"/>
+  <path d="M18 36L10 44" stroke="#e53935" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Check -->
+  <path d="M30 40L34 44L40 34" stroke="#43a047" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

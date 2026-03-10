@@ -1,0 +1,68 @@
+<svg viewBox="0 0 690 690" xmlns="http://www.w3.org/2000/svg" width="690" height="690">
+  <defs>
+    <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#10b981"/>
+    </marker>
+  </defs>
+  
+  <rect width="690" height="690" fill="#0d1b2a"/>
+  <rect width="690" height="690" fill="url(#grid-blueprint)"/>
+  
+  <!-- Maintainer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="385" width="300" height="50" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="150" y="415" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">👤 MAINTAINER</text>
+  </g>
+  
+  <path d="M 300,410 L 340,410 L 340,545 L 340,525" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+  
+  <!-- Workflow Engineer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="525" width="300" height="40" fill="none" stroke="#10b981" stroke-width="2"/>
+    <text x="340" y="550" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">WORKFLOW ENG</text>
+  </g>
+  
+  <path d="M 340,565 L 340,655" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+  
+  <!-- Workflow Doc -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="655" width="300" height="35" fill="rgba(16,185,129,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="340" y="677" text-anchor="middle" fill="#10b981" font-weight="600" font-size="13" font-family="monospace">⚙️ WORKFLOW DOC</text>
+  </g>
+  
+  <!-- Release Manager -->
+  <g class="node">
+    <rect rx="2" ry="2" x="380" y="0" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="530" y="25" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RELEASE MGR</text>
+  </g>
+  
+  <path d="M 530,40 L 530,130" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+  
+  <!-- Release + PR -->
+  <g class="node">
+    <rect rx="2" ry="2" x="380" y="130" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="530" y="152" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🚀 RELEASE + PR</text>
+  </g>
+  
+  <path d="M 530,165 L 530,255" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+  
+  <!-- Retrospective -->
+  <g class="node">
+    <rect rx="2" ry="2" x="380" y="255" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="530" y="280" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RETROSPECTIVE</text>
+  </g>
+  
+  <path d="M 530,295 L 530,380 L 530,393" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+  
+  <!-- Retro Report -->
+  <g class="node">
+    <rect rx="2" ry="2" x="380" y="393" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="530" y="415" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📝 RETRO REPORT</text>
+  </g>
+  
+  <!-- Improvement loop back -->
+  <path d="M 380,410 L 200,410 L 200,545 L 190,545" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-green)"/>
+</svg>

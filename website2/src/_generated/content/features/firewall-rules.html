@@ -1,0 +1,144 @@
+<header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Firewall Rule Inline Diffing</h1>
+                <p class="hero-subtitle">
+                    See exactly which rules were added, modified, or removed—not confusing index-based array diffs.
+                </p>
+            </div>
+        </div>
+    </header>
+
+<section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">azurerm</span>
+                </div>
+                <p class="feature-detail-description">
+                    When firewall rule collections change, Terraform often shows confusing index-based diffs. tfplan2md understands the semantics of both network rules (IP/port-based) and application rules (FQDN-based) and presents a clear table showing exactly what changed.
+                </p>
+                
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># module.network.azurerm_firewall_network_rule_collection.network_rules will be updated in-place
+~ resource "azurerm_firewall_network_rule_collection" "network_rules" {
+    name                = "network-rules"
+    # (4 unchanged attributes hidden)
+
+  - rule {
+      - description           = "DNS to Azure" -&gt; null
+      - destination_addresses = [
+          - "168.63.129.16",
+        ] -&gt; null
+      - destination_ports     = [
+          - "53",
+        ] -&gt; null
+      - name                  = "allow-dns" -&gt; null
+      - protocols             = [
+          - "UDP",
+        ] -&gt; null
+      - source_addresses      = [
+          - "10.1.1.0/24",
+        ] -&gt; null
+    }
+  - rule {
+      - description           = "Legacy HTTP" -&gt; null
+      - destination_addresses = [
+          - "10.1.3.0/24",
+        ] -&gt; null
+      - destination_ports     = [
+          - "80",
+        ] -&gt; null
+      - name                  = "allow-web" -&gt; null
+      - protocols             = [
+          - "TCP",
+        ] -&gt; null
+      - source_addresses      = [
+          - "10.1.1.0/24",
+        ] -&gt; null
+    }
+  + rule {
+      + description           = "Secure web"
+      + destination_addresses = [
+          + "10.1.3.0/24",
+        ]
+      + destination_ports     = [
+          + "443",
+        ]
+      + name                  = "allow-web-secure"
+      + protocols             = [
+          + "TCP",
+        ]
+      + source_addresses      = [
+          + "10.1.1.0/24",
+        ]
+    }
+  + rule {
+      + description           = "Log ingestion"
+      + destination_addresses = [
+          + "10.1.5.0/24",
+        ]
+      + destination_ports     = [
+          + "8080",
+        ]
+      + name                  = "allow-log-ingest"
+      + protocols             = [
+          + "TCP",
+        ]
+      + source_addresses      = [
+          + "10.1.4.0/24",
+        ]
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <p class="comparison-note">Which rule was added? Which was removed? Index-based diffs are confusing.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <!-- EXAMPLE:features--firewall-rules--example-1 -->
+                        <p class="comparison-note">Crystal clear: 3 added, 2 changed, 1 removed, 1 unchanged.</p>
+                    </div>
+                </div>
+
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Key Features</h3>
+                    <ul class="highlights-list">
+                        <li>Shows add/change/delete/unchanged status for each rule</li>
+                        <li>Displays all rule properties in a scannable table</li>
+                        <li>Works for all <code>azurerm_firewall_network_rule_collection</code> and <code>azurerm_firewall_application_rule_collection</code> resources</li>
+                        <li>Automatically applied—no configuration needed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    This feature uses resource-specific templates to provide inline diffing for firewall rules.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/002-firewall-rule-before-after-display" target="_blank" rel="noopener noreferrer">Feature Specification: Firewall Rule Display</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/001-resource-specific-templates" target="_blank" rel="noopener noreferrer">Resource-Specific Templates Architecture</a></li>
+                        <li><a href="../docs.html#templates">Template Customization Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>

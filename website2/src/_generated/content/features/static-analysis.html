@@ -1,0 +1,121 @@
+<header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Static Code Analysis Integration</h1>
+                <p class="hero-subtitle">
+                    Combine Terraform plan changes with security findings from Checkov, TfLint, and Trivy in one unified report.
+                </p>
+            </div>
+        </div>
+    </header>
+
+<section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">SARIF 2.1.0</span>
+                    <span class="feature-badge">Checkov</span>
+                    <span class="feature-badge">TfLint</span>
+                    <span class="feature-badge">Trivy</span>
+                </div>
+                <p class="feature-detail-description">
+                    tfplan2md natively supports SARIF 2.1.0 format, allowing you to integrate security findings from multiple tools directly into your infrastructure change reports. Findings are automatically mapped to specific resources and attributes, creating a unified view of both changes and security issues.
+                </p>
+                
+                <h3 style="margin-top: 40px;">How It Works</h3>
+                <ol style="margin-left: 20px; font-size: 16px; line-height: 1.8;">
+                    <li><strong>Run your security tools</strong> — Generate SARIF output from Checkov, TfLint, Trivy, or any SARIF-compatible tool</li>
+                    <li><strong>Pass SARIF files to tfplan2md</strong> — Use <code>--code-analysis-results</code> with file paths or wildcards</li>
+                    <li><strong>Get a unified report</strong> — Findings are mapped to resources and displayed alongside plan changes</li>
+                </ol>
+
+                <h3 style="margin-top: 40px;">Example: Unified Security &amp; Plan Report</h3>
+                <!-- EXAMPLE:features--static-analysis--example-1 -->
+
+                <h3 style="margin-top: 40px;">CLI Usage</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Basic Usage</span>
+                    </div>
+                    <pre><code># Generate Terraform plan
+terraform show -json plan.tfplan &gt; plan.json
+
+# Run security tools
+checkov -d terraform --framework terraform --output sarif -o checkov.sarif
+tflint --format sarif &gt; tflint.sarif
+trivy config terraform --format sarif --output trivy.sarif
+
+# Generate unified report
+docker run -v $(pwd):/data -i oocx/tfplan2md \
+  /data/plan.json \
+  --code-analysis-results "/data/*.sarif" \
+  --output /data/report.md</code></pre>
+                </div>
+
+                <h3 style="margin-top: 40px;">CLI Options</h3>
+                <table style="width: 100%; margin-top: 16px;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border);">Option</th>
+                            <th style="text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border);">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);"><code>--code-analysis-results &lt;pattern&gt;</code></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);">File path or wildcard pattern for SARIF files (e.g., <code>*.sarif</code> or <code>**/*.sarif</code>)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);"><code>--code-analysis-minimum-level &lt;level&gt;</code></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);">Minimum severity to include (none, note, warning, error). Default: <code>note</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;"><code>--fail-on-static-code-analysis-errors</code></td>
+                            <td style="padding: 12px;">Exit with non-zero status if high or critical findings are present</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 40px;">Supported Tools</h3>
+                <div class="features-grid" style="margin-top: 24px;">
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">Checkov</h4>
+                        <p style="font-size: 14px; margin: 0;">Infrastructure security scanning for Terraform, CloudFormation, Kubernetes, and more</p>
+                    </div>
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">TfLint</h4>
+                        <p style="font-size: 14px; margin: 0;">Terraform linter with pluggable rule support for AWS, Azure, and GCP</p>
+                    </div>
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">Trivy</h4>
+                        <p style="font-size: 14px; margin: 0;">Comprehensive security scanner for IaC misconfigurations and vulnerabilities</p>
+                    </div>
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">Any SARIF Tool</h4>
+                        <p style="font-size: 14px; margin: 0;">Works with any tool that outputs SARIF 2.1.0 format</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Summary View</h3>
+                <p>The report includes a high-level summary showing the overall security posture:</p>
+                <!-- EXAMPLE:features--static-analysis--example-2 -->
+
+                <h3 style="margin-top: 40px;">Benefits</h3>
+                <ul style="margin-left: 20px; font-size: 16px; line-height: 1.8;">
+                    <li><strong>Unified View</strong> — See infrastructure changes and security findings in one report</li>
+                    <li><strong>Resource Mapping</strong> — Findings are automatically mapped to specific resources and attributes</li>
+                    <li><strong>Multi-Tool Support</strong> — Combine results from multiple security tools</li>
+                    <li><strong>PR Integration</strong> — Perfect for posting as PR comments alongside plan changes</li>
+                    <li><strong>Fail-Fast Option</strong> — Use <code>--fail-on-static-code-analysis-errors</code> to block PRs with critical issues</li>
+                </ul>
+
+                <div style="margin-top: 40px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-primary); border-radius: 4px;">
+                    <p style="margin: 0; font-size: 16px;"><strong>💡 Tip:</strong> Use wildcard patterns like <code>**/*.sarif</code> to automatically include SARIF files from subdirectories.</p>
+                </div>
+            </div>
+        </div>
+    </section>

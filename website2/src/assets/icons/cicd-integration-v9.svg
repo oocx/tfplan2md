@@ -1,0 +1,31 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main pipeline -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <rect x="19" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  
+  <!-- Arrow from first to second -->
+  <path d="M14 24H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M16 22L18 24L16 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Parallel branches -->
+  <rect x="34" y="8" width="10" height="10" rx="2" fill="#646cff" fill-opacity="0.15" stroke="#646cff" stroke-width="2"/>
+  <rect x="34" y="30" width="10" height="10" rx="2" fill="#646cff" fill-opacity="0.15" stroke="#646cff" stroke-width="2"/>
+  
+  <!-- Branch arrows out -->
+  <path d="M29 21 L34 13" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M29 27 L34 35" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Final merge step -->
+  <rect x="38" y="18" width="6" height="12" rx="1" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  
+  <!-- Merge arrows in -->
+  <path d="M42 18 L42 13" stroke="#43a047" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M42 30 L42 35" stroke="#43a047" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Icons -->
+  <line x1="7" y1="22" x2="11" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="2" stroke="#646cff" stroke-width="1.5"/>
+  <rect x="37" y="11" width="4" height="4" rx="1" fill="#646cff" fill-opacity="0.5"/>
+  <rect x="37" y="33" width="4" height="4" rx="1" fill="#646cff" fill-opacity="0.5"/>
+  <path d="M39.5 23L40.5 24L42.5 22" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

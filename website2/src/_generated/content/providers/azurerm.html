@@ -1,0 +1,55 @@
+<header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Azure Provider (azurerm)</h1>
+                <p class="hero-subtitle">
+                    Comprehensive support for Azure resources with inline diffing, resource ID formatting, and role assignment enhancements.
+                </p>
+            </div>
+        </div>
+    </header>
+
+<section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">Production Ready</span>
+                </div>
+                <p class="feature-detail-description">
+                    The Azure provider is the most mature provider in tfplan2md, featuring extensive customizations for common resources to make plans readable and actionable.
+                </p>
+                
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Specialized Resources</h3>
+                    <ul class="highlights-list">
+                        <li><strong>Firewall Network Rule Collections:</strong> Inline diff of rules (added/removed/unchanged)</li>
+                        <li><strong>Network Security Groups:</strong> Rule-level diffing with priority awareness</li>
+                        <li><strong>Role Assignments:</strong> Principal name mapping and readable scope display</li>
+                    </ul>
+                </div>
+
+                <div class="feature-highlights" style="margin-top: 32px;">
+                    <h3 class="highlights-title">Global Enhancements</h3>
+                    <ul class="highlights-list">
+                        <li><strong>Resource ID Formatting:</strong> Long Azure IDs broken into readable scopes</li>
+                        <li><strong>Semantic Icons:</strong> Visual indicators for IPs (🌐), ports (🔌), protocols (📨/🔗), principals (👤/👥/💻)</li>
+                        <li><strong>Boolean Formatting:</strong> ✅/❌ for true/false values</li>
+                    </ul>
+                </div>
+
+                <div class="feature-example">
+                    <h3 class="example-title">Example: Role Assignment</h3>
+                    <div class="code-block">
+                        <pre><code>#### ➕ azurerm_role_assignment.contributor
+**Summary:** `Contributor` on `rg-demo` for `john.doe@contoso.com`
+
+| Attribute | Value |
+|-----------|-------|
+| role_definition_name | `Contributor` |
+| scope | Resource Group `rg-demo` |
+| principal_id | 👤 `john.doe@contoso.com` (User) |</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

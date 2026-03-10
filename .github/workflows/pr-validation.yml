@@ -38,7 +38,7 @@ jobs:
           fi
 
           # If anything outside these paths changed, this is not an internal-only PR.
-          non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|scripts/|docs/|website/|uat-repos/|TestData/|artifacts/|assets/)' || true)
+          non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|scripts/|docs/|website/|website2/|uat-repos/|TestData/|artifacts/|assets/)' || true)
           if [ -n "$non_internal" ]; then
             echo "Non-internal files changed; internal commit guardrail not applicable."
             exit 0
@@ -66,19 +66,44 @@ jobs:
           CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || true)
           if [ -z "$CHANGED_FILES" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "website2_changed=false" >> $GITHUB_OUTPUT
             echo "No changed files detected; running validation"
             exit 0
           fi
 
-          NON_IGNORED=$(echo "$CHANGED_FILES" | grep -Ev '^(docs/|website/|\.github/agents/|\.github/skills/|\.github/copilot-instructions\.md$|\.github/gh-cli-instructions\.md$|\.github/pull_request_template\.md$)' || true)
+          WEBSITE2_CHANGED=$(echo "$CHANGED_FILES" | grep -E '^website2/' || true)
+          if [ -n "$WEBSITE2_CHANGED" ]; then
+            echo "website2_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "website2_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          NON_IGNORED=$(echo "$CHANGED_FILES" | grep -Ev '^(docs/|website/|website2/|\.github/agents/|\.github/skills/|\.github/copilot-instructions\.md$|\.github/gh-cli-instructions\.md$|\.github/pull_request_template\.md$)' || true)
 
           if [ -z "$NON_IGNORED" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Only docs/website/agent-instructions changed; skipping validation"
+            echo "Only docs/website/website2/agent-instructions changed; skipping non-website validation"
           else
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Non-ignored files changed; running validation"
           fi
+
+      - name: Setup Node
+        if: steps.filter.outputs.website2_changed == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: website2/package-lock.json
+
+      - name: Install Website2 dependencies
+        if: steps.filter.outputs.website2_changed == 'true'
+        working-directory: website2
+        run: npm ci
+
+      - name: Verify Website2
+        if: steps.filter.outputs.website2_changed == 'true'
+        run: scripts/website2-verify.sh --all
 
       - name: Snapshot integrity guardrail
         if: steps.filter.outputs.changed == 'true'
@@ -301,4 +326,4 @@ jobs:
 
       - name: Skip validation (no relevant files changed)
         if: steps.filter.outputs.changed == 'false'
-        run: echo "✅ PR validation skipped (docs/website/agent-only changes)"
+        run: echo "✅ PR validation skipped for non-code checks (docs/website/website2/agent-only changes)"

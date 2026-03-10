@@ -1,0 +1,34 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Starting step -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  
+  <!-- Top branch: 3 steps -->
+  <rect x="18" y="3" width="8" height="8" rx="1.5" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="29" y="3" width="8" height="8" rx="1.5" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="40" y="3" width="4" height="8" rx="1" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  
+  <!-- Bottom branch: 3 steps -->
+  <rect x="18" y="37" width="8" height="8" rx="1.5" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="29" y="37" width="8" height="8" rx="1.5" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="40" y="37" width="4" height="8" rx="1" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  
+  <!-- Fork arrows from start -->
+  <path d="M14 20 L18 7" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M14 28 L18 41" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Branch progression arrows -->
+  <path d="M26 7 H29" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M37 7 H40" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M26 41 H29" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M37 41 H40" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Icons -->
+  <line x1="7" y1="22" x2="11" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="7" y1="26" x2="9" y2="26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="22" cy="7" r="1.5" stroke="#646cff" stroke-width="1.5"/>
+  <rect x="31.5" y="5.5" width="3" height="3" rx="0.5" fill="#646cff" fill-opacity="0.5"/>
+  <path d="M41 6L41.5 6.5L42.5 5.5" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="22" cy="41" r="1.5" stroke="#646cff" stroke-width="1.5"/>
+  <rect x="31.5" y="39.5" width="3" height="3" rx="0.5" fill="#646cff" fill-opacity="0.5"/>
+  <path d="M41 40L41.5 40.5L42.5 39.5" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

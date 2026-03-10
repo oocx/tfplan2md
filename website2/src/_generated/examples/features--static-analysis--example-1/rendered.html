@@ -1,0 +1,68 @@
+<details open="" style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>🆔 sttfplan2mdlogs</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br>
+
+🔒 <strong>Security &amp; Quality:</strong> ⚠️ 1 High, ⚠️ 1 Medium
+
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Rule</th>
+<th>Tool</th>
+<th>Message</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠️ High</td>
+<td><code>CKV_AZURE_33</code></td>
+<td>Checkov</td>
+<td>Ensure Storage logging is enabled for Queue service for read, write and delete requests</td>
+<td><code>queue_properties</code></td>
+</tr>
+<tr>
+<td>⚠️ Medium</td>
+<td><code>CKV2_AZURE_38</code></td>
+<td>Checkov</td>
+<td>Ensure soft-delete is enabled on Azure storage account</td>
+<td><code>blob_properties.delete_retention_policy</code></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code>Standard</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 sttfplan2mdlogs</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>🏷️ Tags:</strong> <code>environment: production</code> <code>managed-by: terraform</code></p>
+
+</details>

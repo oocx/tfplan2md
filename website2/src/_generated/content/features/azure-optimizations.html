@@ -1,0 +1,173 @@
+<header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Azure Optimizations</h1>
+                <p class="hero-subtitle">
+                    Purpose-built features for Azure that format resource IDs, map principal names (including Azure AD Groups, Service Principals, and App Roles), and show role assignments clearly.
+                </p>
+            </div>
+        </div>
+    </header>
+
+<section id="azure-resource-ids" class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Readable Azure Resource IDs</h2>
+                    <span class="feature-badge">azurerm</span>
+                </div>
+                <p class="feature-detail-description">
+                    Long Azure resource IDs are automatically parsed and formatted as human-readable scopes instead of displaying raw GUID paths.
+                </p>
+                
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.security.azurerm_key_vault.main will be created
++ resource "azurerm_key_vault" "main" {
+    + id                            = (known after apply)
+    + location                      = "eastus"
+    + name                          = "kv-tfplan2md"
+    + resource_group_name           = "rg-tfplan2md-demo"
+    + tenant_id                     = "11111111-2222-3333-4444-555555555555"
+  }
+
+# module.security.azurerm_key_vault_secret.db_password will be created
++ resource "azurerm_key_vault_secret" "db_password" {
+    + key_vault_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+    + name         = "db-password"
+  }</code></pre>
+                            </div>
+                        </div>
+                        <p class="comparison-note">Long Azure IDs make it hard to identify resources at a glance.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <!-- EXAMPLE:features--azure-optimizations--example-1 -->
+                        <p class="comparison-note">Human-readable format shows what you need to know—the resource name and its resource group.</p>
+                    </div>
+                </div>
+
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Features</h3>
+                    <ul class="highlights-list">
+                        <li>Automatic detection for subscription, resource group, and resource IDs</li>
+                        <li>Only values are formatted as code—labels remain readable</li>
+                        <li>Azure IDs remain in attribute tables (not moved to large values section)</li>
+                        <li>Works for all azurerm resources—no configuration needed</li>
+                    </ul>
+                </div>
+            </div>
+        
+    </section>
+
+<section id="role-assignments" class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Azure Role Assignment Display</h2>
+                    <span class="feature-badge">azurerm</span>
+                    <span class="feature-badge">azuread</span>
+                </div>
+                <p class="feature-detail-description">
+                    Role assignments (both Azure RBAC and Azure AD) show human-readable role names, scopes, and principal information in a clear table format.
+                </p>
+                
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># module.iam.azurerm_role_assignment.storage_admin will be created
++ resource "azurerm_role_assignment" "rg_reader" {
+    + id                   = (known after apply)
+    + principal_id         = "00000000-0000-0000-0000-000000000001"
+    + principal_type       = "User"
+    + role_definition_id   = "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+    + role_definition_name = "Reader"
+    + scope                = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo"
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">GUIDs and long paths make it hard to understand who gets what access.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <!-- EXAMPLE:features--azure-optimizations--example-2 -->
+                        <p class="comparison-note">Clear summary at the top, formatted scope, and visual icons.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Azure AD Examples</h3>
+                <p style="margin-top: 16px;">Role assignments also work beautifully for Azure AD resources like groups, service principals, and users:</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 24px;">
+                <!-- EXAMPLE:features--azure-optimizations--example-3 -->
+
+                <!-- EXAMPLE:features--azure-optimizations--example-4 -->
+
+                <!-- EXAMPLE:features--azure-optimizations--example-5 -->
+                </div>
+            </div>
+        </div>
+    </div></section>
+
+<section id="principal-mapping" class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Principal Name Mapping</h2>
+                    <span class="feature-badge">azurerm</span>
+                </div>
+                <p class="feature-detail-description">
+                    Map cryptic Principal IDs (GUIDs) to human-readable names (e.g., user emails, group names, service principals) using a JSON mapping file.
+                </p>
+                
+                <div class="feature-example">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <span class="code-title">Command</span>
+                        </div>
+                        <pre><code>tfplan2md plan.json --principal-mapping principals.json</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Benefits</h3>
+                    <ul class="highlights-list">
+                        <li>No more cryptic GUIDs in role assignments</li>
+                        <li>Immediately see who has access to what</li>
+                        <li>Works with role assignments and any resource showing principal IDs</li>
+                        <li>Falls back to GUID if no mapping exists</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Azure optimizations include automatic formatting of resource IDs, role assignments, and principal name mapping.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/019-azure-resource-id-formatting" target="_blank" rel="noopener noreferrer">Feature Specification: Azure Resource ID Formatting</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/009-role-assignment-table-format" target="_blank" rel="noopener noreferrer">Feature Specification: Role Assignment Display</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/006-role-assignment-readable-display" target="_blank" rel="noopener noreferrer">Role Assignment Readable Display</a></li>
+                        <li><a href="../docs.html#cli-options">CLI Options Reference</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>

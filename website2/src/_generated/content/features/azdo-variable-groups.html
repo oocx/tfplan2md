@@ -1,0 +1,188 @@
+<header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Azure DevOps Variable Groups</h1>
+                <p class="hero-subtitle">
+                    See exactly which variables changed—metadata visible, secret values protected.
+                </p>
+            </div>
+        </div>
+    </header>
+
+<section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">azuredevops</span>
+                </div>
+                <p class="feature-detail-description">
+                    When Azure DevOps variable groups change, Terraform shows "At least one attribute in this block is (or was) sensitive" for all variables—even non-secret ones. This makes it impossible to review changes. tfplan2md's specialized template displays all variable metadata clearly while protecting actual secret values.
+                </p>
+                
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code>~ azuredevops_variable_group.example will be updated in-place
+~ resource "azuredevops_variable_group" "example" {
+    id          = "123"
+    name        = "example-variables"
+    # (3 unchanged attributes hidden)
+
+  - variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+  - variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+  + variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+  + variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <p class="comparison-note">Which variables changed? What are their names? Completely opaque.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <!-- EXAMPLE:features--azdo-variable-groups--example-1 -->
+                        <p class="comparison-note">Clear semantic diff: added ENV, updated APP_VERSION, API_KEY enabled changed, removed LEGACY_URL.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Key Features</h2>
+            
+            <div class="feature-highlights">
+                <div class="feature-highlight">
+                    <div class="highlight-icon">🔐</div>
+                    <h3 class="highlight-title">Secret Value Protection</h3>
+                    <p class="highlight-description">
+                        Secret variable values display as "(sensitive / hidden)" while showing all metadata: name, enabled status, content type, and expiration. Security maintained, visibility restored.
+                    </p>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="highlight-icon">🔄</div>
+                    <h3 class="highlight-title">Semantic Diffing</h3>
+                    <p class="highlight-description">
+                        Variables matched by name across before/after states. Changes categorized as Added (➕), Modified (🔄), Removed (❌), or Unchanged (⏺️). See exactly what changed.
+                    </p>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="highlight-icon">📊</div>
+                    <h3 class="highlight-title">Unified Display</h3>
+                    <p class="highlight-description">
+                        Regular and secret variables merged into single table. No need to mentally combine separate arrays. All variables visible in one clear, scannable format.
+                    </p>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="highlight-icon">📝</div>
+                    <h3 class="highlight-title">Complete Metadata</h3>
+                    <p class="highlight-description">
+                        Shows variable group name, description, project reference, and Key Vault integration details. Every attribute visible for informed decision-making.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Operation Examples</h2>
+            <p class="section-description">How variable groups appear for different Terraform operations</p>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h3 class="example-title">Create Operation</h3>
+                    <!-- EXAMPLE:features--azdo-variable-groups--example-2 -->
+                    <p class="example-note">Simple table for new variable groups. Secret values protected from the start.</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 class="example-title">Update Operation</h3>
+                    <!-- EXAMPLE:features--azdo-variable-groups--example-3 -->
+                    <p class="example-note">Before/after values with change indicators. Unchanged variables marked with ⏺️.</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 class="example-title">Delete Operation</h3>
+                    <!-- EXAMPLE:features--azdo-variable-groups--example-4 -->
+                    </div>
+                    <p class="example-note">Clear view of what's being removed. Audit trail for cleanup operations.</p>
+                </div>
+            </div>
+        
+    </section>
+
+<section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Key Vault Integration</h2>
+            <p class="section-description">
+                When variable groups are linked to Azure Key Vault, tfplan2md displays the Key Vault block metadata in a separate table showing the connection details.
+            </p>
+
+            <!-- EXAMPLE:features--azdo-variable-groups--example-5 -->
+        </div>
+    </section>
+
+<section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Technical Details</h2>
+            
+            <div class="tech-details">
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Resource Type</h3>
+                    <p class="tech-detail-content"><code>azuredevops_variable_group</code></p>
+                </div>
+
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Implementation</h3>
+                    <p class="tech-detail-content">ViewModel pattern with C# Factory for semantic diffing. Merges <code>variable</code> and <code>secret_variable</code> arrays by name.</p>
+                </div>
+
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Large Values</h3>
+                    <p class="tech-detail-content">Values &gt;100 characters or multi-line moved to collapsible large values section with inline diff highlighting.</p>
+                </div>
+
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Security</h3>
+                    <p class="tech-detail-content">Secret variable <code>value</code> attribute always displayed as "(sensitive / hidden)". All other metadata (name, enabled, etc.) visible.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="section cta-section">
+        <div class="section-container">
+            <div class="cta-box">
+                <h2 class="cta-title">Ready to see clear variable group diffs?</h2>
+                <p class="cta-description">
+                    No more guessing what changed in your Azure DevOps variable groups. Get the visibility you need for confident deployments.
+                </p>
+                <div class="cta-actions">
+                    <a href="../getting-started.html" class="btn btn-primary">Get Started</a>
+                    <a href="../examples.html" class="btn btn-secondary">View More Examples</a>
+                </div>
+            </div>
+        </div>
+    </section>

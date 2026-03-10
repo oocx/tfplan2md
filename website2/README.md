@@ -21,6 +21,7 @@ This folder now contains:
 
 - The Eleventy source tree in `src/`
 - Shared layouts, data files, and JavaScript modules
+- Source-managed interactive example fragments in `src/examples/`
 - Shared migration components now used by real routes (`hero-block`, `section-header`, `feature-detail`, `comparison-block`, `related-docs`, `code-window`, `feature-card`, `provider-card`, `example-block`)
 - Generated parity inventories and checklists
 - The built site output in `dist/` after `npm run build`
@@ -29,11 +30,11 @@ Current migration progress:
 
 - 26 routes no longer use `legacyContent`
 - 0 routes still need native Markdown migration
+- Legacy imported page-body artifacts have been removed from `src/_generated/`
 - `scripts/website2-verify.sh --all` passes with the migrated routes in place
 
 Useful commands:
 
 - `npm run build`
 - `npm run serve`
-- `npm run import:legacy`
 - `scripts/website2-verify.sh --all`

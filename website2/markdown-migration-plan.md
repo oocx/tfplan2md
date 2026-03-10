@@ -15,8 +15,8 @@ The current Website2 state is:
 3. All 26 production routes now render from native Markdown sources and shared components instead of the `legacyContent` shortcode, including `/architecture.html`, `/ai-workflow.html`, `/contributing.html`, `/docs.html`, `/examples.html`, `/getting-started.html`, `/index.html`, `/features/index.html`, `/features/firewall-rules.html`, `/features/custom-templates.html`, `/features/inline-diffs.html`, `/features/misc.html`, `/features/semantic-icons.html`, `/features/value-formatting.html`, `/features/nsg-rules.html`, `/features/module-grouping.html`, `/features/large-values.html`, `/features/sensitive-masking.html`, `/features/static-analysis.html`, `/features/azdo-variable-groups.html`, `/features/azure-optimizations.html`, `/providers/index.html`, `/providers/azuread.html`, `/providers/azuredevops.html`, `/providers/azurerm.html`, and `/providers/msgraph.html`.
 4. No production routes still render their body content through the `legacyContent` shortcode.
 5. Shared migration components are now active in real page usage: `hero-block`, `section-header`, `feature-detail`, `comparison-block`, `related-docs`, `code-window`, `feature-card`, `provider-card`, and `example-block`.
-6. Imported page bodies are stored under `website2/src/_generated/content/`.
-7. Imported example fragments are stored under `website2/src/_generated/examples/`.
+6. Imported page-body artifacts have been removed from the active Website2 source tree.
+7. Interactive example fragments now live in the normal source tree under `website2/src/examples/`.
 
 This means route parity remains preserved while the migration has fully removed imported legacy page bodies from the active production routes.
 
@@ -171,7 +171,7 @@ Goal: convert safely without visual drift.
 
 Tasks:
 
-1. Treat `website2/src/_generated/content/` as the visual baseline.
+1. Treat the original `website/` implementation as the visual baseline.
 2. Capture section outlines for every page before replacing the imported body.
 3. Convert the unchecked parity checklist into route-specific acceptance checks.
 4. Add a simple rule: a page is only considered migrated when it no longer uses `legacyContent`.

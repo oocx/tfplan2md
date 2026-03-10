@@ -1,4 +1,3 @@
-const fs = require("node:fs");
 const path = require("node:path");
 const MarkdownIt = require("markdown-it");
 const { createExampleCatalog, renderExampleBlock } = require("./lib/render-example-block");
@@ -31,9 +30,7 @@ function normalizeMarkdown(value) {
 
 module.exports = function configureEleventy(eleventyConfig) {
   const projectRoot = __dirname;
-  const generatedRoot = path.join(projectRoot, "src", "_generated");
-  const contentRoot = path.join(generatedRoot, "content");
-  const examplesRoot = path.join(generatedRoot, "examples");
+  const examplesRoot = path.join(projectRoot, "src", "examples");
   const markdownRenderer = new MarkdownIt({
     html: true,
     linkify: true,
@@ -44,8 +41,6 @@ module.exports = function configureEleventy(eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/site-assets/js": "assets/js" });
   eleventyConfig.addPassthroughCopy({ "src/style.css": "style.css" });
   eleventyConfig.addPassthroughCopy({ "src/media-root": "." });
-
-  eleventyConfig.addWatchTarget("src/_generated/");
 
   eleventyConfig.addFilter("markdown", function(value) {
     return markdownRenderer.render(normalizeMarkdown(value));
@@ -59,27 +54,11 @@ module.exports = function configureEleventy(eleventyConfig) {
     const examples = createExampleCatalog(examplesRoot);
     const example = examples[exampleId];
     if (!example) {
-      throw new Error(`Missing generated example: ${exampleId}`);
+      throw new Error(`Missing example asset: ${exampleId}`);
     }
 
     return renderExampleBlock(example);
   }
-
-  function injectGeneratedExamples(html) {
-    return html.replaceAll(/<!--\s*EXAMPLE:([^\s]+)\s*-->/g, (_, exampleId) => {
-      return renderGeneratedExample(exampleId);
-    });
-  }
-
-  eleventyConfig.addShortcode("legacyContent", function(pageId) {
-    const contentFile = path.join(contentRoot, `${pageId}.html`);
-    if (!fs.existsSync(contentFile)) {
-      throw new Error(`Missing generated content file: ${contentFile}`);
-    }
-
-    let html = fs.readFileSync(contentFile, "utf8");
-    return injectGeneratedExamples(html);
-  });
 
   eleventyConfig.addShortcode("exampleBlock", function(exampleId) {
     return renderGeneratedExample(exampleId);

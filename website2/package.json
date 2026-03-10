@@ -6,8 +6,7 @@
   "scripts": {
     "build": "eleventy --config=.eleventy.js",
     "clean": "rm -rf dist",
-    "serve": "eleventy --serve --config=.eleventy.js",
-    "import:legacy": "node tools/import-legacy-site.mjs"
+    "serve": "eleventy --serve --config=.eleventy.js"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",

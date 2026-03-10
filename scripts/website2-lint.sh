@@ -49,7 +49,23 @@ echo "Linting Website2 CSS..."
 npx --yes stylelint@16.10.0 --config website2/.stylelintrc.json website2/src/style.css
 
 echo "Linting Website2 JS..."
-npx --yes eslint@9.20.0 --config website2/eslint.config.js website2/src/site-assets/js/**/*.js website2/tools/**/*.mjs website2/lib/**/*.js website2/.eleventy.js
+eslint_targets=(website2/.eleventy.js)
+
+while IFS= read -r file; do
+  eslint_targets+=("$file")
+done < <(find website2/src/site-assets/js -type f -name '*.js' -print | sort)
+
+while IFS= read -r file; do
+  eslint_targets+=("$file")
+done < <(find website2/lib -type f -name '*.js' -print | sort)
+
+if [[ -d website2/tools ]]; then
+  while IFS= read -r file; do
+    eslint_targets+=("$file")
+  done < <(find website2/tools -type f -name '*.mjs' -print | sort)
+fi
+
+npx --yes eslint@9.20.0 --config website2/eslint.config.js "${eslint_targets[@]}"
 
 echo "Linting Website2 markdown..."
 scripts/markdownlint.sh website2/*.md website2/adrs/*.md

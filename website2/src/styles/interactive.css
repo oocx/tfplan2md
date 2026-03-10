@@ -374,6 +374,75 @@
     font-size: 13px;
 }
 
+@media (max-width: 768px) {
+    .cicd-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    .cicd-title {
+        font-size: 28px;
+    }
+
+    .cicd-description {
+        font-size: 16px;
+        margin-bottom: 24px;
+    }
+
+    .cicd-example,
+    .code-window {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .code-tabs {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+    }
+
+    .code-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .code-tab {
+        flex: 0 0 auto;
+        padding: 12px 16px;
+        white-space: nowrap;
+    }
+
+    .code-tab-content {
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cicd-content {
+        gap: 24px;
+    }
+
+    .cicd-title {
+        font-size: 24px;
+    }
+
+    .code-tab {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .code-tab-content {
+        padding: 16px 12px;
+    }
+
+    .code-tab-content pre {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+}
+
 .next-steps-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

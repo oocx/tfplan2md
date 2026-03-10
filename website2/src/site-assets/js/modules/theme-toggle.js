@@ -9,9 +9,9 @@ function updateThemeButton(themeToggle, theme) {
 }
 
 function updateThemeAwareImages(theme) {
-  document.querySelectorAll("img[data-light1x]").forEach((img) => {
-    const src1x = theme === "dark" ? img.dataset.dark1x : img.dataset.light1x;
-    const src2x = theme === "dark" ? img.dataset.dark2x : img.dataset.light2x;
+  document.querySelectorAll("img[data-thumb-light1x]").forEach((img) => {
+    const src1x = theme === "dark" ? img.dataset.thumbDark1x : img.dataset.thumbLight1x;
+    const src2x = theme === "dark" ? img.dataset.thumbDark2x : img.dataset.thumbLight2x;
 
     if (src1x) {
       img.src = src1x;
@@ -23,12 +23,25 @@ function updateThemeAwareImages(theme) {
   });
 }
 
+function updateHighlightTheme(theme) {
+  const lightTheme = document.getElementById("highlight-light");
+  const darkTheme = document.getElementById("highlight-dark");
+
+  if (!lightTheme || !darkTheme) {
+    return;
+  }
+
+  lightTheme.disabled = theme === "dark";
+  darkTheme.disabled = theme !== "dark";
+}
+
 export function applyTheme(theme) {
   const html = document.documentElement;
   html.dataset.theme = theme;
   localStorage.setItem("theme", theme);
   updateThemeButton(document.querySelector(".theme-toggle"), theme);
   updateThemeAwareImages(theme);
+  updateHighlightTheme(theme);
   document.dispatchEvent(new CustomEvent("tfplan2md:themechange", { detail: { theme } }));
 }
 

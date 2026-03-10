@@ -53,6 +53,7 @@ function initTabGroup(tabSelector, contentSelector) {
 
 export function initCodeTabs() {
   document.querySelectorAll(".code-tab-content code.language-yaml, .cicd-tab-content code.language-yaml").forEach((block) => {
+    block.classList.add("nohighlight");
     highlightYamlLikeBlock(block);
   });
 

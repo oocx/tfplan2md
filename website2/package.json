@@ -11,6 +11,7 @@
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",
     "cheerio": "^1.1.2",
+    "highlight.js": "^11.9.0",
     "markdown-it": "^14.1.1"
   }
 }

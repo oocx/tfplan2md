@@ -2,6 +2,8 @@ import { escapeHtml } from "./utils.js";
 
 function highlightMarkdown() {
   document.querySelectorAll(".source-view code").forEach((block) => {
+    block.classList.add("nohighlight");
+
     let html = escapeHtml(block.textContent);
     html = html.replaceAll(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
     html = html.replaceAll(/^(#{1,6} .+)$/gm, '<span class="md-heading">$1</span>');

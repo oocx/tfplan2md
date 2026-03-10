@@ -1,10 +1,8 @@
-@layer base, website, examples;
-
-@import url("./styles/tokens.css") layer(website);
-@import url("./styles/base.css") layer(base);
-@import url("./styles/layout.css") layer(website);
-@import url("./styles/components.css") layer(website);
-@import url("./styles/pages.css") layer(website);
-@import url("./styles/docs.css") layer(website);
-@import url("./styles/interactive.css") layer(website);
-@import url("./styles/examples.css") layer(examples);
+@import url("./styles/tokens.css");
+@import url("./styles/base.css");
+@import url("./styles/layout.css");
+@import url("./styles/components.css");
+@import url("./styles/pages.css");
+@import url("./styles/docs.css");
+@import url("./styles/interactive.css");
+@import url("./styles/examples.css");

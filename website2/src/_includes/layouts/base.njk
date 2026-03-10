@@ -17,7 +17,57 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ site.baseUrl }}{{ canonicalPath }}">
   <link rel="icon" href="{{ rootPrefix }}favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="{{ rootPrefix }}style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" crossorigin="anonymous" disabled>
+  <script>
+    (function() {
+      function syncHighlightTheme(theme) {
+        const lightTheme = document.getElementById("highlight-light");
+        const darkTheme = document.getElementById("highlight-dark");
+
+        if (!lightTheme || !darkTheme) {
+          return;
+        }
+
+        lightTheme.disabled = theme === "dark";
+        darkTheme.disabled = theme !== "dark";
+      }
+
+      function syncThemeAwareImages(theme) {
+        document.querySelectorAll("img[data-thumb-light1x]").forEach((img) => {
+          const src1x = theme === "dark" ? img.dataset.thumbDark1x : img.dataset.thumbLight1x;
+          const src2x = theme === "dark" ? img.dataset.thumbDark2x : img.dataset.thumbLight2x;
+
+          if (src1x) {
+            img.src = src1x;
+          }
+
+          if (src1x && src2x) {
+            img.srcset = `${src1x} 1x, ${src2x} 2x`;
+          }
+        });
+      }
+
+      const initialTheme = localStorage.getItem("theme") || document.documentElement.dataset.theme || "light";
+      document.documentElement.dataset.theme = initialTheme;
+      syncHighlightTheme(initialTheme);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const currentTheme = document.documentElement.dataset.theme || localStorage.getItem("theme") || "light";
+        syncHighlightTheme(currentTheme);
+        syncThemeAwareImages(currentTheme);
+
+        document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+          queueMicrotask(() => {
+            const currentTheme = document.documentElement.dataset.theme || localStorage.getItem("theme") || "light";
+            syncHighlightTheme(currentTheme);
+            syncThemeAwareImages(currentTheme);
+          });
+        });
+      }, { once: true });
+    })();
+  </script>
+  <link rel="stylesheet" href="{{ rootPrefix }}style.css?v=20260310a">
 </head>
 <body>
   {% include "partials/nav.njk" %}
@@ -31,6 +81,6 @@
     <img id="lightbox-img" class="lightbox-content" alt="Expanded website screenshot">
   </div>
 
-  <script type="module" src="{{ rootPrefix }}assets/js/site.js"></script>
+  <script type="module" src="{{ rootPrefix }}assets/js/site.js?v=20260310a"></script>
 </body>
 </html>

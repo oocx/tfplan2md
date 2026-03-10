@@ -1,7 +1,11 @@
 function getThemeAwareImageSource(element) {
   const theme = document.documentElement.dataset.theme || "light";
-  const src1x = theme === "dark" ? element.dataset.dark1x : element.dataset.light1x;
-  const src2x = theme === "dark" ? element.dataset.dark2x : element.dataset.light2x;
+  const src1x = theme === "dark"
+    ? (element.dataset.lightboxDark1x || element.dataset.dark1x)
+    : (element.dataset.lightboxLight1x || element.dataset.light1x);
+  const src2x = theme === "dark"
+    ? (element.dataset.lightboxDark2x || element.dataset.dark2x)
+    : (element.dataset.lightboxLight2x || element.dataset.light2x);
   return { src1x, src2x };
 }
 
@@ -36,7 +40,7 @@ export function initLightbox() {
     document.body.style.overflow = "hidden";
   }
 
-  document.querySelectorAll(".screenshot-clickable, img[data-light1x]").forEach((element) => {
+  document.querySelectorAll(".screenshot-clickable, img[data-lightbox-light1x], img[data-light1x]").forEach((element) => {
     element.removeAttribute("onclick");
     element.addEventListener("click", () => openModal(element));
   });

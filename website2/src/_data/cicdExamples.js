@@ -55,6 +55,28 @@ jobs:
             });`
 };
 
+const homepageGithubActions = {
+  ...githubActions,
+  code: String.raw`- name: Generate markdown report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md > plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v7
+  with:
+    script: |
+      const fs = require('fs');
+      const plan = fs.readFileSync('plan.md', 'utf8');
+
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: plan
+      });`
+};
+
 const azurePipelines = {
   id: "azure-pipelines",
   tabLabel: "Azure Pipelines",
@@ -188,10 +210,11 @@ const securityTools = {
 module.exports = {
   examples: {
     githubActions,
+    homepageGithubActions,
     azurePipelines,
     gitlabCi,
     securityTools
   },
-  homepageTabs: [githubActions, azurePipelines, securityTools],
+  homepageTabs: [homepageGithubActions, azurePipelines, securityTools],
   gettingStartedTabs: [githubActions, azurePipelines, gitlabCi]
 };

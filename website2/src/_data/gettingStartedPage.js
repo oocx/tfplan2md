@@ -25,11 +25,11 @@ module.exports = {
   usagePatterns: [
     { title: "Pipe directly from Terraform", code: "terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" },
     { title: "Read from file with mounted volume", code: "docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json" },
-    { title: "Write output to file", code: "terraform show -json plan.tfplan | \\\n+  docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md" },
-    { title: "Generate summary-only report", code: "terraform show -json plan.tfplan | \\\n+  docker run -i oocx/tfplan2md --template summary" }
+      { title: "Write output to file", code: "terraform show -json plan.tfplan | \\\n  docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md" },
+      { title: "Generate summary-only report", code: "terraform show -json plan.tfplan | \\\n  docker run -i oocx/tfplan2md --template summary" }
   ],
   securityIntro: "tfplan2md natively supports SARIF 2.1.0 format, enabling you to integrate security findings from tools like Checkov, TfLint, and Trivy directly into your Terraform plan reports.",
-  securityCode: "# Generate plan\nterraform show -json plan.tfplan > plan.json\n\n# Run security scans\ncheckov -d terraform --framework terraform --output sarif -o checkov.sarif\ntflint --format sarif > tflint.sarif\ntrivy config terraform --format sarif --output trivy.sarif\n\n# Generate unified report\ndocker run -v $(pwd):/data -i oocx/tfplan2md \\\n+  /data/plan.json \\\n+  --code-analysis-results \"/data/*.sarif\" \\\n+  --output /data/report.md",
+    securityCode: "# Generate plan\nterraform show -json plan.tfplan > plan.json\n\n# Run security scans\ncheckov -d terraform --framework terraform --output sarif -o checkov.sarif\ntflint --format sarif > tflint.sarif\ntrivy config terraform --format sarif --output trivy.sarif\n\n# Generate unified report\ndocker run -v $(pwd):/data -i oocx/tfplan2md \\\n  /data/plan.json \\\n  --code-analysis-results \"/data/*.sarif\" \\\n  --output /data/report.md",
   securityOptions: [
     {
       title: "--code-analysis-results",

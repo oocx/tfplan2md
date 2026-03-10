@@ -57,7 +57,95 @@ dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"</code></p
 [optional footer(s)]</code></pre></div>
   <h3 class="doc-subtitle">Commit Types</h3>
   <table class="doc-table"><thead><tr><th>Type</th><th>Description</th><th>Version Bump</th></tr></thead><tbody>{% for commitType in contributingPage.commitTypes %}<tr><td><code>{{ commitType.type }}</code></td><td>{{ commitType.description }}</td><td>{{ commitType.versionBump }}</td></tr>{% endfor %}</tbody></table>
-    <div class="code-block"><pre><code>/// &lt;summary&gt;
+  <h3 class="doc-subtitle">Breaking Changes</h3>
+  <p>For breaking changes, add <code>BREAKING CHANGE:</code> in the commit footer or use <code>!</code> after the type:</p>
+  <div class="code-block"><pre><code>feat(parser)!: change output format to JSON
+
+BREAKING CHANGE: The output format has changed from plain text to JSON.</code></pre></div>
+  <h3 class="doc-subtitle">Commit Cohesion</h3>
+  <p>Each commit should focus on a single topic or change. If you find yourself using "and" repeatedly in a commit message, consider splitting it into multiple commits.</p>
+  <h3 class="doc-subtitle">Examples</h3>
+  <div class="code-block"><pre><code># Feature
+git commit -m "feat(cli): add --output flag for custom output path"
+
+# Bug fix
+git commit -m "fix(parser): handle empty resource changes array"
+
+# Documentation
+git commit -m "docs: update installation instructions"
+
+# Breaking change
+git commit -m "feat(api)!: rename TerraformPlan to PlanResult"</code></pre></div>
+</div></section>
+
+<section class="section"><div class="section-container">
+  <h2 class="section-title">Pull Request Process</h2>
+  <ol>
+    <li><strong>Create a feature branch</strong> from <code>main</code></li>
+    <li><strong>Make your changes</strong> following the coding guidelines</li>
+    <li><strong>Ensure all checks pass</strong>:
+      <div class="code-block"><pre><code>dotnet format --verify-no-changes
+dotnet build
+dotnet test</code></pre></div>
+    </li>
+    <li><strong>Push your branch</strong> and create a Pull Request</li>
+    <li><strong>Wait for review</strong> - PR validation will run automatically</li>
+    <li><strong>Merge using "Rebase and merge"</strong> - This project requires a linear history</li>
+  </ol>
+
+  <h3 class="doc-subtitle">PR Requirements</h3>
+  <ul>
+    <li>All CI checks must pass (build, test, format, vulnerability scan)</li>
+    <li>Code follows the project's style guidelines (enforced by <code>.editorconfig</code>)</li>
+    <li>Commit messages follow Conventional Commits format</li>
+  </ul>
+
+  <h3 class="doc-subtitle">Project Directory Structure</h3>
+  <p>Understanding the project layout:</p>
+  <ul>
+    <li><code>src/</code> - Core library and CLI entry point</li>
+    <li><code>tests/</code> - All test projects (unit, integration, snapshot tests)</li>
+    <li><code>tools/</code> - Helper tools (HtmlRenderer, ScreenshotGenerator, TerraformShowRenderer)</li>
+    <li><code>docs/</code> - Feature specifications, ADRs, architecture documentation</li>
+    <li><code>examples/</code> - Demo Terraform plans and output samples</li>
+    <li><code>website/</code> - GitHub Pages website (HTML/CSS)</li>
+    <li><code>scripts/</code> - Build, test, and workflow automation scripts</li>
+    <li><code>.github/</code> - GitHub Actions workflows and agent skill definitions</li>
+  </ul>
+
+  <h3 class="doc-subtitle">Merge Strategy</h3>
+  <p>This project uses <strong>rebase and merge</strong> to maintain a linear Git history:</p>
+  <ul>
+    <li>When merging a PR, use the "Rebase and merge" button</li>
+    <li>If conflicts occur, rebase onto main: <code>git pull --rebase origin main</code></li>
+    <li>Force-push your branch: <code>git push --force-with-lease</code></li>
+    <li>Do NOT use "Squash and merge" or "Create a merge commit"</li>
+  </ul>
+</div></section>
+
+<section class="section"><div class="section-container">
+  <h2 class="section-title">Coding Standards</h2>
+
+  <h3 class="doc-subtitle">Access Modifiers</h3>
+  <p>tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:</p>
+  <ul>
+    <li>✅ <code>private</code> - Default for class members</li>
+    <li>✅ <code>internal</code> - For cross-assembly visibility within the solution</li>
+    <li>⚠️ <code>public</code> - Only for main entry points or when absolutely necessary</li>
+  </ul>
+  <p><strong>Never use <code>public</code> just for testing.</strong> Instead, use <code>InternalsVisibleTo</code> to expose <code>internal</code> members to test projects.</p>
+
+  <h3 class="doc-subtitle">Code Comments</h3>
+  <p>All code must be thoroughly documented with XML doc comments:</p>
+  <ul>
+    <li>All members (public, internal, private) require XML doc comments</li>
+    <li>Comments must explain <strong>"why"</strong> not just <strong>"what"</strong></li>
+    <li>Use standard XML tags: <code>&lt;summary&gt;</code>, <code>&lt;param&gt;</code>, <code>&lt;returns&gt;</code>, <code>&lt;remarks&gt;</code></li>
+    <li>Reference related features/specifications for traceability</li>
+  </ul>
+
+  <h3 class="doc-subtitle">Example</h3>
+  <div class="code-block"><pre><code>/// &lt;summary&gt;
 /// Parses Terraform plan JSON and extracts resource changes.
 /// &lt;/summary&gt;
 /// &lt;param name="planFilePath"&gt;Absolute path to the plan JSON file.&lt;/param&gt;
@@ -70,8 +158,7 @@ internal async Task&lt;IReadOnlyList&lt;ResourceChange&gt;&gt; ParseAsync(string
 {
     // Implementation
 }</code></pre></div>
-  </div>
-</section>
+</div></section>
 
 <section class="section">
   <div class="section-container">

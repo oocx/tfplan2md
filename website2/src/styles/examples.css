@@ -111,6 +111,17 @@
     color: rgba(255, 255, 255, 0.95);
 }
 
+.code-block .hljs,
+.code-block pre code {
+    background: transparent !important;
+}
+
+.code-block .hljs {
+    display: block;
+    padding: 20px;
+    color: inherit;
+}
+
 /* Markdown Syntax Highlighting */
 .md-comment { color: #6a737d; }
 .md-heading { color: #0550ae; font-weight: bold; }

@@ -32,7 +32,7 @@ pageId: "features/static-analysis"
       {% exampleBlock "features--static-analysis--example-1" %}
 
       <h3 style="margin-top: 40px;">CLI Usage</h3>
-      {{ codeWindow("Basic Usage", '<pre><code># Generate Terraform plan\nterraform show -json plan.tfplan &gt; plan.json\n\n# Run security tools\ncheckov -d terraform --framework terraform --output sarif -o checkov.sarif\ntflint --format sarif &gt; tflint.sarif\ntrivy config terraform --format sarif --output trivy.sarif\n\n# Generate unified report\ndocker run -v $(pwd):/data -i oocx/tfplan2md \\\n+  /data/plan.json \\\n+  --code-analysis-results "/data/*.sarif" \\\n+  --output /data/report.md</code></pre>') }}
+        {{ codeWindow("Basic Usage", '<pre><code># Generate Terraform plan\nterraform show -json plan.tfplan &gt; plan.json\n\n# Run security tools\ncheckov -d terraform --framework terraform --output sarif -o checkov.sarif\ntflint --format sarif &gt; tflint.sarif\ntrivy config terraform --format sarif --output trivy.sarif\n\n# Generate unified report\ndocker run -v $(pwd):/data -i oocx/tfplan2md \\\n  /data/plan.json \\\n  --code-analysis-results "/data/*.sarif" \\\n  --output /data/report.md</code></pre>') }}
 
       <h3 style="margin-top: 40px;">CLI Options</h3>
       <table style="width: 100%; margin-top: 16px; border-collapse: collapse;">

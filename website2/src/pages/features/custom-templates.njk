@@ -1,10 +1,62 @@
 ---
 layout: layouts/base.njk
 title: "Custom Templates - tfplan2md"
-description: ""
+description: "Use built-in templates or create your own with Scriban to format reports exactly how you need them."
 permalink: /features/custom-templates.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/custom-templates"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 MD032 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, relatedDocs, codeWindow %}
+
+{{ heroBlock("Custom Templates", "Use built-in templates or create your own with Scriban to format reports exactly how you need them.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "all providers", "tfplan2md uses the powerful Scriban templating engine, allowing you to completely customize the output. You can override templates for specific resource types or change the global layout.") %}
+      <div class="feature-example">
+        <h3 class="example-title">Example Template (Scriban)</h3>
+        <div class="code-block"><pre><code>{% raw %}{{- # Custom template for azurerm_resource_group -}}
+#### 📦 Resource Group: {{ resource.name }}
+
+**Location:** `{{ resource.values.location }}`
+{{ if resource.values.tags }}
+**Tags:**
+{{ for tag in resource.values.tags }}
+- `{{ tag.key }}`: `{{ tag.value }}`
+{{ end }}
+{{ end }}{% endraw %}</code></pre></div>
+      </div>
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Capabilities</h3>
+        <ul class="highlights-list">
+          <li><strong>Resource-Specific Templates:</strong> Create a file named <code>provider_resource_type.sbn</code> to override rendering for that resource.</li>
+          <li><strong>Global Layout:</strong> Customize the overall report structure.</li>
+          <li><strong>Access to All Data:</strong> Templates have full access to the Terraform plan JSON data.</li>
+          <li><strong>Helper Functions:</strong> Use built-in helpers for formatting, diffing, and logic.</li>
+        </ul>
+      </div>
+
+      <div class="feature-example">
+        <h3 class="example-title">Using Templates</h3>
+        {{ codeWindow("Command", '<pre><code># Use built-in template\ntfplan2md plan.json --template summary\n\n# Use custom template file\ntfplan2md plan.json --template /path/to/custom.sbn</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "tfplan2md includes multiple built-in templates and supports fully custom Scriban templates for advanced scenarios.") %}
+      {{ relatedDocs("Related Documentation", [
+        {"href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/007-built-in-templates", "label": "Feature Specification: Built-in Templates", "external": true},
+        {"href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/026-template-rendering-simplification", "label": "Template Rendering Architecture", "external": true},
+        {"href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/001-resource-specific-templates", "label": "Resource-Specific Templates", "external": true},
+        {"href": "../docs.html#templates", "label": "Template Customization Guide"},
+        {"href": "https://github.com/scriban/scriban", "label": "Scriban Documentation", "external": true}
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

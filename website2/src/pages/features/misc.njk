@@ -1,10 +1,44 @@
 ---
 layout: layouts/base.njk
 title: "Miscellaneous Features - tfplan2md"
-description: ""
+description: "Small but powerful features that improve the overall experience."
 permalink: /features/misc.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/misc"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, relatedDocs, codeWindow %}
+
+{{ heroBlock("Miscellaneous Features", "Small but powerful features that improve the overall experience.", "hero hero-secondary") }}
+
+<section id="resource-summaries" class="section">
+  <div class="section-container">
+    {% call featureDetail("Intelligent Summaries", "all providers", "One-line summaries for every resource change show what is important without expanding details.") %}
+      <div class="feature-example">
+        {{ codeWindow("", '<pre><code>#### ➕ azurerm_resource_group.main\n**Summary:** `rg-demo` (eastus)</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section id="replacement-reasons" class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Replacement Reasons", "all providers", "When a resource is being replaced, tfplan2md highlights exactly which attribute caused the replacement.") %}
+      <div class="feature-example">
+        {{ codeWindow("", '<pre><code>#### 🔄 azurerm_linux_virtual_machine.vm\n**Action:** Replace (due to `size`)</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "These features work together to improve the readability and usability of tfplan2md reports.") %}
+      {{ relatedDocs("Related Documentation", [
+        {"href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/014-replacement-reasons-and-summaries", "label": "Feature Specification: Replacement Reasons and Summaries", "external": true},
+        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#resource-summaries", "label": "Resource Summaries Overview", "external": true}
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

@@ -1,10 +1,68 @@
 ---
 layout: layouts/base.njk
 title: "Firewall Rule Inline Diffing - tfplan2md"
-description: ""
+description: "See exactly which rules were added, modified, or removed-not confusing index-based array diffs."
 permalink: /features/firewall-rules.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/firewall-rules"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs, codeWindow %}
+
+{{ heroBlock("Firewall Rule Inline Diffing", "See exactly which rules were added, modified, or removed-not confusing index-based array diffs.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "azurerm", "When firewall rule collections change, Terraform often shows confusing index-based diffs. tfplan2md understands the semantics of both network rules (IP/port-based) and application rules (FQDN-based) and presents a clear table showing exactly what changed.") %}
+      {% call comparisonBlock() %}
+        <div class="comparison-column">
+          <h3 class="comparison-title">❌ Without tfplan2md</h3>
+          {{ codeWindow("Raw Terraform Output", '<pre><code># module.network.azurerm_firewall_network_rule_collection.network_rules will be updated in-place\n~ resource "azurerm_firewall_network_rule_collection" "network_rules" {\n    name                = "network-rules"\n    # (4 unchanged attributes hidden)\n\n  - rule {\n      - description           = "DNS to Azure" -&gt; null\n      - destination_addresses = [\n          - "168.63.129.16",\n        ] -&gt; null\n      - destination_ports     = [\n          - "53",\n        ] -&gt; null\n      - name                  = "allow-dns" -&gt; null\n      - protocols             = [\n          - "UDP",\n        ] -&gt; null\n      - source_addresses      = [\n          - "10.1.1.0/24",\n        ] -&gt; null\n    }\n  - rule {\n      - description           = "Legacy HTTP" -&gt; null\n      - destination_addresses = [\n          - "10.1.3.0/24",\n        ] -&gt; null\n      - destination_ports     = [\n          - "80",\n        ] -&gt; null\n      - name                  = "allow-web" -&gt; null\n      - protocols             = [\n          - "TCP",\n        ] -&gt; null\n      - source_addresses      = [\n          - "10.1.1.0/24",\n        ] -&gt; null\n    }\n  + rule {\n      + description           = "Secure web"\n      + destination_addresses = [\n          + "10.1.3.0/24",\n        ]\n      + destination_ports     = [\n          + "443",\n        ]\n      + name                  = "allow-web-secure"\n      + protocols             = [\n          + "TCP",\n        ]\n      + source_addresses      = [\n          + "10.1.1.0/24",\n        ]\n    }\n  + rule {\n      + description           = "Log ingestion"\n      + destination_addresses = [\n          + "10.1.5.0/24",\n        ]\n      + destination_ports     = [\n          + "8080",\n        ]\n      + name                  = "allow-log-ingest"\n      + protocols             = [\n          + "TCP",\n        ]\n      + source_addresses      = [\n          + "10.1.4.0/24",\n        ]\n    }\n}</code></pre>') }}
+          <p class="comparison-note">Which rule was added? Which was removed? Index-based diffs are confusing.</p>
+        </div>
+
+        <div class="comparison-column">
+          <h3 class="comparison-title">✅ With tfplan2md</h3>
+          {% exampleBlock "features--firewall-rules--example-1" %}
+          <p class="comparison-note">Crystal clear: 3 added, 2 changed, 1 removed, 1 unchanged.</p>
+        </div>
+      {% endcall %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Key Features</h3>
+        <ul class="highlights-list">
+          <li>Shows add/change/delete/unchanged status for each rule</li>
+          <li>Displays all rule properties in a scannable table</li>
+          <li>Works for all <code>azurerm_firewall_network_rule_collection</code> and <code>azurerm_firewall_application_rule_collection</code> resources</li>
+          <li>Automatically applied-no configuration needed</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "This feature uses resource-specific templates to provide inline diffing for firewall rules.") %}
+      {{ relatedDocs("Related Documentation", [
+        {
+          "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/002-firewall-rule-before-after-display",
+          "label": "Feature Specification: Firewall Rule Display",
+          "external": true
+        },
+        {
+          "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/001-resource-specific-templates",
+          "label": "Resource-Specific Templates Architecture",
+          "external": true
+        },
+        {
+          "href": "../docs.html#templates",
+          "label": "Template Customization Guide"
+        }
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

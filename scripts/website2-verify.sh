@@ -19,6 +19,20 @@ fi
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
+route_markdown_files=()
+while IFS= read -r file; do
+    route_markdown_files+=("$file")
+done < <(find website2/src/pages -type f -name '*.md' | sort)
+
+if [[ ${#route_markdown_files[@]} -gt 0 ]]; then
+    echo "Error: Website2 route pages must use .njk, not .md." >&2
+    echo "Use markdown-rendering macros or filters inside .njk pages for markdown-friendly authoring." >&2
+    for file in "${route_markdown_files[@]}"; do
+        echo "- $file" >&2
+    done
+    exit 1
+fi
+
 if [[ ! -x scripts/website2-lint.sh ]]; then
   echo "Error: scripts/website2-lint.sh not found or not executable." >&2
   exit 1

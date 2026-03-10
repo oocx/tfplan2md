@@ -1037,6 +1037,73 @@ body {
     margin: 0;
 }
 
+.code-tab-content code,
+.cicd-tab-content code {
+    display: block;
+    white-space: pre;
+}
+
+.code-token-bullet {
+    color: #f2cc60;
+    font-weight: 700;
+}
+
+.code-token-key {
+    color: #75beff;
+}
+
+.code-token-string {
+    color: #9bd1ff;
+}
+
+.code-token-comment {
+    color: #7fb07f;
+}
+
+.code-token-keyword {
+    color: #c792ea;
+}
+
+.code-token-function {
+    color: #82aaff;
+}
+
+.code-token-punctuation {
+    color: #d8dee9;
+}
+
+.code-token-literal {
+    color: #ffcb6b;
+}
+
+[data-theme="light"] .code-token-key {
+    color: #0b63b6;
+}
+
+[data-theme="light"] .code-token-string {
+    color: #1f6feb;
+}
+
+[data-theme="light"] .code-token-comment {
+    color: #57606a;
+}
+
+[data-theme="light"] .code-token-keyword {
+    color: #8250df;
+}
+
+[data-theme="light"] .code-token-function {
+    color: #0550ae;
+}
+
+[data-theme="light"] .code-token-punctuation {
+    color: #24292f;
+}
+
+[data-theme="light"] .code-token-literal {
+    color: #9a6700;
+}
+
 .code-content {
     background: var(--code-bg);
     padding: 24px;
@@ -2185,6 +2252,61 @@ body {
     margin: 16px 0;
 }
 
+.doc-markdown > :first-child {
+    margin-top: 0;
+}
+
+.doc-markdown > :last-child {
+    margin-bottom: 0;
+}
+
+.doc-markdown p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin: 16px 0;
+}
+
+.doc-markdown ul,
+.doc-markdown ol {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.doc-markdown li {
+    margin: 12px 0;
+}
+
+.doc-markdown code {
+    background: var(--color-surface);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+}
+
+.doc-markdown a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.doc-markdown a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.doc-markdown-compact p,
+.doc-markdown-compact ul,
+.doc-markdown-compact ol {
+    font-size: 14px;
+    margin: 0 0 12px 0;
+}
+
 .doc-list {
     font-size: 16px;
     color: var(--color-text-secondary);
@@ -2388,6 +2510,20 @@ body {
     background: var(--color-surface);
     border-radius: 6px;
     display: inline-block;
+}
+
+.docs-callout {
+    margin-top: 32px;
+    padding: 20px;
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 8px;
+}
+
+.docs-callout-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .format-comparison {

@@ -1,0 +1,168 @@
+{% macro sidebar(items) %}
+<aside class="docs-sidebar" id="docs-sidebar">
+  <nav class="docs-nav" aria-label="Documentation sections">
+    <h2 class="docs-nav-title">Contents</h2>
+    <ul class="docs-nav-list">
+      {% for item in items %}
+      <li>
+        <a href="#{{ item.id }}" class="docs-nav-link{% if loop.first %} active{% endif %}">{{ item.title }}</a>
+        {% if item.children %}
+        <ul class="docs-nav-sublist">
+          {% for child in item.children %}
+          <li><a href="#{{ child.id }}" class="docs-nav-sublink">{{ child.title }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</aside>
+{% endmacro %}
+
+{% macro pageSection(id, title, description="", sectionStyle="") %}
+<section class="section" id="{{ id }}"{% if sectionStyle %} style="{{ sectionStyle }}"{% endif %}>
+  <div class="section-container">
+    <h2 class="section-title">{{ title }}</h2>
+    {% if description %}
+    <p class="section-description">{{ description | markdownInline | safe }}</p>
+    {% endif %}
+    {{ caller() }}
+  </div>
+</section>
+{% endmacro %}
+
+{% macro subsection(id, title) %}
+<div class="doc-section" id="{{ id }}">
+  <h3 class="doc-subtitle">{{ title }}</h3>
+  {{ caller() }}
+</div>
+{% endmacro %}
+
+{% macro markdownBlock(compact=false) %}
+<div class="doc-markdown{% if compact %} doc-markdown-compact{% endif %}">{{ caller() | markdown | safe }}</div>
+{% endmacro %}
+
+{% macro codeBlock(title="") %}
+<div class="code-block">
+  {% if title %}
+  <div class="code-header">
+    <span class="code-title">{{ title }}</span>
+  </div>
+  {% endif %}
+  <pre><code>{{ caller() | trim | escape }}</code></pre>
+</div>
+{% endmacro %}
+
+{% macro optionsTable(items) %}
+<div class="options-table">
+  {% for item in items %}
+  <div class="option-row">
+    <div class="option-name"><code>{{ item.name }}</code></div>
+    <div class="option-desc">{{ item.description | markdownInline | safe }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro templateGrid(items) %}
+<div class="template-grid">
+  {% for item in items %}
+  <div class="template-item">
+    <h4 class="template-item-title">{{ item.title }}</h4>
+    <div class="template-item-desc">{{ item.description | markdownInline | safe }}</div>
+    <code class="template-usage">{{ item.usage }}</code>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro helperCards(items) %}
+<div class="feature-grid" style="margin-top: 24px;">
+  {% for item in items %}
+  <div class="feature-category-card" style="padding: 24px;">
+    <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>{{ item.title }}</code></h5>
+    <div class="doc-markdown doc-markdown-compact">{{ item.description | markdown | safe }}</div>
+    {% if item.example %}
+    <div class="code-block" style="margin: 0;">
+      <pre style="margin: 0; font-size: 13px;"><code>{{ item.example | trim | escape }}</code></pre>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro minorHeading(title, level="h4", style="") %}
+<{{ level }}{% if style %} style="{{ style }}"{% endif %}>{{ title }}</{{ level }}>
+{% endmacro %}
+
+{% macro callout(title, body="", linkHref="", linkLabel="") %}
+<div class="docs-callout">
+  <h4 class="docs-callout-title">{{ title }}</h4>
+  {% if body %}
+  <div class="doc-markdown doc-markdown-compact">{{ body | markdown | safe }}</div>
+  {% endif %}
+  {% if linkHref and linkLabel %}
+  <a href="{{ linkHref }}" class="btn btn-secondary"{% if linkHref.startsWith("http") %} target="_blank" rel="noopener"{% endif %} style="display: inline-block;">{{ linkLabel }}</a>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro toolCards(items) %}
+<div class="features-grid" style="margin-top: 24px;">
+  {% for item in items %}
+  <div class="feature-category-card compact">
+    <h4 style="margin-top: 0;">{{ item.title }}</h4>
+    <div class="doc-markdown doc-markdown-compact">{{ item.description | markdown | safe }}</div>
+    <div class="code-block" style="margin-top: 12px;">
+      <pre><code>{{ item.command | trim | escape }}</code></pre>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro formatComparison(items) %}
+<div class="format-comparison">
+  {% for item in items %}
+  <div class="format-card" id="{{ item.id }}">
+    <h3 class="format-title">{{ item.title }}</h3>
+    <div class="format-desc">{{ item.description | markdownInline | safe }}</div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-title">Output Example</span>
+      </div>
+      <pre><code>{{ item.code | trim | escape }}</code></pre>
+    </div>
+    <div class="format-usage"><code>{{ item.usage }}</code></div>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro troubleItem(id="", title="", description="", solution="") %}
+<div class="trouble-section"{% if id %} id="{{ id }}"{% endif %}>
+  <h3 class="trouble-title">{{ title }}</h3>
+  {% if description %}
+  <p class="trouble-desc">{{ description }}</p>
+  {% endif %}
+  {% if solution %}
+  <p class="trouble-solution"><strong>Solution:</strong></p>
+  <div class="doc-markdown doc-markdown-compact">{{ solution | markdown | safe }}</div>
+  {% endif %}
+  {{ caller() }}
+</div>
+{% endmacro %}
+
+{% macro quickLinks(items) %}
+<div class="quicklinks-grid">
+  {% for item in items %}
+  <a href="{{ item.href }}" class="quicklink-card"{% if item.external %} target="_blank" rel="noopener"{% endif %}>
+    <div class="quicklink-icon">{{ item.icon }}</div>
+    <h3 class="quicklink-title">{{ item.title }}</h3>
+    <p class="quicklink-desc">{{ item.description }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% endmacro %}

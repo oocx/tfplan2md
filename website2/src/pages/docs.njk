@@ -1,10 +1,391 @@
 ---
 layout: layouts/base.njk
 title: "Documentation - tfplan2md"
-description: ""
+description: "Complete reference for using tfplan2md in your Terraform workflow."
 permalink: /docs.html
 rootPrefix: ""
 navKey: "docs"
 pageId: "docs"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD004 MD013 MD018 MD022 MD025 MD031 MD032 MD033 MD034 MD040 MD041 MD046 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock %}
+{% import "components/docs-blocks.njk" as docs %}
+
+{{ heroBlock("Documentation", "Complete reference for using tfplan2md in your Terraform workflow.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
+
+<div class="mobile-toc-toggle">
+  <button class="toc-toggle-btn" aria-label="Toggle table of contents" aria-expanded="false">
+    <span class="toc-icon">📑</span>
+    <span class="toc-label">Table of Contents</span>
+  </button>
+</div>
+
+<div class="docs-layout">
+  {{ docs.sidebar(docsPage.navSections) }}
+
+  <main class="docs-content">
+    {% call docs.pageSection("cli-reference", "CLI Reference", "", "padding-top: 0;") %}
+      {% call docs.subsection("basic-usage", "Basic Usage") %}
+{% call docs.codeBlock("Syntax") %}
+tfplan2md [options] [input-file]
+terraform show -json plan.tfplan | tfplan2md
+{% endcall %}
+
+{% call docs.markdownBlock() %}
+Use `tfplan2md` with an input file or pipe Terraform JSON to stdin.
+
+**Arguments:**
+
+- `input-file` is the path to the Terraform plan JSON file. If omitted, tfplan2md reads from stdin.
+{% endcall %}
+      {% endcall %}
+
+      <div class="doc-section" id="options">
+        <h3 class="doc-subtitle">Options</h3>
+        {{ docs.optionsTable(docsPage.cliOptions) }}
+      </div>
+
+      {% call docs.subsection("usage-examples", "Usage Examples") %}
+{% call docs.codeBlock("From stdin") %}
+terraform show -json plan.tfplan | tfplan2md
+{% endcall %}
+
+{% call docs.codeBlock("From file") %}
+tfplan2md plan.json
+{% endcall %}
+
+{% call docs.codeBlock("With principal mapping") %}
+tfplan2md --principal-mapping principals.json plan.json
+{% endcall %}
+
+{% call docs.codeBlock("With custom report title") %}
+tfplan2md plan.json --report-title "Drift Detection - Production"
+{% endcall %}
+
+{% call docs.codeBlock("GitHub-friendly rendering") %}
+tfplan2md plan.json --render-target github
+{% endcall %}
+
+{% call docs.codeBlock("With output file and custom template") %}
+tfplan2md plan.json --output plan.md --template my-template.sbn
+{% endcall %}
+      {% endcall %}
+    {% endcall %}
+
+    {% call docs.pageSection("template-customization", "Template Customization", "tfplan2md uses [Scriban](https://github.com/scriban/scriban) templates to generate Markdown reports. You can create custom templates to match your team's reporting needs.", "background: var(--color-surface);") %}
+      <div class="doc-section" id="built-in-templates">
+        <h3 class="doc-subtitle">Built-in Templates</h3>
+        {{ docs.templateGrid(docsPage.builtInTemplates) }}
+      </div>
+
+      {% call docs.subsection("custom-templates", "Custom Templates") %}
+{% call docs.markdownBlock() %}
+Create a custom Scriban template (`.sbn` file) and pass it with the `--template` option:
+{% endcall %}
+
+{% call docs.codeBlock("Usage") %}
+tfplan2md plan.json --template path/to/custom-template.sbn
+{% endcall %}
+
+{% call docs.markdownBlock() %}
+**Template Data Model:** Your template receives a `plan` object with the following structure:
+{% endcall %}
+
+{% raw %}{% call docs.codeBlock("Template Variables") %}
+{{ plan.terraform_version }}        # Terraform version (string)
+{{ plan.format_version }}          # Plan format version (string)
+{{ plan.resource_changes }}        # Array of resource change objects
+{{ plan.output_changes }}          # Array of output change objects
+
+# Resource change object properties
+{{ change.address }}
+{{ change.module_address }}
+{{ change.type }}
+{{ change.name }}
+{{ change.action }}
+{{ change.before }}
+{{ change.after }}
+{{ change.after_unknown }}
+{{ change.before_sensitive }}
+{{ change.after_sensitive }}
+{% endcall %}{% endraw %}
+
+{{ docs.minorHeading("Scriban Helper Functions", "h4", "margin-top: 40px; font-size: 20px; margin-bottom: 16px;") }}
+
+{% call docs.markdownBlock() %}
+tfplan2md provides custom Scriban functions to help with common formatting tasks:
+{% endcall %}
+
+{{ docs.helperCards(docsPage.helperFunctions) }}
+
+{{ docs.callout("📚 Scriban Reference", "For the complete Scriban language syntax see the official documentation:", "https://github.com/scriban/scriban/blob/master/doc/language.md", "Scriban Language Reference") }}
+
+{% call docs.markdownBlock() %}
+Reference the built-in templates in the [repository](https://github.com/oocx/tfplan2md/tree/main/src/Oocx.TfPlan2Md/Templates) for examples.
+{% endcall %}
+      {% endcall %}
+
+      {% call docs.subsection("principal-mapping", "Principal Mapping File") %}
+{% call docs.markdownBlock() %}
+Map Azure principal IDs to human-readable names for better role assignment reports. Create a JSON file with this structure:
+{% endcall %}
+
+{% call docs.codeBlock("principals.json") %}
+{
+  "users": {
+    "12345678-1234-1234-1234-123456789012": "jane.doe@contoso.com",
+    "87654321-4321-4321-4321-210987654321": "john.smith@contoso.com"
+  },
+  "groups": {
+    "abcdef12-3456-7890-abcd-ef1234567890": "Platform Team",
+    "fedcba98-7654-3210-fedc-ba9876543210": "Security Team"
+  },
+  "servicePrincipals": {
+    "11111111-2222-3333-4444-555555555555": "terraform-spn",
+    "66666666-7777-8888-9999-000000000000": "github-actions-spn"
+  }
+}
+{% endcall %}
+
+{{ docs.minorHeading("Generating Mapping Files with Azure CLI", "h4", "margin-top: 40px; font-size: 20px; margin-bottom: 16px;") }}
+
+{% call docs.markdownBlock() %}
+Use Azure CLI to automatically generate principal mapping files from your Azure AD tenant:
+{% endcall %}
+
+{{ docs.minorHeading("Bash Script", "h5", "margin: 24px 0 12px 0; font-size: 16px; font-weight: 600;") }}
+{% call docs.codeBlock("generate-principals.sh") %}
+#!/bin/bash
+
+echo '{'
+echo '  "users": {'
+az ad user list --query '[].{id:id,upn:userPrincipalName}' -o json | \
+  jq -r '.[] | "    \"" + .id + "\": \"" + .upn + "\""' | \
+  paste -sd ',' -
+echo '  },'
+echo '  "groups": {'
+az ad group list --query '[].{id:id,name:displayName}' -o json | \
+  jq -r '.[] | "    \"" + .id + "\": \"" + .name + "\""' | \
+  paste -sd ',' -
+echo '  },'
+echo '  "servicePrincipals": {'
+az ad sp list --all --query '[].{id:id,name:displayName}' -o json | \
+  jq -r '.[] | "    \"" + .id + "\": \"" + .name + "\""' | \
+  paste -sd ',' -
+echo '  }'
+echo '}'
+{% endcall %}
+
+{% call docs.markdownBlock() %}
+Run `bash generate-principals.sh > principals.json`.
+{% endcall %}
+
+{{ docs.minorHeading("PowerShell Script", "h5", "margin: 32px 0 12px 0; font-size: 16px; font-weight: 600;") }}
+{% call docs.codeBlock("Generate-Principals.ps1") %}
+$mapping = @{
+    users = @{}
+    groups = @{}
+    servicePrincipals = @{}
+}
+
+$users = az ad user list --query '[].{id:id,upn:userPrincipalName}' | ConvertFrom-Json
+foreach ($user in $users) { $mapping.users[$user.id] = $user.upn }
+
+$groups = az ad group list --query '[].{id:id,name:displayName}' | ConvertFrom-Json
+foreach ($group in $groups) { $mapping.groups[$group.id] = $group.name }
+
+$sps = az ad sp list --all --query '[].{id:id,name:displayName}' | ConvertFrom-Json
+foreach ($sp in $sps) { $mapping.servicePrincipals[$sp.id] = $sp.name }
+
+$mapping | ConvertTo-Json -Depth 3
+{% endcall %}
+
+{% call docs.markdownBlock() %}
+Run `./Generate-Principals.ps1 > principals.json`.
+{% endcall %}
+
+{{ docs.minorHeading("Filtering for Specific Principals", "h5", "margin: 32px 0 12px 0; font-size: 16px; font-weight: 600;") }}
+
+{% call docs.markdownBlock() %}
+For large tenants, you may want to filter for specific principals instead of fetching all:
+{% endcall %}
+
+{% call docs.codeBlock("Bash - Filter by IDs") %}
+PRINCIPAL_IDS=$(terraform show -json plan.tfplan | \
+  jq -r '.resource_changes[]? | select(.type == "azurerm_role_assignment") | .change.after.principal_id' | sort -u)
+
+echo '{"users":{},"groups":{},"servicePrincipals":{}}' > principals.json
+for id in $PRINCIPAL_IDS; do
+  az ad user show --id "$id" 2>/dev/null | \
+    jq -r '{users: {($id): .userPrincipalName}}' || \
+  az ad group show --group "$id" 2>/dev/null | \
+    jq -r '{groups: {($id): .displayName}}' || \
+  az ad sp show --id "$id" 2>/dev/null | \
+    jq -r '{servicePrincipals: {($id): .displayName}}'
+done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json
+{% endcall %}
+
+{% call docs.markdownBlock() %}
+Use the `--principal-mapping` option to replace GUIDs with names in role assignment reports.
+{% endcall %}
+
+{% call docs.codeBlock("Usage") %}
+tfplan2md plan.json --principal-mapping principals.json
+{% endcall %}
+
+{{ docs.minorHeading("Using Principal Mapping with Docker", "h4", "margin-top: 40px; font-size: 20px; margin-bottom: 16px;") }}
+
+{% call docs.markdownBlock() %}
+When running tfplan2md in a Docker container, mount `principals.json` into the container:
+{% endcall %}
+
+{% call docs.codeBlock("Docker - Mount from current directory") %}
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md
+{% endcall %}
+
+{% call docs.codeBlock("Docker - Mount as read-only") %}
+docker run \
+  -v $(pwd)/plan.json:/data/plan.json:ro \
+  -v $(pwd)/principals.json:/app/principals.json:ro \
+  oocx/tfplan2md --principal-mapping /app/principals.json /data/plan.json
+{% endcall %}
+
+{% call docs.codeBlock("Docker - With debug output") %}
+docker run -v $(pwd):/data oocx/tfplan2md --debug \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md
+{% endcall %}
+      {% endcall %}
+    {% endcall %}
+
+    {% call docs.pageSection("code-analysis", "Static Code Analysis", "Integrate security findings from Checkov, TfLint, Trivy, and other SARIF-compatible tools directly into your Terraform plan reports.") %}
+      {% call docs.subsection("code-analysis-overview", "Overview") %}
+{% call docs.markdownBlock() %}
+tfplan2md natively supports SARIF 2.1.0 format, enabling you to combine infrastructure changes with security findings in a single unified report.
+{% endcall %}
+
+{% call docs.codeBlock("Basic Usage") %}
+# Generate Terraform plan
+terraform show -json plan.tfplan > plan.json
+
+# Run security tools
+checkov -d terraform --framework terraform --output sarif -o checkov.sarif
+tflint --format sarif > tflint.sarif
+trivy config terraform --format sarif --output trivy.sarif
+
+# Generate unified report
+tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --output report.md
+{% endcall %}
+
+{{ docs.minorHeading("What You Get", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+
+{% call docs.markdownBlock() %}
+- **Summary Table:** High-level overview of findings by severity.
+- **Resource Mapping:** Findings are automatically linked to affected resources and attributes.
+- **Multi-Tool Support:** Combine results from multiple security tools in one report.
+- **Severity Badges:** Visual indicators on resources show security status.
+{% endcall %}
+      {% endcall %}
+
+      <div class="doc-section" id="code-analysis-options">
+        <h3 class="doc-subtitle">CLI Options</h3>
+        {{ docs.optionsTable(docsPage.codeAnalysisOptions) }}
+
+        {{ docs.minorHeading("Usage Examples", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+        {% call docs.codeBlock("Single tool") %}
+tfplan2md plan.json --code-analysis-results checkov.sarif
+        {% endcall %}
+
+        {% call docs.codeBlock("Multiple files with wildcard") %}
+tfplan2md plan.json --code-analysis-results "*.sarif"
+        {% endcall %}
+
+        {% call docs.codeBlock("Recursive search") %}
+tfplan2md plan.json --code-analysis-results "**/*.sarif"
+        {% endcall %}
+
+        {% call docs.codeBlock("Filter severity and fail on errors") %}
+tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --code-analysis-minimum-level warning \
+  --fail-on-static-code-analysis-errors
+        {% endcall %}
+
+        {{ docs.minorHeading("Docker Usage", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+        {% call docs.codeBlock("Mount directory with SARIF files") %}
+docker run -v $(pwd):/data oocx/tfplan2md \
+  /data/plan.json \
+  --code-analysis-results "/data/**/*.sarif" \
+  --output /data/report.md
+        {% endcall %}
+      </div>
+
+      {% call docs.subsection("code-analysis-tools", "Supported Tools") %}
+{% call docs.markdownBlock() %}
+tfplan2md works with any tool that outputs SARIF 2.1.0 format. Here are some popular options:
+{% endcall %}
+
+{{ docs.toolCards(docsPage.supportedTools) }}
+
+{{ docs.minorHeading("CI/CD Integration Example", "h4", "margin-top: 32px; font-size: 18px; margin-bottom: 16px;") }}
+{% call docs.codeBlock("GitHub Actions Workflow") %}
+- name: Run security scans
+  run: |
+    checkov -d terraform --framework terraform \
+      --output sarif -o checkov.sarif --compact
+
+    cd terraform && tflint --format sarif > ../tflint.sarif && cd ..
+
+    trivy config terraform --format sarif --output trivy.sarif
+
+- name: Generate unified report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i -v $(pwd):/data oocx/tfplan2md \
+        --code-analysis-results "/data/**/*.sarif" \
+        --fail-on-static-code-analysis-errors \
+        > plan.md
+{% endcall %}
+
+{{ docs.callout("💡 Tips", "- Use `**/*.sarif` for recursive search across subdirectories\n- Set `--code-analysis-minimum-level warning` to reduce noise\n- Combine `--fail-on-static-code-analysis-errors` with CI/CD to block deployments\n- Security findings persist in the report even if resources haven't changed") }}
+      {% endcall %}
+    {% endcall %}
+
+    {% call docs.pageSection("render-targets", "Render Targets", "The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.") %}
+      {{ docs.formatComparison(docsPage.renderTargets) }}
+      <div style="margin-top: 2rem; padding: 1rem; background: var(--color-surface-dark); border-radius: 8px;">
+        <p style="margin: 0; color: var(--color-text-secondary);"><strong>Migration note:</strong> The <code>--large-value-format</code> flag has been deprecated and replaced by <code>--render-target</code>. Use <code>--render-target azuredevops</code> for <code>inline-diff</code> behavior or <code>--render-target github</code> for <code>standard-diff</code> behavior.</p>
+      </div>
+    {% endcall %}
+
+    {% call docs.pageSection("troubleshooting", "Troubleshooting", "", "background: var(--color-surface);") %}
+      {% call docs.troubleItem("no-valid-json", "❌ \"No valid JSON detected in input\"", "This error occurs when tfplan2md receives input that is not valid Terraform JSON.", "- Ensure you're using `terraform show -json plan.tfplan`, not `terraform plan`\n- Verify the plan file exists and is a valid Terraform plan\n- Check that stdin is not empty when piping from Terraform") %}
+{% call docs.codeBlock("Correct usage") %}
+# Generate plan file
+terraform plan -out=plan.tfplan
+
+# Convert to JSON and pipe to tfplan2md
+terraform show -json plan.tfplan | tfplan2md
+{% endcall %}
+      {% endcall %}
+
+      {% call docs.troubleItem("template-not-found", "❌ \"Template file not found\"", "This error occurs when using `--template` with a custom template file that doesn't exist.", "- Verify the template file path is correct\n- Check file permissions\n- For built-in templates, use `default` or `summary`") %}{% endcall %}
+
+      {% call docs.troubleItem("sensitive-values", "⚠️ Sensitive values still visible", "Sensitive values are masked by default unless `--show-sensitive` is used.", "- Remove `--show-sensitive` from your command\n- Mark attributes as `sensitive = true` in Terraform\n- Review CI/CD configuration to ensure sensitive flags aren't enabled accidentally") %}{% endcall %}
+
+      {% call docs.troubleItem("docker-permission", "⚠️ Docker permission denied", "Docker commands fail with permission errors.", "- Add your user to the docker group: `sudo usermod -aG docker $USER`\n- Log out and back in for group changes to take effect\n- Or run with `sudo` (not recommended for CI/CD)") %}{% endcall %}
+
+      {% call docs.troubleItem("", "💡 Need more help?", "", "- [Open an issue on GitHub](https://github.com/oocx/tfplan2md/issues) with your error message and command\n- Check [GitHub Discussions](https://github.com/oocx/tfplan2md/discussions) for community help\n- Review [examples](examples.html) for working configurations") %}{% endcall %}
+    {% endcall %}
+  </main>
+</div>
+
+<section class="section">
+  <div class="section-container">
+    {{ docs.quickLinks(docsPage.quickLinks) }}
+  </div>
+</section>

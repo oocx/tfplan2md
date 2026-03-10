@@ -1,10 +1,239 @@
 ---
 layout: layouts/base.njk
 title: "tfplan2md - Transform Terraform Plans Into Readable Reports"
-description: ""
+description: "Stop drowning in verbose Terraform plan output. Generate structured Markdown reports that render perfectly in PR comments."
 permalink: /index.html
 rootPrefix: ""
 navKey: ""
 pageId: "index"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD004 MD013 MD022 MD023 MD025 MD031 MD032 MD033 MD040 MD041 MD047 -->
+{% from "components/content-blocks.njk" import sectionHeader %}
+{% from "components/marketing-blocks.njk" import featureCarouselCard %}
+
+<header class="hero hero-primary">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badges">
+        <a href="getting-started.html" class="hero-badge">🐳 Docker Ready</a>
+        <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="hero-badge">📄 Free &amp; Open Source</a>
+        <a href="ai-workflow.html" class="hero-badge">✨ Built 100% with GitHub Copilot</a>
+      </div>
+      <h1 class="hero-title">
+        Transform Terraform Plans Into <span class="hero-gradient">Readable Reports</span>
+      </h1>
+      <p class="hero-subtitle">
+        Stop drowning in verbose plan output. Generate structured Markdown reports that render perfectly in PR comments.
+      </p>
+    </div>
+  </div>
+</header>
+
+<section class="problem-section">
+  <div class="section-container">
+    {{ sectionHeader("The Pull Request Review Problem", "Reviewing Terraform changes in PRs is painful with raw plan output") }}
+    <div class="problem-solution-layout">
+      <div class="screenshot-side">
+        <div class="screenshot-container">
+          <div class="screenshot-header">Raw Terraform Plan</div>
+          <div class="screenshot-content">
+<pre><code># azurerm_network_security_rule.security_rule[2] will be created
++ resource "azurerm_network_security_rule" "rule" {
+  + access                     = "Allow"
+  + destination_address_prefix = "10.0.0.0/8"
+  + destination_port_range     = "22"
+  + direction                  = "Inbound"
+  + name                       = "ssh_from_corporate"
+  + priority                   = 100
+  + protocol                   = "Tcp"
+  + source_address_prefix      = "10.0.0.0/8"
+  + source_port_range          = "*"
+  + resource_group_name        = "rg-network"
+  + network_security_group_name = "nsg-prod"
+  }
+
+# azurerm_network_security_rule.security_rule[3] will be created
++ resource "azurerm_network_security_rule" "rule" {
+  + access                     = "Deny"
+  + destination_address_prefix = "*"
+  + destination_port_range     = "3389"
+...</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-side">
+        <ul class="problem-list">
+          <li><span class="x-icon">✗</span><div><strong>Wall of Text</strong><p>Raw plan output is overwhelming and difficult to scan</p></div></li>
+          <li><span class="x-icon">✗</span><div><strong>Lost Context</strong><p>Hard to understand what's actually changing and why</p></div></li>
+          <li><span class="x-icon">✗</span><div><strong>Mental Mapping</strong><p>Constantly mapping resource IDs to names in your head</p></div></li>
+          <li><span class="x-icon">✗</span><div><strong>Cryptic Diffs</strong><p>Index changes instead of semantic "what actually changed"</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="solution-section hero-secondary">
+  <div class="section-container">
+    {{ sectionHeader("tfplan2md Solves This") }}
+    <div class="problem-solution-layout">
+      <div class="list-side">
+        <ul class="solution-list">
+          <li><span class="check-icon">✓</span><div><strong>Security Changes as Readable Tables</strong><p>Firewall and NSG rules rendered with protocols, ports, and actions</p></div></li>
+          <li><span class="check-icon">✓</span><div><strong>Unified Security &amp; Plan Report</strong><p>Combines Terraform changes with security findings from Checkov, TfLint, and Trivy in one view</p></div></li>
+          <li><span class="check-icon">✓</span><div><strong>Friendly Names, Not GUIDs</strong><p>Principal IDs, role names, and scopes resolved to readable text</p></div></li>
+          <li><span class="check-icon">✓</span><div><strong>Inline Diffs for Large Values</strong><p>Shows computed diffs for large values like JSON policies or scripts</p></div></li>
+          <li><span class="check-icon">✓</span><div><strong>Optimized for PR Comments</strong><p>Designed and tested for GitHub and Azure DevOps rendering</p></div></li>
+        </ul>
+      </div>
+
+      <div class="screenshot-side">
+        <div class="screenshot-container">
+          <div class="screenshot-header">Firewall Rules with Security Analysis</div>
+          <div class="screenshot-content">
+            <img id="homepage-screenshot" src="assets/screenshots/firewall-example-crop-azdo.png" srcset="assets/screenshots/firewall-example-crop-azdo.png 1x, assets/screenshots/firewall-example-crop-azdo@2x.png 2x" data-light1x="assets/screenshots/firewall-example-crop-azdo.png" data-light2x="assets/screenshots/firewall-example-crop-azdo@2x.png" data-dark1x="assets/screenshots/firewall-example-crop-azdo-dark.png" data-dark2x="assets/screenshots/firewall-example-crop-azdo-dark@2x.png" alt="Firewall rules with security analysis" class="screenshot-clickable" style="width: 100%; height: auto; display: block; border-radius: 4px;">
+            <p style="text-align: center; font-size: 14px; color: var(--color-text-secondary); margin-top: 8px; background: var(--code-bg); padding: 8px 0; margin-bottom: 0;">Click to enlarge</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install" class="install-section">
+  <div class="section-container">
+    <div class="install-card">
+      <div class="install-content">
+        <h2 class="install-title">Get Started in Seconds</h2>
+        <p class="install-description">Run one command to convert your Terraform plan</p>
+
+        <div class="install-row">
+          <div class="install-actions">
+            <a href="getting-started.html" class="btn btn-lg btn-white">Get Started</a>
+            <a href="examples.html" class="btn btn-lg btn-outline-white">View Examples</a>
+          </div>
+
+          <div class="command-box">
+            <code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code>
+            <button class="copy-button" aria-label="Copy command to clipboard"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="features-section">
+  <div class="section-container">
+    {{ sectionHeader("Powerful Features", "Everything you need for better Terraform PR reviews", true) }}
+    <div class="features-carousel">
+      <button class="carousel-btn carousel-prev" aria-label="Previous features">‹</button>
+      <div class="features-carousel-track">
+        {{ featureCarouselCard("assets/icons/semantic-diffs.svg", "Inline Diffs", "Inline Diffs", 'Side-by-side "Before" and "After" values with inline highlighting show exactly what changed.', "features/index.html#semantic-diffs") }}
+        {{ featureCarouselCard("assets/icons/firewall-rules.svg", "Firewall Rules", "Firewall Rules", "Azure Firewall rule collections rendered as readable tables with protocols, ports, and actions.", "features/firewall-rules.html") }}
+        {{ featureCarouselCard("assets/icons/nsg-rules.svg", "NSG Rules", "NSG Rules", "Network Security Group rules as readable tables, making security changes easy to audit.", "features/nsg-rules.html") }}
+        {{ featureCarouselCard("assets/icons/role-assignment.svg", "Role Assignments", "Role Assignments", "Resolves cryptic Principal IDs, role names, scopes, and Azure AD Groups, Service Principals, and App Roles to human-readable names.", "features/azure-optimizations.html") }}
+        {{ featureCarouselCard("assets/icons/large-values.svg", "Large Values", "Large Values", "Multi-line values like JSON policies show computed diffs with inline highlighting.", "features/large-values.html") }}
+        {{ featureCarouselCard("assets/icons/static-analysis.svg", "Static Code Analysis", "Static Code Analysis", "Integrates security findings from Checkov, TfLint, and Trivy, mapping them to specific resources.", "features/static-analysis.html") }}
+        {{ featureCarouselCard("assets/icons/pr-compatibility.svg", "PR Compatibility", "PR Optimized", "Designed and tested for rendering in markdown pull requests on Azure DevOps & GitHub.", "features/index.html#pr-compatibility") }}
+        {{ featureCarouselCard("assets/icons/friendly-names.svg", "Friendly Names", "Friendly Names", "Displays friendly names for resources instead of complex resource ID strings.", "features/misc.html#friendly-names") }}
+      </div>
+      <button class="carousel-btn carousel-next" aria-label="Next features">›</button>
+    </div>
+    <div class="carousel-dots"></div>
+  </div>
+</section>
+
+<section class="cicd-section">
+  <div class="section-container">
+    <div class="cicd-content">
+      <div class="cicd-text">
+        <h2 class="cicd-title">Perfect for CI/CD</h2>
+        <p class="cicd-description">Integrate tfplan2md into your GitHub Actions, Azure Pipelines, or GitLab CI workflow. Automatically post plan reports as PR comments.</p>
+        <a href="getting-started.html#cicd" class="btn btn-primary">View Integration Guides</a>
+      </div>
+      <div class="cicd-example">
+        <div class="code-window">
+          <div class="code-tabs">
+            <button class="code-tab active" data-tab="github-actions">GitHub Actions</button>
+            <button class="code-tab" data-tab="azure-pipelines">Azure Pipelines</button>
+            <button class="code-tab" data-tab="security-tools">Security Tools</button>
+          </div>
+          <div class="code-tab-content active" id="github-actions"><pre><code class="language-yaml">- name: Generate markdown report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md &gt; plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v7
+  with:
+    script: |
+      const fs = require('fs');
+      const plan = fs.readFileSync('plan.md', 'utf8');
+
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: plan
+      });</code></pre></div>
+          <div class="code-tab-content" id="azure-pipelines"><pre><code class="language-yaml">- script: terraform show -json plan.tfplan &gt; plan.json
+  displayName: 'Convert to JSON'
+  workingDirectory: terraform
+
+- script: |
+    docker run -v $(pwd):/data oocx/tfplan2md \
+      /data/plan.json --output /data/plan.md
+  displayName: 'Generate markdown report'
+  workingDirectory: terraform
+
+- bash: |
+    MARKDOWN=$(cat terraform/plan.md)
+    URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0"
+
+    BODY=$(jq -n \
+      --arg content "$MARKDOWN" \
+      '{comments: [{content: $content, commentType: 1}], status: 1}')
+
+    curl -X POST "$URL" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $(System.AccessToken)" \
+      -d "$BODY"
+  displayName: 'Post PR comment'</code></pre></div>
+          <div class="code-tab-content" id="security-tools"><pre><code class="language-yaml">- name: Run security scans
+  run: |
+    # Run Checkov
+    checkov -d terraform --framework terraform \
+      --output sarif --output-file-path . --compact
+
+    # Run TfLint
+    cd terraform &amp;&amp; tflint --format sarif &gt; ../tflint.sarif &amp;&amp; cd ..
+
+    # Run Trivy
+    trivy config terraform --format sarif --output trivy.sarif
+
+- name: Generate unified report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i -v $(pwd):/data oocx/tfplan2md \
+        --code-analysis-results "/data/**/*.sarif" &gt; plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v7
+  with:
+    script: |
+      const fs = require('fs');
+      const plan = fs.readFileSync('plan.md', 'utf8');
+
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: plan
+      });</code></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

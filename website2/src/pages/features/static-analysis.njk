@@ -1,10 +1,105 @@
 ---
 layout: layouts/base.njk
 title: "Static Code Analysis Integration - tfplan2md"
-description: ""
+description: "Combine Terraform plan changes with security findings from Checkov, TfLint, and Trivy in one unified report."
 permalink: /features/static-analysis.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/static-analysis"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 MD032 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, codeWindow %}
+
+{{ heroBlock("Static Code Analysis Integration", "Combine Terraform plan changes with security findings from Checkov, TfLint, and Trivy in one unified report.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "SARIF 2.1.0", "tfplan2md natively supports SARIF 2.1.0 format, allowing you to integrate security findings from multiple tools directly into your infrastructure change reports. Findings are automatically mapped to specific resources and attributes, creating a unified view of both changes and security issues.") %}
+      <div class="feature-detail-header" style="margin-top: 0; margin-bottom: 24px;">
+        <span class="feature-badge">Checkov</span>
+        <span class="feature-badge">TfLint</span>
+        <span class="feature-badge">Trivy</span>
+      </div>
+
+      <h3 style="margin-top: 40px;">How It Works</h3>
+      <ol style="margin-left: 20px; font-size: 16px; line-height: 1.8; color: var(--color-text-secondary);">
+        <li><strong>Run your security tools</strong> and export SARIF output from Checkov, TfLint, Trivy, or any SARIF-compatible tool.</li>
+        <li><strong>Pass SARIF files to tfplan2md</strong> with <code>--code-analysis-results</code> using explicit paths or wildcard patterns.</li>
+        <li><strong>Review one unified report</strong> where findings are mapped back to the affected resources and attributes.</li>
+      </ol>
+
+      <h3 style="margin-top: 40px;">Example: Unified Security and Plan Report</h3>
+      {% exampleBlock "features--static-analysis--example-1" %}
+
+      <h3 style="margin-top: 40px;">CLI Usage</h3>
+      {{ codeWindow("Basic Usage", '<pre><code># Generate Terraform plan\nterraform show -json plan.tfplan &gt; plan.json\n\n# Run security tools\ncheckov -d terraform --framework terraform --output sarif -o checkov.sarif\ntflint --format sarif &gt; tflint.sarif\ntrivy config terraform --format sarif --output trivy.sarif\n\n# Generate unified report\ndocker run -v $(pwd):/data -i oocx/tfplan2md \\\n+  /data/plan.json \\\n+  --code-analysis-results "/data/*.sarif" \\\n+  --output /data/report.md</code></pre>') }}
+
+      <h3 style="margin-top: 40px;">CLI Options</h3>
+      <table style="width: 100%; margin-top: 16px; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border);">Option</th>
+            <th style="text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border);">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);"><code>--code-analysis-results &lt;pattern&gt;</code></td>
+            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);">File path or wildcard pattern for SARIF files, such as <code>*.sarif</code> or <code>**/*.sarif</code>.</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);"><code>--code-analysis-minimum-level &lt;level&gt;</code></td>
+            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);">Minimum severity to include: <code>none</code>, <code>note</code>, <code>warning</code>, or <code>error</code>. Default: <code>note</code>.</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px;"><code>--fail-on-static-code-analysis-errors</code></td>
+            <td style="padding: 12px;">Exit with a non-zero status if high or critical findings are present.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top: 40px;">Supported Tools</h3>
+      <div class="features-grid" style="margin-top: 24px;">
+        <div class="feature-category-card compact">
+          <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+          <h4 style="margin: 0 0 8px 0;">Checkov</h4>
+          <p style="font-size: 14px; margin: 0;">Infrastructure security scanning for Terraform, CloudFormation, Kubernetes, and more.</p>
+        </div>
+        <div class="feature-category-card compact">
+          <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+          <h4 style="margin: 0 0 8px 0;">TfLint</h4>
+          <p style="font-size: 14px; margin: 0;">Terraform linting with pluggable rule support for major providers.</p>
+        </div>
+        <div class="feature-category-card compact">
+          <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+          <h4 style="margin: 0 0 8px 0;">Trivy</h4>
+          <p style="font-size: 14px; margin: 0;">IaC misconfiguration and vulnerability scanning in SARIF format.</p>
+        </div>
+        <div class="feature-category-card compact">
+          <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+          <h4 style="margin: 0 0 8px 0;">Any SARIF Tool</h4>
+          <p style="font-size: 14px; margin: 0;">Any SARIF 2.1.0 producer can feed findings into the report.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 40px;">Summary View</h3>
+      <p class="feature-detail-description" style="margin-bottom: 24px;">The report also includes a high-level summary so reviewers can assess overall security posture before reading the full plan.</p>
+      {% exampleBlock "features--static-analysis--example-2" %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Benefits</h3>
+        <ul class="highlights-list">
+          <li><strong>Unified view:</strong> infrastructure changes and security findings are shown together</li>
+          <li><strong>Resource mapping:</strong> findings are tied back to specific resources and attributes automatically</li>
+          <li><strong>Multi-tool support:</strong> combine results from multiple SARIF producers in one report</li>
+          <li><strong>PR-friendly output:</strong> security context appears where reviewers already inspect plan changes</li>
+          <li><strong>Fail-fast support:</strong> block PRs when critical findings should stop the pipeline</li>
+        </ul>
+      </div>
+
+      <div class="feature-example-note">
+        <strong>Tip:</strong> Use wildcard patterns like <code>**/*.sarif</code> to automatically include SARIF files from nested directories.
+      </div>
+    {% endcall %}
+  </div>
+</section>

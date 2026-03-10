@@ -1,10 +1,82 @@
 ---
 layout: layouts/base.njk
 title: "Large Value Handling - tfplan2md"
-description: ""
+description: "Multi-line and long values are formatted clearly with line-by-line diffs in collapsible sections."
 permalink: /features/large-values.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/large-values"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 MD032 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs, codeWindow %}
+
+{{ heroBlock("Large Value Handling", "Multi-line and long values are formatted clearly with line-by-line diffs in collapsible sections.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "all providers", "Configuration files, JSON policies, and user data scripts can be huge. tfplan2md automatically detects large values and moves them to a dedicated section with collapsible details, keeping the main report clean.") %}
+      {% call comparisonBlock() %}
+        <div class="comparison-column">
+          <h3 class="comparison-title">❌ Without tfplan2md</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Raw Terraform Output</span>
+            </div>
+            <div class="example-content">
+              <pre style="white-space: pre-wrap; overflow-x: hidden;"><code># azurerm_api_management_policy.global will be updated in-place
+~ resource "azurerm_api_management_policy" "global" {
+    ~ xml_content = "&lt;policies&gt;\n  &lt;inbound&gt;\n    &lt;rate-limit calls=\"100\" renewal-period=\"60\" /&gt;\n    &lt;ip-filter action=\"allow\"&gt;...\n    &lt;validate-jwt ...&gt;...\n    &lt;set-backend-service base-url=\"https://backend-old.example.com\" /&gt;\n  &lt;/inbound&gt;\n&lt;/policies&gt;"
+      -&gt; "&lt;policies&gt;\n  &lt;inbound&gt;\n    &lt;rate-limit calls=\"200\" renewal-period=\"60\" /&gt;\n    &lt;ip-filter action=\"allow\"&gt;...\n    &lt;validate-jwt ...&gt;...\n    &lt;set-backend-service base-url=\"https://backend-new.example.com\" /&gt;\n    &lt;quota-by-key ... /&gt;\n  &lt;/inbound&gt;\n&lt;/policies&gt;"
+  }</code></pre>
+            </div>
+          </div>
+          <p class="comparison-note">Large XML or JSON blobs embedded in escaped strings are nearly impossible to review safely.</p>
+        </div>
+
+        <div class="comparison-column">
+          <h3 class="comparison-title">✅ With tfplan2md</h3>
+          {% exampleBlock "features--large-values--example-1" %}
+          <p class="comparison-note">Readable formatted content with inline diff highlighting makes every change reviewable.</p>
+        </div>
+      {% endcall %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Smart Formatting</h3>
+        <ul class="highlights-list">
+          <li><strong>Automatic detection:</strong> long or multi-line values are moved out of the primary attribute tables</li>
+          <li><strong>Collapsible sections:</strong> reviewers can expand details only when they need them</li>
+          <li><strong>Line-by-line diffs:</strong> edits within large text blocks remain visible instead of collapsing into noise</li>
+          <li><strong>Readable rendering:</strong> formatted JSON, YAML, XML, and scripts stay legible in PR comments</li>
+        </ul>
+      </div>
+
+      <div class="feature-example">
+        <h3 class="example-title">Configuration</h3>
+        <p class="feature-detail-description">Control the diff format for large values using the <code>--render-target</code> CLI option:</p>
+        {{ codeWindow("Command", '<pre><code># Default: azuredevops (HTML with character-level highlighting)\ntfplan2md plan.json\n\n# GitHub-compatible diff format (markdown code blocks)\ntfplan2md plan.json --render-target github</code></pre>') }}
+        <p class="feature-detail-description" style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+          <em>The <code>--large-value-format</code> flag has been deprecated. Use <code>--render-target azuredevops</code> instead of <code>inline-diff</code>, or <code>--render-target github</code> instead of <code>standard-diff</code>.</em>
+        </p>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "Large value handling automatically detects and formats multi-line or long attribute values for better readability.") %}
+      {{ relatedDocs("Related Documentation", [
+        {
+          "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/017-large-attribute-value-display",
+          "label": "Feature Specification: Large Attribute Value Display",
+          "external": true
+        },
+        {
+          "href": "../docs.html#cli-options",
+          "label": "CLI Options Reference"
+        }
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

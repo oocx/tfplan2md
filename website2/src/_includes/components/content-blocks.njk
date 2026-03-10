@@ -1,0 +1,80 @@
+{% macro heroBlock(title, subtitle="", heroClass="hero", heroStyle="", titleStyle="") %}
+<header class="{{ heroClass }}"{% if heroStyle %} style="{{ heroStyle }}"{% endif %}>
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1 class="hero-title"{% if titleStyle %} style="{{ titleStyle }}"{% endif %}>{{ title }}</h1>
+      {% if subtitle %}
+      <p class="hero-subtitle">
+        {{ subtitle }}
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</header>
+{% endmacro %}
+
+{% macro sectionHeader(title, description="", centered=false) %}
+<div class="section-header{% if centered %} centered{% endif %}">
+  <h2 class="section-title">{{ title }}</h2>
+  {% if description %}
+  <p class="section-description">{{ description }}</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro featureDetail(title="", badge="", description="") %}
+<div class="feature-detail">
+  {% if title or badge %}
+  <div class="feature-detail-header">
+    {% if title %}
+    <h2 class="feature-detail-title">{{ title }}</h2>
+    {% endif %}
+    {% if badge %}
+    <span class="feature-badge">{{ badge }}</span>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% if description %}
+  <p class="feature-detail-description">
+    {{ description }}
+  </p>
+  {% endif %}
+  {{ caller() }}
+</div>
+{% endmacro %}
+
+{% macro comparisonBlock() %}
+<div class="feature-comparison">
+  {{ caller() }}
+</div>
+{% endmacro %}
+
+{% macro relatedDocs(title, links) %}
+<div class="feature-highlights">
+  <h3 class="highlights-title">{{ title }}</h3>
+  <ul class="highlights-list">
+    {% for link in links %}
+    <li><a href="{{ link.href }}"{% if link.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ link.label }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endmacro %}
+
+{% macro commandBlock(command) %}
+<div class="command-box">
+  <code>{{ command }}</code>
+</div>
+{% endmacro %}
+
+{% macro codeWindow(title="", body="") %}
+<div class="code-block">
+  {% if title %}
+  <div class="code-header">
+    <span class="code-title">{{ title }}</span>
+  </div>
+  {% endif %}
+  <div class="example-content">
+    {{ body | safe }}
+  </div>
+</div>
+{% endmacro %}

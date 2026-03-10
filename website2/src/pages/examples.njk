@@ -1,10 +1,174 @@
 ---
 layout: layouts/base.njk
 title: "Examples - tfplan2md"
-description: ""
+description: "Real tfplan2md output from actual Terraform plans. See what your reports will look like."
 permalink: /examples.html
 rootPrefix: ""
 navKey: "examples"
 pageId: "examples"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD013 MD022 MD024 MD025 MD031 MD032 MD033 MD034 MD040 MD041 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock, sectionHeader %}
+{% from "components/marketing-blocks.njk" import exampleShowcaseSection, realWorldCard %}
+
+{{ heroBlock("Examples", "Real tfplan2md output from actual Terraform plans. See what your reports will look like.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
+
+<section class="section" style="padding-top: 0;">
+  <div class="section-container">
+    {{ sectionHeader("Report Templates", "tfplan2md includes built-in templates for different use cases. Choose the right level of detail for your workflow.") }}
+
+    {% call exampleShowcaseSection(
+      "🔒 Security Analysis Integration",
+      "Combine Terraform plan changes with security findings from Checkov, TfLint, and Trivy in a single unified report. Security issues are automatically mapped to specific resources and attributes.",
+      "",
+      "Learn more →",
+      "NEW in v1.6.0",
+      "background: #0969da; color: white; font-weight: 600;",
+      "background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), rgba(var(--color-success-rgb), 0.05)); padding: 32px; border-radius: 8px; border: 2px solid var(--color-primary);",
+      [
+        "Security-conscious teams requiring audit trails",
+        "Compliance workflows requiring both infrastructure and security validation",
+        "Teams using multiple security tools (Checkov, TfLint, Trivy)",
+        "PR reviews where security findings need visibility alongside changes"
+      ]
+    ) %}
+      {% exampleBlock "examples--example-1" %}
+      <div style="margin-top: 24px; text-align: center;">
+        <a href="features/static-analysis.html" class="btn btn-primary">Learn More About Security Integration</a>
+      </div>
+    {% endcall %}
+
+    {% call exampleShowcaseSection(
+      "Summary Template",
+      "Compact overview showing only action counts and resource type breakdown. Perfect for notifications where the full report isn't needed.",
+      "",
+      "Learn more →",
+      "--template summary",
+      "",
+      "",
+      [
+        "Drift detection notifications (Teams, Slack)",
+        "Scheduled pipeline summaries",
+        "Quick overviews before viewing full report"
+      ]
+    ) %}
+      {% exampleBlock "examples--example-2" %}
+    {% endcall %}
+
+    {% call exampleShowcaseSection(
+      "Default Template",
+      "Full report with summary, resource changes, and attribute details. Shows exactly what will change.",
+      "",
+      "Learn more →",
+      "default",
+      "",
+      "",
+      [
+        "Standard PR reviews",
+        "Security audits",
+        "Change verification"
+      ]
+    ) %}
+      {% exampleBlock "examples--example-3" %}
+    {% endcall %}
+  </div>
+</section>
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {{ sectionHeader("Feature Examples", "See how tfplan2md transforms complex Terraform changes into readable reports.") }}
+
+    {% call exampleShowcaseSection("Firewall Rule Semantic Diffing", "Array index changes are replaced with a semantic diff showing which rules were added, modified, or removed.", "features/index.html#firewall-rules") %}
+      {% exampleBlock "examples--example-4" %}
+    {% endcall %}
+
+    {% call exampleShowcaseSection("Module Grouping", "Resources are automatically organized by Terraform module for better readability in multi-module configurations.", "features/index.html#module-grouping") %}
+      {% exampleBlock "examples--example-5" %}
+    {% endcall %}
+
+    {% call exampleShowcaseSection("Azure Role Assignment Display", "Role assignments show human-readable names with principal mapping instead of cryptic GUIDs.", "features/index.html#role-assignments") %}
+      {% exampleBlock "examples--example-6" %}
+      <div class="code-block">
+        <div class="code-header"><span class="code-title">Principal Mapping File</span></div>
+        <pre><code>{
+  "users": {
+    "12345678-1234-1234-1234-123456789012": "jane.doe@contoso.com",
+    "87654321-4321-4321-4321-210987654321": "john.smith@contoso.com"
+  },
+  "groups": {
+    "abcdef12-3456-7890-abcd-ef1234567890": "Platform Team"
+  },
+  "servicePrincipals": {
+    "fedcba98-7654-3210-fedc-ba9876543210": "terraform-spn"
+  }
+}</code></pre>
+      </div>
+    {% endcall %}
+
+    {% call exampleShowcaseSection("Sensitive Value Masking", "Sensitive values are automatically masked by default to prevent accidental exposure in PRs.", "features/index.html#sensitive-masking") %}
+      {% exampleBlock "examples--example-7" %}
+      {% exampleBlock "examples--example-8" %}
+    {% endcall %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    {{ sectionHeader("Real-World Examples", "Complete example projects showing tfplan2md in action.") }}
+
+    <div class="realworld-grid">
+      {{ realWorldCard("📋", "Comprehensive Demo", "A handcrafted Terraform plan demonstrating all tfplan2md features: firewall rules, NSG rules, role assignments, module grouping, and more.", ["23 resources", "4 modules", "8 resource types"], ["Module grouping", "Firewall rules", "Role assignments", "Sensitive values"], [{"href": "https://github.com/oocx/tfplan2md/tree/main/examples/comprehensive-demo", "label": "View on GitHub →"}, {"href": "https://github.com/oocx/tfplan2md/blob/main/examples/comprehensive-demo/report.md", "label": "See Report →"}]) }}
+
+      {{ realWorldCard("🔧", "Azure DevOps Example", "Real Terraform configuration creating Azure DevOps projects, repositories, variable groups, and pipelines. Generate your own plans and test tfplan2md.", ["4 resources", "azuredevops provider"], ["Project creation", "Git repository", "Variable groups", "Pipelines"], [{"href": "https://github.com/oocx/tfplan2md/tree/main/examples/azuredevops", "label": "View on GitHub →"}]) }}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    <div class="cta-box">
+      <h2 class="cta-title">Try It Yourself</h2>
+      <p class="cta-description">Run the comprehensive demo using Docker or build from source.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-title">Using Docker</span></div>
+        <pre><code># Default report with principal mapping
+docker run --rm oocx/tfplan2md \
+  /examples/comprehensive-demo/plan.json \
+  --principals /examples/comprehensive-demo/demo-principals.json
+
+# Summary report
+docker run --rm oocx/tfplan2md \
+  /examples/comprehensive-demo/plan.json \
+  --template summary
+
+# Show sensitive values
+docker run --rm oocx/tfplan2md \
+  /examples/comprehensive-demo/plan.json \
+  --principals /examples/comprehensive-demo/demo-principals.json \
+  --show-sensitive</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-title">From Source</span></div>
+        <pre><code>git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+
+# Default report
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+  examples/comprehensive-demo/plan.json \
+  --principals examples/comprehensive-demo/demo-principals.json
+
+# Summary report
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+  examples/comprehensive-demo/plan.json \
+  --template summary</code></pre>
+      </div>
+
+      <div class="cta-actions">
+        <a href="getting-started.html" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/oocx/tfplan2md/tree/main/examples" class="btn btn-secondary">Browse Examples on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>

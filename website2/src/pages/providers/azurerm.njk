@@ -1,10 +1,42 @@
 ---
 layout: layouts/base.njk
 title: "Azure Provider (azurerm) - tfplan2md"
-description: ""
+description: "Comprehensive support for Azure resources with inline diffing, resource ID formatting, and role assignment enhancements."
 permalink: /providers/azurerm.html
 rootPrefix: "../"
 navKey: "providers"
 pageId: "providers/azurerm"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, codeWindow %}
+
+{{ heroBlock("Azure Provider (azurerm)", "Comprehensive support for Azure resources with inline diffing, resource ID formatting, and role assignment enhancements.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "Production Ready", "The Azure provider is the most mature provider in tfplan2md, featuring extensive customizations for common resources to make plans readable and actionable.") %}
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Specialized Resources</h3>
+        <ul class="highlights-list">
+          <li><strong>Firewall Network Rule Collections:</strong> Inline diff of rules (added/removed/unchanged)</li>
+          <li><strong>Network Security Groups:</strong> Rule-level diffing with priority awareness</li>
+          <li><strong>Role Assignments:</strong> Principal name mapping and readable scope display</li>
+        </ul>
+      </div>
+
+      <div class="feature-highlights" style="margin-top: 32px;">
+        <h3 class="highlights-title">Global Enhancements</h3>
+        <ul class="highlights-list">
+          <li><strong>Resource ID Formatting:</strong> Long Azure IDs broken into readable scopes</li>
+          <li><strong>Semantic Icons:</strong> Visual indicators for IPs (🌐), ports (🔌), protocols (📨/🔗), principals (👤/👥/💻)</li>
+          <li><strong>Boolean Formatting:</strong> ✅/❌ for true/false values</li>
+        </ul>
+      </div>
+
+      <div class="feature-example">
+        <h3 class="example-title">Example: Role Assignment</h3>
+        {{ codeWindow("", '<pre><code>#### ➕ azurerm_role_assignment.contributor\n**Summary:** `Contributor` on `rg-demo` for `john.doe@contoso.com`\n\n| Attribute | Value |\n|-----------|-------|\n| role_definition_name | `Contributor` |\n| scope | Resource Group `rg-demo` |\n| principal_id | 👤 `john.doe@contoso.com` (User) |</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>

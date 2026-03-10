@@ -1,19 +1,31 @@
 {% macro featureCard(feature, rootPrefix="") %}
 <div class="feature-category-card{% if feature.compact %} compact{% endif %}{% if feature.featured %} featured{% endif %}">
-  {% if feature.icon %}
-  <img src="{{ rootPrefix }}{{ feature.icon }}" alt="{{ feature.title }}" class="feature-icon">
-  {% endif %}
-  <h3 class="feature-category-title">{{ feature.title }}</h3>
-  {% if feature.description %}
-  <p class="feature-category-description">{{ feature.description }}</p>
-  {% endif %}
-  {% if feature.href %}
-  <div class="feature-list">
-    <a href="{{ rootPrefix }}{{ feature.href }}" class="feature-link">
-      <span class="feature-link-icon">→</span>
-      <span>{{ feature.linkLabel or "Learn more" }}</span>
-    </a>
-  </div>
+  {% if feature.compact %}
+    {% if feature.icon %}
+    <img src="{{ rootPrefix }}{{ feature.icon }}" alt="{{ feature.title }}" class="feature-icon-sm">
+    {% endif %}
+    <div class="feature-compact-content">
+      <h3 class="feature-category-title-sm">{{ feature.title }}</h3>
+      {% if feature.description %}
+      <p class="feature-category-description-sm">{{ feature.description }}</p>
+      {% endif %}
+    </div>
+  {% else %}
+    {% if feature.icon %}
+    <img src="{{ rootPrefix }}{{ feature.icon }}" alt="{{ feature.title }}" class="feature-icon">
+    {% endif %}
+    <h3 class="feature-category-title">{{ feature.title }}</h3>
+    {% if feature.description %}
+    <p class="feature-category-description">{{ feature.description }}</p>
+    {% endif %}
+    {% if feature.href %}
+    <div class="feature-list">
+      <a href="{{ feature.href }}" class="feature-link">
+        <span class="feature-link-icon">→</span>
+        <span>{{ feature.linkLabel or "Learn more" }}</span>
+      </a>
+    </div>
+    {% endif %}
   {% endif %}
 </div>
 {% endmacro %}

@@ -1,10 +1,109 @@
 ---
 layout: layouts/base.njk
 title: "Sensitive Value Masking - tfplan2md"
-description: ""
+description: "Sensitive values are automatically masked to prevent accidental exposure in pull requests."
 permalink: /features/sensitive-masking.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/sensitive-masking"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 MD047 MD055 MD056 MD058 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs, codeWindow %}
+
+{{ heroBlock("Sensitive Value Masking", "Sensitive values are automatically masked to prevent accidental exposure in pull requests.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "all providers", "Terraform marks certain values as sensitive. tfplan2md respects these markings and ensures they are never displayed in the generated markdown report, replacing them with <code>(sensitive value)</code>.") %}
+      {% call comparisonBlock() %}
+        <div class="comparison-column">
+          <h3 class="comparison-title">❌ Without tfplan2md</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Raw Terraform Output</span>
+            </div>
+            <div class="example-content">
+              <pre><code># module.security.azurerm_key_vault_secret.db_password will be created
++ resource "azurerm_key_vault_secret" "db_password" {
+    + content_type = "password"
+    + key_vault_id = "/subscriptions/.../vaults/kv-tfplan2md"
+    + name         = "db-password"
+    ~ value        = (sensitive value)
+    # At least one attribute in this block is (or was) sensitive,
+    # so its contents will not be displayed.
+  }</code></pre>
+            </div>
+          </div>
+          <p class="comparison-note">Terraform hides the value, but the output still leaves reviewers with an awkward, inconsistent diff.</p>
+        </div>
+
+        <div class="comparison-column">
+          <h3 class="comparison-title">✅ With tfplan2md</h3>
+          {% exampleBlock "features--sensitive-masking--example-1" %}
+          <p class="comparison-note">Sensitive values stay masked, while the surrounding metadata remains clean and reviewable.</p>
+        </div>
+      {% endcall %}
+
+      {% call comparisonBlock() %}
+        <div class="comparison-column">
+          <h3 class="comparison-title">Default Behavior</h3>
+          <div class="code-block"><pre><code>### ➕ azurerm_key_vault_secret.db_password
+
+| Attribute | Value |
+| --------- | ----- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` ... |
+| name | `🆔 db-password` |
+| value | `(sensitive)` |</code></pre></div>
+        </div>
+
+        <div class="comparison-column">
+          <h3 class="comparison-title">With --show-sensitive</h3>
+          <div class="code-block"><pre><code>### ➕ azurerm_key_vault_secret.db_password
+
+| Attribute | Value |
+| --------- | ----- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` ... |
+| name | `🆔 db-password` |
+| value | `super-secret-value` |</code></pre></div>
+        </div>
+      {% endcall %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Security First</h3>
+        <ul class="highlights-list">
+          <li>Automatically detects sensitive values from the plan JSON</li>
+          <li>Masks values in tables, diffs, and summaries</li>
+          <li>Prevents accidental leakage of secrets in PR comments</li>
+          <li>Works consistently across providers and resource types</li>
+        </ul>
+      </div>
+
+      <div class="feature-example">
+        <h3 class="example-title">Configuration</h3>
+        <p class="feature-detail-description">Use the <code>--show-sensitive</code> flag to reveal sensitive values when needed:</p>
+        {{ codeWindow("Command", '<pre><code># Default: sensitive values masked\ntfplan2md plan.json\n\n# Show sensitive values (use with caution!)\ntfplan2md plan.json --show-sensitive</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "Sensitive value masking is enabled by default and respects Terraform's sensitive attribute markers.") %}
+      {{ relatedDocs("Related Documentation", [
+        {
+          "href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#sensitive-values",
+          "label": "Feature Overview: Sensitive Values",
+          "external": true
+        },
+        {
+          "href": "../docs.html#cli-options",
+          "label": "CLI Options Reference"
+        }
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

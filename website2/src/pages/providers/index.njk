@@ -1,10 +1,142 @@
 ---
 layout: layouts/base.njk
 title: "Provider Templates - tfplan2md"
-description: ""
+description: "Specialized templates for popular Terraform providers, automatically optimizing output for provider-specific resource types."
 permalink: /providers/index.html
 rootPrefix: "../"
 navKey: "providers"
 pageId: "providers/index"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 MD022 MD032 -->
+{% from "components/content-blocks.njk" import heroBlock %}
+{% from "components/provider-card.njk" import providerCard %}
+
+{{ heroBlock("Provider Templates", "Specialized templates for popular Terraform providers, automatically optimizing output for provider-specific resource types.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
+
+<section class="section" style="padding-top: 0;">
+  <div class="section-container">
+    <h2 class="section-title">How Provider Templates Work</h2>
+    <p class="section-subtitle">
+      tfplan2md automatically detects resource types and applies specialized templates when available.
+    </p>
+
+    <h3 style="margin-top: 40px; font-size: 24px; margin-bottom: 16px;">Template Resolution</h3>
+    <p style="margin-bottom: 16px;">When rendering a resource change, tfplan2md follows this resolution order:</p>
+    <ol style="margin-left: 24px;">
+      <li style="margin-bottom: 8px;"><strong>Provider-specific template</strong> — e.g., <code>azurerm/firewall_network_rule_collection.sbn</code></li>
+      <li style="margin-bottom: 8px;"><strong>Default template</strong> — Generic rendering for all resource types</li>
+    </ol>
+    <p style="margin-top: 16px;">This ensures specialized templates are used when available, with graceful fallback to generic rendering.</p>
+  </div>
+</section>
+
+
+<section class="section" style="margin-top: 40px;">
+  <div class="section-container">
+    <h2 class="section-title">Supported Providers</h2>
+    <p class="section-subtitle">
+      The following providers have specialized template support:
+    </p>
+
+    <div class="features-grid" style="margin-top: 40px;">
+      {% for provider in providers %}
+      {{ providerCard(provider, rootPrefix) }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top: 40px;">
+  <div class="section-container">
+    <h2 class="section-title">Custom Templates</h2>
+    <p class="section-subtitle">
+      Create your own provider-specific templates using Scriban syntax.
+    </p>
+
+    <div class="feature-category-card" style="margin-top: 40px;">
+      <h3 style="margin-top: 0;">Template Structure</h3>
+      <pre style="background: var(--color-surface); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 14px;"><code>Templates/
+├── default.sbn           # Default template for all resources
+├── summary.sbn           # Summary-only template
+└── azurerm/              # Provider-specific templates
+    ├── firewall_network_rule_collection.sbn
+    ├── network_security_group.sbn
+    └── role_assignment.sbn</code></pre>
+
+      <h3 style="margin-top: 32px;">Creating a Custom Template</h3>
+      <ol style="margin-left: 20px;">
+        <li style="margin-bottom: 12px;">Create a directory structure: <code>Templates/&lt;provider&gt;/</code></li>
+        <li style="margin-bottom: 12px;">Add a <code>.sbn</code> file named after the resource type (e.g., <code>storage_account.sbn</code>)</li>
+        <li style="margin-bottom: 12px;">Write Scriban template using available properties from the resource change</li>
+        <li style="margin-bottom: 12px;">Test with <code>--template</code> flag:<br><code style="word-break: break-all;">docker run -v $(pwd)/Templates:/templates oocx/tfplan2md --template /templates/default.sbn</code></li>
+      </ol>
+
+      <h3 style="margin-top: 32px;">Example: Custom Firewall Rule Template</h3>
+      <pre style="background: var(--color-surface); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 14px;"><code>{% raw %}{{~ # Firewall Network Rule Collection Template ~}}
+{{~ if change.action == "create" || change.action == "update" ~}}
+### {{ change.address }}
+
+{{~ if after.rule ~}}
+**Rules:**
+{{~ for rule in after.rule ~}}
+- **{{ rule.name }}**: {{ rule.source_addresses | array.join ", " }} → {{ rule.destination_addresses | array.join ", " }} ({{ rule.protocols | array.join ", " }})
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}{% endraw %}</code></pre>
+
+      <p style="margin-top: 24px;">For complete template documentation, see <a href="../docs.html#custom-templates" style="color: var(--color-primary); text-decoration: none; font-weight: 600;">Template Customization Guide</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top: 40px;">
+  <div class="section-container">
+    <h2 class="section-title">Contributing Provider Templates</h2>
+    <p class="section-subtitle">
+      We welcome contributions of new provider templates!
+    </p>
+
+    <div class="features-grid" style="margin-top: 40px;">
+      <div class="feature-category-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Good Candidates for Templates</h3>
+        <ul style="margin-left: 20px; font-size: 14px;">
+          <li style="margin-bottom: 8px;">Resources with complex nested structures (rules, policies, configurations)</li>
+          <li style="margin-bottom: 8px;">Resources where index-based diffs are confusing</li>
+          <li style="margin-bottom: 8px;">Resources with long IDs or references that need formatting</li>
+          <li style="margin-bottom: 8px;">Resources where semantic comparison adds value (e.g., firewall rules)</li>
+        </ul>
+      </div>
+
+      <div class="feature-category-card">
+        <div class="feature-icon">📋</div>
+        <h3>Contribution Process</h3>
+        <ol style="margin-left: 20px; font-size: 14px;">
+          <li style="margin-bottom: 8px;"><strong>Identify</strong> — Find a resource that could benefit from specialized rendering</li>
+          <li style="margin-bottom: 8px;"><strong>Design</strong> — Create a Scriban template that improves readability</li>
+          <li style="margin-bottom: 8px;"><strong>Test</strong> — Ensure it works with all actions (create, update, replace, delete)</li>
+          <li style="margin-bottom: 8px;"><strong>Document</strong> — Explain what improvements the template provides</li>
+          <li style="margin-bottom: 8px;"><strong>Submit</strong> — Follow the <a href="../contributing.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">contribution guidelines</a></li>
+        </ol>
+      </div>
+
+      <div class="feature-category-card">
+        <div class="feature-icon">✨</div>
+        <h3>Template Design Guidelines</h3>
+        <ul style="margin-left: 20px; font-size: 14px;">
+          <li style="margin-bottom: 8px;">Focus on showing <strong>what changed</strong>, not just the new state</li>
+          <li style="margin-bottom: 8px;">Use inline diffing when appropriate (added/removed/unchanged)</li>
+          <li style="margin-bottom: 8px;">Format complex values for readability (tables, lists, collapsible sections)</li>
+          <li style="margin-bottom: 8px;">Add visual icons for common value types (IPs, ports, protocols)</li>
+          <li style="margin-bottom: 8px;">Keep output concise; use collapsible sections for details</li>
+          <li style="margin-bottom: 8px;">Test with real-world Terraform plans</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-top: 48px; justify-content: center;">
+      <a href="https://github.com/oocx/tfplan2md/issues" class="btn btn-primary">Request Provider Support</a>
+      <a href="../contributing.html" class="btn btn-secondary">Contributing Guide</a>
+    </div>
+  </div>
+</section>

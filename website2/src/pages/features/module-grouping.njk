@@ -1,10 +1,88 @@
 ---
 layout: layouts/base.njk
 title: "Automatic Module Grouping - tfplan2md"
-description: ""
+description: "Resources are automatically organized by Terraform module, making it easy to understand changes in complex multi-module configurations."
 permalink: /features/module-grouping.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/module-grouping"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD007 MD022 MD025 MD032 MD033 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs %}
+
+{{ heroBlock("Automatic Module Grouping", "Resources are automatically organized by Terraform module, making it easy to understand changes in complex multi-module configurations.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "all providers", "Large Terraform plans often contain hundreds of resources scattered across multiple modules. tfplan2md automatically groups these resources by their module path, providing a structured and hierarchical view of changes.") %}
+      {% call comparisonBlock() %}
+        <div class="comparison-column">
+          <h3 class="comparison-title">❌ Without tfplan2md</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Raw Terraform Output</span>
+            </div>
+            <div class="example-content">
+              <pre><code># azurerm_resource_group.core will be created
++ resource "azurerm_resource_group" "core" {
+    + name     = "rg-tfplan2md-demo"
+    + location = "eastus"
+  }
+
+# module.network.azurerm_virtual_network.hub will be created
++ resource "azurerm_virtual_network" "hub" {
+    + name = "vnet-hub"
+  }
+
+# module.security.azurerm_role_assignment.rg_reader will be created
++ resource "azurerm_role_assignment" "rg_reader" {
+    + role_definition_name = "Reader"
+  }
+
+# module.network.azurerm_virtual_network.spoke will be created
++ resource "azurerm_virtual_network" "spoke" {
+    + name = "vnet-spoke"
+  }</code></pre>
+            </div>
+          </div>
+          <p class="comparison-note">Resources from different modules are intermixed, so the plan structure is hard to follow.</p>
+        </div>
+
+        <div class="comparison-column">
+          <h3 class="comparison-title">✅ With tfplan2md</h3>
+          {% exampleBlock "features--module-grouping--example-1" %}
+          <p class="comparison-note">Root resources and child modules are grouped cleanly, so reviewers can inspect one module at a time.</p>
+        </div>
+      {% endcall %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Benefits</h3>
+        <ul class="highlights-list">
+          <li>Root module appears first, followed by child modules in stable sorted order</li>
+          <li>Modules without changes are omitted to keep reports focused</li>
+          <li>Nested modules remain easy to follow without flattening the mental model</li>
+          <li>Enabled by default with no template changes required</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "Module grouping is automatically applied to all reports, organizing resources by their Terraform module hierarchy.") %}
+      {{ relatedDocs("Related Documentation", [
+        {
+          "href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#module-grouping-new",
+          "label": "Feature Overview: Module Grouping",
+          "external": true
+        },
+        {
+          "href": "../docs.html#templates",
+          "label": "Template Variables Reference"
+        }
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

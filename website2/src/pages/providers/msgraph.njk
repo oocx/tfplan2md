@@ -1,10 +1,26 @@
 ---
 layout: layouts/base.njk
 title: "Microsoft Graph Provider - tfplan2md"
-description: ""
+description: "Planned support for Microsoft Graph resources."
 permalink: /providers/msgraph.html
 rootPrefix: "../"
 navKey: "providers"
 pageId: "providers/msgraph"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail %}
+
+{{ heroBlock("Microsoft Graph Provider", "Planned support for Microsoft Graph resources.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "Planned", "As the Microsoft Graph provider gains popularity, we plan to support it with specialized templates for common resources.") %}
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Planned Scope</h3>
+        <p class="feature-detail-description">
+          We are monitoring usage of the <code>msgraph</code> provider to determine which resources to prioritize. If you are using this provider, please let us know your needs on GitHub.
+        </p>
+      </div>
+    {% endcall %}
+  </div>
+</section>

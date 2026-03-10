@@ -1,10 +1,98 @@
 ---
 layout: layouts/base.njk
-title: "NSG Rule Diffing - tfplan2md"
-description: ""
+title: "Network Security Group Rule Diffing - tfplan2md"
+description: "NSG security rules are displayed with before/after comparison tables showing which rules changed in a single view."
 permalink: /features/nsg-rules.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/nsg-rules"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs %}
+
+{{ heroBlock("Network Security Group Rule Diffing", "NSG security rules are displayed with before/after comparison tables showing which rules changed in a single view.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "azurerm", "Reviewing changes to Network Security Groups (NSGs) can be tedious. tfplan2md aggregates changes to inline rules and standalone rule resources into a single, easy-to-read table.") %}
+      {% call comparisonBlock() %}
+        <div class="comparison-column">
+          <h3 class="comparison-title">❌ Without tfplan2md</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Raw Terraform Output</span>
+            </div>
+            <div class="example-content">
+              <pre><code># module.network.azurerm_network_security_group.app must be replaced
+-/+ resource "azurerm_network_security_group" "app" {
+      name = "nsg-app"
+
+    - security_rule {
+        - name                   = "allow-http" -&gt; null
+        - destination_port_range = "80" -&gt; null
+        - priority               = 100 -&gt; null
+      }
+    + security_rule {
+        + name                   = "allow-https"
+        + destination_port_range = "443"
+        + priority               = 100
+      }
+    + security_rule {
+        + name                   = "deny-rdp"
+        + destination_port_range = "3389"
+        + priority               = 200
+      }
+    + security_rule {
+        + name                   = "allow-outbound-https"
+        + destination_port_range = "443"
+        + priority               = 300
+      }
+  }</code></pre>
+            </div>
+          </div>
+          <p class="comparison-note">Hard to scan. Rules are scattered across the diff and every field is mixed together.</p>
+        </div>
+
+        <div class="comparison-column">
+          <h3 class="comparison-title">✅ With tfplan2md</h3>
+          {% exampleBlock "features--nsg-rules--example-1" %}
+          <p class="comparison-note">Clear table view: 3 rules added, 1 removed, and changed ports are visible immediately.</p>
+        </div>
+      {% endcall %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Supported Resources</h3>
+        <ul class="highlights-list">
+          <li><code>azurerm_network_security_group</code> for inline security rules</li>
+          <li><code>azurerm_network_security_rule</code> for standalone rule resources</li>
+          <li>Shows priority, direction, access, protocol, sources, and destinations in one table</li>
+          <li>Visual icons help reviewers distinguish IPs, ports, and protocols quickly</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+
+<section class="section" style="background: var(--color-surface);">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "NSG rule diffing uses resource-specific templates to provide clear, table-based views of security rule changes.") %}
+      {{ relatedDocs("Related Documentation", [
+        {
+          "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/016-nsg-security-rule-template",
+          "label": "Feature Specification: NSG Security Rule Template",
+          "external": true
+        },
+        {
+          "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/001-resource-specific-templates",
+          "label": "Resource-Specific Templates Architecture",
+          "external": true
+        },
+        {
+          "href": "../docs.html#templates",
+          "label": "Template Customization Guide"
+        }
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

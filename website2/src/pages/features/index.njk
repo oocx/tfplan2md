@@ -1,10 +1,27 @@
 ---
 layout: layouts/base.njk
 title: "Features - tfplan2md"
-description: ""
+description: "Powerful features that make Terraform plan reviews faster, easier, and more effective."
 permalink: /features/index.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/index"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, sectionHeader %}
+{% from "components/feature-card.njk" import featureCard %}
+
+{{ heroBlock("Features", "Powerful features that make Terraform plan reviews faster, easier, and more effective.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
+
+{% for section in features %}
+<section class="{{ section.sectionClass or 'section' }}" id="{{ section.id }}"{% if section.sectionStyle %} style="{{ section.sectionStyle }}"{% elseif loop.first %} style="padding-top: 0;"{% endif %}>
+  <div class="section-container">
+    {{ sectionHeader(section.title, section.description) }}
+    <div class="{{ section.gridClass or 'features-grid' }}">
+      {% for card in section.cards %}
+      {{ featureCard(card, rootPrefix) }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endfor %}

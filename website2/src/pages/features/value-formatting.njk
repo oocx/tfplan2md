@@ -1,10 +1,49 @@
 ---
 layout: layouts/base.njk
 title: "Consistent Value Formatting - tfplan2md"
-description: ""
+description: "All data values are formatted as inline code to make them visually distinct from labels and easy to scan."
 permalink: /features/value-formatting.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/value-formatting"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail %}
+
+{{ heroBlock("Consistent Value Formatting", "All data values are formatted as inline code to make them visually distinct from labels and easy to scan.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "all providers", "In a wall of text, it is hard to distinguish between keys and values. tfplan2md consistently formats all data values as inline code, making them pop out visually.") %}
+      <div class="formatting-rules">
+        <div class="formatting-rule">
+          <h4 class="rule-title">Data Values → Inline Code</h4>
+          <p class="rule-description">Resource names, IPs, configuration settings</p>
+          <div class="code-block"><pre><code>name = `my-storage-account`
+location = `eastus`</code></pre></div>
+        </div>
+        <div class="formatting-rule">
+          <h4 class="rule-title">Labels &amp; Keys → Plain Text</h4>
+          <p class="rule-description">Attribute names, table headers, descriptive text</p>
+          <div class="code-block"><pre><code>| Attribute | Value |
+| name      | `value` |</code></pre></div>
+        </div>
+        <div class="formatting-rule">
+          <h4 class="rule-title">Summaries → Code for Values</h4>
+          <p class="rule-description">Identifiers and config values in resource summaries</p>
+          <div class="code-block"><pre><code>**Summary:** `my-vm` in `rg-demo` (eastus)</code></pre></div>
+        </div>
+      </div>
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Benefits</h3>
+        <ul class="highlights-list">
+          <li>Values that matter always stand out visually</li>
+          <li>Consistent across all templates and report sections</li>
+          <li>Improves scannability and reduces cognitive load</li>
+          <li>Follows markdown best practices</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>

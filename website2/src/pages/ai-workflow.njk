@@ -1,10 +1,152 @@
 ---
 layout: layouts/base.njk
 title: "AI Development Workflow - tfplan2md"
-description: ""
+description: "tfplan2md is developed using a multi-agent AI workflow where specialized agents handle different phases of the development lifecycle."
 permalink: /ai-workflow.html
 rootPrefix: ""
 navKey: "ai-workflow"
 pageId: "ai-workflow"
 ---
-{% legacyContent pageId %}
+<!-- markdownlint-disable MD033 -->
+
+<header class="hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        AI Development <span class="hero-gradient">Workflow</span>
+      </h1>
+      <p class="hero-subtitle">
+        tfplan2md is developed using a multi-agent AI workflow where specialized agents handle different phases of the development lifecycle
+      </p>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="section-container">
+    <h2 class="section-title">Overview</h2>
+    <p class="content-text">
+      This project uses an agent-based workflow for feature development, inspired by best practices from GitHub Copilot agents and modern software engineering principles. Each agent is a specialized AI assistant with a clear responsibility in the development process.
+    </p>
+    <p class="content-text">
+      The workflow is coordinated by a human <strong>Maintainer</strong> who manages handoffs between agents and provides clarifications as needed. Agents produce artifacts as markdown files in the repository, creating a traceable development history.
+    </p>
+
+    <div class="workflow-benefits">
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h3>Clear Responsibilities</h3>
+        <p>Each agent has a single, well-defined role in the workflow</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📝</div>
+        <h3>Traceable Artifacts</h3>
+        <p>All decisions and changes are documented in markdown files</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔄</div>
+        <h3>Consistent Process</h3>
+        <p>Standardized workflow ensures quality and completeness</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🤖</div>
+        <h3>AI-Powered</h3>
+        <p>Leverages GitHub Copilot's multi-model capabilities</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    <h2 class="section-title">Workflow Diagram</h2>
+    <p class="content-text">
+      The diagram below shows the complete agent workflow from requirements to release. Each agent produces artifacts that are consumed by the next agent in the sequence.
+    </p>
+
+    <div class="diagram-container" style="background: #0d1b2a; padding: 2rem; border-radius: 8px; overflow-x: auto;">
+      <object data="ai-workflow.svg" type="image/svg+xml" style="width: 100%; max-width: 700px; margin: 0 auto; display: block;"></object>
+    </div>
+
+    <p class="diagram-note" style="margin-top: 2rem;">
+      <em>Agents produce and consume artifacts. Solid arrows show artifact creation and consumption. Dashed arrows indicate rework/feedback loops.</em>
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    <h2 class="section-title">Key Agents</h2>
+    <div class="agent-grid">
+      <div class="agent-card"><div class="agent-emoji">📋</div><h3>Requirements Engineer</h3><p>Gathers and clarifies requirements for new features</p></div>
+      <div class="agent-card"><div class="agent-emoji">🔍</div><h3>Issue Analyst</h3><p>Investigates bugs and technical issues</p></div>
+      <div class="agent-card"><div class="agent-emoji">🏗️</div><h3>Architect</h3><p>Designs solutions and documents decisions</p></div>
+      <div class="agent-card"><div class="agent-emoji">✅</div><h3>Quality Engineer</h3><p>Defines test plans and acceptance criteria</p></div>
+      <div class="agent-card"><div class="agent-emoji">💻</div><h3>Developer</h3><p>Implements features and tests</p></div>
+      <div class="agent-card"><div class="agent-emoji">📝</div><h3>Technical Writer</h3><p>Updates and maintains documentation</p></div>
+      <div class="agent-card"><div class="agent-emoji">👀</div><h3>Code Reviewer</h3><p>Reviews code quality and standards</p></div>
+      <div class="agent-card"><div class="agent-emoji">🧪</div><h3>UAT Tester</h3><p>Validates user-facing features</p></div>
+      <div class="agent-card"><div class="agent-emoji">🚀</div><h3>Release Manager</h3><p>Prepares and executes releases</p></div>
+      <div class="agent-card"><div class="agent-emoji">🔄</div><h3>Retrospective</h3><p>Identifies improvement opportunities</p></div>
+      <div class="agent-card"><div class="agent-emoji">⚙️</div><h3>Workflow Engineer</h3><p>Improves the workflow itself</p></div>
+      <div class="agent-card"><div class="agent-emoji">🎨</div><h3>Web Designer</h3><p>Maintains the project website</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    <h2 class="section-title">How It Works</h2>
+    <div class="process-steps">
+      <div class="process-step"><div class="step-number">1</div><div class="step-content"><h3>Entry Point</h3><p>The Maintainer identifies a need (new feature, bug fix, or workflow improvement) and starts with the appropriate entry agent</p></div></div>
+      <div class="process-step"><div class="step-number">2</div><div class="step-content"><h3>Agent Collaboration</h3><p>Each agent produces artifacts (markdown documents) that serve as inputs for the next agent in the workflow</p></div></div>
+      <div class="process-step"><div class="step-number">3</div><div class="step-content"><h3>Traceability</h3><p>All decisions, requirements, and changes are documented in versioned artifact files in the repository</p></div></div>
+      <div class="process-step"><div class="step-number">4</div><div class="step-content"><h3>Quality Gates</h3><p>Code Reviewer and UAT Tester validate changes before Release Manager creates the pull request</p></div></div>
+      <div class="process-step"><div class="step-number">5</div><div class="step-content"><h3>Continuous Improvement</h3><p>Retrospective agent analyzes the process and provides feedback to the Workflow Engineer for improvements</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    <h2 class="section-title">Dual-Mode Execution</h2>
+    <p class="content-text">
+      The workflow supports both local (VS Code) and cloud (GitHub) execution modes, enabling both interactive development and automated workflows.
+    </p>
+
+    <div class="execution-modes">
+      <div class="mode-card">
+        <h3>🖥️ Local Mode (VS Code)</h3>
+        <ul>
+          <li>Interactive development with Maintainer</li>
+          <li>Design decisions and debugging</li>
+          <li>Full tool access (edit, execute, preview)</li>
+          <li>Best for complex tasks requiring guidance</li>
+        </ul>
+      </div>
+      <div class="mode-card">
+        <h3>☁️ Cloud Mode (GitHub)</h3>
+        <ul>
+          <li>Automated execution from GitHub issues</li>
+          <li>Well-scoped batch updates</li>
+          <li>Creates pull requests autonomously</li>
+          <li>Best for routine, well-defined tasks</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    <h2 class="section-title">Learn More</h2>
+    <p class="content-text">
+      This page provides a high-level overview of the AI workflow. For complete details including artifact formats, handoff criteria, and best practices, see the full documentation.
+    </p>
+
+    <div class="cta-buttons">
+      <a href="https://github.com/oocx/tfplan2md/blob/main/docs/agents.md" class="btn btn-primary btn-lg">📖 Read Full Documentation (agents.md)</a>
+      <a href="contributing.html" class="btn btn-secondary btn-lg">🤝 Contributing Guide</a>
+    </div>
+  </div>
+</section>

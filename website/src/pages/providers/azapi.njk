@@ -1,0 +1,38 @@
+---
+layout: layouts/base.njk
+title: "AzAPI Provider - tfplan2md"
+description: "Specialized support for AzAPI resources with body-aware rendering, output values tables, and Azure API documentation links."
+permalink: /providers/azapi.html
+rootPrefix: "../"
+navKey: "providers"
+pageId: "providers/azapi"
+---
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail %}
+
+{{ heroBlock("AzAPI Provider", "Specialized support for AzAPI resources with body-aware rendering, output values tables, and Azure API documentation links.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "Implemented", "AzAPI resources get more than generic JSON dumps. tfplan2md separates configured body values from Azure API output values, preserves sensitive handling, and keeps Azure-specific formatting rules active inside body diffs.") %}
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Implemented Support</h3>
+        <ul class="highlights-list">
+          <li><strong>azapi_resource</strong>: Structured body rendering with semantic formatting</li>
+          <li><strong>azapi_update_resource</strong>: Focused diffs for PATCH-style updates</li>
+          <li><strong>Output Values table</strong>: API response values rendered separately from the request body</li>
+          <li><strong>Azure API documentation links</strong>: Microsoft Learn REST API links for supported resource types</li>
+        </ul>
+      </div>
+
+      <div class="feature-highlights" style="margin-top: 32px;">
+        <h3 class="highlights-title">Quality-of-Life Improvements</h3>
+        <ul class="highlights-list">
+          <li>Known-after-apply values stay visible instead of disappearing</li>
+          <li>Sensitive body and output values stay masked by default</li>
+          <li>Azure ID case-only changes inside body JSON are filtered automatically</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>

@@ -10,7 +10,7 @@ pageId: "features/azure-optimizations"
 <!-- markdownlint-disable MD007 MD033 MD032 MD047 -->
 {% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs, commandBlock %}
 
-{{ heroBlock("Azure Optimizations", "Purpose-built features for Azure that format resource IDs, map principal names (including Azure AD Groups, Service Principals, and App Roles), and show role assignments clearly.", "hero hero-secondary") }}
+{{ heroBlock("Azure Optimizations", "Purpose-built features for Azure that format resource IDs, map principals and scopes, suppress Azure ID noise, and show role assignments clearly.", "hero hero-secondary") }}
 
 <section id="azure-resource-ids" class="section">
   <div class="section-container">
@@ -36,8 +36,9 @@ pageId: "features/azure-optimizations"
       <div class="feature-highlights">
         <h3 class="highlights-title">Features</h3>
         <ul class="highlights-list">
-          <li>Automatic detection for subscription, resource group, and resource IDs</li>
+          <li>Automatic detection for subscription, tenant, management group, resource group, and resource IDs</li>
           <li>Only the values are formatted as code while labels stay readable</li>
+          <li>Scope summaries add semantic icons for subscription and resource-group context</li>
           <li>Azure IDs remain in the primary attribute tables instead of being pushed into a large-values section</li>
           <li>Works across Azure resources without extra configuration</li>
         </ul>
@@ -95,7 +96,7 @@ pageId: "features/azure-optimizations"
 
 <section id="principal-mapping" class="section">
   <div class="section-container">
-    {% call featureDetail("Principal Name Mapping", "azurerm", "Map cryptic principal IDs to human-readable names, such as user emails, group names, or service principals, using a JSON mapping file.") %}
+    {% call featureDetail("Principal and Scope Mapping", "azurerm", "Map cryptic principal IDs and Azure scope identifiers to human-readable names, such as user emails, tenant names, management groups, subscriptions, and service principals, using a JSON mapping file.") %}
       {{ commandBlock("tfplan2md plan.json --principal-mapping principals.json") }}
 
       <div class="feature-highlights">
@@ -103,8 +104,37 @@ pageId: "features/azure-optimizations"
         <ul class="highlights-list">
           <li>No more cryptic GUIDs in role assignments</li>
           <li>Reviewers can immediately see who has access to what</li>
-          <li>Works with role assignments and any other resource exposing principal IDs</li>
+          <li>Works with role assignments, tenant scopes, management groups, subscriptions, and Azure DevOps entities in the same file</li>
           <li>Falls back to the raw GUID when no mapping entry exists</li>
+        </ul>
+      </div>
+
+      <div class="feature-example">
+        <h3 class="example-title">Unified Mapping File</h3>
+        {{ commandBlock('{
+  "subscriptions": [{ "id": "sub-guid", "displayName": "Production" }],
+  "managementGroups": [{ "id": "mg-prod", "displayName": "Production Workloads" }],
+  "tenants": [{ "id": "tenant-guid", "displayName": "Contoso Corp" }],
+  "azdoUsers": { "4a2c...": "John Smith" },
+  "azdoRepositories": { "a1b2...": "Infrastructure Repo" }
+}') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section id="azure-id-filter" class="section section-alt">
+  <div class="section-container">
+    {% call featureDetail("Case-Insensitive Azure ID Filter", "azurerm + azapi", "Azure resource IDs that differ only in casing are filtered by default, reducing ARM API noise in both AzureRM attributes and AzAPI body properties.") %}
+      {{ commandBlock("tfplan2md plan.json --ignore-azure-id-case-changes") }}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Behavior</h3>
+        <ul class="highlights-list">
+          <li>Enabled by default, with `--ignore-azure-id-case-changes` available to make the behavior explicit</li>
+          <li>Suppresses casing-only Azure resource ID rows while keeping the resource itself visible in the report</li>
+          <li>Applies to AzureRM resources and AzAPI body-level Azure resource IDs</li>
+          <li>Plays well with `--show-unchanged-values` by keeping the noise filtered out</li>
         </ul>
       </div>
     {% endcall %}

@@ -1,0 +1,11 @@
+<pre><code>&lt;summary&gt;🔄 azurerm_firewall_application_rule_collection &lt;b&gt;&lt;code&gt;app_rules_update&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 web-rules&lt;/code&gt; in &lt;code&gt;📁 rg-firewall-demo&lt;/code&gt; | 3 🔧 ➕ &lt;code&gt;🆔 allow-github&lt;/code&gt;, 🔄 &lt;code&gt;🆔 allow-microsoft&lt;/code&gt;, ❌ &lt;code&gt;🆔 allow-old-site&lt;/code&gt;&lt;/summary&gt;
+
+**Collection:** `web-rules` | **Priority:** `200` | **Action:** `✅ Allow`
+
+#### Rule Changes
+
+| Change | Rule Name | Protocols | Source Addresses | Target FQDNs | Description |
+| ------ | --------- | --------- | ---------------- | ------------ | ----------- |
+| ➕ | `🆔 allow-github` | `Https:443` | `10.0.1.0/24` | `github.com, *.github.io` | `GitHub access` |
+| 🔄 | `🆔 allow-microsoft` | `Http:80, Https:443` | `10.0.0.0/24 -> 10.0.0.0/16` | `*.microsoft.com` | `Microsoft services` |
+| ❌ | `🆔 allow-old-site` | `Https:443` | `10.0.2.0/24` | `old-site.example.com` | `Legacy site (removed)` |</code></pre>

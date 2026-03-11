@@ -10,7 +10,7 @@ pageId: "features/firewall-rules"
 <!-- markdownlint-disable MD033 -->
 {% from "components/content-blocks.njk" import heroBlock, featureDetail, comparisonBlock, relatedDocs, codeWindow %}
 
-{{ heroBlock("Firewall Rule Inline Diffing", "See exactly which rules were added, modified, or removed-not confusing index-based array diffs.", "hero hero-secondary") }}
+{{ heroBlock("Firewall Rule Inline Diffing", "See exactly which firewall rules were added, modified, or removed across both network and application rule collections-not confusing index-based array diffs.", "hero hero-secondary") }}
 
 <section class="section">
   <div class="section-container">
@@ -46,7 +46,7 @@ pageId: "features/firewall-rules"
 
 <section class="section section-alt">
   <div class="section-container">
-    {% call featureDetail("Learn More", "", "This feature uses resource-specific templates to provide inline diffing for firewall rules.") %}
+    {% call featureDetail("Learn More", "", "This feature uses resource-specific renderers to provide inline diffing for firewall rules.") %}
       {{ relatedDocs("Related Documentation", [
         {
           "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/002-firewall-rule-before-after-display",
@@ -55,12 +55,12 @@ pageId: "features/firewall-rules"
         },
         {
           "href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/001-resource-specific-templates",
-          "label": "Resource-Specific Templates Architecture",
+          "label": "Resource-Specific Rendering Architecture",
           "external": true
         },
         {
-          "href": "../docs.html#templates",
-          "label": "Template Customization Guide"
+          "href": "../examples.html#firewall-application-rules",
+          "label": "Firewall Application Rule Example"
         }
       ]) }}
     {% endcall %}

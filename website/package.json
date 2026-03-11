@@ -6,7 +6,8 @@
   "scripts": {
     "build": "eleventy --config=.eleventy.js",
     "clean": "rm -rf dist",
-    "serve": "eleventy --serve --config=.eleventy.js"
+    "serve": "eleventy --serve --config=.eleventy.js",
+    "start": "eleventy --serve --config=.eleventy.js"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",

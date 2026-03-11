@@ -78,13 +78,27 @@ pageId: "examples"
   <div class="section-container">
     {{ sectionHeader("Feature Examples", "See how tfplan2md transforms complex Terraform changes into readable reports.") }}
 
+    <div id="firewall-rules">
     {% call exampleShowcaseSection("Firewall Rule Semantic Diffing", "Array index changes are replaced with a semantic diff showing which rules were added, modified, or removed.", "features/index.html#firewall-rules") %}
       {% exampleBlock "examples--example-4" %}
     {% endcall %}
+    </div>
+
+    <div id="firewall-application-rules">
+    {% call exampleShowcaseSection("Firewall Application Rule Collections", "Application rules render as readable FQDN-focused tables with semantic diffs for added, changed, removed, and unchanged entries.", "features/firewall-rules.html") %}
+      {% exampleBlock "examples--example-12" %}
+    {% endcall %}
+    </div>
 
     {% call exampleShowcaseSection("Module Grouping", "Resources are automatically organized by Terraform module for better readability in multi-module configurations.", "features/index.html#module-grouping") %}
       {% exampleBlock "examples--example-5" %}
     {% endcall %}
+
+    <div id="resource-grouping">
+    {% call exampleShowcaseSection("Parent-Child Resource Grouping", "Groups, virtual networks, and other parent resources keep their related child changes inline instead of scattering them across the report.", "features/resource-grouping.html") %}
+      {% exampleBlock "examples--example-11" %}
+    {% endcall %}
+    </div>
 
     {% call exampleShowcaseSection("Azure Role Assignment Display", "Role assignments show human-readable names with principal mapping instead of cryptic GUIDs.", "features/index.html#role-assignments") %}
       {% exampleBlock "examples--example-6" %}
@@ -104,6 +118,18 @@ pageId: "examples"
 }</code></pre>
       </div>
     {% endcall %}
+
+    <div id="build-definitions">
+    {% call exampleShowcaseSection("Azure DevOps Build Definitions", "Build definitions render repository configuration, variables, triggers, and outputs as structured tables that stay reviewable even when Terraform marks nested blocks as sensitive.", "features/build-definitions.html") %}
+      {% exampleBlock "examples--example-9" %}
+    {% endcall %}
+    </div>
+
+    <div id="terraform-outputs">
+    {% call exampleShowcaseSection("Terraform Outputs", "Output changes render in a dedicated table so reviewers can see IDs, URLs, and computed values alongside the resource changes that produce them.", "features/misc.html#terraform-outputs") %}
+      {% exampleBlock "examples--example-10" %}
+    {% endcall %}
+    </div>
 
     {% call exampleShowcaseSection("Sensitive Value Masking", "Sensitive values are automatically masked by default to prevent accidental exposure in PRs.", "features/index.html#sensitive-masking") %}
       {% exampleBlock "examples--example-7" %}

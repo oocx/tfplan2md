@@ -21,7 +21,7 @@ module.exports = [
         href: "firewall-rules.html",
         linkLabel: "View examples",
         featured: true,
-        description: "Renders complex Azure Firewall rule collections as readable tables with protocols, ports, and actions clearly displayed."
+        description: "Renders Azure Firewall network and application rule collections as readable tables with protocols, ports, FQDNs, and actions clearly displayed."
       },
       {
         slug: "nsg-rules",
@@ -51,6 +51,15 @@ module.exports = [
         description: "Handles large text blocks (like JSON policies or scripts) by showing computed diffs with inline highlighting instead of raw text walls."
       },
       {
+        slug: "resource-grouping",
+        title: "Resource Grouping",
+        icon: "assets/icons/module-grouping.svg",
+        href: "resource-grouping.html",
+        linkLabel: "View examples",
+        featured: true,
+        description: "Groups related resources into parent sections with inline child tables, so reviewers see memberships, subnets, routes, and rules in context."
+      },
+      {
         slug: "pr-rendering-optimization",
         title: "PR Rendering Optimization",
         icon: "assets/icons/pr-compatibility.svg",
@@ -71,7 +80,7 @@ module.exports = [
       {
         slug: "azdo-variable-groups",
         title: "Azure DevOps Variable Groups",
-        icon: "assets/icons/firewall-rules.svg",
+        icon: "assets/icons/azdo-variable-groups.svg",
         href: "azdo-variable-groups.html",
         linkLabel: "View examples",
         featured: true,
@@ -118,7 +127,15 @@ module.exports = [
         icon: "assets/icons/collapsible-details.svg",
         href: "misc.html#collapsible-details",
         linkLabel: "Learn more",
-        description: "Hides verbose resource details inside expandable sections to keep PR comments readable and scannable."
+        description: "Hides verbose resource details inside expandable sections and lets you choose `auto`, `open`, or `closed` behavior with `--details`."
+      },
+      {
+        slug: "azure-id-case-filter",
+        title: "Azure ID Noise Filter",
+        icon: "assets/icons/friendly-names.svg",
+        href: "azure-optimizations.html#azure-id-filter",
+        linkLabel: "Learn more",
+        description: "Suppresses casing-only Azure resource ID changes by default, including AzAPI body-level ID noise, so real drift stands out."
       },
       {
         slug: "tag-visualization",
@@ -137,12 +154,20 @@ module.exports = [
         description: "Adds context-aware icons for common attributes like Locations (🌍), IPs (🌐), Ports (🔌), and booleans."
       },
       {
-        slug: "custom-templates",
-        title: "Custom Templates",
+        slug: "build-definition-tables",
+        title: "Build Definition Tables",
+        icon: "assets/icons/cicd-integration.svg",
+        href: "build-definitions.html",
+        linkLabel: "Learn more",
+        description: "Azure DevOps build definitions render as structured tables for variables, triggers, repositories, schedules, and jobs with secret protection."
+      },
+      {
+        slug: "built-in-templates",
+        title: "Built-In Templates",
         icon: "assets/icons/custom-templates.svg",
         href: "custom-templates.html",
         linkLabel: "Learn more",
-        description: "Allows users to completely customize the markdown output using Scriban templates."
+        description: "Two built-in report layouts, `default` and `summary`, now run on the pure C# rendering engine with no custom Scriban files to maintain."
       },
       {
         slug: "cicd-integration",
@@ -182,21 +207,37 @@ module.exports = [
         slug: "sensitive-masking",
         title: "Sensitive Value Masking",
         icon: "assets/icons/sensitive-masking.svg",
-        description: "Automatically masks values marked as sensitive in Terraform to prevent accidental exposure.",
+        description: "Automatically masks sensitive values across nested attributes, AzAPI bodies, variable groups, and JSON before/after fields.",
         compact: true
       },
       {
         slug: "container-support",
         title: "Container Support",
         icon: "assets/icons/container-support.svg",
-        description: "AOT-compiled native binary in 14.7MB FROM scratch container. Sub-second startup, minimal attack surface.",
+        description: "2.1 MB FROM scratch container plus multi-platform NativeAOT binaries for Docker, direct downloads, and Homebrew installs.",
+        compact: true
+      },
+      {
+        slug: "terraform-outputs",
+        title: "Terraform Outputs",
+        icon: "assets/icons/plan-summary.svg",
+        href: "misc.html#terraform-outputs",
+        linkLabel: "Learn more",
+        description: "Reports include dedicated output tables showing create, update, delete, sensitivity, and known-after-apply values.",
+        compact: true
+      },
+      {
+        slug: "homebrew-install",
+        title: "Homebrew Install",
+        icon: "assets/icons/provider-agnostic.svg",
+        description: "Install and upgrade tfplan2md with Homebrew on macOS and Linux using the official tap.",
         compact: true
       },
       {
         slug: "debug-output",
         title: "Debug Output",
         icon: "assets/icons/smart-iconography.svg",
-        description: "Single --debug flag appends diagnostic info showing principal mapping status, template resolution, and failed ID lookups.",
+        description: "Single --debug flag appends diagnostic info in a collapsed details block showing mappings, renderer selection, and failed lookups.",
         compact: true
       },
       {

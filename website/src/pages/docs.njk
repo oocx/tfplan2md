@@ -66,177 +66,90 @@ tfplan2md plan.json --report-title "Drift Detection - Production"
 tfplan2md plan.json --render-target github
 {% endcall %}
 
-{% call docs.codeBlock("With output file and custom template") %}
-tfplan2md plan.json --output plan.md --template my-template.sbn
+{% call docs.codeBlock("With output file and summary template") %}
+tfplan2md plan.json --output plan.md --template summary
 {% endcall %}
       {% endcall %}
     {% endcall %}
 
-    {% call docs.pageSection("template-customization", "Template Customization", "tfplan2md uses [Scriban](https://github.com/scriban/scriban) templates to generate Markdown reports. You can create custom templates to match your team's reporting needs.", "section section-alt") %}
+    {% call docs.pageSection("template-customization", "Templates and Mapping", "tfplan2md ships with built-in report modes and a built-in rendering engine. Use `--template` to select the layout and `--principal-mapping` to enrich the rendered values.", "section section-alt") %}
       <div class="doc-section" id="built-in-templates">
         <h3 class="doc-subtitle">Built-in Templates</h3>
         {{ docs.templateGrid(docsPage.builtInTemplates) }}
       </div>
 
-      {% call docs.subsection("custom-templates", "Custom Templates") %}
+      {% call docs.subsection("rendering-engine", "Rendering Engine") %}
 {% call docs.markdownBlock() %}
-Create a custom Scriban template (`.sbn` file) and pass it with the `--template` option:
+The report renderer is now implemented in pure C#. Custom Scriban template files are no longer supported.
+
+- `--template default` gives you the full report with summary, grouped resource changes, and outputs.
+- `--template summary` gives you the compact overview for notifications and quick triage.
+- The built-in engine keeps rendering behavior compile-time checked and consistent across providers.
 {% endcall %}
 
 {% call docs.codeBlock("Usage") %}
-tfplan2md plan.json --template path/to/custom-template.sbn
+tfplan2md plan.json --template default
+tfplan2md plan.json --template summary
 {% endcall %}
 
 {% call docs.markdownBlock() %}
-**Template Data Model:** Your template receives a `plan` object with the following structure:
-{% endcall %}
-
-{% raw %}{% call docs.codeBlock("Template Variables") %}
-{{ plan.terraform_version }}        # Terraform version (string)
-{{ plan.format_version }}          # Plan format version (string)
-{{ plan.resource_changes }}        # Array of resource change objects
-{{ plan.output_changes }}          # Array of output change objects
-
-# Resource change object properties
-{{ change.address }}
-{{ change.module_address }}
-{{ change.type }}
-{{ change.name }}
-{{ change.action }}
-{{ change.before }}
-{{ change.after }}
-{{ change.after_unknown }}
-{{ change.before_sensitive }}
-{{ change.after_sensitive }}
-{% endcall %}{% endraw %}
-
-{{ docs.minorHeading("Scriban Helper Functions", "h4", "docs-minor-heading-xl") }}
-
-{% call docs.markdownBlock() %}
-tfplan2md provides custom Scriban functions to help with common formatting tasks:
-{% endcall %}
-
-{{ docs.helperCards(docsPage.helperFunctions) }}
-
-{{ docs.callout("📚 Scriban Reference", "For the complete Scriban language syntax see the official documentation:", "https://github.com/scriban/scriban/blob/master/doc/language.md", "Scriban Language Reference") }}
-
-{% call docs.markdownBlock() %}
-Reference the built-in templates in the [repository](https://github.com/oocx/tfplan2md/tree/main/src/Oocx.TfPlan2Md/Templates) for examples.
+Feature 107 removed the old Scriban-based customization path. The main CLI now has zero third-party runtime dependencies, and rendering changes are implemented as built-in C# renderers rather than user-provided `.sbn` files.
 {% endcall %}
       {% endcall %}
 
       {% call docs.subsection("principal-mapping", "Principal Mapping File") %}
 {% call docs.markdownBlock() %}
-Map Azure principal IDs to human-readable names for better role assignment reports. Create a JSON file with this structure:
+Map Azure principals, subscriptions, management groups, tenants, roles, and Azure DevOps entities to human-readable names for better summaries, tables, and output values. Create a JSON file with this structure:
 {% endcall %}
 
 {% call docs.codeBlock("principals.json") %}
 {
-  "users": {
-    "12345678-1234-1234-1234-123456789012": "jane.doe@contoso.com",
-    "87654321-4321-4321-4321-210987654321": "john.smith@contoso.com"
+  "users": [
+    { "id": "12345678-1234-1234-1234-123456789012", "displayName": "jane.doe@contoso.com" }
+  ],
+  "groups": [
+    { "id": "abcdef12-3456-7890-abcd-ef1234567890", "displayName": "Platform Team" }
+  ],
+  "servicePrincipals": [
+    { "id": "11111111-2222-3333-4444-555555555555", "displayName": "terraform-spn" }
+  ],
+  "subscriptions": [
+    { "id": "d1828a48-fced-4ea2-b2ec-4b9623f327fd", "displayName": "Production" }
+  ],
+  "managementGroups": [
+    { "id": "mg-production", "displayName": "Production Workloads" }
+  ],
+  "tenants": [
+    { "id": "tenant-guid", "displayName": "Contoso Corp" }
+  ],
+  "azdoUsers": {
+    "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith"
   },
-  "groups": {
-    "abcdef12-3456-7890-abcd-ef1234567890": "Platform Team",
-    "fedcba98-7654-3210-fedc-ba9876543210": "Security Team"
+  "azdoGroups": {
+    "vssgp.Uy0xLTktMTU1MTM...": "Platform Team"
   },
-  "servicePrincipals": {
-    "11111111-2222-3333-4444-555555555555": "terraform-spn",
-    "66666666-7777-8888-9999-000000000000": "github-actions-spn"
+  "azdoProjects": {
+    "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project"
+  },
+  "azdoRepositories": {
+    "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo"
   }
 }
 {% endcall %}
 
-{{ docs.minorHeading("Generating Mapping Files with Azure CLI", "h4", "docs-minor-heading-xl") }}
-
 {% call docs.markdownBlock() %}
-Use Azure CLI to automatically generate principal mapping files from your Azure AD tenant:
-{% endcall %}
-
-{{ docs.minorHeading("Bash Script", "h5", "docs-minor-heading-script") }}
-{% call docs.codeBlock("generate-principals.sh") %}
-#!/bin/bash
-
-echo '{'
-echo '  "users": {'
-az ad user list --query '[].{id:id,upn:userPrincipalName}' -o json | \
-  jq -r '.[] | "    \"" + .id + "\": \"" + .upn + "\""' | \
-  paste -sd ',' -
-echo '  },'
-echo '  "groups": {'
-az ad group list --query '[].{id:id,name:displayName}' -o json | \
-  jq -r '.[] | "    \"" + .id + "\": \"" + .name + "\""' | \
-  paste -sd ',' -
-echo '  },'
-echo '  "servicePrincipals": {'
-az ad sp list --all --query '[].{id:id,name:displayName}' -o json | \
-  jq -r '.[] | "    \"" + .id + "\": \"" + .name + "\""' | \
-  paste -sd ',' -
-echo '  }'
-echo '}'
+- Azure and Azure AD sections can be exported with Azure CLI.
+- Azure DevOps sections are added manually and support users, groups, projects, and repositories.
+- Repository IDs render with the 🗃️ icon and branch/ref attributes render with ⎇ when mappings are present.
+- Output tables also benefit from these mappings, so repository IDs, resource IDs, and principals remain readable outside resource sections.
 {% endcall %}
 
 {% call docs.markdownBlock() %}
-Run `bash generate-principals.sh > principals.json`.
-{% endcall %}
-
-{{ docs.minorHeading("PowerShell Script", "h5", "docs-minor-heading-script-spacious") }}
-{% call docs.codeBlock("Generate-Principals.ps1") %}
-$mapping = @{
-    users = @{}
-    groups = @{}
-    servicePrincipals = @{}
-}
-
-$users = az ad user list --query '[].{id:id,upn:userPrincipalName}' | ConvertFrom-Json
-foreach ($user in $users) { $mapping.users[$user.id] = $user.upn }
-
-$groups = az ad group list --query '[].{id:id,name:displayName}' | ConvertFrom-Json
-foreach ($group in $groups) { $mapping.groups[$group.id] = $group.name }
-
-$sps = az ad sp list --all --query '[].{id:id,name:displayName}' | ConvertFrom-Json
-foreach ($sp in $sps) { $mapping.servicePrincipals[$sp.id] = $sp.name }
-
-$mapping | ConvertTo-Json -Depth 3
-{% endcall %}
-
-{% call docs.markdownBlock() %}
-Run `./Generate-Principals.ps1 > principals.json`.
-{% endcall %}
-
-{{ docs.minorHeading("Filtering for Specific Principals", "h5", "docs-minor-heading-script-spacious") }}
-
-{% call docs.markdownBlock() %}
-For large tenants, you may want to filter for specific principals instead of fetching all:
-{% endcall %}
-
-{% call docs.codeBlock("Bash - Filter by IDs") %}
-PRINCIPAL_IDS=$(terraform show -json plan.tfplan | \
-  jq -r '.resource_changes[]? | select(.type == "azurerm_role_assignment") | .change.after.principal_id' | sort -u)
-
-echo '{"users":{},"groups":{},"servicePrincipals":{}}' > principals.json
-for id in $PRINCIPAL_IDS; do
-  az ad user show --id "$id" 2>/dev/null | \
-    jq -r '{users: {($id): .userPrincipalName}}' || \
-  az ad group show --group "$id" 2>/dev/null | \
-    jq -r '{groups: {($id): .displayName}}' || \
-  az ad sp show --id "$id" 2>/dev/null | \
-    jq -r '{servicePrincipals: {($id): .displayName}}'
-done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json
-{% endcall %}
-
-{% call docs.markdownBlock() %}
-Use the `--principal-mapping` option to replace GUIDs with names in role assignment reports.
+Use the `--principal-mapping` option to replace GUIDs and descriptors with friendly names in role assignment reports, Azure DevOps build definitions, group memberships, and output tables.
 {% endcall %}
 
 {% call docs.codeBlock("Usage") %}
 tfplan2md plan.json --principal-mapping principals.json
-{% endcall %}
-
-{{ docs.minorHeading("Using Principal Mapping with Docker", "h4", "docs-minor-heading-xl") }}
-
-{% call docs.markdownBlock() %}
-When running tfplan2md in a Docker container, mount `principals.json` into the container:
 {% endcall %}
 
 {% call docs.codeBlock("Docker - Mount from current directory") %}
@@ -355,6 +268,29 @@ tfplan2md works with any tool that outputs SARIF 2.1.0 format. Here are some pop
       {% endcall %}
     {% endcall %}
 
+    {% call docs.pageSection("azuredevops-integration", "Azure DevOps Integration", "When tfplan2md writes to a file in Azure Pipelines, it can also emit a pipeline variable that tells later steps whether the plan contains meaningful changes.") %}
+      {% call docs.subsection("pipeline-variable", "Pipeline Variable") %}
+{% call docs.markdownBlock() %}
+When you use `-o` or `--output` in Azure DevOps, tfplan2md emits:
+
+- `##vso[task.setvariable variable=tfplan2md_haschanges]true`
+- `##vso[task.setvariable variable=tfplan2md_haschanges]false`
+
+This makes it easy to conditionally post PR comments, upload artifacts, or skip follow-up stages when the rendered report says there are no changes.
+{% endcall %}
+
+{% call docs.codeBlock("Azure Pipelines") %}
+- script: |
+    terraform show -json plan.tfplan | tfplan2md --output plan.md
+  displayName: Generate tfplan2md report
+
+- script: echo "Only run when the plan changed"
+  condition: eq(variables['tfplan2md_haschanges'], 'true')
+  displayName: Conditional follow-up step
+{% endcall %}
+      {% endcall %}
+    {% endcall %}
+
     {% call docs.pageSection("render-targets", "Render Targets", "The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.") %}
       {{ docs.formatComparison(docsPage.renderTargets) }}
       <div class="docs-migration-note">
@@ -373,7 +309,7 @@ terraform show -json plan.tfplan | tfplan2md
 {% endcall %}
       {% endcall %}
 
-      {% call docs.troubleItem("template-not-found", "❌ \"Template file not found\"", "This error occurs when using `--template` with a custom template file that doesn't exist.", "- Verify the template file path is correct\n- Check file permissions\n- For built-in templates, use `default` or `summary`") %}{% endcall %}
+      {% call docs.troubleItem("template-not-found", "❌ Unknown template name", "This error occurs when `--template` is set to a name other than the built-in `default` or `summary` modes.", "- Use `--template default` for the full report\n- Use `--template summary` for the compact overview\n- Custom template files are no longer supported") %}{% endcall %}
 
       {% call docs.troubleItem("sensitive-values", "⚠️ Sensitive values still visible", "Sensitive values are masked by default unless `--show-sensitive` is used.", "- Remove `--show-sensitive` from your command\n- Mark attributes as `sensitive = true` in Terraform\n- Review CI/CD configuration to ensure sensitive flags aren't enabled accidentally") %}{% endcall %}
 

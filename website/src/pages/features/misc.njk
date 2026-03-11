@@ -1,16 +1,84 @@
 ---
 layout: layouts/base.njk
 title: "Miscellaneous Features - tfplan2md"
-description: "Small but powerful features that improve the overall experience."
+description: "Small but powerful features that improve the overall report experience, from details display modes to Terraform outputs."
 permalink: /features/misc.html
 rootPrefix: "../"
 navKey: "features"
 pageId: "features/misc"
 ---
 <!-- markdownlint-disable MD033 -->
-{% from "components/content-blocks.njk" import heroBlock, featureDetail, relatedDocs, codeWindow %}
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, relatedDocs, codeWindow, commandBlock %}
 
-{{ heroBlock("Miscellaneous Features", "Small but powerful features that improve the overall experience.", "hero hero-secondary") }}
+{{ heroBlock("Miscellaneous Features", "Small but powerful features that improve the report experience, from details display modes to Terraform outputs.", "hero hero-secondary") }}
+
+<section id="plan-summary" class="section">
+  <div class="section-container">
+    {% call featureDetail("Plan Summary", "all providers", "Every report starts with a compact summary table so reviewers can see add, change, replace, destroy, and total counts before expanding into the details.") %}
+      <div class="feature-example">
+        {{ codeWindow("Summary Table", '<pre><code>| Action | Count | Resource Types |\n| ------ | ----- | -------------- |\n| ➕ Add | 26 | 2 azurerm_resource_group, 2 azurerm_virtual_network, +18 more |\n| 🔄 Change | 8 | 1 azuredevops_variable_group, 1 azurerm_virtual_network, +5 more |\n| ♻️ Replace | 2 | 1 azurerm_network_security_group, 1 azurerm_subnet |\n| ❌ Destroy | 3 | 1 azurerm_role_assignment, 1 azurerm_storage_account, 1 azurerm_virtual_network |</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section id="collapsible-details" class="section section-alt">
+  <div class="section-container">
+    {% call featureDetail("Collapsible Details", "all providers", "Resource sections render inside HTML details blocks so pull request comments stay readable. The `--details` flag controls whether those sections start in `auto`, `open`, or `closed` mode.") %}
+      {{ commandBlock("tfplan2md plan.json --details auto") }}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Display Modes</h3>
+        <ul class="highlights-list">
+          <li><code>auto</code> expands resources with code analysis findings and keeps the rest collapsed</li>
+          <li><code>open</code> expands every resource by default</li>
+          <li><code>closed</code> collapses every resource by default for a cleaner overview</li>
+          <li>The debug block stays collapsed regardless of the chosen mode</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section id="terraform-outputs" class="section">
+  <div class="section-container">
+    {% call featureDetail("Terraform Outputs", "all providers", "tfplan2md renders `output_changes` in a dedicated output table so reviewers can see IDs, URLs, computed values, and sensitive outputs without digging through raw Terraform JSON.") %}
+      <div class="feature-example">
+        {{ codeWindow("Outputs Table", '<pre><code>| Change | Name | Description | Sensitive | Value |\n| ------ | ---- | ----------- | --------- | ----- |\n| 🔄 | `pipeline_id` | The ID of the created build pipeline | No | (known after apply) |\n|   | `project_name` | The name of the created Azure DevOps project | No | `🆔 example-project` |\n| ➕ | `deploy_token` | Deployment token | 🔒 Yes | (sensitive value) |</code></pre>') }}
+      </div>
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">What You Get</h3>
+        <ul class="highlights-list">
+          <li>Module outputs appear under their module section, root outputs appear at the end of the report</li>
+          <li>Sensitive outputs remain masked unless <code>--show-sensitive</code> is used</li>
+          <li>Computed values render as <code>(known after apply)</code></li>
+          <li>Existing display-name mappings apply to output values too</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section id="friendly-names" class="section section-alt">
+  <div class="section-container">
+    {% call featureDetail("Friendly Names", "all providers", "tfplan2md prefers readable identifiers over long provider-native IDs, so summaries highlight resource names, scopes, and semantic icons instead of forcing reviewers to decode raw IDs.") %}
+      <div class="feature-example">
+        {{ codeWindow("Example", '<pre><code>#### ➕ azurerm_key_vault_secret.db_password\n**Summary:** `🆔 db-password` in Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo`</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section id="local-names" class="section">
+  <div class="section-container">
+    {% call featureDetail("Local Resource Names", "all providers", "Inside modules, summaries favor the local Terraform name so reviewers see `hub`, `spoke`, or `deploy_pipeline` instead of the full module path every time.") %}
+      <div class="feature-example">
+        {{ codeWindow("Example", '<pre><code>### 📦 Module: module.network\n#### ➕ azurerm_virtual_network.hub</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
 
 <section id="resource-summaries" class="section">
   <div class="section-container">
@@ -32,12 +100,24 @@ pageId: "features/misc"
   </div>
 </section>
 
+<section id="no-changes" class="section">
+  <div class="section-container">
+    {% call featureDetail("No Changes Display", "all providers", "Zero-change plans render as a clear `No changes` message instead of an empty report, which keeps CI output and PR comments explicit.") %}
+      <div class="feature-example">
+        {{ codeWindow("Example", '<pre><code>No changes</code></pre>') }}
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
 <section class="section">
   <div class="section-container">
     {% call featureDetail("Learn More", "", "These features work together to improve the readability and usability of tfplan2md reports.") %}
       {{ relatedDocs("Related Documentation", [
         {"href": "https://github.com/oocx/tfplan2md/tree/main/docs/features/014-replacement-reasons-and-summaries", "label": "Feature Specification: Replacement Reasons and Summaries", "external": true},
-        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#resource-summaries", "label": "Resource Summaries Overview", "external": true}
+        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#resource-summaries", "label": "Resource Summaries Overview", "external": true},
+        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#terraform-outputs-support", "label": "Terraform Outputs Support", "external": true},
+        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#resource-details-display-mode-control", "label": "Resource Details Display Mode Control", "external": true}
       ]) }}
     {% endcall %}
   </div>

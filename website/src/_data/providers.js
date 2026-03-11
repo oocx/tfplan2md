@@ -10,6 +10,7 @@ module.exports = [
       {
         title: "Specialized Resources",
         items: [
+          "<strong>Firewall Application Rule Collections</strong> — FQDN and FQDN-tag aware tables for web access rules",
           "<strong>Firewall Network Rule Collections</strong> — Inline diff of rules (added/removed/unchanged)",
           "<strong>Network Security Groups</strong> — Rule-level diffing with priority awareness",
           "<strong>Role Assignments</strong> — Principal name mapping and readable scope display"
@@ -18,7 +19,8 @@ module.exports = [
       {
         title: "Global Enhancements",
         items: [
-          "<strong>Resource ID Formatting</strong> — Long Azure IDs broken into readable scopes",
+          "<strong>Resource ID Formatting</strong> — Long Azure IDs broken into readable scopes with subscription and resource-group context",
+          "<strong>Parent-Child Grouping</strong> — Virtual networks, subnets, DNS records, routes, and NSG rules stay grouped together",
           "<strong>Semantic Icons</strong> — Visual indicators for IPs (🌐), ports (🔌), protocols (📨/🔗), principals (👤/👥/💻)",
           "<strong>Boolean Formatting</strong> — ✅/❌ for true/false values"
         ]
@@ -38,29 +40,64 @@ module.exports = [
     ]
   },
   {
-    slug: "azuredevops",
-    title: "Azure DevOps",
-    icon: "🔧",
-    status: "Partial Support",
+    slug: "azapi",
+    title: "Azure API (azapi)",
+    icon: "🧩",
+    status: "Implemented",
     statusClass: "provider-status-success",
-    description: "Specialized support for Azure DevOps variable groups with semantic diffing and secret protection.",
+    description: "Specialized support for Azure API resources with body-aware rendering, output value tables, and Azure REST documentation links.",
     sections: [
       {
         title: "Implemented Resources",
         items: [
-          "<strong>Variable Groups</strong> — Variable-level diffing with secret value protection"
+          "<strong>azapi_resource</strong> — Structured body rendering with semantic value formatting",
+          "<strong>azapi_update_resource</strong> — Focused diffs for PATCH-style updates",
+          "<strong>Output Values</strong> — Dedicated table for Azure API response fields separate from input body values"
         ]
       },
       {
-        title: "Planned Resources",
+        title: "Global Enhancements",
         items: [
-          "Projects and project settings",
-          "Build and release pipelines",
-          "Service connections"
+          "<strong>Azure API Docs Links</strong> — Microsoft Learn REST API links for supported resource types",
+          "<strong>Casing Noise Filter</strong> — Body-level Azure resource ID case-only changes filtered automatically",
+          "<strong>Sensitive Handling</strong> — Known-after-apply and sensitive output values rendered safely"
         ]
       }
     ],
-    note: "<strong>Status:</strong> Variable groups implemented. Additional resources in planning phase.",
+    actions: [
+      {
+        href: "azapi.html",
+        label: "View Documentation",
+        variant: "secondary",
+        fullWidth: true
+      }
+    ]
+  },
+  {
+    slug: "azuredevops",
+    title: "Azure DevOps",
+    icon: "🔧",
+    status: "Implemented",
+    statusClass: "provider-status-success",
+    description: "Structured rendering for Azure DevOps variable groups and build definitions, with identity and repository mapping support.",
+    sections: [
+      {
+        title: "Implemented Resources",
+        items: [
+          "<strong>Variable Groups</strong> — Variable-level diffing with secret value protection",
+          "<strong>Build Definitions</strong> — Structured tables for variables, triggers, repository settings, schedules, and jobs"
+        ]
+      },
+      {
+        title: "Global Enhancements",
+        items: [
+          "<strong>Principal Mapping</strong> — Azure DevOps users, groups, and projects resolved to display names",
+          "<strong>Repository Mapping</strong> — Repository IDs render with mapped names and 🗃️ / ⎇ icons",
+          "<strong>Outputs Support</strong> — Terraform outputs from Azure DevOps plans appear in the report output table"
+        ]
+      }
+    ],
+    note: "<strong>Status:</strong> Variable groups and build definitions are implemented and documented.",
     noteClass: "provider-card-note-success",
     actions: [
       {
@@ -82,7 +119,7 @@ module.exports = [
       {
         title: "Specialized Resources",
         items: [
-          "<strong>Groups</strong> — Member counts, group memberships with readable names",
+          "<strong>Groups</strong> — Member counts plus inline member tables with readable names",
           "<strong>Service Principals</strong> — App roles and OAuth2 permissions",
           "<strong>Invitations</strong> — Guest user invitation details",
           "<strong>Users</strong> — User profiles with attributes"
@@ -146,7 +183,7 @@ module.exports = [
         title: "How to Help",
         items: [
           "<strong>Request a provider</strong> — Open an issue describing which provider you need",
-          "<strong>Contribute templates</strong> — Submit provider-specific templates for your use case",
+          "<strong>Contribute renderers</strong> — Submit provider-specific rendering improvements for your use case",
           "<strong>Share examples</strong> — Help us understand which resources need specialized rendering"
         ]
       }

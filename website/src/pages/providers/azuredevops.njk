@@ -1,7 +1,7 @@
 ---
 layout: layouts/base.njk
 title: "Azure DevOps Provider - tfplan2md"
-description: "Specialized support for Azure DevOps variable groups with semantic diffing and secret protection."
+description: "Structured support for Azure DevOps variable groups and build definitions with secret protection and mapping support."
 permalink: /providers/azuredevops.html
 rootPrefix: "../"
 navKey: "providers"
@@ -10,31 +10,32 @@ pageId: "providers/azuredevops"
 <!-- markdownlint-disable MD033 -->
 {% from "components/content-blocks.njk" import heroBlock, featureDetail %}
 
-{{ heroBlock("Azure DevOps Provider", "Specialized support for Azure DevOps variable groups with semantic diffing and secret protection.", "hero hero-secondary") }}
+{{ heroBlock("Azure DevOps Provider", "Structured support for Azure DevOps variable groups and build definitions with secret protection and mapping support.", "hero hero-secondary") }}
 
 <section class="section">
   <div class="section-container">
-    {% call featureDetail("", "Partial Support", "Support for Azure DevOps provider includes specialized rendering for variable groups, with additional resources planned.") %}
+    {% call featureDetail("", "Implemented", "Support for the Azure DevOps provider includes specialized rendering for variable groups and build definitions, plus Azure DevOps-aware mapping for users, groups, projects, and repositories.") %}
       <div class="feature-highlights">
         <h3 class="highlights-title">Implemented Resources</h3>
         <ul class="highlights-list">
           <li><strong>Variable Groups</strong> (<code>azuredevops_variable_group</code>): Variable-level semantic diffing with secret value protection, Key Vault integration display, and unified regular/secret variable tables. See the <a href="../features/azdo-variable-groups.html" style="color: var(--color-primary); font-weight: 600;">Variable Groups feature page</a> for details.</li>
+          <li><strong>Build Definitions</strong> (<code>azuredevops_build_definition</code>): Structured tables for variables, triggers, repositories, schedules, and outputs. See the <a href="../features/build-definitions.html" style="color: var(--color-primary); font-weight: 600;">Build Definitions feature page</a> for details.</li>
         </ul>
       </div>
 
       <div class="feature-highlights" style="margin-top: 32px;">
-        <h3 class="highlights-title">Planned Resources</h3>
+        <h3 class="highlights-title">Mapping and Display Enhancements</h3>
         <ul class="highlights-list">
-          <li><strong>Projects:</strong> Clear display of project settings and visibility</li>
-          <li><strong>Pipelines:</strong> Build and release pipeline configuration diffs</li>
-          <li><strong>Service Connections:</strong> Simplified view of connection details</li>
+          <li><strong>Principal Mapping:</strong> Azure DevOps users, groups, and projects resolve to display names via <code>--principal-mapping</code></li>
+          <li><strong>Repository Mapping:</strong> Repository IDs render with mapped names and the 🗃️ icon</li>
+          <li><strong>Branch and Ref Icons:</strong> Branch-like attributes render with the ⎇ icon for quick scanning</li>
         </ul>
       </div>
 
       <div class="feature-highlights" style="margin-top: 32px;">
-        <h3 class="highlights-title">Roadmap</h3>
+        <h3 class="highlights-title">Notes</h3>
         <p class="feature-detail-description">
-          We are actively looking for community feedback on which Azure DevOps resources are most critical for your workflows. Please check our GitHub issues to vote or contribute.
+          Azure Pipelines users can also consume the <code>tfplan2md_haschanges</code> pipeline variable when generating reports with <code>--output</code>, which makes conditional follow-up steps straightforward.
         </p>
       </div>
     {% endcall %}

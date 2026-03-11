@@ -1,0 +1,46 @@
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>🔄 azurerm_firewall_application_rule_collection <b><code>app_rules_update</code></b> — <code>🆔 web-rules</code> in <code>📁 rg-firewall-demo</code> | 3 🔧 ➕ <code>🆔 allow-github</code>, 🔄 <code>🆔 allow-microsoft</code>, ❌ <code>🆔 allow-old-site</code></summary>
+<br>
+
+<p><strong>Collection:</strong> <code>web-rules</code> | <strong>Priority:</strong> <code>200</code> | <strong>Action:</strong> <code>✅ Allow</code></p>
+
+<h4>Rule Changes</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Target FQDNs</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>🆔 allow-github</code></td>
+<td><code>Https:443</code></td>
+<td><code>10.0.1.0/24</code></td>
+<td><code>github.com, *.github.io</code></td>
+<td><code>GitHub access</code></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>🆔 allow-microsoft</code></td>
+<td><code>Http:80, Https:443</code></td>
+<td><code>10.0.0.0/24 -> 10.0.0.0/16</code></td>
+<td><code>*.microsoft.com</code></td>
+<td><code>Microsoft services</code></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>🆔 allow-old-site</code></td>
+<td><code>Https:443</code></td>
+<td><code>10.0.2.0/24</code></td>
+<td><code>old-site.example.com</code></td>
+<td><code>Legacy site (removed)</code></td>
+</tr>
+</tbody>
+</table>
+</details>

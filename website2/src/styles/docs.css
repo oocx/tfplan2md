@@ -352,6 +352,8 @@
 
 .docs-tool-code {
     margin-top: 12px;
+    align-self: stretch;
+    width: 100%;
 }
 
 .docs-migration-note {

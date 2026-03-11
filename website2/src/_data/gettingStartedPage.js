@@ -4,7 +4,7 @@ module.exports = {
       title: "🐳 Docker (Recommended)",
       description: "The easiest way to get started. Docker automatically pulls the image when you run it.",
       codeTitle: "Run directly",
-      code: "terraform show -json plan.tfplan | docker run -i oocx/tfplan2md",
+      code: "terraform show -json plan.tfplan | \\\ndocker run -i oocx/tfplan2md",
       noteLabel: "✅ Benefits",
       noteText: "One command to run, no setup required, works everywhere Docker runs"
     },

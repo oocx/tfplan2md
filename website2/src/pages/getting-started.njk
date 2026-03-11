@@ -21,7 +21,7 @@ pageId: "getting-started"
       <div class="method-card">
         <h3 class="method-title">{{ method.title }}</h3>
         <p class="method-description">{{ method.description }}</p>
-        <div class="code-block">
+        <div class="code-block code-block-wrap">
           <div class="code-header"><span class="code-title">{{ method.codeTitle }}</span></div>
           <pre><code>{{ method.code }}</code></pre>
         </div>
@@ -108,7 +108,7 @@ pageId: "getting-started"
       <div class="feature-category-card">
         <h4 class="getting-started-security-option-title"><code>{{ option.title }}</code></h4>
         <p class="getting-started-security-option-description">{{ option.description }}</p>
-        <div class="code-block getting-started-security-option-code"><pre><code>{{ option.example }}</code></pre></div>
+        <div class="code-block code-block-wrap getting-started-security-option-code"><pre><code>{{ option.example }}</code></pre></div>
       </div>
       {% endfor %}
     </div>

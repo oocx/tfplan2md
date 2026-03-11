@@ -171,6 +171,16 @@
     line-height: 1.6;
 }
 
+.code-block-wrap pre {
+    white-space: pre-wrap;
+    overflow-x: hidden;
+}
+
+.code-block-wrap code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
 .quickstart-steps {
     display: flex;
     flex-direction: column;
@@ -709,6 +719,10 @@
     justify-content: center;
     margin-top: 32px;
     flex-wrap: wrap;
+}
+
+.examples-cta-code {
+    text-align: left;
 }
 
 @media (max-width: 768px) {

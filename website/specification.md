@@ -1,10 +1,10 @@
-# website2 Specification
+# website Specification
 
 ## 1. Purpose
 
-`website2` is the replacement website for tfplan2md. It exists in parallel with `website/` until migration is complete, after which `website/` will be removed and `website2` will become the only website source.
+`website` is the production website for tfplan2md.
 
-The goal is to replace the current hand-authored static HTML site with a generator-based site that remains easy for both humans and AI agents to maintain.
+It is implemented as an Eleventy-based static site that is intended to remain easy for both humans and AI agents to maintain. The legacy hand-authored site is retained under `website.old/` as historical reference only.
 
 ## 2. Goals
 
@@ -30,7 +30,7 @@ The goal is to replace the current hand-authored static HTML site with a generat
 2. Introducing a CSS framework or component library.
 3. Building a client-heavy web application.
 4. Rewriting tfplan2md product documentation outside website concerns.
-5. Cutting over from `website/` to `website2` in the same step as this specification.
+5. Reintroducing the archived hand-authored website as the primary source.
 
 ## 4. Stakeholders
 
@@ -52,7 +52,7 @@ The new site must derive content from the current project sources instead of inv
 - `docs/`
 - `examples/`
 - `artifacts/`
-- `website/_memory/*.md`
+- `website.old/_memory/*.md` when historical reference is needed
 
 ### 5.2 Existing website constraints to preserve
 
@@ -62,17 +62,17 @@ The new site must derive content from the current project sources instead of inv
 4. Minimal dependencies and simple maintenance.
 5. Responsive layouts for mobile and desktop.
 
-### 5.3 Additional constraints for website2
+### 5.3 Additional constraints for website
 
 1. No CSS framework.
 2. Prefer semantic HTML5.
 3. Prefer native CSS and browser features over abstraction layers.
 4. Reusable content blocks must be centrally defined.
-5. The implementation must coexist with the current `website/` folder during migration.
+5. Authored source must remain under `website/src/` and generated output under `website/dist/`.
 
 ## 6. Browser support target
 
-The primary fidelity target for `website2` is the latest Chromium-based browsers.
+The primary fidelity target for `website` is the latest Chromium-based browsers.
 
 Outside that baseline, including older Chromium versions and other evergreen browsers, reduced fidelity for visuals, animations, and advanced styling is acceptable as long as the site remains usable for reading, navigation, and core interactions.
 
@@ -80,7 +80,7 @@ This decision is documented in [adrs/adr-005-browser-baseline-and-styling.md](ad
 
 ## 7. Information architecture
 
-`website2` should preserve the intent of the current top-level pages while simplifying authoring and reuse.
+`website` should preserve the intent of the current top-level pages while simplifying authoring and reuse.
 
 ### 7.1 Required top-level routes
 
@@ -168,13 +168,13 @@ The recommended styling and browser baseline strategy is documented in [adrs/adr
 2. Local authoring must support deterministic builds.
 3. Generated output should be separable from authored source.
 4. GitHub Pages deployment must remain straightforward.
-5. `website/` and `website2/` must be able to coexist until cutover.
+5. `website.old/` may remain in the repository, but it must not be treated as deployable source.
 
 The recommended output and migration layout is documented in [adrs/adr-004-build-output-and-migration-layout.md](adrs/adr-004-build-output-and-migration-layout.md).
 
 ## 13. Verification requirements
 
-The implementation of `website2` must support the following verification workflow:
+The implementation of `website` must support the following verification workflow:
 
 1. Static generation succeeds locally and in CI.
 2. HTML, CSS, and JS linting can run on generated or source files as appropriate.
@@ -182,28 +182,23 @@ The implementation of `website2` must support the following verification workflo
 4. DevTools validation covers console cleanliness and responsive layout sanity.
 5. Screenshot-based verification remains possible for changed pages.
 
-## 14. Migration requirements
+## 14. Archive and maintenance requirements
 
-### 14.1 Parallel-run requirement
+### 14.1 Production source requirement
 
-1. `website/` remains the production source during migration.
-2. `website2/` is used to build the replacement site incrementally.
-3. Migration should happen page-by-page or component-by-component, not via a single big-bang rewrite.
-4. Migration aims for 1:1 parity with the current layout and content before any intentional redesign work.
+1. `website/` is the only deployable website source.
+2. Authored content, layouts, data, styles, and enhancement scripts live under `website/src/` and shared config files under `website/`.
+3. Generated output in `website/dist/` must be reproducible from source and verification scripts.
 
-### 14.2 Cutover requirements
+### 14.2 Legacy archive requirement
 
-Cutover may happen only when all of the following are true:
-
-1. Every required page exists in `website2`.
-2. Shared components replace duplicated page chrome and example markup.
-3. Verification for `website2` is at least as strong as verification for `website/`.
-4. The generated output matches or improves on the current site for accessibility, readability, and maintainability.
-5. Layout and content parity with the current site has been verified before any cleanup of `website/`.
+1. `website.old/` is retained only for historical comparison or migration traceability.
+2. Changes to `website.old/` should be exceptional and explicitly requested.
+3. Deployment, preview, and verification must target `website/`, not `website.old/`.
 
 ## 15. Success criteria
 
-`website2` is successful when:
+`website` is successful when:
 
 1. Shared structures are defined once and reused everywhere.
 2. Page authors mainly edit Markdown and small data files rather than repeated HTML scaffolding.

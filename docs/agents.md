@@ -149,11 +149,11 @@ Format:
 | `agent-model-selection` | Guidelines for selecting appropriate language models for agents based on task-specific benchmarks, availability, and cost efficiency. |
 | `agent-tool-selection` | Guide for selecting appropriate VS Code Copilot tools when configuring agents, including environment-specific considerations. |
 | `analyze-chat-export` | Extract metrics from VS Code Copilot chat exports for retrospective analysis (model usage, tool invocations, approvals, timing). |
-| `website-create-examples` | Create and update interactive examples on the website, including where to source content from artifacts and how to structure the HTML components. |
-| `website-devtools` | Use Chrome DevTools MCP tools to inspect rendering and troubleshoot website issues with the Maintainer. |
+| `website-create-examples` | Create and update interactive examples on the Eleventy website using `src/pages/*.njk` entrypoints and `src/examples/*` source fragments. |
+| `website-devtools` | Use browser tools to inspect rendering and troubleshoot website issues with the Maintainer. |
 | `website-accessibility-check` | Run a focused accessibility pass for website changes (WCAG 2.1 AA-oriented). |
-| `website-quality-check` | Run a lightweight, repeatable website quality checklist (including style guide adherence). |
-| `website-visual-assets` | Generate website HTML exports and screenshots using HtmlRenderer/ScreenshotGenerator; keep inventories in sync. |
+| `website-quality-check` | Run a lightweight, repeatable website quality checklist for the Eleventy website, including source-model and preview validation. |
+| `website-visual-assets` | Generate website HTML exports and screenshots using HtmlRenderer/ScreenshotGenerator and wire the resulting assets into the site source. |
 | `validate-agent` | Validate agent definitions for consistency, model availability, handoff integrity, and tool existence. |
 
 ### Prefer GitHub Chat Tools For PR Inspection
@@ -366,7 +366,7 @@ The tfplan2md workflow supports both **local agents** (running in VS Code) and *
 - **Cloud:** Automated workflow improvements from GitHub issues (e.g., batch agent updates)
 
 **Example: Web Designer**
-- **Local:** Interactive design iterations, screenshot generation, Chrome DevTools inspection
+- **Local:** Interactive design iterations, screenshot generation, browser-tool-based preview inspection
 - **Cloud:** Automated content/style updates for well-defined changes (e.g., text updates, style tweaks)
 
 **Example: Developer**
@@ -410,7 +410,7 @@ Agents determine their execution environment by analyzing:
 - ❌ Interactive debugging with Maintainer
 - ❌ Complex decisions requiring iterative refinement
 - ❌ Exploratory work with unclear requirements
-- ❌ Website changes requiring screenshot generation or Chrome DevTools
+- ❌ Website changes requiring screenshot generation or hands-on browser preview work
 - ❌ Design prototyping and visual iteration
 - ❌ UAT testing (requires running scripts locally)
 - ❌ Tasks requiring multiple rounds of Maintainer feedback
@@ -518,14 +518,14 @@ For detailed analysis of cloud agents, see [docs/workflow/071-cloud-agents-analy
 ### 13. Web Designer (Specialized Agent)
 - **Goal:** Design, develop, and maintain the tfplan2md website hosted on GitHub Pages.
 - **Execution Modes:**
-	- **Local (VS Code):** Use VS Code’s built-in preview server (`http://127.0.0.1:3000/website/`), and open the relevant pages via Chrome DevTools MCP (not just by pasting the URL) to validate rendering
-  - **Cloud (GitHub):** Automated content/style updates via issue assignment for well-defined changes
-- **Deliverables:** Website pages (HTML/CSS), design prototypes, website content derived from existing documentation.
+	- **Local (VS Code):** Use VS Code’s built-in preview server (`http://127.0.0.1:3000/website/dist/`) and browser tools to validate rendered pages, interactions, and responsive behavior
+	- **Cloud (GitHub):** Automated content/style updates via issue assignment for well-defined changes
+- **Deliverables:** Website source updates under `website/src/`, design prototypes, interactive examples, screenshots, and website content derived from existing documentation.
 - **Initial Creation:** Handoff from Architect after technical approach is defined.
 - **Ongoing Changes:** Direct handoff from Maintainer for content, design, or functionality updates (local), or via GitHub issue assignment (cloud).
-- **Definition of Done:** Website changes are complete, accessible (WCAG 2.1 AA), responsive, and the agent provides verification evidence (changed files, Problems panel clean, VS Code preview render, DevTools console clean, style/NFR checklist). DevTools is mandatory in local mode; if Chrome DevTools MCP can’t connect, the agent is blocked and must not claim completion. Website verification must be real: if `scripts/git-status.sh --porcelain=v1` shows website changes, `scripts/website-verify.sh` must not be allowed to silently no-op.
-- **Cloud Limitations:** Cannot generate screenshots, preview locally, or use Chrome DevTools. Best for content/text updates and style changes that don't require visual verification.
-- **Note:** This agent operates independently for website-specific work. Website files live in `/website/` directory with isolated CI/CD pipeline triggers.
+- **Definition of Done:** Website changes are complete, accessible (WCAG 2.1 AA), responsive, and the agent provides verification evidence (changed files, Problems panel clean, VS Code preview render, browser-tool validation, and quality checklist coverage). Website verification must be real: if `scripts/git-status.sh --porcelain=v1` shows website changes, `scripts/website-verify.sh --all` must not be allowed to silently no-op.
+- **Cloud Limitations:** Cannot rely on interactive VS Code workflows such as `askQuestions`, local preview, or hands-on browser inspection. Best for well-scoped content/text updates and source changes that do not require iterative visual debugging.
+- **Note:** This agent operates independently for website-specific work. Website source files live under `/website/src/`, with generated output under `/website/dist/`.
 
 ---
 

@@ -199,7 +199,7 @@ When copying node text, apply these transformations:
    - Grid overlay visible
    - Glow effects applied
    - Text readable
-4. Run linting: `scripts/website-lint.sh --all`
+4. Run verification: `scripts/website-verify.sh --all`
 
 ## SVG Template
 

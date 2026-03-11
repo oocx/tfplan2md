@@ -33,18 +33,18 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: website2/package-lock.json
+          cache-dependency-path: website/package-lock.json
 
-      - name: Install Website2 dependencies
-        working-directory: website2
+      - name: Install Website dependencies
+        working-directory: website
         run: npm ci
 
-      - name: Clean Website2 output
-        working-directory: website2
+      - name: Clean Website output
+        working-directory: website
         run: npm run clean
 
-      - name: Verify Website2
-        run: scripts/website2-verify.sh --all
+      - name: Verify Website
+        run: scripts/website-verify.sh --all
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -52,7 +52,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: './website2/dist'
+          path: './website/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment

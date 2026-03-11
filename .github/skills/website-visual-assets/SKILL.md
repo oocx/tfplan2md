@@ -6,14 +6,14 @@ description: Generate website HTML exports and screenshots using the repo's Html
 # Skill Instructions
 
 ## Purpose
-Provide a repeatable workflow to generate HTML exports and screenshots for the website, and keep the screenshot inventory in sync.
+Provide a repeatable workflow to generate HTML exports and screenshots for the website using real repository artifacts.
 
 ## Hard Rules
 ### Must
 - [ ] Use `src/tools/Oocx.TfPlan2Md.HtmlRenderer` to generate HTML from markdown reports.
 - [ ] Use `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator` (Playwright) to generate screenshots from those HTML exports.
-- [ ] Store website screenshots under `website/assets/screenshots/`.
-- [ ] Add/update an entry in `website/_memory/screenshots.md` for every screenshot used by the website.
+- [ ] Store website screenshots under `website/src/assets/screenshots/`.
+- [ ] Update the consuming website source when screenshot assets change (for example the relevant page in `website/src/pages/` or shared content data in `website/src/_data/`).
 
 ### Must Not
 - [ ] Do not hand-edit screenshots or create “mock” screenshots that aren’t generated from real HTML exports.
@@ -48,7 +48,7 @@ dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
 # 2) Capture a screenshot with details expanded
 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
-  --output website/assets/screenshots/full-report-azdo.png \
+  --output website/src/assets/screenshots/full-report-azdo.png \
   --open-details "details" \
   --full-page
 ```
@@ -57,7 +57,6 @@ DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet run --project src/tools/Oocx.TfPl
 1. Pick the markdown report under `artifacts/` to use as the source.
 2. Generate the required HTML exports with `src/tools/Oocx.TfPlan2Md.HtmlRenderer`.
 3. Generate screenshots from the exported HTML with `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator`.
-4. Add/update `website/_memory/screenshots.md` with:
-   - Screenshot file name
-   - Exact commands used
-   - Intended purpose (where it is used on the website)
+4. Place the generated screenshots in `website/src/assets/screenshots/`.
+5. Update the consuming page or content source so it references the new screenshot asset.
+6. Verify the relevant page in `website/dist/` uses the correct light or dark asset variants and that any lightbox or screenshot wrapper still works.

@@ -1,8 +1,13 @@
-# Agent Skill: Create and Update Website Examples
+---
+name: website-create-examples
+description: Create and update interactive examples for the Eleventy website using page entrypoints and src/examples fragments.
+---
+
+# Skill Instructions
 
 ## Purpose
 
-Create and update interactive examples on the tfplan2md website that show both rendered markdown output and source code with toggle functionality.
+Create and update interactive examples on the tfplan2md website using the Eleventy authoring model.
 
 ## When to Use This Skill
 
@@ -11,48 +16,30 @@ Create and update interactive examples on the tfplan2md website that show both r
 - Updating existing examples when output format changes
 - Adding before/after comparisons for feature pages
 
-## Example Component Structure
+## Current Authoring Model
 
-All interactive examples use a consistent HTML structure with shared JavaScript functionality:
+Interactive examples are not hand-authored inline as large HTML blocks on page files.
 
-### Required HTML Structure
+- Page entrypoints live under `website/src/pages/`
+- Interactive example source-of-truth lives under `website/src/examples/<example-id>/`
+- Each example directory contains:
+  - `meta.json` for the example title and metadata
+  - `rendered.html` for the rendered output pane
+  - `source.html` for the source pane markup
+- Pages render examples through the Eleventy `exampleBlock` shortcode defined in `website/.eleventy.js`
+- Shared interactive behavior is initialized globally from `website/src/site-assets/js/site.js`, so page-local script tags are not needed
 
-```html
-<div class="code-block interactive-example">
-    <div class="code-header">
-        <span class="code-title">Example Title Here</span>
-        <div class="example-controls">
-            <div class="view-toggle">
-                <button class="toggle-btn active" data-view="rendered">Rendered</button>
-                <button class="toggle-btn" data-view="source">Source</button>
-            </div>
-            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
-        </div>
-    </div>
-    <div class="example-content">
-        <div class="view-pane rendered-view active">
-            <!-- RENDERED HTML CONTENT GOES HERE -->
-        </div>
-        <div class="view-pane source-view">
-            <pre><code><!-- MARKDOWN SOURCE GOES HERE --></code></pre>
-        </div>
-    </div>
-</div>
-```
+## Hard Rules
 
-### Required Script Tag
+### Must
+- [ ] Edit page entrypoints in `website/src/pages/` and example fragments in `website/src/examples/`; do not hand-edit generated output in `website/dist/`.
+- [ ] Keep example IDs stable and descriptive, following the existing `<page-or-section>--example-<n>` pattern.
+- [ ] Source example content from real repository artifacts such as `artifacts/`, `examples/`, generated demo output, or other repository-backed material.
+- [ ] Run `scripts/website-verify.sh --all` after adding or changing examples.
 
-Every page using interactive examples must include the shared JavaScript:
-
-```html
-<!-- For pages in website/ root -->
-<script src="assets/js/interactive-examples.js"></script>
-
-<!-- For pages in website/features/ -->
-<script src="../assets/js/interactive-examples.js"></script>
-```
-
-The script must be included **after** the theme toggle script and **before** the closing `</body>` tag.
+### Must Not
+- [ ] Do not reintroduce page-local JavaScript blobs or per-page script tags for interactive examples.
+- [ ] Do not invent rendered output or source content that is not grounded in the repository.
 
 ## Where to Get Example Content
 
@@ -74,7 +61,7 @@ The `artifacts/` directory contains pre-generated markdown and HTML examples fro
 3. Copy the relevant section for the source view
 4. Open the corresponding `.github.html` file
 5. Find the matching section for the rendered view
-6. Extract the HTML (strip any GitHub-specific wrappers like `<markdown-accessiblity-table>`)
+6. Extract the HTML that should appear inside the rendered pane
 
 ### Source 2: Generate New Examples
 
@@ -109,43 +96,42 @@ If the exact example doesn't exist in artifacts:
 
 ## Step-by-Step: Add a New Example
 
-### For Feature Detail Pages
+### 1. Choose the page entrypoint
 
-1. **Identify the source content:**
-   - Locate the feature section in `artifacts/comprehensive-demo.md`
-   - Find the corresponding HTML in `artifacts/comprehensive-demo.github.html`
+- Open the relevant page under `website/src/pages/`
+- Existing examples page entrypoint: `website/src/pages/examples.njk`
+- Existing feature detail pages live under `website/src/pages/features/`
 
-2. **Extract rendered HTML:**
-   - Copy the HTML from the .github.html file
-   - Remove any platform-specific wrappers (e.g., `<markdown-accessiblity-table>`)
-   - Keep semantic HTML (headings, tables, code blocks)
-   - Ensure emoji and icons are preserved
+### 2. Create or update the example directory
 
-3. **Extract markdown source:**
-   - Copy the markdown from the .md file
-   - Escape HTML special characters in the source view:
-     - `<` → `&lt;`
-     - `>` → `&gt;`
-     - `&` → `&amp;`
+- Create or update `website/src/examples/<example-id>/`
+- Add or update `meta.json`
+- Add or update `rendered.html`
+- Add or update `source.html`
 
-4. **Insert into page:**
-   - Open the feature detail HTML page
-   - Find or create a comparison section
-   - Add the interactive-example structure
-   - Paste rendered HTML into `.rendered-view`
-   - Paste escaped markdown into `.source-view` `<code>` block
+### 3. Keep the example fragment responsibilities clear
 
-5. **Set a descriptive title:**
-   - Update `.code-title` with a clear, specific title
-   - Examples: "Firewall Network Rule Collection Output", "NSG Security Rules Diff"
+- `meta.json` holds the example title and metadata used by the renderer
+- `rendered.html` contains the rendered example pane content
+- `source.html` contains the source-pane markup, typically a `<pre><code>...</code></pre>` block
+- Keep the title specific, for example `Firewall Network Rule Collection Output`
 
-6. **Verify script tag exists:**
-   - Check that `<script src="../assets/js/interactive-examples.js"></script>` is present
-   - Should be before closing `</body>` tag
+### 4. Reference the example from the page
 
-### For Examples Page
+- Use the `exampleBlock` shortcode from the relevant `.njk` page:
 
-Follow the same process, but use `src="assets/js/interactive-examples.js"` (no `../` prefix).
+```njk
+{{ exampleBlock("features--firewall-rules--example-1") | safe }}
+```
+
+- Place it inside the existing page structure and surrounding content blocks
+- Reuse existing macros and section patterns from `website/src/_includes/components/`
+
+### 5. Verify the rendered result
+
+- Run `scripts/website-verify.sh --all`
+- Preview the relevant page in `website/dist/`
+- Use browser tools to confirm toggle behavior, fullscreen behavior, and responsive layout
 
 ## Step-by-Step: Update an Existing Example
 
@@ -155,20 +141,20 @@ Follow the same process, but use `src="assets/js/interactive-examples.js"` (no `
    ```
 
 2. **Locate the example:**
-   - Find the HTML page with the example
-   - Identify the `.interactive-example` div
+   - Find the `exampleBlock("...")` call in `website/src/pages/`
+   - Open the matching directory under `website/src/examples/`
 
 3. **Update rendered view:**
    - Extract new HTML from regenerated artifacts
-   - Replace content inside `.rendered-view`
+   - Replace content in `rendered.html`
 
 4. **Update source view:**
    - Extract new markdown from regenerated artifacts
-   - Escape HTML characters
-   - Replace content inside `.source-view` `<code>` block
+   - Escape HTML characters when needed
+   - Replace content in `source.html`
 
 5. **Test:**
-   - Open the page in a browser
+   - Open the page in a browser preview
    - Toggle between rendered and source views
    - Verify content renders correctly
    - Test fullscreen mode
@@ -176,17 +162,17 @@ Follow the same process, but use `src="assets/js/interactive-examples.js"` (no `
 ## Content Guidelines
 
 ### Rendered View Content
-- Use semantic HTML: `<h3>`, `<table>`, `<code>`, etc.
-- Preserve all emoji and icons from tfplan2md output
-- Keep inline styles from complex diffs (e.g., firewall rule changes)
-- No markdown - this is the final rendered HTML
+- Use semantic HTML: headings, tables, code blocks, details/summary, lists, and other markup that matches the actual rendered output
+- Preserve emoji and icons from real tfplan2md output when present
+- Keep inline styles only when they are part of the real rendered output
+- Do not replace the shared wrapper generated by the shortcode with custom page markup
 
 ### Source View Content
-- Show the exact markdown that generates the rendered output
-- Escape all HTML characters (`<`, `>`, `&`)
+- Show the exact source content that explains or generates the rendered output
+- Escape HTML characters when source is rendered inside `<code>`
 - Preserve whitespace and indentation
-- Include markdown table syntax, headings, code blocks
-- This is what users would put in their PR comments
+- Include markdown, HTML, or mixed source only when that matches the real source material
+- This is what users would copy or inspect alongside the rendered result
 
 ### Title Guidelines
 - Be specific: "Firewall Network Rule Collection Output" not "Example Output"
@@ -210,19 +196,19 @@ Show collapsed sections in rendered view; show the markdown collapsible syntax i
 ## Troubleshooting
 
 ### Toggle buttons don't work
-- Check that `interactive-examples.js` script tag is present
-- Verify script path is correct (`assets/` vs `../assets/`)
+- Check `website/src/site-assets/js/site.js` and the interactive examples module wiring
 - Check browser console for JavaScript errors
+- Confirm the page is using the shared base layout and not bypassing the normal site bootstrap
 
 ### Rendered view looks wrong
-- Verify HTML is valid (not missing closing tags)
-- Check that CSS classes are correct
-- Ensure styles from `style.css` apply to content
+- Verify `rendered.html` is valid and complete
+- Check that the page still uses the shared example wrapper emitted by the shortcode
+- Ensure shared styles and client-side assets are loading in the rendered page
 
 ### Source view doesn't highlight
-- The JavaScript auto-highlights markdown syntax
-- Verify content is inside `.source-view code` elements
+- Verify `source.html` contains the expected code block structure
 - Check that HTML is properly escaped
+- Check shared syntax-highlighting behavior in the previewed page
 
 ### Content overflows
 - Use fullscreen mode for large examples
@@ -233,8 +219,9 @@ Show collapsed sections in rendered view; show the markdown collapsible syntax i
 
 When adding examples, these files are typically involved:
 
-- **HTML pages:** `website/examples.html`, `website/features/*.html`
-- **Shared JavaScript:** `website/assets/js/interactive-examples.js` (rarely modified)
+- **Page entrypoints:** `website/src/pages/*.njk`, `website/src/pages/features/*.njk`
+- **Example fragments:** `website/src/examples/<example-id>/meta.json`, `rendered.html`, `source.html`
+- **Shared JavaScript:** `website/src/site-assets/js/` (rarely modified)
 - **Source content:** `artifacts/*.md` (regenerated via script)
 - **Rendered content:** `artifacts/*.html` (regenerated via script)
 
@@ -243,9 +230,9 @@ When adding examples, these files are typically involved:
 Before committing changes:
 
 - [ ] Interactive example has correct HTML structure
-- [ ] Script tag included with correct path
+- [ ] Example is referenced from the correct `.njk` page using `exampleBlock`
 - [ ] Rendered view shows proper HTML output
-- [ ] Source view shows escaped markdown
+- [ ] Source view shows the correct escaped source when needed
 - [ ] Title is descriptive and specific
 - [ ] Toggle between views works
 - [ ] Fullscreen mode works
@@ -258,20 +245,3 @@ Before committing changes:
 - **website-visual-assets** - Generate screenshots and HTML exports
 - **generate-demo-artifacts** - Regenerate the comprehensive demo
 - **website-quality-check** - Verify overall website quality
-
-## Examples Repository
-
-Current interactive examples on the website:
-
-1. **examples.html:**
-   - 5 firewall/NSG/role examples
-
-2. **Feature detail pages:**
-   - `features/firewall-rules.html` - Firewall semantic diff
-   - `features/nsg-rules.html` - NSG security rules diff
-   - `features/azure-optimizations.html` - 2 examples (Key Vault, Role Assignment)
-   - `features/sensitive-masking.html` - Sensitive value masking
-   - `features/module-grouping.html` - Module-based grouping
-   - `features/large-values.html` - Large value diff formatting
-
-Reference these for consistent patterns and structure.

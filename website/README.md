@@ -1,8 +1,8 @@
-# website2
+# website
 
-This folder contains the implemented Eleventy-based replacement website for tfplan2md.
+This folder contains the Eleventy-based production website for tfplan2md.
 
-The legacy `website/` folder remains in the repository as historical reference during the transition, but the deployable website source now lives in `website2/` and builds to `website2/dist/`.
+The legacy hand-authored website is archived in `../website.old/` as historical reference. The deployable website source now lives here and builds to `website/dist/`.
 
 ## Documents
 
@@ -26,15 +26,16 @@ This folder now contains:
 - Generated parity inventories and checklists
 - The built site output in `dist/` after `npm run build`
 
-Current migration progress:
+Current state:
 
-- 26 routes no longer use `legacyContent`
-- 0 routes still need native Markdown migration
+- The Eleventy migration is complete
+- All production routes are authored from the Eleventy source tree in `src/`
 - Legacy imported page-body artifacts have been removed from `src/_generated/`
-- `scripts/website2-verify.sh --all` passes with the migrated routes in place
+- `scripts/website-verify.sh --all` is the canonical local verification command
 
 Useful commands:
 
 - `npm run build`
 - `npm run serve`
-- `scripts/website2-verify.sh --all`
+- `scripts/website-build.sh --all`
+- `scripts/website-verify.sh --all`

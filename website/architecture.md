@@ -1,10 +1,10 @@
-# website2 Architecture
+# website Architecture
 
 ## 1. Scope
 
-This document describes the proposed architecture for `website2`, the next-generation static website for tfplan2md.
+This document describes the architecture for `website`, the Eleventy-based static website for tfplan2md.
 
-It focuses on source organization, content flow, reusable components, static generation, progressive enhancement, and migration coexistence with the current `website/` folder.
+It focuses on source organization, content flow, reusable components, static generation, progressive enhancement, and the boundary between the active website and the archived legacy site in `website.old/`.
 
 ## 2. Architectural drivers
 
@@ -20,7 +20,7 @@ The architecture is driven by the following repository realities:
 
 ### 3.1 Inputs
 
-`website2` consumes:
+`website` consumes:
 
 1. Page content authored in Markdown.
 2. Shared metadata and site configuration stored in data files.
@@ -30,7 +30,7 @@ The architecture is driven by the following repository realities:
 
 ### 3.2 Outputs
 
-`website2` produces:
+`website` produces:
 
 1. Static HTML pages
 2. Static CSS and JavaScript assets
@@ -139,7 +139,7 @@ Rule: page content must remain understandable without JavaScript where practical
 ## 6. Proposed directory layout
 
 ```text
-website2/
+website/
   README.md
   specification.md
   architecture.md
@@ -183,7 +183,7 @@ Notes:
 
 1. `src/` is authored source.
 2. `dist/` is generated output.
-3. `website/` remains untouched as the active legacy site until cutover.
+3. `website.old/` is archived legacy reference material and is not part of the active source tree.
 
 ## 7. Content rendering flow
 
@@ -267,20 +267,19 @@ Rules:
 
 ### 11.1 Local preview
 
-Local preview should build `website2/dist/` and serve only the generated output, not the source templates directly.
+Local preview should build `website/dist/` and serve only the generated output, not the source templates directly.
 
 ### 11.2 GitHub Pages
 
 Recommended deployment path:
 
-1. CI builds the static site from `website2/src/`.
-2. CI uploads or deploys `website2/dist/`.
-3. The production site remains on the current `website/` pipeline until migration is complete.
-4. At cutover, the deployment source switches from the legacy website build to the `website2` build.
+1. CI builds the static site from `website/src/`.
+2. CI uploads or deploys `website/dist/`.
+3. `website.old/` is not included in deployment.
 
 ## 12. Verification architecture
 
-`website2` should support a repeatable verification flow:
+`website` should support a repeatable verification flow:
 
 1. Lint templates, Markdown, CSS, and JS.
 2. Build generated output.
@@ -289,37 +288,12 @@ Recommended deployment path:
 5. Use DevTools to verify console status and responsive layout.
 6. Capture screenshots for changed pages in light and dark themes.
 
-## 13. Migration strategy
+## 13. Legacy archive strategy
 
-### 13.1 Phase 1: Documentation and scaffolding
-
-1. Define specification and architecture.
-2. Confirm ADRs.
-3. Scaffold the generator and source structure.
-
-### 13.2 Phase 2: Shared shell and utilities
-
-1. Migrate navbar, footer, theme toggle, and page layout.
-2. Move page-local scripts into shared modules.
-3. Define page parity criteria for each migrated page.
-
-### 13.3 Phase 3: Example system
-
-1. Implement `example-block` component.
-2. Centralize example data and fragments.
-3. Migrate pages that currently duplicate rendered/source markup.
-
-### 13.4 Phase 4: Page migration
-
-1. Migrate simple pages first.
-2. Migrate example-heavy and feature-heavy pages next.
-3. Compare output and fix styling regressions.
-4. Do not introduce intentional redesign changes until parity is established.
-
-### 13.5 Phase 5: Cutover
-
-1. Switch deployment to `website2` output.
-2. Remove legacy `website/` source only after parity is confirmed.
+1. Keep `website.old/` available for historical inspection and selective comparison.
+2. Make all active website changes in `website/src/` or supporting files under `website/`.
+3. Treat `website/dist/` as generated output rebuilt from source during verification and deployment.
+4. Avoid introducing new dependencies or authoring patterns unless the benefit clearly outweighs the added maintenance cost.
 
 ## 14. Risks
 

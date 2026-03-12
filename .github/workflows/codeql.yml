@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -26,9 +26,12 @@ jobs:
           languages: csharp
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: src/global.json
+
+      - name: Restore dependencies
+        run: dotnet restore src/tfplan2md.slnx
 
       - name: Build
         run: dotnet build src/tfplan2md.slnx --no-restore --configuration Release

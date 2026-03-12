@@ -63,7 +63,8 @@ class AzureSpecsParser(HTMLParser):
                     resource_type = resource_match.group(0)
                     
                     # Check if the href is a learn.microsoft.com link
-                    if 'learn.microsoft.com' in self.current_href and '/rest/api/' in self.current_href:
+                    parsed = urlparse(self.current_href)
+                    if parsed.hostname == 'learn.microsoft.com' and parsed.path.startswith('/rest/api/'):
                         # Ensure the URL doesn't have version parameters
                         clean_url = self.current_href.split('?')[0]
                         self.mappings[resource_type] = clean_url

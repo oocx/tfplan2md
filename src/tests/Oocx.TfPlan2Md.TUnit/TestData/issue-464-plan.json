@@ -351,7 +351,7 @@
                                             {
                                                 "fqdn": "acrhost-001.germanywestcentral.data.privatelink.azurecr.io",
                                                 "ip_addresses": [
-                                                    "10.96.225.5"
+                                                    "127.0.225.5"
                                                 ],
                                                 "name": "name-001",
                                                 "ttl": 10,
@@ -360,7 +360,7 @@
                                             {
                                                 "fqdn": "acrhost-001.privatelink.azurecr.io",
                                                 "ip_addresses": [
-                                                    "10.96.225.6"
+                                                    "127.0.225.6"
                                                 ],
                                                 "name": "name-002",
                                                 "ttl": 10,
@@ -384,7 +384,7 @@
                                         "name": "pe-006",
                                         "private_connection_resource_alias": "",
                                         "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.ContainerRegistry/registries/acr-001",
-                                        "private_ip_address": "10.96.225.5",
+                                        "private_ip_address": "127.0.225.5",
                                         "request_message": "",
                                         "subresource_names": [
                                             "registry"
@@ -472,7 +472,7 @@
                                             {
                                                 "fqdn": "kvhost-001.privatelink.vaultcore.azure.net",
                                                 "ip_addresses": [
-                                                    "10.96.225.4"
+                                                    "127.0.225.4"
                                                 ],
                                                 "name": "name-003",
                                                 "ttl": 10,
@@ -496,7 +496,7 @@
                                         "name": "pe-012",
                                         "private_connection_resource_alias": "",
                                         "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.KeyVault/vaults/kv-002",
-                                        "private_ip_address": "10.96.225.4",
+                                        "private_ip_address": "127.0.225.4",
                                         "request_message": "",
                                         "subresource_names": [
                                             "vault"
@@ -631,7 +631,7 @@
                                             {
                                                 "fqdn": "mystorageaccount.privatelink.blob.core.windows.net",
                                                 "ip_addresses": [
-                                                    "10.96.224.11"
+                                                    "127.0.224.11"
                                                 ],
                                                 "name": "name-006",
                                                 "ttl": 10,
@@ -655,7 +655,7 @@
                                         "name": "pe-018",
                                         "private_connection_resource_alias": "",
                                         "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-004/providers/Microsoft.Storage/storageAccounts/st-001",
-                                        "private_ip_address": "10.96.224.11",
+                                        "private_ip_address": "127.0.224.11",
                                         "request_message": "",
                                         "subresource_names": [
                                             "blob"
@@ -962,7 +962,7 @@
                                             {
                                                 "fqdn": "kvhost-002.privatelink.vaultcore.azure.net",
                                                 "ip_addresses": [
-                                                    "10.96.224.10"
+                                                    "127.0.224.10"
                                                 ],
                                                 "name": "name-007",
                                                 "ttl": 10,
@@ -986,7 +986,7 @@
                                         "name": "pe-022",
                                         "private_connection_resource_alias": "",
                                         "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-006/providers/Microsoft.KeyVault/vaults/kv-005",
-                                        "private_ip_address": "10.96.224.10",
+                                        "private_ip_address": "127.0.224.10",
                                         "request_message": "",
                                         "subresource_names": [
                                             "vault"
@@ -1098,7 +1098,7 @@
                                             {
                                                 "fqdn": "kvhost-003.privatelink.vaultcore.azure.net",
                                                 "ip_addresses": [
-                                                    "10.96.224.5"
+                                                    "127.0.224.5"
                                                 ],
                                                 "name": "name-008",
                                                 "ttl": 10,
@@ -1122,7 +1122,7 @@
                                         "name": "pe-026",
                                         "private_connection_resource_alias": "",
                                         "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-008/providers/Microsoft.KeyVault/vaults/kv-007",
-                                        "private_ip_address": "10.96.224.5",
+                                        "private_ip_address": "127.0.224.5",
                                         "request_message": "",
                                         "subresource_names": [
                                             "vault"
@@ -1718,7 +1718,7 @@
                                 {
                                     "fqdn": "acrhost-001.germanywestcentral.data.privatelink.azurecr.io",
                                     "ip_addresses": [
-                                        "10.96.225.5"
+                                        "127.0.225.5"
                                     ],
                                     "name": "name-001",
                                     "ttl": 10,
@@ -1727,7 +1727,7 @@
                                 {
                                     "fqdn": "acrhost-001.privatelink.azurecr.io",
                                     "ip_addresses": [
-                                        "10.96.225.6"
+                                        "127.0.225.6"
                                     ],
                                     "name": "name-002",
                                     "ttl": 10,
@@ -1751,7 +1751,7 @@
                             "name": "pe-006",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.ContainerRegistry/registries/acr-001",
-                            "private_ip_address": "10.96.225.5",
+                            "private_ip_address": "127.0.225.5",
                             "request_message": "",
                             "subresource_names": [
                                 "registry"
@@ -1784,7 +1784,7 @@
                                 {
                                     "fqdn": "acrhost-001.germanywestcentral.data.privatelink.azurecr.io",
                                     "ip_addresses": [
-                                        "10.96.225.5"
+                                        "127.0.225.5"
                                     ],
                                     "name": "name-001",
                                     "ttl": 10,
@@ -1793,7 +1793,7 @@
                                 {
                                     "fqdn": "acrhost-001.privatelink.azurecr.io",
                                     "ip_addresses": [
-                                        "10.96.225.6"
+                                        "127.0.225.6"
                                     ],
                                     "name": "name-002",
                                     "ttl": 10,
@@ -1817,7 +1817,7 @@
                             "name": "pe-006",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.ContainerRegistry/registries/acr-001",
-                            "private_ip_address": "10.96.225.5",
+                            "private_ip_address": "127.0.225.5",
                             "request_message": "",
                             "subresource_names": [
                                 "registry"
@@ -1944,7 +1944,7 @@
                                 {
                                     "fqdn": "kvhost-001.privatelink.vaultcore.azure.net",
                                     "ip_addresses": [
-                                        "10.96.225.4"
+                                        "127.0.225.4"
                                     ],
                                     "name": "name-003",
                                     "ttl": 10,
@@ -1968,7 +1968,7 @@
                             "name": "pe-012",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.KeyVault/vaults/kv-002",
-                            "private_ip_address": "10.96.225.4",
+                            "private_ip_address": "127.0.225.4",
                             "request_message": "",
                             "subresource_names": [
                                 "vault"
@@ -2001,7 +2001,7 @@
                                 {
                                     "fqdn": "kvhost-001.privatelink.vaultcore.azure.net",
                                     "ip_addresses": [
-                                        "10.96.225.4"
+                                        "127.0.225.4"
                                     ],
                                     "name": "name-003",
                                     "ttl": 10,
@@ -2025,7 +2025,7 @@
                             "name": "pe-012",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.KeyVault/vaults/kv-002",
-                            "private_ip_address": "10.96.225.4",
+                            "private_ip_address": "127.0.225.4",
                             "request_message": "",
                             "subresource_names": [
                                 "vault"
@@ -2235,7 +2235,7 @@
                                 {
                                     "fqdn": "mystorageaccount.privatelink.blob.core.windows.net",
                                     "ip_addresses": [
-                                        "10.96.224.11"
+                                        "127.0.224.11"
                                     ],
                                     "name": "name-006",
                                     "ttl": 10,
@@ -2259,7 +2259,7 @@
                             "name": "pe-018",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-004/providers/Microsoft.Storage/storageAccounts/st-001",
-                            "private_ip_address": "10.96.224.11",
+                            "private_ip_address": "127.0.224.11",
                             "request_message": "",
                             "subresource_names": [
                                 "blob"
@@ -2292,7 +2292,7 @@
                                 {
                                     "fqdn": "mystorageaccount.privatelink.blob.core.windows.net",
                                     "ip_addresses": [
-                                        "10.96.224.11"
+                                        "127.0.224.11"
                                     ],
                                     "name": "name-006",
                                     "ttl": 10,
@@ -2316,7 +2316,7 @@
                             "name": "pe-018",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-004/providers/Microsoft.Storage/storageAccounts/st-001",
-                            "private_ip_address": "10.96.224.11",
+                            "private_ip_address": "127.0.224.11",
                             "request_message": "",
                             "subresource_names": [
                                 "blob"
@@ -2874,7 +2874,7 @@
                                 {
                                     "fqdn": "kvhost-002.privatelink.vaultcore.azure.net",
                                     "ip_addresses": [
-                                        "10.96.224.10"
+                                        "127.0.224.10"
                                     ],
                                     "name": "name-007",
                                     "ttl": 10,
@@ -2898,7 +2898,7 @@
                             "name": "pe-022",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-006/providers/Microsoft.KeyVault/vaults/kv-005",
-                            "private_ip_address": "10.96.224.10",
+                            "private_ip_address": "127.0.224.10",
                             "request_message": "",
                             "subresource_names": [
                                 "vault"
@@ -2931,7 +2931,7 @@
                                 {
                                     "fqdn": "kvhost-002.privatelink.vaultcore.azure.net",
                                     "ip_addresses": [
-                                        "10.96.224.10"
+                                        "127.0.224.10"
                                     ],
                                     "name": "name-007",
                                     "ttl": 10,
@@ -2955,7 +2955,7 @@
                             "name": "pe-022",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-006/providers/Microsoft.KeyVault/vaults/kv-005",
-                            "private_ip_address": "10.96.224.10",
+                            "private_ip_address": "127.0.224.10",
                             "request_message": "",
                             "subresource_names": [
                                 "vault"
@@ -3127,7 +3127,7 @@
                                 {
                                     "fqdn": "kvhost-003.privatelink.vaultcore.azure.net",
                                     "ip_addresses": [
-                                        "10.96.224.5"
+                                        "127.0.224.5"
                                     ],
                                     "name": "name-008",
                                     "ttl": 10,
@@ -3151,7 +3151,7 @@
                             "name": "pe-026",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-008/providers/Microsoft.KeyVault/vaults/kv-007",
-                            "private_ip_address": "10.96.224.5",
+                            "private_ip_address": "127.0.224.5",
                             "request_message": "",
                             "subresource_names": [
                                 "vault"
@@ -3184,7 +3184,7 @@
                                 {
                                     "fqdn": "kvhost-003.privatelink.vaultcore.azure.net",
                                     "ip_addresses": [
-                                        "10.96.224.5"
+                                        "127.0.224.5"
                                     ],
                                     "name": "name-008",
                                     "ttl": 10,
@@ -3208,7 +3208,7 @@
                             "name": "pe-026",
                             "private_connection_resource_alias": "",
                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-008/providers/Microsoft.KeyVault/vaults/kv-007",
-                            "private_ip_address": "10.96.224.5",
+                            "private_ip_address": "127.0.224.5",
                             "request_message": "",
                             "subresource_names": [
                                 "vault"
@@ -3683,7 +3683,7 @@
                                                 {
                                                     "fqdn": "acrhost-001.germanywestcentral.data.privatelink.azurecr.io",
                                                     "ip_addresses": [
-                                                        "10.96.225.5"
+                                                        "127.0.225.5"
                                                     ],
                                                     "name": "name-001",
                                                     "ttl": 10,
@@ -3692,7 +3692,7 @@
                                                 {
                                                     "fqdn": "acrhost-001.privatelink.azurecr.io",
                                                     "ip_addresses": [
-                                                        "10.96.225.6"
+                                                        "127.0.225.6"
                                                     ],
                                                     "name": "name-002",
                                                     "ttl": 10,
@@ -3716,7 +3716,7 @@
                                             "name": "pe-006",
                                             "private_connection_resource_alias": "",
                                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.ContainerRegistry/registries/acr-001",
-                                            "private_ip_address": "10.96.225.5",
+                                            "private_ip_address": "127.0.225.5",
                                             "request_message": "",
                                             "subresource_names": [
                                                 "registry"
@@ -3833,7 +3833,7 @@
                                                 {
                                                     "fqdn": "kvhost-001.privatelink.vaultcore.azure.net",
                                                     "ip_addresses": [
-                                                        "10.96.225.4"
+                                                        "127.0.225.4"
                                                     ],
                                                     "name": "name-003",
                                                     "ttl": 10,
@@ -3857,7 +3857,7 @@
                                             "name": "pe-012",
                                             "private_connection_resource_alias": "",
                                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-001/providers/Microsoft.KeyVault/vaults/kv-002",
-                                            "private_ip_address": "10.96.225.4",
+                                            "private_ip_address": "127.0.225.4",
                                             "request_message": "",
                                             "subresource_names": [
                                                 "vault"
@@ -4118,7 +4118,7 @@
                                                 {
                                                     "fqdn": "mystorageaccount.privatelink.blob.core.windows.net",
                                                     "ip_addresses": [
-                                                        "10.96.224.11"
+                                                        "127.0.224.11"
                                                     ],
                                                     "name": "name-006",
                                                     "ttl": 10,
@@ -4142,7 +4142,7 @@
                                             "name": "pe-018",
                                             "private_connection_resource_alias": "",
                                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-004/providers/Microsoft.Storage/storageAccounts/st-001",
-                                            "private_ip_address": "10.96.224.11",
+                                            "private_ip_address": "127.0.224.11",
                                             "request_message": "",
                                             "subresource_names": [
                                                 "blob"
@@ -4462,7 +4462,7 @@
                                                 {
                                                     "fqdn": "kvhost-002.privatelink.vaultcore.azure.net",
                                                     "ip_addresses": [
-                                                        "10.96.224.10"
+                                                        "127.0.224.10"
                                                     ],
                                                     "name": "name-007",
                                                     "ttl": 10,
@@ -4486,7 +4486,7 @@
                                             "name": "pe-022",
                                             "private_connection_resource_alias": "",
                                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-006/providers/Microsoft.KeyVault/vaults/kv-005",
-                                            "private_ip_address": "10.96.224.10",
+                                            "private_ip_address": "127.0.224.10",
                                             "request_message": "",
                                             "subresource_names": [
                                                 "vault"
@@ -4632,7 +4632,7 @@
                                                 {
                                                     "fqdn": "kvhost-003.privatelink.vaultcore.azure.net",
                                                     "ip_addresses": [
-                                                        "10.96.224.5"
+                                                        "127.0.224.5"
                                                     ],
                                                     "name": "name-008",
                                                     "ttl": 10,
@@ -4656,7 +4656,7 @@
                                             "name": "pe-026",
                                             "private_connection_resource_alias": "",
                                             "private_connection_resource_id": "/subscriptions/guid-004/resourceGroups/rg-008/providers/Microsoft.KeyVault/vaults/kv-007",
-                                            "private_ip_address": "10.96.224.5",
+                                            "private_ip_address": "127.0.224.5",
                                             "request_message": "",
                                             "subresource_names": [
                                                 "vault"

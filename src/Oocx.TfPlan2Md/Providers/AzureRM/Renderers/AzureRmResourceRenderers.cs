@@ -37,7 +37,7 @@ internal abstract class AzureRmDelegatingRenderer(string resourceType) : IResour
     /// <param name="writer">Markdown writer.</param>
     /// <param name="change">The resource change model providing summary and finding data.</param>
     /// <param name="context">The render context providing display mode settings.</param>
-    protected static void WriteDetailsOpen(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
+    internal static void WriteDetailsOpen(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
     {
         var detailsTag = context.DetailsDisplayMode switch
         {
@@ -213,6 +213,13 @@ internal sealed class NsgRenderer : AzureRmDelegatingRenderer
         if (change.ResourceChange is null)
         {
             base.Render(writer, change, context);
+            return;
+        }
+
+        var mergedSecurityRules = NsgMergedSecurityRulesRenderer.GetMergedSecurityRulesGroup(change);
+        if (mergedSecurityRules is not null)
+        {
+            NsgMergedSecurityRulesRenderer.Render(writer, change, context, mergedSecurityRules);
             return;
         }
 

@@ -68,3 +68,22 @@
 
 **Problems Encountered:**
 - None; all changes were straightforward. Rework items were minor version corrections and a missing build-prep step, both resolved promptly after the code review feedback.
+
+### Technical Writer — 2025-07-10
+
+**Summary:** Reviewed all user-facing and developer documentation for impact from the CI-only security fixes. The changes (Docker action version bumps, hardcoded `DOCKERHUB_USERNAME`, new CodeQL workflow) have no user-facing behavioral impact. However, the new `codeql.yml` workflow was not reflected in the CI/CD workflow tables, which are documented in two places. Both were updated to add the CodeQL entry.
+
+**Artifacts Produced:**
+- `README.md` — Added **CodeQL** row to the CI/CD workflows table (line ~768)
+- `docs/spec.md` — Added **CodeQL** row to the GitHub Actions Workflows table (line ~76)
+
+**Documentation Assessment:**
+- `README.md`: Updated (CodeQL workflow added to CI/CD table)
+- `docs/spec.md`: Updated (CodeQL workflow added to workflows table)
+- `docs/features.md`: No change needed (CI infrastructure, not a user-facing feature)
+- `docs/architecture.md`: No change needed (no architectural changes)
+- `docs/testing-strategy.md`: No change needed (no new test patterns)
+- `CONTRIBUTING.md`: No change needed (existing CI description remains accurate)
+
+**Problems Encountered:**
+- None; the scope was clear from the Developer's work log. All required updates were localized to the two workflow tables.

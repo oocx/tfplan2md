@@ -48,3 +48,23 @@
 
 **Problems Encountered:**
 - Developer and Technical Writer agents still have not logged work in `work-protocol.md`
+
+### Developer — 2025-07-10
+
+**Summary:** Implemented all security fixes identified by the Issue Analyst. Updated two GitHub Actions Docker workflow actions to their latest versions, replaced the `DOCKERHUB_USERNAME` secret reference with the hardcoded value `oocx` (5 occurrences), and created a new CodeQL security scanning workflow. Subsequently fixed defects raised during code review: updated `actions/checkout` to `@v6`, `actions/setup-dotnet` to `@v5`, and added a missing `dotnet restore` step to the CodeQL workflow.
+
+**Artifacts Produced:**
+- `.github/workflows/release.yml` — Updated `docker/login-action` v3 → v4, `docker/build-push-action` v6 → v7, replaced 5 occurrences of `${{ secrets.DOCKERHUB_USERNAME }}` with the literal value `oocx`
+- `.github/workflows/codeql.yml` — New workflow for CodeQL security scanning on push/PR to main and on a weekly schedule; includes `dotnet restore` and `dotnet build` steps; uses `actions/checkout@v6`, `actions/setup-dotnet@v5`, and `github/codeql-action` at current versions
+
+**Tasks Completed:**
+1. Bumped `docker/login-action` from v3 to v4 in `release.yml`
+2. Bumped `docker/build-push-action` from v6 to v7 in `release.yml`
+3. Hardcoded `DOCKERHUB_USERNAME` as `oocx` across all 5 secret references in `release.yml`
+4. Created `.github/workflows/codeql.yml` for CodeQL static analysis
+5. (Rework) Updated `actions/checkout@v4` → `@v6` in `codeql.yml` per code review
+6. (Rework) Updated `actions/setup-dotnet@v4` → `@v5` in `codeql.yml` per code review
+7. (Rework) Added `dotnet restore` step before `dotnet build` in `codeql.yml` per code review
+
+**Problems Encountered:**
+- None; all changes were straightforward. Rework items were minor version corrections and a missing build-prep step, both resolved promptly after the code review feedback.

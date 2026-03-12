@@ -587,7 +587,7 @@ contains:[{begin:/\(\)/},f]
 match:[/const|var|let/,/\s+/,t,/\s*/,/=\s*/,/(async\s*)?/,n.lookahead(x)],
 keywords:"async",className:{1:"keyword",3:"title.function"},contains:[f]}
 ;return{name:"JavaScript",aliases:["js","jsx","mjs","cjs"],keywords:i,exports:{
-PARAMS_CONTAINS:h,CLASS_REFERENCE:y},illegal:/#(?![$_A-z])/,
+PARAMS_CONTAINS:h,CLASS_REFERENCE:y},illegal:/#(?![$_A-Za-z])/,
 contains:[e.SHEBANG({label:"shebang",binary:"node",relevance:5}),{
 label:"use_strict",className:"meta",relevance:10,
 begin:/^\s*['"]use (strict|asm)['"]/
@@ -1378,9 +1378,9 @@ className:"string",endsParent:!0,variants:[{begin:/"/,end:/"/,contains:[a]},{
 begin:/'/,end:/'/,contains:[a]},{begin:/[^\s"'=<>`]+/}]}]}]};return{
 name:"HTML, XML",
 aliases:["html","xhtml","rss","atom","xjb","xsd","xsl","plist","wsf","svg"],
-case_insensitive:!0,unicodeRegex:!0,contains:[{className:"meta",begin:/<![a-z]/,
+case_insensitive:!0,unicodeRegex:!0,contains:[{className:"meta",begin:/<![a-zA-Z]/,
 end:/>/,relevance:10,contains:[i,o,s,r,{begin:/\[/,end:/\]/,contains:[{
-className:"meta",begin:/<![a-z]/,end:/>/,contains:[i,r,o,s]}]}]
+className:"meta",begin:/<![a-zA-Z]/,end:/>/,contains:[i,r,o,s]}]}]
 },e.COMMENT(/<!--/,/-->/,{relevance:10}),{begin:/<!\[CDATA\[/,end:/\]\]>/,
 relevance:10},a,{className:"meta",end:/\?>/,variants:[{begin:/<\?xml/,
 relevance:10,contains:[o]},{begin:/<\?[a-z][a-z0-9]+/}]},{className:"tag",

@@ -62,6 +62,8 @@ website/dist/
 website2/dist/
 .aider*
 artifacts/*.github.html
+artifacts/*.github-*.html
 artifacts/*.azdo.html
+artifacts/*.azdo-*.html
 artifacts/uat-minimal.md
 artifacts/uat-simulation-*.md

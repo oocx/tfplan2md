@@ -78,6 +78,7 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 | PR Validation | `pr-validation.yml` | Pull requests to `main` | Format check, build, test, markdown lint, vulnerability scan |
 | CI | `ci.yml` | Push to `main` | Run Versionize to bump version and create tag **only when Docker-relevant files changed** (tests run in PR Validation) |
 | Release | `release.yml` | Version tags (`v*`) | Create GitHub Release with cumulative changelog, build and push Docker image |
+| CodeQL | `codeql.yml` | Push/PR to `main`, weekly schedule | Static analysis security scanning (C# source code) |
 
 **Test Optimization:** Tests only run in PR Validation workflow to eliminate redundancy. CI workflow focuses solely on versioning after merge, significantly reducing CI time. All quality gates (format, build, test, lint, vulnerability scan) must pass in PR validation before merge.
 

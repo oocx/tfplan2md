@@ -5,6 +5,88 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.37.2"></a>
+## [1.37.2](https://github.com/oocx/tfplan2md/compare/v1.37.1...v1.37.2) (2026-03-12)
+
+### 🐛 Bug Fixes
+
+* add permissions: contents: read to uat-validate and copilot-setup-steps workflows ([1786076](https://github.com/oocx/tfplan2md/commit/1786076db12bcd2302f0b5816be85b6fd1b36b7a))
+* apply all CodeQL security fixes from GitHub Security tab ([093de62](https://github.com/oocx/tfplan2md/commit/093de6221329e9781a9fef48c3e7261ecc80fa28))
+* correct codeql workflow - add dotnet restore, update action versions ([a82a8c4](https://github.com/oocx/tfplan2md/commit/a82a8c43d0fa8f3da176fc3cbb83a53e69ac89d5))
+* patch embedded highlight.js regex - fix A-z range and html tag filter (CodeQL A/C) ([771f0ee](https://github.com/oocx/tfplan2md/commit/771f0ee5522676cb63b5b58c4d3578a787cbeb6c))
+* remove duplicate codeql.yml - GitHub already runs managed CodeQL scanning ([dc02a63](https://github.com/oocx/tfplan2md/commit/dc02a63923b6518a10f4f997b5554479f1ab299b))
+* remove re-tracked artifact html files and inline CDN deps in example (remaining alerts) ([a485bec](https://github.com/oocx/tfplan2md/commit/a485bec0967aedf82cff9cb6e6d69c50be05c997))
+* untrack artifact html files that were committed before .gitignore entries were added ([8d709bc](https://github.com/oocx/tfplan2md/commit/8d709bc59bc34a65c0a83090d8009083b3721be6))
+* update docker actions versions, hardcode dockerhub username, add codeql workflow ([db49de8](https://github.com/oocx/tfplan2md/commit/db49de8908b28c3cd30ce215b8fab4766f5e6d73))
+* use urlparse hostname check to prevent URL substring sanitization bypass ([402ca73](https://github.com/oocx/tfplan2md/commit/402ca73fe96340e1a4200d5fafe083eebfd165a2))
+
+### 📚 Documentation
+
+* add code review for security fixes ([80c27af](https://github.com/oocx/tfplan2md/commit/80c27af86186105c0e7dc735f1d2413664a9a2d1))
+* add developer work log entry to work protocol ([92eba68](https://github.com/oocx/tfplan2md/commit/92eba682abe31d8eaef80a690da0309e0ee448b7))
+* add github security tab analysis ([b147cf2](https://github.com/oocx/tfplan2md/commit/b147cf20b3961aa00040451f17afb25e4558e176))
+* add release-notes.md for fix-security-issues to pass PR validation ([0da5adb](https://github.com/oocx/tfplan2md/commit/0da5adb70d0df1d1345b5b2163f9ed022e9dc891))
+* add security issue analysis for fix-security-issues ([07c54f9](https://github.com/oocx/tfplan2md/commit/07c54f9e10872ca89cdbcbf6e27392cb9b0213a1))
+* detailed analysis of all 30 codeql security issues ([64d7aa9](https://github.com/oocx/tfplan2md/commit/64d7aa9cbbd908624d47e0638fdc6f3ae47f8447))
+* technical writer review - add CodeQL workflow to CI/CD tables ([f58b9bd](https://github.com/oocx/tfplan2md/commit/f58b9bd28686582eca2770e591eaf2c607854ae6))
+* update code review - codeql.yml technical fixes approved, process blockers remain ([417ba4c](https://github.com/oocx/tfplan2md/commit/417ba4c771aa3ccdd7c3390a00511f7061d97d66))
+
+<a name="1.37.1"></a>
+## [1.37.1](https://github.com/oocx/tfplan2md/compare/v1.37.0...v1.37.1) (2026-03-12)
+
+### 🐛 Bug Fixes
+
+* nsg rule rendering ([7e09012](https://github.com/oocx/tfplan2md/commit/7e09012e703d7f0994c10cf525b857ebd2cd565f))
+
+<a name="1.37.0"></a>
+## [1.37.0](https://github.com/oocx/tfplan2md/compare/v1.36.0...v1.37.0) (2026-03-11)
+
+### ✨ Features
+
+* Enhance code highlighting and add YAML support in code tabs ([84c2180](https://github.com/oocx/tfplan2md/commit/84c2180ed98b026c8c15c1567e3fc533bcdcd60a))
+
+### 🐛 Bug Fixes
+
+* **website:** minor layout fixes ([750b7b1](https://github.com/oocx/tfplan2md/commit/750b7b19753194da7101cbe4c8e47380ed56053d))
+
+### ♻️ Refactoring
+
+* AzDO mapper base class and formatter helper (Tasks 3-5) ([60ad64d](https://github.com/oocx/tfplan2md/commit/60ad64dd8e6b89b8e01c99067b156f14005ed409))
+* completed refactoring, now 1:1 parity with previous website ([1e88b29](https://github.com/oocx/tfplan2md/commit/1e88b29e1052ebcc95f9750b49198698510094f9))
+* continue website refactoring ([30dde46](https://github.com/oocx/tfplan2md/commit/30dde46e791909342981aa317cb7b03fe1b8de6c))
+* continue website refactoring ([5669bf8](https://github.com/oocx/tfplan2md/commit/5669bf8e1a7f53d6ed60e126f99419372bba9703))
+* convert ServiceResolutionContext to positional record ([e28ec29](https://github.com/oocx/tfplan2md/commit/e28ec29cb5ea097f1a23a613913511bca7369c70))
+* extract duplicate helpers to shared utilities ([4ede8de](https://github.com/oocx/tfplan2md/commit/4ede8de5e1678d3b400c9a6d7be927592828beeb))
+* fix code review issues - remove unused principalMapper param, fix naming, add comment ([5ed6f85](https://github.com/oocx/tfplan2md/commit/5ed6f852582c3bdb133c893f6995c216b3549fb7))
+* fix pre-existing build errors from Tasks 1-16 and implement Tasks 17-22 ([872f894](https://github.com/oocx/tfplan2md/commit/872f894b2c2e3835022f8d3c788d595a583c2506))
+* fix two minor code review findings ([b0eca92](https://github.com/oocx/tfplan2md/commit/b0eca92fced2cc7cf2ecf70d9cc27586cf1c4962))
+* implement code review suggestions ([54c7f54](https://github.com/oocx/tfplan2md/commit/54c7f54bf4b1224008f42b9e55ac5cd1b991e73b))
+* introduce ApplyViewModelContext record (Tasks 1-2) ([5592b89](https://github.com/oocx/tfplan2md/commit/5592b89180e86d539c3020c475c1f6a0439794df))
+* introduce ReportModelBuilder option/service records and reduce Render method complexity ([a8c9536](https://github.com/oocx/tfplan2md/commit/a8c95363c3efd7e0ebecc10fb01ae2e3cfbeaf75))
+* Part 3 — modern C# language features and implementation consistency fixes ([f3176c8](https://github.com/oocx/tfplan2md/commit/f3176c8d057946c7d418d328bb7b79ec20acda30))
+* remove BuildDefinitionRenderer, vestigial factories, add TryGetFactory, remove unused registry params (Tasks 6-9) ([f802abf](https://github.com/oocx/tfplan2md/commit/f802abf4a9f22a06c5ccaf1e2b329fd4c32ef0a6))
+* remove unused useWideSeparators parameter and isNoOpParentChildScenario variable from ReportRenderer ([2ba6f98](https://github.com/oocx/tfplan2md/commit/2ba6f98fe75cec7fc5e43c057e92597094418d95))
+* rename DiffFormatterStringExtensions to MarkdownStringExtensions ([e9663ba](https://github.com/oocx/tfplan2md/commit/e9663baaa9c8a1c77646f933d9d5a673c66380c7))
+* update acceptance criteria to reflect completed tasks in code simplification ([b5b8b14](https://github.com/oocx/tfplan2md/commit/b5b8b14cdf0fc4a96880b364f6440610e4631ba9))
+* use explicit-type collection expressions (string[], ChildTableColumn[]) instead of cast syntax ([61d361e](https://github.com/oocx/tfplan2md/commit/61d361e939f329c653f17626be7fa9b6c15d6c07))
+* **website:** add static site generator ([829dad9](https://github.com/oocx/tfplan2md/commit/829dad9ca544bf9a939477353f0298494ad2429f))
+* **website:** replace website with new version ([e4d0492](https://github.com/oocx/tfplan2md/commit/e4d0492be4e3f22dc86d1610e0c8b95691b9079c))
+
+### 📚 Documentation
+
+* add architecture for feature 111 code simplification ([7ac8a16](https://github.com/oocx/tfplan2md/commit/7ac8a162758c2aa7ea81e73984bedf990baf36ed))
+* add detailed code quality findings report ([a609b6a](https://github.com/oocx/tfplan2md/commit/a609b6ac35cc2b883e2252770f83a0cd062e2e7e))
+* add Feature 111 entry to features.md and technical writer work protocol ([7cba5a7](https://github.com/oocx/tfplan2md/commit/7cba5a778a0cf2f885ed4e1b7d3836acc6df58a8))
+* add feature specification for 111-code-simplification ([f68d6b9](https://github.com/oocx/tfplan2md/commit/f68d6b9af31c73ed6c9d3fb06c1a8b048d5666ac))
+* add release notes and release manager entry for Feature 111 code simplification ([dbb43f9](https://github.com/oocx/tfplan2md/commit/dbb43f94f202017b97039640a6f3d10abb47331a))
+* add task breakdown for feature 111 code simplification ([5dee0ea](https://github.com/oocx/tfplan2md/commit/5dee0ea854034cd385715c65936538dc8b605824))
+* add test plan and quality engineer/task planner work protocol entries for Feature 111 ([0a0b83d](https://github.com/oocx/tfplan2md/commit/0a0b83d712e5af16b57e36d1e764525c79612be5))
+* clarify copilot PR branch exception ([01dbf2b](https://github.com/oocx/tfplan2md/commit/01dbf2b8964a4038a1dc8020e0608107edfd109e))
+* log developer entry 12 in work-protocol ([dc7ae6e](https://github.com/oocx/tfplan2md/commit/dc7ae6e470c4825b7b713180380df6e212c7e3a8))
+* second code review pass - approve Feature 111 code simplification ([6425060](https://github.com/oocx/tfplan2md/commit/6425060d2cb823bbcac2aeee0f22f823b934226f))
+* update code review for feature 111 code simplification ([113afce](https://github.com/oocx/tfplan2md/commit/113afceff16d4a2a3e58120d4e0766b4d62a0fd0))
+* update code review for feature 111 code simplification ([58ac4b3](https://github.com/oocx/tfplan2md/commit/58ac4b300be84229c61a6c6375c643f8453ec420))
+
 <a name="1.36.0"></a>
 ## [1.36.0](https://github.com/oocx/tfplan2md/compare/v1.35.0...v1.36.0) (2026-03-07)
 

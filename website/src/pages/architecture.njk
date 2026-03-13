@@ -1,0 +1,142 @@
+---
+layout: layouts/base.njk
+title: "Architecture - tfplan2md"
+description: "Technical architecture based on arc42 documentation standard. Clean separation, extensible design, security-first."
+permalink: /architecture.html
+rootPrefix: ""
+navKey: "architecture"
+pageId: "architecture"
+---
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock %}
+
+{{ heroBlock("Architecture", "Technical architecture based on arc42 documentation standard. Clean separation, extensible design, security-first.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
+
+<section class="section section-no-top-padding">
+  <div class="section-container">
+    <h2 class="section-title">System Overview</h2>
+    <p class="section-description">
+      tfplan2md converts Terraform plan JSON into Markdown reports optimized for pull request reviews.
+    </p>
+
+    <div class="arch-diagram">
+      <div class="arch-flow">
+        {% for step in architecturePage.flowSteps %}
+        <div class="arch-step">
+          <div class="arch-step-icon">{{ step.icon }}</div>
+          <h3 class="arch-step-title">{{ step.title }}</h3>
+          <p class="arch-step-desc">{{ step.description }}</p>
+          {% if step.command %}<code class="arch-step-cmd">{{ step.command }}</code>{% endif %}
+        </div>
+        {% if not loop.last %}<div class="arch-arrow">→</div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    <h2 class="section-title">Quality Goals</h2>
+    <div class="quality-grid">
+      {% for goal in architecturePage.qualityGoals %}
+      <div class="quality-card {{ goal.className }}">
+        <div class="quality-priority">{{ goal.priority }}</div>
+        <h3 class="quality-title">{{ goal.title }}</h3>
+        <p class="quality-desc">{{ goal.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    <h2 class="section-title">Core Components</h2>
+    <p class="section-description">
+      Clean separation of concerns with immutable data models and pure transformation functions.
+    </p>
+
+    <div class="component-grid">
+      {% for component in architecturePage.coreComponents %}
+      <div class="component-card">
+        <div class="component-icon">{{ component.icon }}</div>
+        <h3 class="component-title">{{ component.title }}</h3>
+        <p class="component-desc">{{ component.description }}</p>
+        <div class="component-files">
+          {% for file in component.files %}
+          <code>{{ file }}</code>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    <h2 class="section-title">Technology Stack</h2>
+
+    <div class="tech-table">
+      {% for item in architecturePage.technologyStack %}
+      <div class="tech-row">
+        <div class="tech-component">{{ item.component }}</div>
+        <div class="tech-name">{{ item.name }}</div>
+        <div class="tech-purpose">{{ item.purpose }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    <h2 class="section-title">Architectural Patterns</h2>
+
+    <div class="pattern-grid">
+      {% for pattern in architecturePage.patterns %}
+      <div class="pattern-card">
+        <h3 class="pattern-title">{{ pattern.title }}</h3>
+        <p class="pattern-desc">{{ pattern.description }}</p>
+        <div class="pattern-benefit">{{ pattern.benefit }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    <h2 class="section-title">Architecture Decision Records</h2>
+    <p class="section-description">
+      Key technical decisions and architectural patterns that shape tfplan2md. These guide consistent implementation across features.
+    </p>
+
+    <div class="arch-pattern-grid">
+      {% for decision in architecturePage.decisions %}
+      <div class="arch-pattern-card">
+        <h3 class="arch-pattern-title">{{ decision.title }}</h3>
+        <p class="arch-pattern-desc">{{ decision.description | safe }}</p>
+        <div class="arch-pattern-impl"><strong>{{ decision.detailLabel }}:</strong> {{ decision.detail | safe }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-container">
+    <div class="cta-box">
+      <h2 class="cta-title">Complete Architecture Documentation</h2>
+      <p class="cta-description">
+        This page provides a high-level overview. For complete details including building block views, runtime scenarios, deployment architecture, and design decisions, see the full arc42 documentation.
+      </p>
+      <div class="cta-actions">
+        {% for cta in architecturePage.ctas %}
+        <a href="{{ cta.href }}" class="btn btn-{{ cta.variant }}"{% if cta.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ cta.label }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>

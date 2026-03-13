@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="tfplan2md favicon">
+  <rect width="128" height="128" rx="18" fill="#ffffff"/>
+  <path fill="#844fba" fill-rule="evenodd" clip-rule="evenodd" d="M20 18C15.582 18 12 21.582 12 26V102C12 106.418 15.582 110 20 110H108C112.418 110 116 106.418 116 102V26C116 21.582 112.418 18 108 18H20ZM0 26C0 14.954 8.954 6 20 6H108C119.046 6 128 14.954 128 26V102C128 113.046 119.046 122 108 122H20C8.954 122 0 113.046 0 102V26Z"/>
+  <path fill="#844fba" d="M28 92V34H44L60 54L76 34H92V92H76V61L60 80L44 61V92H28Z"/>
+  <path fill="#844fba" d="M100 92L76 66H92V34H108V66H124Z"/>
+</svg>

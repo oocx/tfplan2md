@@ -1,0 +1,43 @@
+---
+layout: layouts/base.njk
+title: "Azure DevOps Provider - tfplan2md"
+description: "Structured support for Azure DevOps variable groups and build definitions with secret protection and mapping support."
+permalink: /providers/azuredevops.html
+rootPrefix: "../"
+navKey: "providers"
+pageId: "providers/azuredevops"
+---
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail %}
+
+{{ heroBlock("Azure DevOps Provider", "Structured support for Azure DevOps variable groups and build definitions with secret protection and mapping support.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "Implemented", "Support for the Azure DevOps provider includes specialized rendering for variable groups and build definitions, plus Azure DevOps-aware mapping for users, groups, projects, and repositories.") %}
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Implemented Resources</h3>
+        <ul class="highlights-list">
+          <li><strong>Variable Groups</strong> (<code>azuredevops_variable_group</code>): Variable-level semantic diffing with secret value protection, Key Vault integration display, and unified regular/secret variable tables. See the <a href="../features/azdo-variable-groups.html" style="color: var(--color-primary); font-weight: 600;">Variable Groups feature page</a> for details.</li>
+          <li><strong>Build Definitions</strong> (<code>azuredevops_build_definition</code>): Structured tables for variables, triggers, repositories, schedules, and outputs. See the <a href="../features/build-definitions.html" style="color: var(--color-primary); font-weight: 600;">Build Definitions feature page</a> for details.</li>
+        </ul>
+      </div>
+
+      <div class="feature-highlights" style="margin-top: 32px;">
+        <h3 class="highlights-title">Mapping and Display Enhancements</h3>
+        <ul class="highlights-list">
+          <li><strong>Principal Mapping:</strong> Azure DevOps users, groups, and projects resolve to display names via <code>--principal-mapping</code></li>
+          <li><strong>Repository Mapping:</strong> Repository IDs render with mapped names and the 🗃️ icon</li>
+          <li><strong>Branch and Ref Icons:</strong> Branch-like attributes render with the ⎇ icon for quick scanning</li>
+        </ul>
+      </div>
+
+      <div class="feature-highlights" style="margin-top: 32px;">
+        <h3 class="highlights-title">Notes</h3>
+        <p class="feature-detail-description">
+          Azure Pipelines users can also consume the <code>tfplan2md_haschanges</code> pipeline variable when generating reports with <code>--output</code>, which makes conditional follow-up steps straightforward.
+        </p>
+      </div>
+    {% endcall %}
+  </div>
+</section>

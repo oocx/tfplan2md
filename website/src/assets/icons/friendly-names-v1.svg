@@ -1,0 +1,8 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Label with readable name - more padding -->
+  <rect x="6" y="16" width="36" height="16" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <!-- ABC letters with padding from edges -->
+  <text x="19" y="27" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#646cff" text-anchor="middle">ABC</text>
+  <!-- Checkmark with clear spacing -->
+  <path d="M32 23L34 25L38 21" stroke="#43a047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

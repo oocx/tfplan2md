@@ -1,0 +1,18 @@
+{
+  "name": "tfplan2md-website",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Eleventy-based replacement website for tfplan2md",
+  "scripts": {
+    "build": "eleventy --config=.eleventy.js",
+    "clean": "rm -rf dist",
+    "serve": "eleventy --serve --config=.eleventy.js",
+    "start": "eleventy --serve --config=.eleventy.js"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "cheerio": "^1.1.2",
+    "highlight.js": "^11.9.0",
+    "markdown-it": "^14.1.1"
+  }
+}

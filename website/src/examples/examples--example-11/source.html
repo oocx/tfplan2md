@@ -1,0 +1,18 @@
+<pre><code>&lt;summary&gt;➕ azuread_group &lt;b&gt;&lt;code&gt;platform_engineers&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;👥 Platform Engineers&lt;/code&gt; (&lt;code&gt;🆔 platform-engineers&lt;/code&gt;) | &lt;code&gt;3 👤 1 👥 1 💻&lt;/code&gt; | ➕ 5 members&lt;/summary&gt;
+
+#### Members
+
+| Change | Member | Terraform Resource |
+| ------ | ------ | ------------------ |
+| ➕ | `user-100` | `members attribute` |
+| ➕ | `group-200` | `members attribute` |
+| ➕ | `spn-300` | `members attribute` |
+
+&lt;summary&gt;➕ azurerm_virtual_network &lt;b&gt;&lt;code&gt;spoke&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 vnet-spoke&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt; &lt;code&gt;🌐 10.1.0.0/16&lt;/code&gt; | ➕ 1 subnets | ♻️ 1 subnets&lt;/summary&gt;
+
+#### Subnets
+
+| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource |
+| ------ | ---- | ---------------- | --- | ---------- | ------------------ |
+| ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - | `module.network.azurerm_subnet.app` |
+| ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - | `module.network.azurerm_subnet.db` |</code></pre>

@@ -1,0 +1,42 @@
+---
+layout: layouts/base.njk
+title: "Azure DevOps Build Definitions - tfplan2md"
+description: "Build definitions render as structured tables for variables, triggers, repositories, schedules, jobs, and outputs."
+permalink: /features/build-definitions.html
+rootPrefix: "../"
+navKey: "features"
+pageId: "features/build-definitions"
+---
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, relatedDocs %}
+
+{{ heroBlock("Azure DevOps Build Definitions", "Build definitions render as structured tables for variables, triggers, repositories, schedules, jobs, and outputs.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "azuredevops", "Terraform often marks build definition nested blocks as sensitive, which makes raw plans nearly impossible to review. tfplan2md turns those blocks into structured tables while preserving secret masking.") %}
+      {% exampleBlock "examples--example-9" %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Included Tables</h3>
+        <ul class="highlights-list">
+          <li>Variables, including secret flags and allow-override state</li>
+          <li>CI and pull request trigger settings</li>
+          <li>Repository type, mapped repository name, branch, and YAML path</li>
+          <li>Terraform outputs produced by the Azure DevOps example plan</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "Build definitions work especially well with Azure DevOps principal and repository mapping, so GUID-heavy plans become readable immediately.") %}
+      {{ relatedDocs("Related Documentation", [
+        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#azure-devops-build-definitions", "label": "Azure DevOps Build Definitions", "external": true},
+        {"href": "../providers/azuredevops.html", "label": "Azure DevOps Provider"}
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

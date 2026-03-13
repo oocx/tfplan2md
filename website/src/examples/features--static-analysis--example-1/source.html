@@ -1,0 +1,22 @@
+<pre><code>&lt;details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_storage_account &lt;b&gt;&lt;code&gt;logs&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 sttfplan2mdlogs&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+🔒 &lt;strong&gt;Security &amp; Quality:&lt;/strong&gt; ⚠️ 1 High, ⚠️ 1 Medium
+
+| Severity | Rule | Tool | Message | Attribute |
+| -------- | ---- | ---- | ------- | --------- |
+| ⚠️ High | `CKV_AZURE_33` | Checkov | Ensure Storage logging is enabled for Queue service for read, write and delete requests | `queue_properties` |
+| ⚠️ Medium | `CKV2_AZURE_38` | Checkov | Ensure soft-delete is enabled on Azure storage account | `blob_properties.delete_retention_policy` |
+
+| Attribute | Value |
+| ----------- | ------- |
+| account_replication_type | `LRS` |
+| account_tier | `Standard` |
+| location | `🌍 eastus` |
+| name | `🆔 sttfplan2mdlogs` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: production` `managed-by: terraform`
+
+&lt;/details&gt;</code></pre>

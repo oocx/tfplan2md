@@ -1,0 +1,19 @@
+<pre><code>### 🔄 azurerm_api_management_policy.global
+
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| xml_content | *(see below)* | *(see below)* |
+
+Large values: xml_content (112 lines, 57 changed)
+
+##### **xml_content:**
+
+&lt;pre&gt;&lt;code&gt;&lt;policies&gt;
+  &lt;inbound&gt;
+&lt;span style="background-color: #fff5f5; ..."&gt;-     &lt;!-- Rate limiting policy --&gt;&lt;/span&gt;
+&lt;span style="background-color: #fff5f5; ..."&gt;-     &lt;rate-limit calls="100" renewal-period="60" /&gt;&lt;/span&gt;
+&lt;span style="background-color: #f0fff4; ..."&gt;+     &lt;!-- &lt;span style="..."&gt;Rate limiting policy with increased limits&lt;/span&gt; --&gt;&lt;/span&gt;
+&lt;span style="background-color: #f0fff4; ..."&gt;+     &lt;rate-limit calls="200" renewal-period="60" /&gt;&lt;/span&gt;
+    ...
+&lt;/policies&gt;
+&lt;/code&gt;&lt;/pre&gt;</code></pre>

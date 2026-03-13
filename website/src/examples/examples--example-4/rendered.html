@@ -1,0 +1,58 @@
+<details open="" style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔&nbsp;demo-network-rules</code> in <code>📁&nbsp;rg-firewall-demo</code> | 9🔧 priority, rule[0].destination_addresses[0], rule[0].destination_ports[0], +6 more</summary>
+<br>
+<h3>🔄 azurerm_firewall_network_rule_collection.network_rules</h3>
+<p><strong>Collection:</strong> <code>demo-network-rules</code> | <strong>Priority:</strong> <code>150</code> | <strong>Action:</strong> <code>✅&nbsp;Allow</code></p>
+<h4>Rule Changes</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>allow-dns</code></td>
+<td><code>🔗&nbsp;TCP</code>, <code>📨&nbsp;UDP</code></td>
+<td><code>🌐&nbsp;10.1.0.0/24</code></td>
+<td><code>🌐&nbsp;168.63.129.16</code></td>
+<td><code>🔌&nbsp;53</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>allow-http</code></td>
+<td>🔗&nbsp;TCP</td>
+<td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- 🌐&nbsp;10.<span style="background-color: #ffc0c0; color: #24292e; display:inline-block">1</span>.0.0/<span style="background-color: #ffc0c0; color: #24292e; display:inline-block">24</span></span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ 🌐&nbsp;10.<span style="background-color: #acf2bd; color: #24292e; display:inline-block">0</span>.0.0/<span style="background-color: #acf2bd; color: #24292e; display:inline-block">8</span></span></code></td>
+<td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- <span style="background-color: #ffc0c0; color: #24292e; display:inline-block">🌐&nbsp;0.0.0.0/0</span></span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ <span style="background-color: #acf2bd; color: #24292e; display:inline-block">✳️</span></span></code></td>
+<td>🔌&nbsp;80</td>
+<td></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>allow-ssh-old</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.0.0.0/16</code></td>
+<td><code>🌐&nbsp;10.1.0.0/24</code></td>
+<td><code>🔌&nbsp;22</code></td>
+<td></td>
+</tr>
+<tr>
+<td>⏺️</td>
+<td><code>allow-https</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.0.0/24</code></td>
+<td><code>🌐&nbsp;0.0.0.0/0</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</details>

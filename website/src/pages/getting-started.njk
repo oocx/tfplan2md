@@ -1,0 +1,145 @@
+---
+layout: layouts/base.njk
+title: "Getting Started - tfplan2md"
+description: "Install tfplan2md with Homebrew, Docker, standalone binaries, or source builds, then integrate it into your CI/CD pipeline."
+permalink: /getting-started.html
+rootPrefix: ""
+navKey: "install"
+pageId: "getting-started"
+---
+<!-- markdownlint-disable MD007 MD013 MD022 MD025 MD031 MD032 MD033 MD040 MD041 MD047 -->
+{% from "components/content-blocks.njk" import heroBlock, sectionHeader %}
+
+{{ heroBlock("Getting Started", "Install tfplan2md with Homebrew, Docker, standalone binaries, or source builds, then integrate it into your CI/CD pipeline.", "hero", "padding: 60px 0;", "font-size: 48px;") }}
+
+<section class="section section-no-top-padding">
+  <div class="section-container">
+    {{ sectionHeader("Installation", "Choose your preferred installation method") }}
+
+    <div class="install-methods">
+      {% for method in gettingStartedPage.installationMethods %}
+      <div class="method-card">
+        <h3 class="method-title">{{ method.title }}</h3>
+        <p class="method-description">{{ method.description }}</p>
+        <div class="code-block code-block-wrap">
+          <div class="code-header"><span class="code-title">{{ method.codeTitle }}</span></div>
+          <pre><code>{{ method.code }}</code></pre>
+        </div>
+        <p class="method-note"><strong>{{ method.noteLabel }}:</strong> {{ method.noteText }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt getting-started-quickstart-section">
+  <div class="section-container">
+    {{ sectionHeader("Quick Start", "Generate your first Markdown report in seconds") }}
+
+    <div class="quickstart-steps">
+      {% for step in gettingStartedPage.quickStartSteps %}
+      <div class="step-card">
+        <div class="step-number">{{ step.number }}</div>
+        <div class="step-content">
+          <h3 class="step-title">{{ step.title }}</h3>
+          <div class="code-block"><pre><code>{{ step.code }}</code></pre></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="usage-examples">
+      <h3 class="getting-started-usage-title">Common Usage Patterns</h3>
+      {% for pattern in gettingStartedPage.usagePatterns %}
+      <div class="example-card">
+        <h4 class="example-title">{{ pattern.title }}</h4>
+        <div class="code-block"><pre><code>{{ pattern.code }}</code></pre></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="cicd" class="section">
+  <div class="section-container">
+    {{ sectionHeader("CI/CD Integration", "Automatically post Terraform plan reports to your pull requests", true) }}
+
+    <div class="cicd-tabs">
+      <button class="cicd-tab active" data-tab="github-actions">GitHub Actions</button>
+      <button class="cicd-tab" data-tab="azure-pipelines">Azure Pipelines</button>
+      <button class="cicd-tab" data-tab="gitlab-ci">GitLab CI</button>
+    </div>
+
+    <div class="cicd-content-wrapper">
+      {% for example in cicdExamples.gettingStartedTabs %}
+      <div class="cicd-tab-content{% if loop.first %} active{% endif %}" id="{{ example.id }}">
+        <h3 class="cicd-section-title">{{ example.sectionTitle }}</h3>
+        <p class="cicd-description">{{ example.description }}</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-title">{{ example.fileName }}</span></div>
+          <pre><code class="language-yaml">{{ example.code }}</code></pre>
+        </div>
+        {% if example.note %}
+        <p class="cicd-note"><strong>{{ example.note.label }}:</strong> {{ example.note.text }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="security" class="section">
+  <div class="section-container">
+    {{ sectionHeader("Security Integration", "Combine Terraform plans with security findings from SARIF-compatible tools") }}
+
+    <p class="getting-started-security-intro">{{ gettingStartedPage.securityIntro }}</p>
+
+    <div class="code-block getting-started-security-code">
+      <div class="code-header">
+        <span class="code-title">Basic Security Integration</span>
+      </div>
+      <pre><code>{{ gettingStartedPage.securityCode }}</code></pre>
+    </div>
+
+    <h3 class="section-subtitle getting-started-security-options-title">CLI Options</h3>
+
+    <div class="features-grid getting-started-security-options-grid">
+      {% for option in gettingStartedPage.securityOptions %}
+      <div class="feature-category-card">
+        <h4 class="getting-started-security-option-title"><code>{{ option.title }}</code></h4>
+        <p class="getting-started-security-option-description">{{ option.description }}</p>
+        <div class="code-block code-block-wrap getting-started-security-option-code"><pre><code>{{ option.example }}</code></pre></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="getting-started-benefits-box">
+      <h4 class="getting-started-benefits-title">✨ Benefits</h4>
+      <ul class="getting-started-benefits-list">
+        {% for benefit in gettingStartedPage.securityBenefits %}
+        <li>{{ benefit }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="getting-started-security-cta">
+      <a href="features/static-analysis.html" class="btn btn-primary">Learn More About Security Integration</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    {{ sectionHeader("Next Steps") }}
+
+    <div class="next-steps-grid">
+      {% for step in gettingStartedPage.nextSteps %}
+      <a href="{{ step.href }}" class="next-step-card">
+        <div class="next-step-icon">{{ step.icon }}</div>
+        <h3 class="next-step-title">{{ step.title }}</h3>
+        <p class="next-step-description">{{ step.description }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

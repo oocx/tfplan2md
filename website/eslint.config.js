@@ -1,9 +1,9 @@
-export default [
+module.exports = [
   {
-    files: ["assets/js/**/*.js"],
+    files: ["src/site-assets/js/**/*.js"],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "script",
+      ecmaVersion: 2024,
+      sourceType: "module",
       globals: {
         window: "readonly",
         document: "readonly",
@@ -14,7 +14,26 @@ export default [
         setTimeout: "readonly",
         clearTimeout: "readonly",
         setInterval: "readonly",
-        clearInterval: "readonly"
+        clearInterval: "readonly",
+        CustomEvent: "readonly",
+        IntersectionObserver: "readonly"
+      }
+    },
+    rules: {
+      "no-undef": "error"
+    }
+  },
+  {
+    files: ["tools/**/*.mjs", "lib/**/*.js", ".eleventy.js"],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: "module",
+      globals: {
+        module: "readonly",
+        require: "readonly",
+        __dirname: "readonly",
+        process: "readonly",
+        console: "readonly"
       }
     },
     rules: {

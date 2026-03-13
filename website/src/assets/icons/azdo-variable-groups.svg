@@ -1,0 +1,51 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Variable groups: table with key/value rows and a secret lock row -->
+
+  <defs>
+    <rect id="outer" x="4" y="7" width="40" height="34" rx="3"/>
+    <line id="col-div" x1="22" y1="16" x2="22" y2="41"/>
+    <line id="row1" x1="4" y1="23" x2="44" y2="23"/>
+    <line id="row2" x1="4" y1="30" x2="44" y2="30"/>
+    <line id="row3" x1="4" y1="37" x2="44" y2="37"/>
+  </defs>
+
+  <!-- Background fill -->
+  <use href="#outer" fill="#646cff" fill-opacity="0.12" stroke="none"/>
+
+  <!-- Header band -->
+  <rect x="4" y="7" width="40" height="9" rx="3" fill="#646cff" fill-opacity="0.22" stroke="none"/>
+  <rect x="4" y="12" width="40" height="4" rx="0" fill="#646cff" fill-opacity="0.22" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#outer" stroke="white" stroke-width="4" fill="none"/>
+  <use href="#col-div" stroke="white" stroke-width="3" fill="none"/>
+  <use href="#row1" stroke="white" stroke-width="2" fill="none"/>
+  <use href="#row2" stroke="white" stroke-width="2" fill="none"/>
+  <use href="#row3" stroke="white" stroke-width="2" fill="none"/>
+
+  <!-- Outer border + grid lines -->
+  <use href="#outer" stroke="currentColor" stroke-width="1.75" fill="none"/>
+  <use href="#col-div" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" fill="none"/>
+  <use href="#row1" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" fill="none"/>
+  <use href="#row2" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" fill="none"/>
+  <use href="#row3" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" fill="none"/>
+
+  <!-- Header labels -->
+  <rect x="8" y="10" width="9" height="2.5" rx="1.25" fill="#646cff" fill-opacity="0.8"/>
+  <rect x="26" y="10" width="12" height="2.5" rx="1.25" fill="#646cff" fill-opacity="0.8"/>
+
+  <!-- Row 1: key pill + value pill -->
+  <rect x="7" y="26" width="10" height="2.5" rx="1.25" fill="#646cff" fill-opacity="0.55"/>
+  <rect x="25" y="26" width="14" height="2.5" rx="1.25" fill="currentColor" fill-opacity="0.25"/>
+
+  <!-- Row 2: key pill + lock (secret) -->
+  <rect x="7" y="33" width="11" height="2.5" rx="1.25" fill="#646cff" fill-opacity="0.55"/>
+  <!-- Lock body -->
+  <rect x="26" y="32.5" width="8" height="5.5" rx="1" fill="#646cff" fill-opacity="0.25" stroke="currentColor" stroke-width="1" stroke-opacity="0.55"/>
+  <!-- Lock shackle -->
+  <path d="M28 32.5 L28 31 Q28 29 30 29 Q32 29 32 31 L32 32.5" stroke="currentColor" stroke-width="1.1" stroke-opacity="0.55" fill="none" stroke-linecap="round"/>
+
+  <!-- Row 1 inline — key label between header and row1 -->
+  <rect x="7" y="18.5" width="10" height="2.5" rx="1.25" fill="#646cff" fill-opacity="0.55"/>
+  <rect x="25" y="18.5" width="13" height="2.5" rx="1.25" fill="currentColor" fill-opacity="0.25"/>
+</svg>

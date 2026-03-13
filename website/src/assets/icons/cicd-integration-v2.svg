@@ -1,0 +1,13 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Azure DevOps style - Pipeline with stages -->
+  <!-- Pipeline line -->
+  <line x1="8" y1="24" x2="40" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <!-- Stage nodes -->
+  <circle cx="12" cy="24" r="6" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <circle cx="24" cy="24" r="6" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <circle cx="36" cy="24" r="6" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  <!-- Icons in stages: code, gear, checkmark -->
+  <path d="M10 22L14 22M10 26L12 26" stroke="#646cff" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="2" stroke="#646cff" stroke-width="1.5"/>
+  <path d="M34 24L35.5 25.5L38 22" stroke="#43a047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

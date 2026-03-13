@@ -1,0 +1,14 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- GitHub Actions style - Workflow with arrows -->
+  <!-- Circular arrows (continuous) -->
+  <path d="M24 8C32.8 8 40 15.2 40 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M40 24C40 32.8 32.8 40 24 40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M24 40C15.2 40 8 32.8 8 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M8 24C8 15.2 15.2 8 24 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <!-- Arrow heads -->
+  <path d="M38 18L40 24L34 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 38L24 40L24 34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Center gear -->
+  <circle cx="24" cy="24" r="6" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <circle cx="24" cy="24" r="2" fill="#646cff"/>
+</svg>

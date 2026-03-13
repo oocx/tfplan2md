@@ -1,0 +1,92 @@
+<pre><code>## Resource Changes
+
+### 📦 Module: root
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_resource_group &lt;b&gt;&lt;code&gt;core&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| location | `🌍 eastus` |
+| name | `🆔 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: demo` `owner: tfplan2md`
+
+&lt;/details&gt;
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_storage_account &lt;b&gt;&lt;code&gt;logs&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 sttfplan2mdlogs&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| account_replication_type | `LRS` |
+| account_tier | `Standard` |
+| allow_blob_public_access | `❌ false` |
+| location | `🌍 eastus` |
+| min_tls_version | `TLS1_2` |
+| name | `🆔 sttfplan2mdlogs` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `cost_center: ops` `environment: demo`
+
+&lt;/details&gt;
+
+---
+
+### 📦 Module: `module.network`
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_virtual_network &lt;b&gt;&lt;code&gt;hub&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 vnet-hub&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt; &lt;code&gt;🌐 10.0.0.0/16&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| address_space[0] | `🌐 10.0.0.0/16` |
+| location | `🌍 eastus` |
+| name | `🆔 vnet-hub` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: demo`
+
+&lt;/details&gt;
+
+---
+
+### 📦 Module: `module.security`
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;rg_reader&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;👤 Jane Doe (User)&lt;/code&gt; → &lt;code&gt;🛡️ Reader&lt;/code&gt; on &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| scope | `📁 rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
+| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
+| principal_id | `👤 Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
+| principal_type | `👤 User` |
+| role_definition_name | `🛡️ Reader` |
+
+&lt;/details&gt;
+
+---
+
+### 📦 Module: `module.network.module.monitoring`
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_log_analytics_workspace &lt;b&gt;&lt;code&gt;network&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 law-network-monitoring&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| location | `🌍 eastus` |
+| name | `🆔 law-network-monitoring` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+| retention_in_days | `30` |
+| sku | `PerGB2018` |
+
+**🏷️ Tags:** `environment: demo` `module: monitoring`
+
+&lt;/details&gt;
+</code></pre>

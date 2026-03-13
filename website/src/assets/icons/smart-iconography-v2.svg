@@ -1,0 +1,17 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Minimal swatch grid + recommended choice (no extra sparkles) -->
+  <rect x="8" y="12" width="32" height="24" rx="2" fill="#646cff" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+
+  <!-- Swatches (kept simple) -->
+  <circle cx="16" cy="18" r="2" fill="#646cff"/>
+  <rect x="22" y="16" width="4" height="4" rx="1" fill="#646cff"/>
+  <circle cx="32" cy="18" r="2" fill="#646cff" opacity="0.65"/>
+
+  <rect x="14" y="26" width="4" height="4" rx="1" fill="#646cff" opacity="0.55"/>
+  <circle cx="24" cy="28" r="2" fill="#646cff" opacity="0.55"/>
+  <rect x="30" y="26" width="4" height="4" rx="1" fill="#646cff" opacity="0.55"/>
+
+  <!-- Selected swatch indicator (top-left) -->
+  <rect x="12" y="14" width="8" height="8" rx="1" fill="none" stroke="#646cff" stroke-width="2" stroke-dasharray="3 2"/>
+  <path d="M13.5 18L14.6 19.1L16.7 17" stroke="#646cff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

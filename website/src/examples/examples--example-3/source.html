@@ -1,0 +1,39 @@
+<pre><code># Terraform Plan Report
+
+**Terraform Version:** 1.14.0
+
+## Summary
+
+| Action | Count | Resource Types |
+|--------|-------|----------------|
+| ➕ Add | 12 | ... |
+| 🔄 Change | 6 | ... |
+| **Total** | **23** | |
+
+## Resource Changes
+
+### 📦 Module: root
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px"&gt;
+&lt;summary&gt;➕ azurerm_resource_group &lt;b&gt;&lt;code&gt;core&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br/&gt;
+
+| Attribute | Value |
+|-----------|-------|
+| location | `🌍 eastus` |
+| name | `🆔 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: demo` `owner: tfplan2md`
+
+&lt;/details&gt;
+
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px"&gt;
+&lt;summary&gt;🔄 azurerm_storage_account &lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 sttfplan2mddata&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt; | 2🔧 account_replication_type, tags.cost_center&lt;/summary&gt;
+&lt;br/&gt;
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+| account_replication_type | `LRS` | `GRS` |
+| tags.cost_center | - | `1234` |
+
+&lt;/details&gt;</code></pre>

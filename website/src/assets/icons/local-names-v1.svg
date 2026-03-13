@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- ID badge based on 🆔 showing local scope -->
+  <rect x="10" y="14" width="28" height="20" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <!-- "LOCAL" indicator area -->
+  <rect x="14" y="18" width="20" height="6" rx="1" fill="#646cff" fill-opacity="0.3"/>
+  <!-- Name text lines -->
+  <line x1="14" y1="28" x2="30" y2="28" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="17" cy="28" r="1.5" fill="#646cff"/>
+</svg>

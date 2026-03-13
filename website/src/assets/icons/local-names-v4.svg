@@ -1,0 +1,10 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Long name (faded/crossed) -->
+  <line x1="6" y1="14" x2="42" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+  <line x1="6" y1="14" x2="42" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <!-- Arrow pointing down -->
+  <path d="M24 18L24 26M24 26L20 22M24 26L28 22" stroke="#646cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Short local name -->
+  <rect x="16" y="30" width="16" height="8" rx="1" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <line x1="19" y1="34" x2="29" y2="34" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+</svg>

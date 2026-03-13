@@ -1,0 +1,36 @@
+{% macro providerCard(provider, rootPrefix="") %}
+<div class="feature-category-card provider-card">
+  <div class="provider-card-header">
+    <div class="feature-icon provider-card-icon">{{ provider.icon }}</div>
+    <div>
+      <h3 class="provider-card-title">{{ provider.title }}</h3>
+      <span class="provider-status-badge {{ provider.statusClass }}">{{ provider.status }}</span>
+    </div>
+  </div>
+
+  <p>{{ provider.description }}</p>
+
+  {% for section in provider.sections %}
+  <h4 class="provider-card-section-title">{{ section.title }}</h4>
+  <ul class="provider-card-list">
+    {% for item in section.items %}
+    <li>{{ item | safe }}</li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+
+  {% if provider.note %}
+  <p class="provider-card-note {{ provider.noteClass or 'provider-card-note-primary' }}">
+    {{ provider.note | safe }}
+  </p>
+  {% endif %}
+
+  {% if provider.actions and provider.actions.length %}
+  <div class="provider-card-actions">
+    {% for action in provider.actions %}
+    <a href="{{ action.href }}" class="btn btn-{{ action.variant or 'secondary' }} provider-card-action{% if action.fullWidth %} provider-card-action-full{% else %} provider-card-action-flex{% endif %}"{% if action.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ action.label }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

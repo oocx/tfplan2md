@@ -1,0 +1,18 @@
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      {% for section in footer %}
+      <div class="footer-col">
+        <h4 class="footer-heading">{{ section.title }}</h4>
+        {% for link in section.links %}
+        <a href="{% if link.external %}{{ link.href }}{% else %}{{ rootPrefix }}{{ link.href }}{% endif %}" class="footer-link">{{ link.label }}</a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025-{{ site.currentYear }} tfplan2md contributors. Licensed under MIT.</p>
+      <p class="footer-note">Built with ❤️ using GitHub Copilot</p>
+    </div>
+  </div>
+</footer>

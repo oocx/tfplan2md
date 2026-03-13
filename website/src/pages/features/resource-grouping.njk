@@ -1,0 +1,42 @@
+---
+layout: layouts/base.njk
+title: "Resource Grouping - tfplan2md"
+description: "Keep parent and child Terraform resources together with inline child tables for memberships, subnets, routes, and rules."
+permalink: /features/resource-grouping.html
+rootPrefix: "../"
+navKey: "features"
+pageId: "features/resource-grouping"
+---
+<!-- markdownlint-disable MD033 -->
+{% from "components/content-blocks.njk" import heroBlock, featureDetail, relatedDocs %}
+
+{{ heroBlock("Resource Grouping", "Keep parent and child Terraform resources together with inline child tables for memberships, subnets, routes, and rules.", "hero hero-secondary") }}
+
+<section class="section">
+  <div class="section-container">
+    {% call featureDetail("", "azuread + azurerm + azuredevops", "Related resources are grouped into a single parent section so reviewers can understand the full change in one place instead of jumping between separate resource entries.") %}
+      {% exampleBlock "examples--example-11" %}
+
+      <div class="feature-highlights">
+        <h3 class="highlights-title">Where It Helps</h3>
+        <ul class="highlights-list">
+          <li>Azure AD groups and group memberships</li>
+          <li>Azure virtual networks with inline subnet tables</li>
+          <li>NSGs, DNS records, and route tables with child rows kept under the parent</li>
+          <li>Azure DevOps group and team membership scenarios</li>
+        </ul>
+      </div>
+    {% endcall %}
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-container">
+    {% call featureDetail("Learn More", "", "Parent-child grouping keeps the high-level summary accurate while making child changes visible inline.") %}
+      {{ relatedDocs("Related Documentation", [
+        {"href": "https://github.com/oocx/tfplan2md/blob/main/docs/features.md#parent-child-resource-grouping-inline-child-tables", "label": "Parent-Child Resource Grouping", "external": true},
+        {"href": "../examples.html#resource-grouping", "label": "Examples Page: Resource Grouping"}
+      ]) }}
+    {% endcall %}
+  </div>
+</section>

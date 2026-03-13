@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield outline -->
+  <path d="M32 8L12 16V28C12 40.4 19.6 51.6 32 56C44.4 51.6 52 40.4 52 28V16L32 8Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Magnifying glass -->
+  <circle cx="28" cy="30" r="8" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <line x1="34" y1="36" x2="40" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Checkmark in magnifying glass -->
+  <path d="M25 30L27 32L31 28" stroke="#22863a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

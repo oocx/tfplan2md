@@ -1,0 +1,42 @@
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ azuread_group <b><code>platform_engineers</code></b> — <code>👥 Platform Engineers</code> (<code>🆔 platform-engineers</code>) | <code>3 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
+<br>
+
+<table>
+<thead>
+<tr><th>Attribute</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td>display_name</td><td><code>Platform Engineers</code></td></tr>
+<tr><td>mail_nickname</td><td><code>platform-engineers</code></td></tr>
+</tbody>
+</table>
+
+<h4>Members</h4>
+<table>
+<thead>
+<tr><th>Change</th><th>Member</th><th>Terraform Resource</th></tr>
+</thead>
+<tbody>
+<tr><td>➕</td><td><code>user-100</code></td><td><code>members attribute</code></td></tr>
+<tr><td>➕</td><td><code>group-200</code></td><td><code>members attribute</code></td></tr>
+<tr><td>➕</td><td><code>spn-300</code></td><td><code>members attribute</code></td></tr>
+</tbody>
+</table>
+</details>
+
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>🆔 vnet-spoke</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.1.0.0/16</code> | ➕ 1 subnets | ♻️ 1 subnets</summary>
+<br>
+
+<h4>Subnets</h4>
+<table>
+<thead>
+<tr><th>Change</th><th>Name</th><th>Address Prefixes</th><th>NSG</th><th>Delegation</th><th>Terraform Resource</th></tr>
+</thead>
+<tbody>
+<tr><td>➕</td><td><code>🆔 snet-app</code></td><td><code>🌐 10.1.1.0/24</code></td><td>-</td><td>-</td><td><code>module.network.azurerm_subnet.app</code></td></tr>
+<tr><td>♻️</td><td><code>🆔 snet-db</code></td><td><code>🌐 10.1.20.0/24</code></td><td>-</td><td>-</td><td><code>module.network.azurerm_subnet.db</code></td></tr>
+</tbody>
+</table>
+</details>

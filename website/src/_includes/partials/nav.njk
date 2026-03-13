@@ -1,0 +1,21 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="{{ rootPrefix }}index.html" class="brand-link">
+        <img src="{{ rootPrefix }}assets/images/logo-full.svg" alt="tfplan2md" height="64" class="brand-logo-full">
+      </a>
+    </div>
+    <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+      <span class="hamburger-icon"></span>
+    </button>
+    <div class="nav-menu">
+      {% for item in navigation %}
+      <a href="{{ rootPrefix }}{{ item.href }}" class="nav-item{% if navKey == item.key %} active{% endif %}">{{ item.label }}</a>
+      {% endfor %}
+      <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <img src="{{ rootPrefix }}assets/icons/dark-light-mode.svg" alt="Toggle theme" class="theme-icon">
+      </button>
+      <a href="{{ site.repoUrl }}" class="nav-item nav-cta">GitHub</a>
+    </div>
+  </div>
+</nav>

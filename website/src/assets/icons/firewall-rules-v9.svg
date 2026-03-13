@@ -1,0 +1,28 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gateways -->
+  <!-- Wall Background (3 Rows) -->
+  <rect x="6" y="6" width="36" height="24" rx="1" fill="#646cff" fill-opacity="0.12" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="6" y1="14" x2="42" y2="14" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="6" y1="22" x2="42" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  
+  <!-- Vertical Lines -->
+  <line x1="18" y1="6" x2="18" y2="14" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="30" y1="6" x2="30" y2="14" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="12" y1="14" x2="12" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="24" y1="14" x2="24" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="36" y1="14" x2="36" y2="22" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="18" y1="22" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="30" y1="22" x2="30" y2="30" stroke="currentColor" stroke-width="1.5"/>
+
+  <!-- Gateways -->
+  <!-- Red Gate -->
+  <path d="M10 30V42H18V30" stroke="#e53935" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 30C10 28 12 26 14 26C16 26 18 28 18 30" stroke="#e53935" stroke-width="1.5"/>
+  <path d="M12 34L16 38" stroke="#e53935" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M16 34L12 38" stroke="#e53935" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Green Gate -->
+  <path d="M30 30V42H38V30" stroke="#43a047" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 30C30 28 32 26 34 26C36 26 38 28 38 30" stroke="#43a047" stroke-width="1.5"/>
+  <path d="M32 36L34 38L37 34" stroke="#43a047" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

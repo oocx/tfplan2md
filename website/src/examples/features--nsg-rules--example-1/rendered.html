@@ -1,0 +1,74 @@
+<h3>♻️&nbsp;module.network.azurerm_network_security_group.app</h3>
+                                    <p><strong>Network Security Group:</strong> <code>nsg-app</code></p>
+                                    <h4>Security Rules</h4>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Change</th>
+                                                <th>Name</th>
+                                                <th>Priority</th>
+                                                <th>Direction</th>
+                                                <th>Access</th>
+                                                <th>Protocol</th>
+                                                <th>Source Addresses</th>
+                                                <th>Source Ports</th>
+                                                <th>Destination Addresses</th>
+                                                <th>Destination Ports</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>🆔&nbsp;allow-https</code></td>
+                                                <td><code>100</code></td>
+                                                <td><code>⬇️&nbsp;Inbound</code></td>
+                                                <td><code>✅&nbsp;Allow</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌&nbsp;443</code></td>
+                                                <td><code>-</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>🆔&nbsp;deny-rdp</code></td>
+                                                <td><code>200</code></td>
+                                                <td><code>⬇️&nbsp;Inbound</code></td>
+                                                <td><code>⛔&nbsp;Deny</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌&nbsp;3389</code></td>
+                                                <td><code>Block RDP from internet</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>🆔&nbsp;allow-outbound-https</code></td>
+                                                <td><code>300</code></td>
+                                                <td><code>⬆️&nbsp;Outbound</code></td>
+                                                <td><code>✅&nbsp;Allow</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌&nbsp;443</code></td>
+                                                <td><code>Allow outbound HTTPS</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>❌</td>
+                                                <td><code>🆔&nbsp;allow-http</code></td>
+                                                <td><code>100</code></td>
+                                                <td><code>⬇️&nbsp;Inbound</code></td>
+                                                <td><code>✅&nbsp;Allow</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌&nbsp;80</code></td>
+                                                <td><code>-</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>

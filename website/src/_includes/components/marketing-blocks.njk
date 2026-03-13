@@ -1,0 +1,64 @@
+{% macro featureCarouselCard(iconSrc, iconAlt, title, description, href) %}
+<div class="feature-card elevated">
+  <div class="feature-header">
+    <img src="{{ iconSrc }}" alt="{{ iconAlt }}" class="feature-icon-lg">
+  </div>
+  <h3 class="feature-title">{{ title }}</h3>
+  <p class="feature-description">{{ description }}</p>
+  <a href="{{ href }}" class="feature-link-btn">Learn more →</a>
+</div>
+{% endmacro %}
+
+{% macro exampleShowcaseSection(title, description, linkHref="", linkLabel="Learn more →", badge="", badgeStyle="", sectionStyle="", useCases=[]) %}
+<div class="example-section"{% if sectionStyle %} style="{{ sectionStyle }}"{% endif %}>
+  <div class="example-header">
+    <h3 class="example-title">{{ title }}</h3>
+    {% if badge %}
+    <span class="template-badge"{% if badgeStyle %} style="{{ badgeStyle }}"{% endif %}>{{ badge }}</span>
+    {% elif linkHref %}
+    <a href="{{ linkHref }}" class="example-link">{{ linkLabel }}</a>
+    {% endif %}
+  </div>
+  <p class="example-description">{{ description }}</p>
+  {% if useCases.length %}
+  <div class="template-usecases" style="margin-bottom: 16px;">
+    <strong>Best For:</strong>
+    <ul>
+      {% for useCase in useCases %}
+      <li>{{ useCase }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {{ caller() }}
+</div>
+{% endmacro %}
+
+{% macro realWorldCard(icon, title, description, stats=[], tags=[], links=[]) %}
+<div class="realworld-card">
+  <div class="realworld-icon">{{ icon }}</div>
+  <h3 class="realworld-title">{{ title }}</h3>
+  <p class="realworld-description">{{ description }}</p>
+  {% if stats.length %}
+  <div class="realworld-stats">
+    {% for stat in stats %}
+    <span class="stat">{{ stat }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if tags.length %}
+  <div class="realworld-features">
+    {% for tag in tags %}
+    <span class="feature-tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if links.length %}
+  <div class="realworld-links">
+    {% for link in links %}
+    <a href="{{ link.href }}" class="realworld-link">{{ link.label }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

@@ -1,0 +1,79 @@
+<h1>Terraform Plan Report</h1>
+<p><strong>Terraform Version:</strong> 1.14.0</p>
+<h2>Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕ Add</td>
+<td>12</td>
+<td>...</td>
+</tr>
+<tr>
+<td>🔄 Change</td>
+<td>6</td>
+<td>...</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>23</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Resource Changes</h2>
+<h3>📦 Module: root</h3>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️ Tags:</strong> <code>environment: demo</code> <code>owner: tfplan2md</code></p>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>🆔 sttfplan2mddata</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> | 2🔧 account_replication_type, tags.cost_center</summary>
+<br>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+<td><code>GRS</code></td>
+</tr>
+<tr>
+<td>tags.cost_center</td>
+<td>-</td>
+<td><code>1234</code></td>
+</tr>
+</tbody>
+</table>
+</details>

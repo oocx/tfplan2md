@@ -1,0 +1,8 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Curly braces representing scope -->
+  <path d="M10 12C10 12 8 12 8 14L8 20C8 22 6 22 6 22C6 22 8 22 8 24L8 30C8 32 10 32 10 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M38 12C38 12 40 12 40 14L40 20C40 22 42 22 42 22C42 22 40 22 40 24L40 30C40 32 38 32 38 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Local name inside scope -->
+  <rect x="14" y="18" width="20" height="8" rx="1" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <line x1="18" y1="22" x2="30" y2="22" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+</svg>

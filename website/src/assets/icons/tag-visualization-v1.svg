@@ -1,0 +1,5 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Single centered tag (current design) -->
+  <path d="M8 10L8 26L24 42L40 26L24 10L8 10Z" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="16" cy="18" r="2.5" fill="#646cff"/>
+</svg>

@@ -314,4 +314,38 @@ public class TerraformPlanParserTests
         act.Should().Throw<TerraformPlanParseException>()
             .WithMessage("*cannot be null*");
     }
+
+    /// <summary>
+    /// TC-113-1: Plan JSON without a resource_changes key should parse without throwing.
+    /// Related issue: docs/issues/113-argument-null-source/analysis.md.
+    /// </summary>
+    [Test]
+    public void Parse_PlanWithMissingResourceChanges_DoesNotThrow()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/no-resource-changes-plan.json");
+
+        // Act
+        var act = () => _parser.Parse(json);
+
+        // Assert – parsing itself should succeed; ResourceChanges may be null or empty
+        act.Should().NotThrow();
+    }
+
+    /// <summary>
+    /// TC-113-2: Plan JSON with explicit null resource_changes should parse without throwing.
+    /// Related issue: docs/issues/113-argument-null-source/analysis.md.
+    /// </summary>
+    [Test]
+    public void Parse_PlanWithNullResourceChanges_DoesNotThrow()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/null-resource-changes-plan.json");
+
+        // Act
+        var act = () => _parser.Parse(json);
+
+        // Assert – parsing itself should succeed; ResourceChanges may be null or empty
+        act.Should().NotThrow();
+    }
 }

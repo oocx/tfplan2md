@@ -1,0 +1,14 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "output_changes": {
+    "my_output": {
+      "actions": ["create"],
+      "after": "value",
+      "after_unknown": false,
+      "before": null,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  }
+}

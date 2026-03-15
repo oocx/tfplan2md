@@ -63,6 +63,23 @@ public class ResourceChangeStageTests
     }
 
     /// <summary>
+    /// TC-113-3: Build() with null ResourceChanges should return an empty list, not throw.
+    /// Related issue: docs/issues/113-argument-null-source/analysis.md.
+    /// </summary>
+    [Test]
+    public void ResourceChangeStage_Build_NullResourceChanges_ReturnsEmptyList()
+    {
+        var stage = CreateStage();
+        // Simulate what System.Text.Json does when "resource_changes" is absent or null:
+        // it sets the property to null even though it is declared non-nullable.
+        var plan = new TerraformPlan("1.0", "1.0", null!);
+
+        var models = stage.Build(plan);
+
+        models.Should().BeEmpty();
+    }
+
+    /// <summary>
     /// Creates a stage instance with default test dependencies.
     /// </summary>
     /// <returns>A configured resource-change stage.</returns>

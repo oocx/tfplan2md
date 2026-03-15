@@ -139,7 +139,12 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
                 g => g.ToDictionary(e => e.Key.Attribute, e => e.Value, StringComparer.OrdinalIgnoreCase),
                 StringComparer.OrdinalIgnoreCase);
 
-        return plan.ResourceChanges
+        // plan.ResourceChanges may be null when the "resource_changes" key is absent from the
+        // Terraform plan JSON (e.g., a plan that only modifies output values). System.Text.Json
+        // does not enforce non-nullability annotations, so treat null as an empty collection to
+        // avoid ArgumentNullException("source") from LINQ.
+        // Related issue: docs/issues/113-argument-null-source/analysis.md.
+        return (plan.ResourceChanges ?? [])
             .Select(resourceChange => BuildResourceChangeModel(resourceChange, configurationReferencesByAddress))
             .ToList();
     }

@@ -131,9 +131,12 @@ internal sealed partial class ResourceChangeStage
     /// </summary>
     /// <param name="actions">List of Terraform actions.</param>
     /// <returns>The normalized action string for report generation.</returns>
-    private static string DetermineAction(IReadOnlyList<string> actions)
+    private static string DetermineAction(IReadOnlyList<string>? actions)
     {
-        if (actions.Count == 0)
+        // Guard against null actions list: System.Text.Json may leave Actions null when the
+        // "actions" key is absent from the JSON change object.
+        // Related issue: docs/issues/113-argument-null-source/analysis.md.
+        if (actions is null || actions.Count == 0)
         {
             return NoOpAction;
         }

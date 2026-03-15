@@ -38,8 +38,11 @@ internal partial class ReportModelBuilder
             // Extract metadata (description, sensitivity from configuration)
             var (description, configSensitive) = ExtractOutputMetadata(plan.Configuration, outputName, moduleAddress);
 
-            // Determine primary action (first action in the list)
-            var action = outputChange.Actions.Count > 0 ? outputChange.Actions[0] : "no-op";
+            // Determine primary action (first action in the list).
+            // Guard against null: System.Text.Json may leave Actions null when the "actions" key
+            // is absent from the JSON output_change object.
+            // Related issue: docs/issues/113-argument-null-source/analysis.md.
+            var action = outputChange.Actions is { Count: > 0 } ? outputChange.Actions[0] : "no-op";
 
             // Select value based on action (after for create/update/no-op, before for delete)
             var value = action == "delete" ? outputChange.Before : outputChange.After;

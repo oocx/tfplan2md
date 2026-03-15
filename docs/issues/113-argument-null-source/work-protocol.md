@@ -32,3 +32,10 @@
 - **Security:** CodeQL analysis: 0 alerts. No new dependencies added.
 - **Problems Encountered:** None. Transient build error (missing apphost file) resolved by using `--no-build` for subsequent test runs.
 - **Next Agent:** Code Reviewer
+
+### Technical Writer
+- **Date:** 2025-07-14
+- **Summary:** Reviewed documentation for the null `resource_changes` fix. README.md and docs/features.md already described lenient parsing, but neither specifically noted that output-only plans (where `resource_changes` is absent or null) are supported. Updated `docs/features.md` Terraform Compatibility section with a targeted bullet clarifying this behavior.
+- **Artifacts Produced:** `docs/features.md` — added bullet to Terraform Compatibility section
+- **Problems Encountered:** None
+- **Next Agent:** Code Reviewer

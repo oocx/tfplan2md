@@ -1053,6 +1053,7 @@ Simple single-command interface with flags:
 
 - Supports Terraform **1.14 and later**
 - Lenient parsing approach—does not validate the full plan format, only the fields needed for report generation
+- Plans where `resource_changes` is absent or null (e.g., output-only plans with no infrastructure changes) are handled gracefully and produce a report with only the output changes section
 
 ## Azure Display Enhancements
 

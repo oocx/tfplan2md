@@ -1,0 +1,1296 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.3",
+  "variables": {
+    "foo_gh_repositories": {
+      "value": [
+        {
+          "project_number": "1234567890",
+          "repositories": [],
+          "wki_pool": "pool"
+        }
+      ]
+    },
+    "gcp_project_id": {
+      "value": "awesome-gcp-project"
+    },
+    "qix_gh_repositories": {
+      "value": [
+        {
+          "project_number": "1234567890",
+          "repositories": [],
+          "wki_pool": "pool"
+        }
+      ]
+    },
+    "bar_gh_repositories": {
+      "value": [
+        {
+          "project_number": "1234567890",
+          "repositories": [],
+          "wki_pool": "pool"
+        }
+      ]
+    }
+  },
+  "planned_values": {
+    "outputs": {
+      "artifact_registry_repository": {
+        "sensitive": false,
+        "type": [
+          "object",
+          {
+            "cleanup_policies": [
+              "set",
+              [
+                "object",
+                {
+                  "action": "string",
+                  "condition": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "newer_than": "string",
+                        "older_than": "string",
+                        "package_name_prefixes": [
+                          "list",
+                          "string"
+                        ],
+                        "tag_prefixes": [
+                          "list",
+                          "string"
+                        ],
+                        "tag_state": "string",
+                        "version_name_prefixes": [
+                          "list",
+                          "string"
+                        ]
+                      }
+                    ]
+                  ],
+                  "id": "string",
+                  "most_recent_versions": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "keep_count": "number",
+                        "package_name_prefixes": [
+                          "list",
+                          "string"
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ],
+            "cleanup_policy_dry_run": "bool",
+            "create_time": "string",
+            "description": "string",
+            "docker_config": [
+              "list",
+              [
+                "object",
+                {
+                  "immutable_tags": "bool"
+                }
+              ]
+            ],
+            "effective_labels": [
+              "map",
+              "string"
+            ],
+            "format": "string",
+            "id": "string",
+            "kms_key_name": "string",
+            "labels": [
+              "map",
+              "string"
+            ],
+            "location": "string",
+            "maven_config": [
+              "list",
+              [
+                "object",
+                {
+                  "allow_snapshot_overwrites": "bool",
+                  "version_policy": "string"
+                }
+              ]
+            ],
+            "mode": "string",
+            "name": "string",
+            "project": "string",
+            "registry_uri": "string",
+            "remote_repository_config": [
+              "list",
+              [
+                "object",
+                {
+                  "apt_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "public_repository": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "repository_base": "string",
+                              "repository_path": "string"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  "common_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "uri": "string"
+                      }
+                    ]
+                  ],
+                  "description": "string",
+                  "disable_upstream_validation": "bool",
+                  "docker_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "custom_repository": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "uri": "string"
+                            }
+                          ]
+                        ],
+                        "public_repository": "string"
+                      }
+                    ]
+                  ],
+                  "maven_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "custom_repository": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "uri": "string"
+                            }
+                          ]
+                        ],
+                        "public_repository": "string"
+                      }
+                    ]
+                  ],
+                  "npm_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "custom_repository": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "uri": "string"
+                            }
+                          ]
+                        ],
+                        "public_repository": "string"
+                      }
+                    ]
+                  ],
+                  "python_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "custom_repository": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "uri": "string"
+                            }
+                          ]
+                        ],
+                        "public_repository": "string"
+                      }
+                    ]
+                  ],
+                  "upstream_credentials": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "username_password_credentials": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "password_secret_version": "string",
+                              "username": "string"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  "yum_repository": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "public_repository": [
+                          "list",
+                          [
+                            "object",
+                            {
+                              "repository_base": "string",
+                              "repository_path": "string"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ],
+            "repository_id": "string",
+            "terraform_labels": [
+              "map",
+              "string"
+            ],
+            "update_time": "string",
+            "virtual_repository_config": [
+              "list",
+              [
+                "object",
+                {
+                  "upstream_policies": [
+                    "list",
+                    [
+                      "object",
+                      {
+                        "id": "string",
+                        "priority": "number",
+                        "repository": "string"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ],
+            "vulnerability_scanning_config": [
+              "list",
+              [
+                "object",
+                {
+                  "enablement_config": "string",
+                  "enablement_state": "string",
+                  "enablement_state_reason": "string"
+                }
+              ]
+            ]
+          }
+        ],
+        "value": {
+          "cleanup_policies": [],
+          "cleanup_policy_dry_run": false,
+          "create_time": "2023-02-09T16:18:47.355209Z",
+          "description": "",
+          "docker_config": [],
+          "effective_labels": {},
+          "format": "DOCKER",
+          "id": "projects/awesome-gcp-project/locations/europe/repositories/docker",
+          "kms_key_name": "",
+          "labels": {},
+          "location": "europe",
+          "maven_config": [],
+          "mode": "STANDARD_REPOSITORY",
+          "name": "docker",
+          "project": "awesome-gcp-project",
+          "registry_uri": "europe-docker.pkg.dev/awesome-gcp-project/docker",
+          "remote_repository_config": [],
+          "repository_id": "docker",
+          "terraform_labels": {},
+          "update_time": "2026-03-11T13:52:59.898853Z",
+          "virtual_repository_config": [],
+          "vulnerability_scanning_config": [
+            {
+              "enablement_config": "",
+              "enablement_state": "SCANNING_DISABLED",
+              "enablement_state_reason": "API containerscanning.googleapis.com is not enabled."
+            }
+          ]
+        }
+      },
+      "foo_direct_wif": {
+        "sensitive": false,
+        "type": [
+          "tuple",
+          []
+        ],
+        "value": []
+      },
+      "qix_direct_wif": {
+        "sensitive": false,
+        "type": [
+          "tuple",
+          []
+        ],
+        "value": []
+      },
+      "bar_direct_wif": {
+        "sensitive": false,
+        "type": [
+          "tuple",
+          []
+        ],
+        "value": []
+      }
+    },
+    "root_module": {}
+  },
+  "output_changes": {
+    "artifact_registry_repository": {
+      "actions": [
+        "create"
+      ],
+      "before": null,
+      "after": {
+        "cleanup_policies": [],
+        "cleanup_policy_dry_run": false,
+        "create_time": "2023-02-09T16:18:47.355209Z",
+        "description": "",
+        "docker_config": [],
+        "effective_labels": {},
+        "format": "DOCKER",
+        "id": "projects/awesome-gcp-project/locations/europe/repositories/docker",
+        "kms_key_name": "",
+        "labels": {},
+        "location": "europe",
+        "maven_config": [],
+        "mode": "STANDARD_REPOSITORY",
+        "name": "docker",
+        "project": "awesome-gcp-project",
+        "registry_uri": "europe-docker.pkg.dev/awesome-gcp-project/docker",
+        "remote_repository_config": [],
+        "repository_id": "docker",
+        "terraform_labels": {},
+        "update_time": "2026-03-11T13:52:59.898853Z",
+        "virtual_repository_config": [],
+        "vulnerability_scanning_config": [
+          {
+            "enablement_config": "",
+            "enablement_state": "SCANNING_DISABLED",
+            "enablement_state_reason": "API containerscanning.googleapis.com is not enabled."
+          }
+        ]
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "foo_direct_wif": {
+      "actions": [
+        "create"
+      ],
+      "before": null,
+      "after": [],
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "qix_direct_wif": {
+      "actions": [
+        "create"
+      ],
+      "before": null,
+      "after": [],
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "bar_direct_wif": {
+      "actions": [
+        "create"
+      ],
+      "before": null,
+      "after": [],
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.13.3",
+    "values": {
+      "outputs": {
+        "artifact_registry_repository": {
+          "sensitive": false,
+          "value": {
+            "cleanup_policies": [],
+            "cleanup_policy_dry_run": false,
+            "create_time": "2023-02-09T16:18:47.355209Z",
+            "description": "",
+            "docker_config": [],
+            "effective_labels": {},
+            "format": "DOCKER",
+            "id": "projects/awesome-gcp-project/locations/europe/repositories/docker",
+            "kms_key_name": "",
+            "labels": {},
+            "location": "europe",
+            "maven_config": [],
+            "mode": "STANDARD_REPOSITORY",
+            "name": "docker",
+            "project": "awesome-gcp-project",
+            "registry_uri": "europe-docker.pkg.dev/awesome-gcp-project/docker",
+            "remote_repository_config": [],
+            "repository_id": "docker",
+            "terraform_labels": {},
+            "update_time": "2026-03-11T13:52:59.898853Z",
+            "virtual_repository_config": [],
+            "vulnerability_scanning_config": [
+              {
+                "enablement_config": "",
+                "enablement_state": "SCANNING_DISABLED",
+                "enablement_state_reason": "API containerscanning.googleapis.com is not enabled."
+              }
+            ]
+          },
+          "type": [
+            "object",
+            {
+              "cleanup_policies": [
+                "set",
+                [
+                  "object",
+                  {
+                    "action": "string",
+                    "condition": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "newer_than": "string",
+                          "older_than": "string",
+                          "package_name_prefixes": [
+                            "list",
+                            "string"
+                          ],
+                          "tag_prefixes": [
+                            "list",
+                            "string"
+                          ],
+                          "tag_state": "string",
+                          "version_name_prefixes": [
+                            "list",
+                            "string"
+                          ]
+                        }
+                      ]
+                    ],
+                    "id": "string",
+                    "most_recent_versions": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "keep_count": "number",
+                          "package_name_prefixes": [
+                            "list",
+                            "string"
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              "cleanup_policy_dry_run": "bool",
+              "create_time": "string",
+              "description": "string",
+              "docker_config": [
+                "list",
+                [
+                  "object",
+                  {
+                    "immutable_tags": "bool"
+                  }
+                ]
+              ],
+              "effective_labels": [
+                "map",
+                "string"
+              ],
+              "format": "string",
+              "id": "string",
+              "kms_key_name": "string",
+              "labels": [
+                "map",
+                "string"
+              ],
+              "location": "string",
+              "maven_config": [
+                "list",
+                [
+                  "object",
+                  {
+                    "allow_snapshot_overwrites": "bool",
+                    "version_policy": "string"
+                  }
+                ]
+              ],
+              "mode": "string",
+              "name": "string",
+              "project": "string",
+              "registry_uri": "string",
+              "remote_repository_config": [
+                "list",
+                [
+                  "object",
+                  {
+                    "apt_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "public_repository": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "repository_base": "string",
+                                "repository_path": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ],
+                    "common_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "uri": "string"
+                        }
+                      ]
+                    ],
+                    "description": "string",
+                    "disable_upstream_validation": "bool",
+                    "docker_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "custom_repository": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "uri": "string"
+                              }
+                            ]
+                          ],
+                          "public_repository": "string"
+                        }
+                      ]
+                    ],
+                    "maven_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "custom_repository": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "uri": "string"
+                              }
+                            ]
+                          ],
+                          "public_repository": "string"
+                        }
+                      ]
+                    ],
+                    "npm_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "custom_repository": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "uri": "string"
+                              }
+                            ]
+                          ],
+                          "public_repository": "string"
+                        }
+                      ]
+                    ],
+                    "python_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "custom_repository": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "uri": "string"
+                              }
+                            ]
+                          ],
+                          "public_repository": "string"
+                        }
+                      ]
+                    ],
+                    "upstream_credentials": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "username_password_credentials": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "password_secret_version": "string",
+                                "username": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ],
+                    "yum_repository": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "public_repository": [
+                            "list",
+                            [
+                              "object",
+                              {
+                                "repository_base": "string",
+                                "repository_path": "string"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              "repository_id": "string",
+              "terraform_labels": [
+                "map",
+                "string"
+              ],
+              "update_time": "string",
+              "virtual_repository_config": [
+                "list",
+                [
+                  "object",
+                  {
+                    "upstream_policies": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "id": "string",
+                          "priority": "number",
+                          "repository": "string"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              "vulnerability_scanning_config": [
+                "list",
+                [
+                  "object",
+                  {
+                    "enablement_config": "string",
+                    "enablement_state": "string",
+                    "enablement_state_reason": "string"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        "foo_direct_wif": {
+          "sensitive": false,
+          "value": [],
+          "type": [
+            "tuple",
+            []
+          ]
+        },
+        "qix_direct_wif": {
+          "sensitive": false,
+          "value": [],
+          "type": [
+            "tuple",
+            []
+          ]
+        },
+        "bar_direct_wif": {
+          "sensitive": false,
+          "value": [],
+          "type": [
+            "tuple",
+            []
+          ]
+        }
+      },
+      "root_module": {
+        "resources": [
+          {
+            "address": "data.google_artifact_registry_repository.docker",
+            "mode": "data",
+            "type": "google_artifact_registry_repository",
+            "name": "docker",
+            "provider_name": "registry.terraform.io/hashicorp/google",
+            "schema_version": 0,
+            "values": {
+              "cleanup_policies": [],
+              "cleanup_policy_dry_run": false,
+              "create_time": "2023-02-09T16:18:47.355209Z",
+              "description": "",
+              "docker_config": [],
+              "effective_labels": {},
+              "format": "DOCKER",
+              "id": "projects/awesome-gcp-project/locations/europe/repositories/docker",
+              "kms_key_name": "",
+              "labels": {},
+              "location": "europe",
+              "maven_config": [],
+              "mode": "STANDARD_REPOSITORY",
+              "name": "docker",
+              "project": "awesome-gcp-project",
+              "registry_uri": "europe-docker.pkg.dev/awesome-gcp-project/docker",
+              "remote_repository_config": [],
+              "repository_id": "docker",
+              "terraform_labels": {},
+              "update_time": "2026-03-11T13:52:59.898853Z",
+              "virtual_repository_config": [],
+              "vulnerability_scanning_config": [
+                {
+                  "enablement_config": "",
+                  "enablement_state": "SCANNING_DISABLED",
+                  "enablement_state_reason": "API containerscanning.googleapis.com is not enabled."
+                }
+              ]
+            },
+            "sensitive_values": {
+              "cleanup_policies": [],
+              "docker_config": [],
+              "effective_labels": {},
+              "labels": {},
+              "maven_config": [],
+              "remote_repository_config": [],
+              "terraform_labels": {},
+              "virtual_repository_config": [],
+              "vulnerability_scanning_config": [
+                {}
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "google": {
+        "name": "google",
+        "full_name": "registry.terraform.io/hashicorp/google",
+        "version_constraint": "\u003e= 7.4.0, \u003c 8.0.0"
+      }
+    },
+    "root_module": {
+      "outputs": {
+        "artifact_registry_repository": {
+          "expression": {
+            "references": [
+              "data.google_artifact_registry_repository.docker"
+            ]
+          },
+          "description": "The GAR Docker repository details"
+        },
+        "foo_direct_wif": {
+          "expression": {
+            "references": [
+              "module.foo_direct_wif.iam_members",
+              "module.foo_direct_wif"
+            ]
+          },
+          "description": "foo GitHub repositories rights"
+        },
+        "qix_direct_wif": {
+          "expression": {
+            "references": [
+              "module.qix_direct_wif.iam_members",
+              "module.qix_direct_wif"
+            ]
+          },
+          "description": "Other GitHub repositories rights"
+        },
+        "bar_direct_wif": {
+          "expression": {
+            "references": [
+              "module.bar_direct_wif.iam_members",
+              "module.bar_direct_wif"
+            ]
+          },
+          "description": "Platform Builders GitHub repositories rights"
+        }
+      },
+      "resources": [
+        {
+          "address": "data.google_artifact_registry_repository.docker",
+          "mode": "data",
+          "type": "google_artifact_registry_repository",
+          "name": "docker",
+          "provider_config_key": "google",
+          "expressions": {
+            "location": {
+              "references": [
+                "local.repository_location"
+              ]
+            },
+            "project": {
+              "references": [
+                "var.gcp_project_id"
+              ]
+            },
+            "repository_id": {
+              "references": [
+                "local.repository_id"
+              ]
+            }
+          },
+          "schema_version": 0
+        }
+      ],
+      "module_calls": {
+        "foo_direct_wif": {
+          "source": "../../modules/gar_repository_iam_through_direct_wif",
+          "expressions": {
+            "gar_repository_location": {
+              "references": [
+                "data.google_artifact_registry_repository.docker.location",
+                "data.google_artifact_registry_repository.docker"
+              ]
+            },
+            "gar_repository_name": {
+              "references": [
+                "data.google_artifact_registry_repository.docker.name",
+                "data.google_artifact_registry_repository.docker"
+              ]
+            },
+            "gcp_project_id": {
+              "references": [
+                "var.gcp_project_id"
+              ]
+            },
+            "gh_organization": {
+              "references": [
+                "local.gh_organization"
+              ]
+            },
+            "gh_repositories": {
+              "references": [
+                "var.foo_gh_repositories"
+              ]
+            }
+          },
+          "module": {
+            "outputs": {
+              "iam_members": {
+                "expression": {
+                  "references": [
+                    "google_artifact_registry_repository_iam_member.direct_wif"
+                  ]
+                },
+                "description": "The IAM members created for GAR repository access"
+              }
+            },
+            "resources": [
+              {
+                "address": "google_artifact_registry_repository_iam_member.direct_wif",
+                "mode": "managed",
+                "type": "google_artifact_registry_repository_iam_member",
+                "name": "direct_wif",
+                "provider_config_key": "google",
+                "expressions": {
+                  "location": {
+                    "references": [
+                      "var.gar_repository_location"
+                    ]
+                  },
+                  "member": {
+                    "references": [
+                      "each.value.project_number",
+                      "each.value",
+                      "each.value.wki_pool",
+                      "each.value",
+                      "var.gh_organization",
+                      "each.value.repository",
+                      "each.value"
+                    ]
+                  },
+                  "project": {
+                    "references": [
+                      "var.gcp_project_id"
+                    ]
+                  },
+                  "repository": {
+                    "references": [
+                      "var.gar_repository_name"
+                    ]
+                  },
+                  "role": {
+                    "constant_value": "roles/artifactregistry.writer"
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "local.principal_sets"
+                  ]
+                }
+              }
+            ],
+            "variables": {
+              "gar_repository_location": {
+                "description": "Google Artifact Registry location"
+              },
+              "gar_repository_name": {
+                "description": "Google Artifact Registry repository name"
+              },
+              "gcp_project_id": {
+                "description": "GCP project ID where the GAR repo can be found"
+              },
+              "gh_organization": {
+                "description": "GitHub organization name"
+              },
+              "gh_repositories": {
+                "description": "List of GitHub repositories to setup rights for, through Direct WIF"
+              }
+            }
+          }
+        },
+        "qix_direct_wif": {
+          "source": "../../modules/gar_repository_iam_through_direct_wif",
+          "expressions": {
+            "gar_repository_location": {
+              "references": [
+                "data.google_artifact_registry_repository.docker.location",
+                "data.google_artifact_registry_repository.docker"
+              ]
+            },
+            "gar_repository_name": {
+              "references": [
+                "data.google_artifact_registry_repository.docker.name",
+                "data.google_artifact_registry_repository.docker"
+              ]
+            },
+            "gcp_project_id": {
+              "references": [
+                "var.gcp_project_id"
+              ]
+            },
+            "gh_organization": {
+              "references": [
+                "local.gh_organization"
+              ]
+            },
+            "gh_repositories": {
+              "references": [
+                "var.qix_gh_repositories"
+              ]
+            }
+          },
+          "module": {
+            "outputs": {
+              "iam_members": {
+                "expression": {
+                  "references": [
+                    "google_artifact_registry_repository_iam_member.direct_wif"
+                  ]
+                },
+                "description": "The IAM members created for GAR repository access"
+              }
+            },
+            "resources": [
+              {
+                "address": "google_artifact_registry_repository_iam_member.direct_wif",
+                "mode": "managed",
+                "type": "google_artifact_registry_repository_iam_member",
+                "name": "direct_wif",
+                "provider_config_key": "google",
+                "expressions": {
+                  "location": {
+                    "references": [
+                      "var.gar_repository_location"
+                    ]
+                  },
+                  "member": {
+                    "references": [
+                      "each.value.project_number",
+                      "each.value",
+                      "each.value.wki_pool",
+                      "each.value",
+                      "var.gh_organization",
+                      "each.value.repository",
+                      "each.value"
+                    ]
+                  },
+                  "project": {
+                    "references": [
+                      "var.gcp_project_id"
+                    ]
+                  },
+                  "repository": {
+                    "references": [
+                      "var.gar_repository_name"
+                    ]
+                  },
+                  "role": {
+                    "constant_value": "roles/artifactregistry.writer"
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "local.principal_sets"
+                  ]
+                }
+              }
+            ],
+            "variables": {
+              "gar_repository_location": {
+                "description": "Google Artifact Registry location"
+              },
+              "gar_repository_name": {
+                "description": "Google Artifact Registry repository name"
+              },
+              "gcp_project_id": {
+                "description": "GCP project ID where the GAR repo can be found"
+              },
+              "gh_organization": {
+                "description": "GitHub organization name"
+              },
+              "gh_repositories": {
+                "description": "List of GitHub repositories to setup rights for, through Direct WIF"
+              }
+            }
+          }
+        },
+        "bar_direct_wif": {
+          "source": "../../modules/gar_repository_iam_through_direct_wif",
+          "expressions": {
+            "gar_repository_location": {
+              "references": [
+                "data.google_artifact_registry_repository.docker.location",
+                "data.google_artifact_registry_repository.docker"
+              ]
+            },
+            "gar_repository_name": {
+              "references": [
+                "data.google_artifact_registry_repository.docker.name",
+                "data.google_artifact_registry_repository.docker"
+              ]
+            },
+            "gcp_project_id": {
+              "references": [
+                "var.gcp_project_id"
+              ]
+            },
+            "gh_organization": {
+              "references": [
+                "local.gh_organization"
+              ]
+            },
+            "gh_repositories": {
+              "references": [
+                "var.bar_gh_repositories"
+              ]
+            }
+          },
+          "module": {
+            "outputs": {
+              "iam_members": {
+                "expression": {
+                  "references": [
+                    "google_artifact_registry_repository_iam_member.direct_wif"
+                  ]
+                },
+                "description": "The IAM members created for GAR repository access"
+              }
+            },
+            "resources": [
+              {
+                "address": "google_artifact_registry_repository_iam_member.direct_wif",
+                "mode": "managed",
+                "type": "google_artifact_registry_repository_iam_member",
+                "name": "direct_wif",
+                "provider_config_key": "google",
+                "expressions": {
+                  "location": {
+                    "references": [
+                      "var.gar_repository_location"
+                    ]
+                  },
+                  "member": {
+                    "references": [
+                      "each.value.project_number",
+                      "each.value",
+                      "each.value.wki_pool",
+                      "each.value",
+                      "var.gh_organization",
+                      "each.value.repository",
+                      "each.value"
+                    ]
+                  },
+                  "project": {
+                    "references": [
+                      "var.gcp_project_id"
+                    ]
+                  },
+                  "repository": {
+                    "references": [
+                      "var.gar_repository_name"
+                    ]
+                  },
+                  "role": {
+                    "constant_value": "roles/artifactregistry.writer"
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "local.principal_sets"
+                  ]
+                }
+              }
+            ],
+            "variables": {
+              "gar_repository_location": {
+                "description": "Google Artifact Registry location"
+              },
+              "gar_repository_name": {
+                "description": "Google Artifact Registry repository name"
+              },
+              "gcp_project_id": {
+                "description": "GCP project ID where the GAR repo can be found"
+              },
+              "gh_organization": {
+                "description": "GitHub organization name"
+              },
+              "gh_repositories": {
+                "description": "List of GitHub repositories to setup rights for, through Direct WIF"
+              }
+            }
+          }
+        }
+      },
+      "variables": {
+        "foo_gh_repositories": {
+          "description": "List of foo GitHub repositories to setup rights for, through Direct WIF"
+        },
+        "gcp_project_id": {
+          "default": "awesome-gcp-project",
+          "description": "GCP project ID where the GAR repo can be found"
+        },
+        "qix_gh_repositories": {
+          "description": "List of other GitHub repositories to setup rights for, through Direct WIF"
+        },
+        "bar_gh_repositories": {
+          "description": "List of Platform Builders GitHub repositories to setup rights for, through Direct WIF"
+        }
+      }
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "data.google_artifact_registry_repository.docker",
+      "attribute": [
+        "location"
+      ]
+    },
+    {
+      "resource": "data.google_artifact_registry_repository.docker",
+      "attribute": []
+    },
+    {
+      "resource": "module.foo_direct_wif.google_artifact_registry_repository_iam_member.direct_wif",
+      "attribute": []
+    },
+    {
+      "resource": "module.qix_direct_wif.google_artifact_registry_repository_iam_member.direct_wif",
+      "attribute": []
+    },
+    {
+      "resource": "data.google_artifact_registry_repository.docker",
+      "attribute": [
+        "name"
+      ]
+    },
+    {
+      "resource": "module.bar_direct_wif.google_artifact_registry_repository_iam_member.direct_wif",
+      "attribute": []
+    }
+  ],
+  "checks": [
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "data",
+        "name": "docker",
+        "to_display": "data.google_artifact_registry_repository.docker",
+        "type": "google_artifact_registry_repository"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "to_display": "data.google_artifact_registry_repository.docker"
+          },
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-03-11T16:25:02Z",
+  "applyable": true,
+  "complete": true,
+  "errored": false
+}

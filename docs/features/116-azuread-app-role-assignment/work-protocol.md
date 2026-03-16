@@ -31,3 +31,10 @@
   - `docs/features/116-azuread-app-role-assignment/test-plan.md`
   - `docs/features/116-azuread-app-role-assignment/uat-test-plan.md`
 - **Problems Encountered:** None
+
+### Task Planner
+- **Date:** 2025-07-15
+- **Summary:** Broke down the feature into 7 ordered implementation tasks covering: embedded JSON data + build configuration, app role resolver (interface, implementation, registry), value formatter, summary builder (partial class + factory updates), resource renderer + icon registration, AzureADModule wiring + CompositionRoot integration, and end-to-end snapshot test. Each task includes file references, acceptance criteria mapped to test cases, and dependency analysis. Identified parallelism opportunities (Tasks 3, 4, 5 can run concurrently after Task 2).
+- **Artifacts Produced:**
+  - `docs/features/116-azuread-app-role-assignment/tasks.md`
+- **Problems Encountered:** None

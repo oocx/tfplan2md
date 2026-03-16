@@ -66,3 +66,9 @@ This follows the same pattern as every other entry in the dictionary (including 
   - `docs/features/048-azuredevops-user-entitlement-summary/test-plan.md`
   - `docs/features/048-azuredevops-user-entitlement-summary/uat-test-plan.md`
 - **Problems Encountered:** None. Test framework is TUnit (not xUnit as noted in the role description), confirmed from existing test files.
+
+### Task Planner
+- **Date:** 2025-07-17
+- **Summary:** Created four actionable, prioritized tasks for Developer. Task 1 is the single-line production code change; Task 2 covers the four unit tests (TC-01 to TC-04); Task 3 covers the snapshot test data, test method, and baseline (TC-05); Task 4 is the full-suite verification pass. Reviewed existing code patterns in `ResourceSummaryMappings.cs`, `ResourceSummaryBuilderTests.cs`, and `AzureDevOpsSnapshotTests.cs` to ensure tasks align with the codebase conventions.
+- **Artifacts Produced:** `docs/features/048-azuredevops-user-entitlement-summary/tasks.md`
+- **Problems Encountered:** None

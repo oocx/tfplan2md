@@ -125,3 +125,48 @@ internal sealed class InvitationRenderer : AzureAdDelegatingRenderer
     {
     }
 }
+
+/// <summary>
+/// Renders <c>azuread_app_role_assignment</c> resources.
+/// Related feature: azuread_app_role_assignment support.
+/// </summary>
+internal sealed class AppRoleAssignmentRenderer : AzureAdDelegatingRenderer
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AppRoleAssignmentRenderer"/> class.
+    /// </summary>
+    public AppRoleAssignmentRenderer()
+        : base("azuread_app_role_assignment")
+    {
+    }
+}
+
+/// <summary>
+/// Renders <c>azuread_directory_role_assignment</c> resources.
+/// Related feature: azuread_app_role_assignment support.
+/// </summary>
+internal sealed class DirectoryRoleAssignmentRenderer : AzureAdDelegatingRenderer
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DirectoryRoleAssignmentRenderer"/> class.
+    /// </summary>
+    public DirectoryRoleAssignmentRenderer()
+        : base("azuread_directory_role_assignment")
+    {
+    }
+}
+
+/// <summary>
+/// Renders <c>azuread_service_principal_delegated_permission_grant</c> resources.
+/// Related feature: azuread_app_role_assignment support.
+/// </summary>
+internal sealed class DelegatedPermissionGrantRenderer : AzureAdDelegatingRenderer
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DelegatedPermissionGrantRenderer"/> class.
+    /// </summary>
+    public DelegatedPermissionGrantRenderer()
+        : base("azuread_service_principal_delegated_permission_grant")
+    {
+    }
+}

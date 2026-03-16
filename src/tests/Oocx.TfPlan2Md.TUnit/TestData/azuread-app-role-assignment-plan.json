@@ -1,0 +1,105 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_app_role_assignment.graph_user_read_all",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_app_role_assignment",
+      "name": "graph_user_read_all",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "app_role_id": "df021288-bdef-4463-88db-98f22de89214",
+          "principal_object_id": "11111111-1111-1111-1111-111111111111",
+          "resource_object_id": "22222222-2222-2222-2222-222222222222"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_app_role_assignment.custom_role",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_app_role_assignment",
+      "name": "custom_role",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "app_role_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+          "principal_object_id": "33333333-3333-3333-3333-333333333333",
+          "resource_object_id": "44444444-4444-4444-4444-444444444444"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_directory_role_assignment.admin_role",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_directory_role_assignment",
+      "name": "admin_role",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "principal_object_id": "55555555-5555-5555-5555-555555555555",
+          "role_definition_id": "62e90394-69f5-4237-9190-012177145e10"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_service_principal_delegated_permission_grant.oauth2_grant",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_service_principal_delegated_permission_grant",
+      "name": "oauth2_grant",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "service_principal_object_id": "66666666-6666-6666-6666-666666666666",
+          "resource_object_id": "77777777-7777-7777-7777-777777777777",
+          "claim_values": ["openid", "profile", "email"]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_app_role_assignment.delete_assignment",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_app_role_assignment",
+      "name": "delete_assignment",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "app_role_id": "9a5d68dd-52b0-4cc2-bd40-abcf44ac3a30",
+          "principal_object_id": "88888888-8888-8888-8888-888888888888",
+          "resource_object_id": "99999999-9999-9999-9999-999999999999"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

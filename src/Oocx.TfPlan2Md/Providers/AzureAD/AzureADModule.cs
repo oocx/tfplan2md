@@ -21,12 +21,19 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
     private readonly AzureEntityMapper? _entityMapper;
 
     /// <summary>
+    /// Optional mapper for resolving principal GUIDs to display names.
+    /// </summary>
+    private readonly IPrincipalMapper? _principalMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureADModule"/> class.
     /// </summary>
     /// <param name="entityMapper">Optional mapper for tenant display names.</param>
-    public AzureADModule(AzureEntityMapper? entityMapper = null)
+    /// <param name="principalMapper">Optional mapper for principal display names.</param>
+    public AzureADModule(AzureEntityMapper? entityMapper = null, IPrincipalMapper? principalMapper = null)
     {
         _entityMapper = entityMapper;
+        _principalMapper = principalMapper;
     }
 
     /// <summary>
@@ -53,6 +60,9 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
         registry.RegisterFactory("azuread_group_member", summaryFactory);
         registry.RegisterFactory("azuread_service_principal", summaryFactory);
         registry.RegisterFactory("azuread_invitation", summaryFactory);
+        registry.RegisterFactory("azuread_app_role_assignment", summaryFactory);
+        registry.RegisterFactory("azuread_directory_role_assignment", summaryFactory);
+        registry.RegisterFactory("azuread_service_principal_delegated_permission_grant", summaryFactory);
     }
 
     /// <summary>
@@ -61,15 +71,29 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
-        if (_entityMapper is null)
+        if (_entityMapper is not null)
         {
-            return;
+            AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
+                registry,
+                "(^azuread$|.*/azuread$)",
+                _entityMapper);
         }
 
-        AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
-            registry,
-            "(^azuread$|.*/azuread$)",
-            _entityMapper);
+        if (_principalMapper is not null)
+        {
+            var principalFormatter = new Providers.AzureRM.PrincipalIdFormatter(_principalMapper);
+            registry.Register(
+                new MatchPattern("(^azuread$|.*/azuread$)", null, "^(principal_object_id|resource_object_id)$", null),
+                principalFormatter);
+        }
+
+        registry.Register(
+            new MatchPattern(
+                "(^azuread$|.*/azuread$)",
+                null,
+                "^app_role_id$",
+                null),
+            new AppRoleIdFormatter());
     }
 
     /// <summary>
@@ -120,5 +144,8 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
         registry.Register(new GroupMemberRenderer());
         registry.Register(new InvitationRenderer());
         registry.Register(new ServicePrincipalRenderer());
+        registry.Register(new AppRoleAssignmentRenderer());
+        registry.Register(new DirectoryRoleAssignmentRenderer());
+        registry.Register(new DelegatedPermissionGrantRenderer());
     }
 }

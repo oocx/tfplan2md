@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 
 /// <summary>
 /// Builds summary HTML strings for Azure AD resources.
-/// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+/// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
 /// </summary>
 internal static partial class AzureAdSummaryBuilder
 {
@@ -222,7 +222,7 @@ internal static partial class AzureAdSummaryBuilder
 
     /// <summary>
     /// Resolves member type icons using the group member resource type rules.
-    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
     /// </summary>
     /// <param name="model">The resource change model.</param>
     /// <param name="memberType">The member type label.</param>

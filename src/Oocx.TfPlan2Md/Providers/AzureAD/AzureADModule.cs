@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD;
 
 /// <summary>
 /// Provider module for Azure AD (Entra) resources.
-/// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+/// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
 /// </summary>
 [SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider registration module aggregates provider-specific factories, formatters, and renderers.")]
 internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconRegistrationProvider, IParentChildRelationshipProvider, IPostMergeCallbackProvider, IResourceRendererProvider

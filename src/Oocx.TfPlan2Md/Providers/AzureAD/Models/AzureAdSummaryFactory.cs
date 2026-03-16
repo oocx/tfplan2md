@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 
 /// <summary>
 /// Applies Azure AD summary overrides for templates that rely on <see cref="ResourceChangeModel.SummaryHtml" />.
-/// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+/// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
 /// </summary>
 internal sealed class AzureAdSummaryFactory : IResourceViewModelFactory
 {

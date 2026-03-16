@@ -164,7 +164,7 @@ internal static partial class MarkdownHelpers
 
     /// <summary>
     /// Determines whether an attribute represents Azure AD identity values and formats them with icons.
-    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -212,7 +212,7 @@ internal static partial class MarkdownHelpers
 
     /// <summary>
     /// Formats icon-prefixed values for summary rendering with code spans and non-breaking spacing.
-    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
     /// </summary>
     /// <param name="iconValue">The icon-prefixed value to format.</param>
     /// <returns>Formatted value suitable for summary contexts.</returns>
@@ -228,7 +228,7 @@ internal static partial class MarkdownHelpers
 
     /// <summary>
     /// Formats icon-prefixed values for table rendering with code spans and non-breaking spacing.
-    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
     /// </summary>
     /// <param name="iconValue">The icon-prefixed value to format.</param>
     /// <returns>Formatted value suitable for table contexts.</returns>

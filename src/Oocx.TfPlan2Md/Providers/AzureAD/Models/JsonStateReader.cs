@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 
 /// <summary>
 /// Reads commonly used string values from Terraform JSON state objects.
-/// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+/// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
 /// </summary>
 internal static class JsonStateReader
 {

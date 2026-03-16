@@ -1452,7 +1452,7 @@ The type (User, Group, ServicePrincipal) is automatically read from the Terrafor
 ## Enhanced Azure AD Resource Display
 
 **Status:** ✅ Implemented  
-**Related specification:** [docs/features/053-azuread-resources-enhancements/specification.md](features/053-azuread-resources-enhancements/specification.md)
+**Related specification:** [docs/features/036-azuread-resources-enhancements/specification.md](features/036-azuread-resources-enhancements/specification.md)
 
 Azure AD resources now use specialized templates with semantic icons and informative summaries that make identity infrastructure changes easier to review at a glance. Resource summaries display key identity attributes with visual icons, enabling quick scanning without expanding details.
 

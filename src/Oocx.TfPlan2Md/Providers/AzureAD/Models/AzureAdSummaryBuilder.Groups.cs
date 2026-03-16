@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 
 /// <summary>
 /// Group-focused summary builders for Azure AD resources.
-/// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+/// Related feature: docs/features/036-azuread-resources-enhancements/specification.md.
 /// </summary>
 internal static partial class AzureAdSummaryBuilder
 {

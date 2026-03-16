@@ -3032,6 +3032,24 @@ No changes to CLI options, output format, report content, or behaviour. All exis
 
 See [docs/features/111-code-simplification/](features/111-code-simplification/) for specification, architecture, and implementation details.
 
+## Azure DevOps User Entitlement Summary Fields (Feature 048)
+
+**Status:** ✅ Implemented
+
+`azuredevops_user_entitlement` resources now display `principal_name`, `account_license_type`, and `licensing_source` in their summary line when those values are non-empty.
+
+**Example summary line (all fields populated):**
+
+```
+➕ azuredevops_user_entitlement module.team.azuredevops_user_entitlement.alice — alice@example.com | express | msdn
+```
+
+**Behaviour:**
+- Fields are shown only when non-empty — absent or null values are silently omitted, keeping the summary clean.
+- When all three fields are empty the summary falls back to the resource address only (no regression from the previous provider-level fallback).
+
+See [docs/features/048-azuredevops-user-entitlement-summary/specification.md](features/048-azuredevops-user-entitlement-summary/specification.md) for the full specification.
+
 ## Future Considerations
 
 The following features may be added in future versions:

@@ -99,3 +99,9 @@ Implemented feature 048 across 4 tasks:
 - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzureDevOpsSnapshotTests.cs`
 - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-user-entitlement-plan.json`
 - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuredevops-user-entitlement.md`
+
+### Technical Writer
+- **Date:** 2025-07-17
+- **Summary:** Reviewed implementation and updated `docs/features.md` with a new section for Feature 048 documenting the `azuredevops_user_entitlement` summary fields (`principal_name`, `account_license_type`, `licensing_source`). No changes required to README.md (no new CLI flags or user-facing configuration), `docs/spec.md`, or `docs/architecture.md` (no new components or patterns). The change is purely additive and consistent with existing resource-summary documentation.
+- **Artifacts Produced:** `docs/features.md` (new section "Azure DevOps User Entitlement Summary Fields (Feature 048)" added before "Future Considerations")
+- **Problems Encountered:** None

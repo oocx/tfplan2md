@@ -45,3 +45,22 @@
   - `docs/issues/fix-sensitive-large-value-rendering/code-review.md`
   - `docs/issues/fix-sensitive-large-value-rendering/work-protocol.md` (this entry)
 - **Problems Encountered:** None
+
+### UAT Tester
+- **Date:** 2025-07-18
+- **Summary:** Executed technical UAT validation of both bug fixes on branch `copilot/fix-sensitive-large-value-rendering`. Validated the three new unit tests and the full test suite. All 1201 tests passed with 0 failures. Source code inspection confirmed all three fix sites are correctly implemented.
+  
+  **Bug 1 (Critical Security) — VALIDATED ✅**
+  - Fix 1A (table cell): `IsMasked` check now precedes `IsLargeOutputValue` at line 175 in `ReportRenderer.cs`. Sensitive+large values show `(sensitive value)` in the table cell, never `_(see below)_`.
+  - Fix 1B (below-table block): Guard `|| output.IsMasked` at line 225 prevents the below-table loop from rendering any masked value verbatim.
+  - Test `Render_SensitiveLargeOutput_TableCellShowsSensitiveValue`: PASSED — asserts table cell contains `(sensitive value)` and not `_(see below)_`.
+  - Test `Render_SensitiveLargeOutput_BelowTableBlockOmitted`: PASSED — asserts raw secret string and `\`\`\`json` block are absent from rendered markdown.
+
+  **Bug 2 (Formatting) — VALIDATED ✅**
+  - Fix: `FormatLargeOutputValueContent` helper at line 292 uses `Utf8JsonWriter` with `Indented = true` to pretty-print JSON objects/arrays. Replaces the plain `.ToString()` call that produced compact single-line JSON.
+  - Test `Render_LargeJsonArrayOutput_BelowTableIsPrettyPrinted`: PASSED — asserts rendered markdown contains `\`\`\`json` block with indented line breaks (`\n  {`).
+
+  **Full Test Suite:** 1201 passed, 0 failed, 0 skipped (2m 52s).
+- **Artifacts Produced:**
+  - `docs/issues/fix-sensitive-large-value-rendering/work-protocol.md` (this entry)
+- **Problems Encountered:** None — all validations passed cleanly.

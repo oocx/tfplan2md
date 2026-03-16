@@ -39,7 +39,10 @@ jobs:
 
           # If anything outside these paths changed, this is not an internal-only PR.
           non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|scripts/|docs/|website/|website\.old/|uat-repos/|TestData/|artifacts/|assets/)' || true)
-          if [ -n "$non_internal" ]; then
+          # .github/workflows/ files are pipeline/release code, not pure tooling; treat them as non-internal
+          # (consistent with the "Check if validation is needed" step, which does NOT ignore them).
+          workflow_changed=$(echo "$changed_files" | grep -E '^\.github/workflows/' || true)
+          if [ -n "$non_internal" ] || [ -n "$workflow_changed" ]; then
             echo "Non-internal files changed; internal commit guardrail not applicable."
             exit 0
           fi

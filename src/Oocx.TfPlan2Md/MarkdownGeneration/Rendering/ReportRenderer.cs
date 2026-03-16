@@ -168,13 +168,17 @@ internal sealed class ReportRenderer
         foreach (var output in outputs)
         {
             string value;
-            if (output.IsLargeOutputValue)
-            {
-                value = "_(see below)_";
-            }
-            else if (output.IsMasked)
+            // IsMasked must be checked before IsLargeOutputValue: a value that is both
+            // sensitive and large must show "(sensitive value)" in the table cell, never
+            // "_(see below)_". Reversing this order leaks secrets (Bug 1A).
+            // Related issue: docs/issues/fix-sensitive-large-value-rendering/analysis.md
+            if (output.IsMasked)
             {
                 value = "(sensitive value)";
+            }
+            else if (output.IsLargeOutputValue)
+            {
+                value = "_(see below)_";
             }
             else if (output.IsComputed)
             {
@@ -215,14 +219,17 @@ internal sealed class ReportRenderer
 
         foreach (var output in outputs)
         {
-            if (!output.IsLargeOutputValue)
+            // Guard: masked/sensitive values must never be rendered verbatim below the table,
+            // regardless of their size. Omitting this guard leaks secrets (Bug 1B).
+            // Related issue: docs/issues/fix-sensitive-large-value-rendering/analysis.md
+            if (!output.IsLargeOutputValue || output.IsMasked)
             {
                 continue;
             }
 
             writer.Paragraph($"**{MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(output.Name))}:**");
             writer.BlankLine();
-            writer.Code(output.Value?.ToString() ?? string.Empty, "json");
+            writer.Code(FormatLargeOutputValueContent(output.Value), "json");
             writer.BlankLine();
         }
     }
@@ -264,6 +271,70 @@ internal sealed class ReportRenderer
 
         /// <inheritdoc />
         public bool IsOutputsFocusedReport { get; } = isOutputsFocusedReport;
+    }
+
+    /// <summary>
+    /// Formats a large output value for the below-table code block.
+    /// When the value is a <see cref="JsonElement"/> of kind <see cref="JsonValueKind.Object"/>
+    /// or <see cref="JsonValueKind.Array"/>, returns indented (pretty-printed) JSON.
+    /// When the value is a JSON string that itself contains a JSON object or array, parses and
+    /// pretty-prints the embedded JSON.
+    /// For all other values, falls back to <see cref="object.ToString"/>.
+    /// </summary>
+    /// <param name="value">The output value from the plan model.</param>
+    /// <returns>A formatted string suitable for display in a fenced code block.</returns>
+    /// <remarks>
+    /// Uses <see cref="Utf8JsonWriter"/> with <see cref="JsonWriterOptions.Indented"/> = <c>true</c>,
+    /// matching the approach already used in <see cref="TryFormatJsonOutputValue"/>.
+    /// No new library dependencies are introduced.
+    /// Related issue: docs/issues/fix-sensitive-large-value-rendering/analysis.md (Bug 2).
+    /// </remarks>
+    private static string FormatLargeOutputValueContent(object? value)
+    {
+        if (value is JsonElement element)
+        {
+            if (element.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
+            {
+                using var stream = new MemoryStream();
+                using (var jsonWriter = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
+                {
+                    element.WriteTo(jsonWriter);
+                }
+
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
+
+            // A string-kind element may contain embedded JSON that IsLargeOutputValue detected.
+            if (element.ValueKind == JsonValueKind.String)
+            {
+                var str = element.GetString();
+                if (str is not null)
+                {
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(str);
+                        if (doc.RootElement.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
+                        {
+                            using var stream = new MemoryStream();
+                            using (var jsonWriter = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
+                            {
+                                doc.RootElement.WriteTo(jsonWriter);
+                            }
+
+                            return Encoding.UTF8.GetString(stream.ToArray());
+                        }
+                    }
+                    catch (JsonException)
+                    {
+                        // Not valid JSON — fall through to plain string return.
+                    }
+
+                    return str;
+                }
+            }
+        }
+
+        return value?.ToString() ?? string.Empty;
     }
 
     /// <summary>

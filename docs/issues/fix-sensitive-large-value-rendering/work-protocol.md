@@ -29,3 +29,11 @@
 - **Test Results:** Full suite: 1201 passed, 0 failed, 0 skipped
 - **Security:** CodeQL scan: 0 alerts. Code review: no issues found.
 - **Problems Encountered:** None
+
+### Technical Writer
+- **Date:** 2025-07-18
+- **Summary:** Updated `docs/features.md` to accurately document the now-correct behavior for both bug fixes. Expanded the "Sensitive Value Protection" subsection under "Terraform Outputs Support" to explicitly state that masked outputs are never emitted in below-table blocks regardless of size (Bug 1 fix). Added a new "Large Output Value Formatting" subsection documenting that large JSON objects/arrays are pretty-printed in below-table blocks (Bug 2 fix). No changes were required in `docs/spec.md` (no output-rendering content) or `README.md` (no user-facing CLI changes).
+- **Artifacts Produced:**
+  - `docs/features.md` — updated Sensitive Value Protection section + new Large Output Value Formatting section
+  - `docs/issues/fix-sensitive-large-value-rendering/work-protocol.md` (this entry)
+- **Problems Encountered:** None

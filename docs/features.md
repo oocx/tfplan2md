@@ -2842,7 +2842,13 @@ Outputs render as a 5-column table showing the change type, name, description, s
 
 Sensitive output values are masked as `(sensitive value)` by default to prevent accidental exposure of secrets in PR reports. Use `--show-sensitive` to reveal them when needed.
 
+This masking is unconditional: a sensitive output value always shows `(sensitive value)` in the table cell and is **never** emitted in the below-table block, even if the value is large enough to normally be rendered there. Large sensitive outputs are therefore never leaked verbatim in reports.
+
 Computed outputs (not yet known) display `(known after apply)`.
+
+### Large Output Value Formatting
+
+Output values that are too long to display inline in the table (compact JSON exceeding 80 characters, or values with line breaks) are moved to a below-table block for readability. JSON objects and arrays in these below-table blocks are **pretty-printed** with indentation and line breaks for easy review.
 
 ### Display Name Mappings
 

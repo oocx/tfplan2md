@@ -354,6 +354,9 @@ jobs:
             mcr.microsoft.com/dotnet/sdk:10.0-alpine \
             sh -c 'apk add --no-cache clang build-base zlib-dev linux-headers && dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r "$RID" --self-contained true -p:PublishAot=true -o "/work/artifacts/$PLATFORM"'
 
+      - name: Fix artifact ownership (musl builds)
+        if: startsWith(matrix.platform, 'linux-musl-')
+        run: sudo chown -R "$(id -u):$(id -g)" "artifacts/${{ matrix.platform }}"
 
       - name: Install UPX (Linux)
         if: startsWith(matrix.platform, 'linux-') && matrix.compress_with_upx

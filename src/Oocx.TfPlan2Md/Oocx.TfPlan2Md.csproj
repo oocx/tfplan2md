@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <AdditionalFiles Include="Platforms/Azure/AzureRoleDefinitions.json" EmbedAsJson="true" />
+    <AdditionalFiles Include="Platforms/Azure/MicrosoftGraphAppRoles.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/Shared/Icons/azure-common-icons.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/AzureAD/Icons/azuread-icons.json" EmbedAsJson="true" />

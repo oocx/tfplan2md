@@ -77,13 +77,15 @@ internal static partial class AzureAdSummaryBuilder
     /// <param name="action">The normalized Terraform action.</param>
     /// <param name="principalMapper">Mapper used for principal name resolution.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <param name="appRoleResolver">Optional resolver for Microsoft Graph app role GUIDs.</param>
     /// <returns>Summary HTML string matching the Azure AD templates.</returns>
     internal static string BuildSummaryHtml(
         ResourceChangeModel model,
         ResourceChange resourceChange,
         string action,
         IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+        IconProviderRegistry? iconProviderRegistry,
+        IAppRoleResolver? appRoleResolver = null)
     {
         var state = ResourceChangeHelpers.ResolveActiveState(resourceChange, action);
         if (string.Equals(model.Type, UserResourceType, StringComparison.OrdinalIgnoreCase))
@@ -114,6 +116,11 @@ internal static partial class AzureAdSummaryBuilder
         if (string.Equals(model.Type, InvitationResourceType, StringComparison.OrdinalIgnoreCase))
         {
             return BuildInvitationSummaryHtml(model, state, iconProviderRegistry);
+        }
+
+        if (string.Equals(model.Type, AppRoleAssignmentResourceType, StringComparison.OrdinalIgnoreCase))
+        {
+            return BuildAppRoleAssignmentSummaryHtml(model, state, principalMapper, appRoleResolver);
         }
 
         return ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);

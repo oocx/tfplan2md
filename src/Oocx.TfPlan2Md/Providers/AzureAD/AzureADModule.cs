@@ -5,6 +5,7 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureAD.Models;
 using Oocx.TfPlan2Md.Providers.AzureAD.Renderers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 
 namespace Oocx.TfPlan2Md.Providers.AzureAD;
 
@@ -21,12 +22,28 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
     private readonly AzureEntityMapper? _entityMapper;
 
     /// <summary>
+    /// Optional resolver for Microsoft Graph app role GUIDs.
+    /// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+    /// </summary>
+    private readonly IAppRoleResolver? _appRoleResolver;
+
+    /// <summary>
+    /// Optional mapper for principal name resolution.
+    /// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+    /// </summary>
+    private readonly IPrincipalMapper? _principalMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureADModule"/> class.
     /// </summary>
     /// <param name="entityMapper">Optional mapper for tenant display names.</param>
-    public AzureADModule(AzureEntityMapper? entityMapper = null)
+    /// <param name="principalMapper">Optional mapper for principal name resolution.</param>
+    /// <param name="appRoleResolver">Optional resolver for app role GUIDs.</param>
+    public AzureADModule(AzureEntityMapper? entityMapper = null, IPrincipalMapper? principalMapper = null, IAppRoleResolver? appRoleResolver = null)
     {
         _entityMapper = entityMapper;
+        _principalMapper = principalMapper;
+        _appRoleResolver = appRoleResolver;
     }
 
     /// <summary>
@@ -45,7 +62,7 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
     /// <param name="registry">The factory registry to register with.</param>
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
-        var summaryFactory = new AzureAdSummaryFactory();
+        var summaryFactory = new AzureAdSummaryFactory(_appRoleResolver);
 
         registry.RegisterFactory("azuread_user", summaryFactory);
         registry.RegisterFactory("azuread_group", summaryFactory);
@@ -53,6 +70,7 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
         registry.RegisterFactory("azuread_group_member", summaryFactory);
         registry.RegisterFactory("azuread_service_principal", summaryFactory);
         registry.RegisterFactory("azuread_invitation", summaryFactory);
+        registry.RegisterFactory("azuread_app_role_assignment", summaryFactory);
     }
 
     /// <summary>
@@ -61,6 +79,21 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
+        // Register app role value formatters (independent of entity mapper)
+        if (_appRoleResolver is not null)
+        {
+            registry.Register(
+                new MatchPattern("(^azuread$|.*/azuread$)", "^azuread_app_role_assignment$", "^app_role_id$", null),
+                new AppRoleIdFormatter(_appRoleResolver));
+        }
+
+        if (_principalMapper is not null)
+        {
+            registry.Register(
+                new MatchPattern("(^azuread$|.*/azuread$)", "^azuread_app_role_assignment$", "^(principal_object_id|resource_object_id)$", null),
+                new PrincipalIdFormatter(_principalMapper));
+        }
+
         if (_entityMapper is null)
         {
             return;
@@ -120,5 +153,6 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
         registry.Register(new GroupMemberRenderer());
         registry.Register(new InvitationRenderer());
         registry.Register(new ServicePrincipalRenderer());
+        registry.Register(new AppRoleAssignmentRenderer());
     }
 }

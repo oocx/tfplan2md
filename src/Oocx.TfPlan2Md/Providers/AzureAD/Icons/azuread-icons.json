@@ -60,6 +60,11 @@
       "attributeNamePattern": "(?i)^member_type$",
       "valuePattern": "(?i)^unknown$",
       "icon": "❓"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_app_role_assignment$",
+      "attributeNamePattern": "(?i)^app_role_id$",
+      "icon": "🔑"
     }
   ]
 }

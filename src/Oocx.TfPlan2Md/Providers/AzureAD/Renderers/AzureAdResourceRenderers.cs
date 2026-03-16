@@ -125,3 +125,18 @@ internal sealed class InvitationRenderer : AzureAdDelegatingRenderer
     {
     }
 }
+
+/// <summary>
+/// Renders <c>azuread_app_role_assignment</c> resources.
+/// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+/// </summary>
+internal sealed class AppRoleAssignmentRenderer : AzureAdDelegatingRenderer
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AppRoleAssignmentRenderer"/> class.
+    /// </summary>
+    public AppRoleAssignmentRenderer()
+        : base("azuread_app_role_assignment")
+    {
+    }
+}

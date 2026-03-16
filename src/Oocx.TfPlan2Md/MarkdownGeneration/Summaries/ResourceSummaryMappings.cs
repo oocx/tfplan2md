@@ -65,6 +65,7 @@ internal static class ResourceSummaryMappings
 
         // azuredevops
         ["azuredevops_project"] = ["name", "visibility"],
+        ["azuredevops_user_entitlement"] = ["principal_name", "account_license_type", "licensing_source"],
 
         // azapi
         ["azapi_resource"] = ["name", "type", "parent_id"],

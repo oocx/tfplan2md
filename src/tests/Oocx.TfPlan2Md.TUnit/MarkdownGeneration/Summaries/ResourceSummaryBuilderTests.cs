@@ -174,6 +174,78 @@ public class ResourceSummaryBuilderTests
         summary.Should().Be("`resource.example`");
     }
 
+    /// <summary>
+    /// TC-01: All three azuredevops_user_entitlement fields populated → all appear in summary.
+    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// </summary>
+    [Test]
+    public void BuildSummary_AzureDevOpsUserEntitlement_AllFieldsPopulated_ShowsAllFields()
+    {
+        var change = CreateChange(
+            type: "azuredevops_user_entitlement",
+            action: CreateAction,
+            afterJson: "{ \"principal_name\": \"user@example.com\", \"account_license_type\": \"express\", \"licensing_source\": \"msdn\" }"
+        );
+
+        var summary = _builder.BuildSummary(change);
+
+        summary.Should().Be("`user@example.com` | `express` | `msdn`");
+    }
+
+    /// <summary>
+    /// TC-02: licensing_source empty → omitted from summary.
+    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// </summary>
+    [Test]
+    public void BuildSummary_AzureDevOpsUserEntitlement_LicensingSourceEmpty_OmittedFromSummary()
+    {
+        var change = CreateChange(
+            type: "azuredevops_user_entitlement",
+            action: CreateAction,
+            afterJson: "{ \"principal_name\": \"user@example.com\", \"account_license_type\": \"express\", \"licensing_source\": \"\" }"
+        );
+
+        var summary = _builder.BuildSummary(change);
+
+        summary.Should().Be("`user@example.com` | `express`");
+    }
+
+    /// <summary>
+    /// TC-03: Only principal_name populated → only that appears in summary.
+    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// </summary>
+    [Test]
+    public void BuildSummary_AzureDevOpsUserEntitlement_OnlyPrincipalName_ShowsOnlyPrincipalName()
+    {
+        var change = CreateChange(
+            type: "azuredevops_user_entitlement",
+            action: CreateAction,
+            afterJson: "{ \"principal_name\": \"user@example.com\" }"
+        );
+
+        var summary = _builder.BuildSummary(change);
+
+        summary.Should().Be("`user@example.com`");
+    }
+
+    /// <summary>
+    /// TC-04: All fields empty → fallback (address-based summary).
+    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// </summary>
+    [Test]
+    public void BuildSummary_AzureDevOpsUserEntitlement_AllFieldsEmpty_FallsBackToAddress()
+    {
+        var change = CreateChange(
+            type: "azuredevops_user_entitlement",
+            action: CreateAction,
+            afterJson: "{ }"
+        );
+
+        var summary = _builder.BuildSummary(change);
+
+        summary.Should().Be("`resource.example`");
+    }
+
     [Test]
     public void BuildSummary_MsGraph_UsesUrlAndDisplayName()
     {

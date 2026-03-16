@@ -57,6 +57,16 @@ public class AzureDevOpsSnapshotTests
     }
 
     /// <summary>
+    /// Verifies the Azure DevOps user entitlement snapshot output matches the approved baseline.
+    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureDevOps_UserEntitlement_MatchesBaseline()
+    {
+        AssertAzureDevOpsSnapshot("azuredevops-user-entitlement-plan.json", "azuredevops-user-entitlement.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure DevOps plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

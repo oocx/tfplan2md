@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Encodings.Web;
+using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using static Oocx.TfPlan2Md.MarkdownGeneration.MarkdownHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
@@ -38,6 +39,18 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("subscription", out var subscriptionName);
         flatState.TryGetValue("subscription_id", out var subscriptionId);
 
+        // Fall back to principal_name as primary identifier when "name" is absent.
+        // Tracks whether we switched to principal_name so we can include remaining
+        // mapped attributes in the summary line (e.g., account_license_type, licensing_source
+        // for azuredevops_user_entitlement).
+        // Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+        var usedPrincipalNameFallback = false;
+        if (string.IsNullOrWhiteSpace(nameValue))
+        {
+            flatState.TryGetValue("principal_name", out nameValue);
+            usedPrincipalNameFallback = !string.IsNullOrWhiteSpace(nameValue);
+        }
+
         // For AzAPI resources without a friendly name, fall back to the Terraform resource name
         var displayName = !string.IsNullOrWhiteSpace(model.Name)
             ? model.Name
@@ -48,8 +61,9 @@ internal static class ResourceSummaryHtmlBuilder
         var detailParts = new List<string>();
         var refactoringContext = BuildRefactoringContext(model);
 
+        var nameAttributeKey = usedPrincipalNameFallback ? "principal_name" : "name";
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
-            ? FormatAttributeValueSummary("name", nameValue!, null)
+            ? FormatAttributeValueSummary(nameAttributeKey, nameValue!, null)
             : null;
 
         if (!string.IsNullOrWhiteSpace(resourceGroup))
@@ -106,6 +120,15 @@ internal static class ResourceSummaryHtmlBuilder
         if (!string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
         {
             detailParts.Add($"| {model.ChangedAttributesSummary!}");
+        }
+
+        // When principal_name was used as the primary identifier, include remaining mapped
+        // attributes in the summary line so all key fields appear in the details header
+        // (e.g., account_license_type and licensing_source for azuredevops_user_entitlement).
+        // Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+        if (usedPrincipalNameFallback && string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
+        {
+            AppendRemainingMappedAttributes(detailParts, flatState, model.Type);
         }
 
         if (!string.IsNullOrWhiteSpace(refactoringContext))
@@ -243,6 +266,41 @@ internal static class ResourceSummaryHtmlBuilder
 
         var badges = tags.Select(tag => FormatCodeTable($"{tag.Key}: {tag.Value}"));
         return $"**🏷️{NonBreakingSpace}Tags:**\n{string.Join('\n', badges.Select(badge => $" {badge}"))}";
+    }
+
+    /// <summary>
+    /// Appends detail parts for the remaining resource-type-specific mapped attributes, skipping
+    /// the primary identifier key (principal_name) already used as the summary context.
+    /// </summary>
+    /// <remarks>
+    /// Used when a resource type has no "name" attribute and uses a non-standard primary
+    /// identifier (e.g., principal_name for azuredevops_user_entitlement). The remaining
+    /// mapped keys (e.g., account_license_type, licensing_source) are added to the detail
+    /// parts so they appear in the summary line of the details block.
+    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// </remarks>
+    /// <param name="detailParts">The list of detail parts to append to.</param>
+    /// <param name="flatState">The flattened resource state dictionary.</param>
+    /// <param name="resourceType">The Terraform resource type used to look up the mapping.</param>
+    private static void AppendRemainingMappedAttributes(
+        List<string> detailParts,
+        Dictionary<string, string?> flatState,
+        string resourceType)
+    {
+        var mappingKeys = ResourceSummaryMappings.ResolveKeys(resourceType);
+        foreach (var key in mappingKeys)
+        {
+            // Skip principal_name — it is already used as the primary context.
+            if (key.Equals("principal_name", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (flatState.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value))
+            {
+                detailParts.Add($"| {FormatAttributeValueSummary(key, value, null)}");
+            }
+        }
     }
 
     /// <summary>

@@ -270,6 +270,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
                    ?? TryGet(dictionary, "display_name")
                    ?? TryGet(dictionary, "body.displayName")
                    ?? TryGet(dictionary, "displayName")
+                   ?? TryGet(dictionary, "principal_name")
                    ?? TryGet(dictionary, "url");
 
         if (!string.IsNullOrEmpty(name))
@@ -282,6 +283,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         {
             var fromOtherState = TryGet(fallbackState, "name")
                 ?? TryGet(fallbackState, "display_name")
+                ?? TryGet(fallbackState, "principal_name")
                 ?? TryGet(fallbackState, "url");
             if (!string.IsNullOrEmpty(fromOtherState))
             {
@@ -344,6 +346,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
                || key.Equals("display_name", StringComparison.OrdinalIgnoreCase)
                || key.Equals("displayName", StringComparison.OrdinalIgnoreCase)
                || key.Equals("body.displayName", StringComparison.OrdinalIgnoreCase)
+               || key.Equals("principal_name", StringComparison.OrdinalIgnoreCase)
                || key.Equals("resource_group_name", StringComparison.OrdinalIgnoreCase)
                || key.Equals("location", StringComparison.OrdinalIgnoreCase)
                || key.Equals("url", StringComparison.OrdinalIgnoreCase);

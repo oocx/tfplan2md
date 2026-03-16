@@ -16,3 +16,16 @@
   - `docs/issues/fix-sensitive-large-value-rendering/analysis.md`
   - `docs/issues/fix-sensitive-large-value-rendering/work-protocol.md`
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2025-07-18
+- **Summary:** Implemented all three fixes using a test-first approach. Wrote 3 new tests in `ReportRendererTests.cs` that confirmed failure before fixes and success after. Applied minimal surgical changes to `ReportRenderer.RenderOutputTable`.
+  - **Fix 1A (Bug 1A):** Swapped `IsMasked`/`IsLargeOutputValue` check order in the table-row loop so sensitive values always show `(sensitive value)` regardless of size.
+  - **Fix 1B (Bug 1B):** Added `|| output.IsMasked` guard in the below-table loop so masked/sensitive large values are never rendered verbatim.
+  - **Fix 2 (Bug 2):** Added `FormatLargeOutputValueContent` private helper using `Utf8JsonWriter` with `Indented = true` to pretty-print `JsonElement` objects/arrays (mirrors existing `TryFormatJsonOutputValue` pattern). Replaced `.ToString()` call with this helper.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/ReportRenderer.cs` (bug fixes + helper method)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportRendererTests.cs` (3 new tests)
+- **Test Results:** Full suite: 1201 passed, 0 failed, 0 skipped
+- **Security:** CodeQL scan: 0 alerts. Code review: no issues found.
+- **Problems Encountered:** None

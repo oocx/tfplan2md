@@ -14,3 +14,9 @@
 - **Summary:** Investigated the musl build failure from GitHub Actions run 23117834110. Identified root cause: the "Install UPX (Linux)" step runs `apt-get` without `sudo` on the GitHub Actions runner host (non-root), but the non-musl Linux builds run inside Docker containers as root where `sudo` is not needed. Documented findings in analysis.md with a suggested fix.
 - **Artifacts Produced:** `docs/issues/114-musl-build-failure/analysis.md`, `docs/issues/114-musl-build-failure/work-protocol.md`
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2026-03-16
+- **Summary:** Applied fix to `.github/workflows/release.yml` — the "Install UPX (Linux)" step now uses a conditional `id -u` check to decide whether to invoke `apt-get` with or without `sudo`. Non-musl Linux builds run inside a Docker container as root (no `sudo`); musl builds run directly on the GitHub-hosted runner as a non-root user (`sudo` required).
+- **Artifacts Produced:** `.github/workflows/release.yml` (modified)
+- **Problems Encountered:** None

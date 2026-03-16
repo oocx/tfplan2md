@@ -1,7 +1,7 @@
 # Work Protocol: Azure DevOps User Entitlement Summary Fields
 
-**Work Item:** `docs/features/048-azuredevops-user-entitlement-summary/`
-**Branch:** `feature/048-azuredevops-user-entitlement-summary`
+**Work Item:** `docs/features/115-azuredevops-user-entitlement-summary/`
+**Branch:** `feature/115-azuredevops-user-entitlement-summary`
 **Workflow Type:** Feature
 **Created:** 2025-07-17
 
@@ -12,7 +12,7 @@
 ### Requirements Engineer
 - **Date:** 2025-07-17
 - **Summary:** Gathered requirements and produced the feature specification for displaying `principal_name`, `account_license_type`, and `licensing_source` in the `azuredevops_user_entitlement` summary line when those values are non-empty. Confirmed the implementation is a single-line addition to `ResourceSummaryMappings.ResourceMappings`.
-- **Artifacts Produced:** `docs/features/048-azuredevops-user-entitlement-summary/specification.md`, `docs/features/048-azuredevops-user-entitlement-summary/work-protocol.md`
+- **Artifacts Produced:** `docs/features/115-azuredevops-user-entitlement-summary/specification.md`, `docs/features/115-azuredevops-user-entitlement-summary/work-protocol.md`
 - **Problems Encountered:** None
 
 ### Architect
@@ -61,16 +61,16 @@ This follows the same pattern as every other entry in the dictionary (including 
 
 ### Quality Engineer
 - **Date:** 2025-07-17
-- **Summary:** Created test plan and UAT test plan for feature 048. Mapped all five acceptance criteria to four unit test cases and one snapshot test. Defined a UAT plan covering three summary-line variants (all fields, partial fields, no fields) with concrete before/after validation instructions.
+- **Summary:** Created test plan and UAT test plan for feature 115. Mapped all five acceptance criteria to four unit test cases and one snapshot test. Defined a UAT plan covering three summary-line variants (all fields, partial fields, no fields) with concrete before/after validation instructions.
 - **Artifacts Produced:**
-  - `docs/features/048-azuredevops-user-entitlement-summary/test-plan.md`
-  - `docs/features/048-azuredevops-user-entitlement-summary/uat-test-plan.md`
+  - `docs/features/115-azuredevops-user-entitlement-summary/test-plan.md`
+  - `docs/features/115-azuredevops-user-entitlement-summary/uat-test-plan.md`
 - **Problems Encountered:** None. Test framework is TUnit (not xUnit as noted in the role description), confirmed from existing test files.
 
 ### Task Planner
 - **Date:** 2025-07-17
 - **Summary:** Created four actionable, prioritized tasks for Developer. Task 1 is the single-line production code change; Task 2 covers the four unit tests (TC-01 to TC-04); Task 3 covers the snapshot test data, test method, and baseline (TC-05); Task 4 is the full-suite verification pass. Reviewed existing code patterns in `ResourceSummaryMappings.cs`, `ResourceSummaryBuilderTests.cs`, and `AzureDevOpsSnapshotTests.cs` to ensure tasks align with the codebase conventions.
-- **Artifacts Produced:** `docs/features/048-azuredevops-user-entitlement-summary/tasks.md`
+- **Artifacts Produced:** `docs/features/115-azuredevops-user-entitlement-summary/tasks.md`
 - **Problems Encountered:** None
 
 ## Developer Agent – Implementation
@@ -80,7 +80,7 @@ This follows the same pattern as every other entry in the dictionary (including 
 **Commit:** ed08647
 
 ### Summary
-Implemented feature 048 across 4 tasks:
+Implemented feature 115 across 4 tasks:
 
 1. **Mapping entry** – Added `["azuredevops_user_entitlement"] = ["principal_name", "account_license_type", "licensing_source"]` to `ResourceSummaryMappings.cs`
 2. **ResourceSummaryBuilder fix** – Extended `GetDisplayName` + `IsNameOrContextKey` to recognize `principal_name` as a primary identifier
@@ -102,8 +102,8 @@ Implemented feature 048 across 4 tasks:
 
 ### Technical Writer
 - **Date:** 2025-07-17
-- **Summary:** Reviewed implementation and updated `docs/features.md` with a new section for Feature 048 documenting the `azuredevops_user_entitlement` summary fields (`principal_name`, `account_license_type`, `licensing_source`). No changes required to README.md (no new CLI flags or user-facing configuration), `docs/spec.md`, or `docs/architecture.md` (no new components or patterns). The change is purely additive and consistent with existing resource-summary documentation.
-- **Artifacts Produced:** `docs/features.md` (new section "Azure DevOps User Entitlement Summary Fields (Feature 048)" added before "Future Considerations")
+- **Summary:** Reviewed implementation and updated `docs/features.md` with a new section for Feature 115 documenting the `azuredevops_user_entitlement` summary fields (`principal_name`, `account_license_type`, `licensing_source`). No changes required to README.md (no new CLI flags or user-facing configuration), `docs/spec.md`, or `docs/architecture.md` (no new components or patterns). The change is purely additive and consistent with existing resource-summary documentation.
+- **Artifacts Produced:** `docs/features.md` (new section "Azure DevOps User Entitlement Summary Fields (Feature 115)" added before "Future Considerations")
 - **Problems Encountered:** None
 
 ---
@@ -113,12 +113,12 @@ Implemented feature 048 across 4 tasks:
 **Agent:** code-reviewer-coding-agent
 **Branch:** copilot/orchestrate-feature
 
-**Summary:** Reviewed implementation of feature 048. All acceptance criteria met. 1206/1206 tests pass. Implementation is clean, minimal, and consistent with the specification. Mapping entry correctly added under `// azuredevops` section in `ResourceSummaryMappings.cs`. Unit tests TC-01 through TC-04 cover all required cases. Snapshot matches spec examples exactly. `docs/features.md` updated by Technical Writer.
+**Summary:** Reviewed implementation of feature 115. All acceptance criteria met. 1206/1206 tests pass. Implementation is clean, minimal, and consistent with the specification. Mapping entry correctly added under `// azuredevops` section in `ResourceSummaryMappings.cs`. Unit tests TC-01 through TC-04 cover all required cases. Snapshot matches spec examples exactly. `docs/features.md` updated by Technical Writer.
 
 **Decision:** APPROVED ✅
 
 **Artifacts Produced:**
-- `docs/features/048-azuredevops-user-entitlement-summary/code-review.md`
+- `docs/features/115-azuredevops-user-entitlement-summary/code-review.md`
 
 **Problems Encountered:** None
 

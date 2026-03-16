@@ -43,7 +43,7 @@ internal static class ResourceSummaryHtmlBuilder
         // Tracks whether we switched to principal_name so we can include remaining
         // mapped attributes in the summary line (e.g., account_license_type, licensing_source
         // for azuredevops_user_entitlement).
-        // Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+        // Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
         var usedPrincipalNameFallback = false;
         if (string.IsNullOrWhiteSpace(nameValue))
         {
@@ -125,7 +125,7 @@ internal static class ResourceSummaryHtmlBuilder
         // When principal_name was used as the primary identifier, include remaining mapped
         // attributes in the summary line so all key fields appear in the details header
         // (e.g., account_license_type and licensing_source for azuredevops_user_entitlement).
-        // Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+        // Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
         if (usedPrincipalNameFallback && string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
         {
             AppendRemainingMappedAttributes(detailParts, flatState, model.Type);
@@ -277,7 +277,7 @@ internal static class ResourceSummaryHtmlBuilder
     /// identifier (e.g., principal_name for azuredevops_user_entitlement). The remaining
     /// mapped keys (e.g., account_license_type, licensing_source) are added to the detail
     /// parts so they appear in the summary line of the details block.
-    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
     /// </remarks>
     /// <param name="detailParts">The list of detail parts to append to.</param>
     /// <param name="flatState">The flattened resource state dictionary.</param>

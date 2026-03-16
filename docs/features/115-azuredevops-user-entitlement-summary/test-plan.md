@@ -11,7 +11,7 @@ All test cases are fully automated and run via:
 scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
 ```
 
-Reference: `docs/features/048-azuredevops-user-entitlement-summary/specification.md`
+Reference: `docs/features/115-azuredevops-user-entitlement-summary/specification.md`
 
 ---
 

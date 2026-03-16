@@ -176,7 +176,7 @@ public class ResourceSummaryBuilderTests
 
     /// <summary>
     /// TC-01: All three azuredevops_user_entitlement fields populated → all appear in summary.
-    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
     /// </summary>
     [Test]
     public void BuildSummary_AzureDevOpsUserEntitlement_AllFieldsPopulated_ShowsAllFields()
@@ -194,7 +194,7 @@ public class ResourceSummaryBuilderTests
 
     /// <summary>
     /// TC-02: licensing_source empty → omitted from summary.
-    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
     /// </summary>
     [Test]
     public void BuildSummary_AzureDevOpsUserEntitlement_LicensingSourceEmpty_OmittedFromSummary()
@@ -212,7 +212,7 @@ public class ResourceSummaryBuilderTests
 
     /// <summary>
     /// TC-03: Only principal_name populated → only that appears in summary.
-    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
     /// </summary>
     [Test]
     public void BuildSummary_AzureDevOpsUserEntitlement_OnlyPrincipalName_ShowsOnlyPrincipalName()
@@ -230,7 +230,7 @@ public class ResourceSummaryBuilderTests
 
     /// <summary>
     /// TC-04: All fields empty → fallback (address-based summary).
-    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
     /// </summary>
     [Test]
     public void BuildSummary_AzureDevOpsUserEntitlement_AllFieldsEmpty_FallsBackToAddress()

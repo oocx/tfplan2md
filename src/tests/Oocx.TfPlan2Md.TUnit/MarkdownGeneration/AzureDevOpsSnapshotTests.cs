@@ -58,7 +58,7 @@ public class AzureDevOpsSnapshotTests
 
     /// <summary>
     /// Verifies the Azure DevOps user entitlement snapshot output matches the approved baseline.
-    /// Related feature: docs/features/048-azuredevops-user-entitlement-summary/specification.md.
+    /// Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
     /// </summary>
     [Test]
     public void Snapshot_AzureDevOps_UserEntitlement_MatchesBaseline()

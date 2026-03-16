@@ -7,7 +7,7 @@ display `principal_name`, `account_license_type`, and `licensing_source` in the 
 line — omitting any field that is empty or absent. This is a single-line production code
 change backed by four unit tests and one snapshot test.
 
-Reference: `docs/features/048-azuredevops-user-entitlement-summary/specification.md`
+Reference: `docs/features/115-azuredevops-user-entitlement-summary/specification.md`
 
 ---
 

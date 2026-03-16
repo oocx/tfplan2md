@@ -15,9 +15,9 @@ PR comments instead of falling back to a bare resource address.
 **Purpose:** Focus testing on the specific summary-line improvements for
 `azuredevops_user_entitlement` resources.
 
-**Source Plan Path:** `docs/features/048-azuredevops-user-entitlement-summary/uat-plan.json`
+**Source Plan Path:** `docs/features/115-azuredevops-user-entitlement-summary/uat-plan.json`
 
-**Rendered Output Path:** `docs/features/048-azuredevops-user-entitlement-summary/uat-plan.md`
+**Rendered Output Path:** `docs/features/115-azuredevops-user-entitlement-summary/uat-plan.md`
 
 **Plan Requirements:**
 - **MUST be a real Terraform plan JSON** (`format_version: "1.2"`) targeting the
@@ -44,8 +44,8 @@ PR comments instead of falling back to a bare resource address.
 ```bash
 # Generate the rendered output from the plan
 dotnet run --project src/Oocx.TfPlan2Md -- \
-  docs/features/048-azuredevops-user-entitlement-summary/uat-plan.json \
-  > docs/features/048-azuredevops-user-entitlement-summary/uat-plan.md
+  docs/features/115-azuredevops-user-entitlement-summary/uat-plan.json \
+  > docs/features/115-azuredevops-user-entitlement-summary/uat-plan.md
 ```
 
 ### Comprehensive Demo (Regression Test)

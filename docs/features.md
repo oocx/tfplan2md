@@ -3032,7 +3032,7 @@ No changes to CLI options, output format, report content, or behaviour. All exis
 
 See [docs/features/111-code-simplification/](features/111-code-simplification/) for specification, architecture, and implementation details.
 
-## Azure DevOps User Entitlement Summary Fields (Feature 048)
+## Azure DevOps User Entitlement Summary Fields (Feature 115)
 
 **Status:** ✅ Implemented
 
@@ -3048,7 +3048,7 @@ See [docs/features/111-code-simplification/](features/111-code-simplification/) 
 - Fields are shown only when non-empty — absent or null values are silently omitted, keeping the summary clean.
 - When all three fields are empty the summary falls back to the resource address only (no regression from the previous provider-level fallback).
 
-See [docs/features/048-azuredevops-user-entitlement-summary/specification.md](features/048-azuredevops-user-entitlement-summary/specification.md) for the full specification.
+See [docs/features/115-azuredevops-user-entitlement-summary/specification.md](features/115-azuredevops-user-entitlement-summary/specification.md) for the full specification.
 
 ## Future Considerations
 

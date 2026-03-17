@@ -1,0 +1,6 @@
+# CODEOWNERS
+# Specifies owners for all files in the repository.
+# Required pull request reviews will be requested from these owners.
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @oocx

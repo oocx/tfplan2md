@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -93,7 +93,7 @@ jobs:
 
       - name: Setup Node
         if: steps.filter.outputs.website_changed == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 20
           cache: npm
@@ -130,7 +130,7 @@ jobs:
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
           global-json-file: src/global.json
 
@@ -178,7 +178,7 @@ jobs:
       - name: Check coverage override label
         id: coverage_override
         if: steps.filter.outputs.changed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             const labels = context.payload.pull_request.labels?.map(label => label.name) ?? [];
@@ -225,21 +225,21 @@ jobs:
 
       - name: Publish test results
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action@2ceeed2b8f26e15b06c3846719f75354febd9e7b # v2.23.0
         with:
           files: ./TestResults/*.trx
           check_name: 'Test Results'
 
       - name: Upload coverage report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: coverage-report
           path: ./TestResults/coverage-report
 
       - name: Upload Cobertura report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: coverage-cobertura
           path: ./TestResults/**/coverage.cobertura.xml
@@ -260,7 +260,7 @@ jobs:
 
       - name: Upload coverage badge and history
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: coverage-badge-history
           path: |
@@ -269,7 +269,7 @@ jobs:
 
       - name: Post coverage summary comment
         if: steps.filter.outputs.changed == 'true' && (success() || failure()) && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             const fs = require('fs');
@@ -304,7 +304,7 @@ jobs:
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 20
 

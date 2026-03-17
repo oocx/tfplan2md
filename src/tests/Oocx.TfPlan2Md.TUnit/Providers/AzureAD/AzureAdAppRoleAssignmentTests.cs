@@ -445,12 +445,18 @@ public class AzureAdAppRoleAssignmentTests
             "azuread",
             new Change([action], null, afterState, null, null, null));
 
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureADModule(
+            principalMapper: principalMapper,
+            appRoleResolver: appRoleResolver));
+        var iconProviderRegistry = providerRegistry.CreateContributionSet().CreateIconProviderRegistry();
+
         return AzureAdSummaryBuilder.BuildSummaryHtml(
             model,
             resourceChange,
             action,
             principalMapper,
-            iconProviderRegistry: null,
+            iconProviderRegistry,
             appRoleResolver);
     }
 }

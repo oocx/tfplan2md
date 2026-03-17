@@ -78,3 +78,12 @@
   - Updated `docs/features/116-azuread-app-role-assignment/uat-plan.json` — added delete coverage and aligned the known create resource name to `user_read_all`
   - Updated `docs/features/116-azuread-app-role-assignment/uat-plan.md` — re-rendered from `uat-plan.json` using real tfplan2md output
 - **Problems Encountered:** None
+
+### Release Manager
+- **Date:** 2026-03-17
+- **Summary:** Reviewed the Feature 116 release artifacts, drafted user-focused release notes, and generated focused screenshots for the Azure AD app role assignment summary rendering. Verified that release execution is still blocked because the latest code review artifact is not approved and the required Technical Writer work-protocol entry is still missing.
+- **Artifacts Produced:**
+  - `docs/features/116-azuread-app-role-assignment/release-notes.md`
+  - `docs/features/116-azuread-app-role-assignment/azuread-app-role-assignment-known-role.png`
+  - `docs/features/116-azuread-app-role-assignment/azuread-app-role-assignment-fallbacks.png`
+- **Problems Encountered:** Release remains blocked pending a refreshed approved code review and a Technical Writer entry in `work-protocol.md`.

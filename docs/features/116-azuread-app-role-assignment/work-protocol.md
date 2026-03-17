@@ -38,3 +38,16 @@
 - **Artifacts Produced:**
   - `docs/features/116-azuread-app-role-assignment/tasks.md`
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2025-07-15
+- **Summary:** Updated feature documentation to reflect expanded scope (3 resource types instead of 1, 6 icon mappings, broadened value formatter scope) and added 24 unit tests covering the resolver, formatter, and summary builders for all three resource types.
+- **Artifacts Produced:**
+  - Updated `docs/features/116-azuread-app-role-assignment/specification.md` — added 2 new resource types to scope, updated success criteria, documented icon mappings and formatter scope
+  - Updated `docs/features/116-azuread-app-role-assignment/architecture.md` — added new renderers, builder methods, updated components/icons tables
+  - Updated `docs/features/116-azuread-app-role-assignment/test-plan.md` — added TC-18 through TC-22 for directory role and delegated permission grant
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/MicrosoftGraphAppRoleResolverTests.cs` — 8 tests for GUID resolution
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AppRoleIdFormatterTests.cs` — 6 tests for value formatting
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdAppRoleAssignmentTests.cs` — 10 tests for summary builders
+- **Problems Encountered:** Minor compilation fix needed for `Change` constructor (requires all parameters, not object initializer) and tuple element naming (SA1316 requires PascalCase)
+- **Test Results:** All 1230 tests pass (0 failures, 0 skipped)

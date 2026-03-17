@@ -6,23 +6,25 @@ No new architectural patterns required — this feature reuses established patte
 
 ## Analysis
 
-This feature adds human-readable summary display and GUID-to-name resolution for `azuread_app_role_assignment` resources. Every integration point has an existing, well-documented pattern that should be followed directly:
+This feature adds human-readable summary display and GUID-to-name resolution for three Azure AD resource types: `azuread_app_role_assignment`, `azuread_directory_role_assignment`, and `azuread_service_principal_delegated_permission_grant`. Every integration point has an existing, well-documented pattern that should be followed directly:
 
 | Concern | Existing Pattern | What This Feature Does |
 |---------|-----------------|----------------------|
 | GUID → name mapping (static, built-in) | `AzureRoleDefinitionsRegistry` + `AzureRoleDefinitions.json` → `FrozenDictionary` | New `MicrosoftGraphAppRolesRegistry` + `MicrosoftGraphAppRoles.json` → `FrozenDictionary` |
 | Resolver interface + implementation | `IRoleDefinitionResolver` / `AzureRoleDefinitionResolver` | New `IAppRoleResolver` / `MicrosoftGraphAppRoleResolver` |
 | Resolver info record | `RoleDefinitionInfo(Name, Id, FullName)` | Reuse `RoleDefinitionInfo` directly (same semantics: Name, Id, FullName) |
-| Summary builder for resource type | `AzureAdSummaryBuilder.Groups.cs` partial class | New `AzureAdSummaryBuilder.AppRoleAssignments.cs` partial class |
-| Summary factory registration | `AzureADModule.RegisterFactories()` | Add `azuread_app_role_assignment` registration |
+| Summary builder for resource type | `AzureAdSummaryBuilder.Groups.cs` partial class | New `AzureAdSummaryBuilder.AppRoleAssignments.cs` partial class with 3 builder methods |
+| Summary factory registration | `AzureADModule.RegisterFactories()` | Add `azuread_app_role_assignment`, `azuread_directory_role_assignment`, and `azuread_service_principal_delegated_permission_grant` registrations |
 | Value formatter implementation | `RoleDefinitionFormatter`, `PrincipalIdFormatter` | New `AppRoleIdFormatter` + reuse `PrincipalIdFormatter` |
-| Value formatter registration | `AzureRmValueFormatterRegistration` | New registration logic in `AzureADModule.RegisterValueFormatters()` |
+| Value formatter registration | `AzureRmValueFormatterRegistration` | New registration logic in `AzureADModule.RegisterValueFormatters()` scoped to all `azuread` resources |
 | Embedded JSON source generation | `AdditionalFiles` + `EmbedAsJson="true"` in `.csproj` | Add new entry for `MicrosoftGraphAppRoles.json` |
 | JSON serialization context | `AzureRoleDefinitionsJsonContext` | New `MicrosoftGraphAppRolesJsonContext` (identical pattern) |
 | `EmbeddedJsonPayloads` accessor | `AzureRoleDefinitions` property | New `MicrosoftGraphAppRoles` property |
-| Icon registration | `azuread-icons.json` rules | Add 🔑 rule for `azuread_app_role_assignment` |
-| Resource renderer | `AzureAdDelegatingRenderer` subclasses | New `AppRoleAssignmentRenderer` subclass |
+| Icon registration | `azuread-icons.json` rules | 6 icon rules: 🔑 `app_role_id`, 👤 `principal_object_id`, 🎯 `resource_object_id`, 💻 `service_principal_object_id`, 🛡️ `role_definition_id`, 📋 `claim_values` |
+| Resource renderer | `AzureAdDelegatingRenderer` subclasses | New `AppRoleAssignmentRenderer`, `DirectoryRoleAssignmentRenderer`, `DelegatedPermissionGrantRenderer` subclasses |
 | Provider module wiring | `AzureADModule` constructor + `CompositionRoot.CreateProviderRegistry()` | Pass `IAppRoleResolver` to `AzureADModule`, wire in `CompositionRoot` |
+| Provider fallback summary keys | `ResourceSummaryMappings.ProviderFallbacks` | `azuread` provider fallback includes `display_name` and `principal_object_id` |
+| Resource-specific summary keys | `ResourceSummaryMappings.ResourceMappings` | Entries for all 3 resource types with their relevant attribute keys |
 
 Because **all** the infrastructure patterns already exist, this feature is a straightforward extension using the established architecture. No new architectural decisions are needed.
 
@@ -112,10 +114,13 @@ The source generator (`JsonEmbedGenerator`) will auto-generate the `EmbeddedJson
 
 **File:** `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.AppRoleAssignments.cs` (new partial class file)
 
-- Add constant `AppRoleAssignmentResourceType = "azuread_app_role_assignment"`
-- Add method `BuildAppRoleAssignmentSummaryHtml(ResourceChangeModel, object? state, IPrincipalMapper, IAppRoleResolver, IconProviderRegistry?)`
+Contains three builder methods for the three resource types:
 
-**Summary format:** `{action} azuread_app_role_assignment <b><code>{name}</code></b> — <code>{role}</code> → <code>{principal}</code> on <code>{resource}</code>`
+#### 5a. `BuildAppRoleAssignmentSummaryHtml`
+
+- Constant `AppRoleAssignmentResourceType = "azuread_app_role_assignment"`
+- Method `BuildAppRoleAssignmentSummaryHtml(ResourceChangeModel, object? state, IPrincipalMapper, IAppRoleResolver?, IconProviderRegistry?)`
+- **Summary format:** `{principal} → {role} → {resource}`
 
 **Resolution order** (per specification):
 
@@ -124,6 +129,29 @@ The source generator (`JsonEmbedGenerator`) will auto-generate the `EmbeddedJson
 | `{role}` | `app_role_id` | 1. `IAppRoleResolver.GetAppRole()` → Name; 2. Raw GUID |
 | `{principal}` | `principal_object_id` | 1. `IPrincipalMapper.GetName()` → display name; 2. Computed `principal_display_name` from state; 3. Raw GUID |
 | `{resource}` | `resource_object_id` | 1. `IPrincipalMapper.GetName()` → display name; 2. Computed `resource_display_name` from state; 3. Raw GUID |
+
+#### 5b. `BuildDirectoryRoleAssignmentSummaryHtml`
+
+- Constant `DirectoryRoleAssignmentResourceType = "azuread_directory_role_assignment"`
+- Method `BuildDirectoryRoleAssignmentSummaryHtml(ResourceChangeModel, object? state, IPrincipalMapper, IconProviderRegistry?)`
+- **Summary format:** `{principal} → {role_definition_id}`
+
+| Component | Attribute | Resolution |
+|-----------|-----------|------------|
+| `{principal}` | `principal_object_id` | 1. `IPrincipalMapper.GetName()` → display name; 2. Raw GUID |
+| `{role_definition_id}` | `role_definition_id` | Raw value (no built-in resolution) |
+
+#### 5c. `BuildDelegatedPermissionGrantSummaryHtml`
+
+- Constant `DelegatedPermissionGrantResourceType = "azuread_service_principal_delegated_permission_grant"`
+- Method `BuildDelegatedPermissionGrantSummaryHtml(ResourceChangeModel, object? state, IPrincipalMapper, IconProviderRegistry?)`
+- **Summary format:** `{service_principal} → {claims} → {resource}`
+
+| Component | Attribute | Resolution |
+|-----------|-----------|------------|
+| `{service_principal}` | `service_principal_object_id` | 1. `IPrincipalMapper.GetName()` → display name; 2. Raw GUID |
+| `{claims}` | `claim_values` | Joined array values, or `(no claims)` when empty |
+| `{resource}` | `resource_object_id` | 1. `IPrincipalMapper.GetName()` → display name; 2. Raw GUID |
 
 ### 6. Summary Factory Updates
 
@@ -148,15 +176,21 @@ The source generator (`JsonEmbedGenerator`) will auto-generate the `EmbeddedJson
 
 #### `RegisterFactories()`:
 - Pass `_appRoleResolver` to `AzureAdSummaryFactory` constructor
-- Add: `registry.RegisterFactory("azuread_app_role_assignment", summaryFactory);`
+- Register three resource types:
+  - `azuread_app_role_assignment`
+  - `azuread_directory_role_assignment`
+  - `azuread_service_principal_delegated_permission_grant`
 
 #### `RegisterValueFormatters()`:
-- Register an `AppRoleIdFormatter` for `app_role_id` attribute on `azuread_app_role_assignment` resources
-- Register a `PrincipalIdFormatter` for `principal_object_id` and `resource_object_id` attributes (reuse existing `PrincipalIdFormatter` from `Platforms/Azure/`)
-- Use match patterns scoped to `azuread` provider and `azuread_app_role_assignment` resource type
+- Register an `AppRoleIdFormatter` for `app_role_id` attribute scoped to **all `azuread` resources** (provider pattern `(^azuread$|.*/azuread$)`)
+- Register a `PrincipalIdFormatter` for `principal_object_id` and `resource_object_id` attributes scoped to all `azuread` resources
+- Use match patterns scoped to `azuread` provider (not individual resource types) for broader coverage
 
 #### `RegisterResourceRenderers()`:
-- Add: `registry.Register(new AppRoleAssignmentRenderer());`
+- Add three renderers:
+  - `registry.Register(new AppRoleAssignmentRenderer());`
+  - `registry.Register(new DirectoryRoleAssignmentRenderer());`
+  - `registry.Register(new DelegatedPermissionGrantRenderer());`
 
 ### 8. Value Formatter: `AppRoleIdFormatter`
 
@@ -167,18 +201,26 @@ The source generator (`JsonEmbedGenerator`) will auto-generate the `EmbeddedJson
 - `TryFormat()` resolves the GUID via `IAppRoleResolver.GetAppRole()`, formats as `🔑 {Name} ({GUID})` (matching `RoleDefinitionFormatter` format: icon + FullName)
 - Returns `null` if the GUID cannot be resolved (raw value displayed)
 
-### 9. Resource Renderer
+### 9. Resource Renderers
 
 **File:** `src/Oocx.TfPlan2Md/Providers/AzureAD/Renderers/AzureAdResourceRenderers.cs`
 
-Add a new renderer class in the existing file (following the established pattern):
+Add three renderer classes (following the established pattern):
 
 ```
 internal sealed class AppRoleAssignmentRenderer : AzureAdDelegatingRenderer
 {
-    public AppRoleAssignmentRenderer()
-        : base("azuread_app_role_assignment")
-    { }
+    public AppRoleAssignmentRenderer() : base("azuread_app_role_assignment") { }
+}
+
+internal sealed class DirectoryRoleAssignmentRenderer : AzureAdDelegatingRenderer
+{
+    public DirectoryRoleAssignmentRenderer() : base("azuread_directory_role_assignment") { }
+}
+
+internal sealed class DelegatedPermissionGrantRenderer : AzureAdDelegatingRenderer
+{
+    public DelegatedPermissionGrantRenderer() : base("azuread_service_principal_delegated_permission_grant") { }
 }
 ```
 
@@ -186,15 +228,18 @@ internal sealed class AppRoleAssignmentRenderer : AzureAdDelegatingRenderer
 
 **File:** `src/Oocx.TfPlan2Md/Providers/AzureAD/Icons/azuread-icons.json`
 
-Add a rule for `azuread_app_role_assignment` using 🔑:
+Add 6 rules for assignment-related attributes:
 
-```json
-{
-  "resourceTypePattern": "(?i)^azuread_app_role_assignment$",
-  "attributeNamePattern": "(?i)^app_role_id$",
-  "icon": "🔑"
-}
-```
+| Attribute Pattern | Icon | Description |
+|-------------------|------|-------------|
+| `^app_role_id$` | 🔑 | App role permission being granted |
+| `^principal_object_id$` | 👤 | Principal receiving the assignment |
+| `^resource_object_id$` | 🎯 | Target resource API |
+| `^service_principal_object_id$` | 💻 | Service principal (delegated permission grants) |
+| `^role_definition_id$` | 🛡️ | Directory role being assigned |
+| `^claim_values$` | 📋 | Delegated permission scopes/claims |
+
+These are attribute-level rules (no `resourceTypePattern`), so they apply across all Azure AD resource types.
 
 ### 11. CompositionRoot Wiring
 
@@ -224,7 +269,7 @@ Add a rule for `azuread_app_role_assignment` using 🔑:
 | `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRolesJsonContext.cs` | AOT-safe JSON serialization context |
 | `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json` | Embedded JSON mapping GUIDs to permission names |
 | `src/Oocx.TfPlan2Md/Platforms/Azure/AppRoleIdFormatter.cs` | Value formatter for `app_role_id` detail table cells |
-| `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.AppRoleAssignments.cs` | Summary builder for app role assignment resources |
+| `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.AppRoleAssignments.cs` | Summary builder for app role, directory role, and delegated permission grant resources |
 
 ### Modified Files
 
@@ -232,12 +277,13 @@ Add a rule for `azuread_app_role_assignment` using 🔑:
 |------|---------|
 | `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj` | Add `AdditionalFiles` entry for `MicrosoftGraphAppRoles.json` |
 | `src/Oocx.TfPlan2Md/EmbeddedJsonPayloads.cs` | Add `MicrosoftGraphAppRoles` property |
-| `src/Oocx.TfPlan2Md/Providers/AzureAD/AzureADModule.cs` | Add constructor params, register factory/formatters/renderer for `azuread_app_role_assignment` |
+| `src/Oocx.TfPlan2Md/Providers/AzureAD/AzureADModule.cs` | Add constructor params, register factory/formatters/renderer for 3 resource types |
 | `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryFactory.cs` | Accept `IAppRoleResolver` in constructor, pass to builder |
-| `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.cs` | Add `IAppRoleResolver` parameter to `BuildSummaryHtml()`, add dispatch case |
-| `src/Oocx.TfPlan2Md/Providers/AzureAD/Renderers/AzureAdResourceRenderers.cs` | Add `AppRoleAssignmentRenderer` class |
-| `src/Oocx.TfPlan2Md/Providers/AzureAD/Icons/azuread-icons.json` | Add 🔑 icon rule |
+| `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.cs` | Add `IAppRoleResolver` parameter to `BuildSummaryHtml()`, add 3 dispatch cases |
+| `src/Oocx.TfPlan2Md/Providers/AzureAD/Renderers/AzureAdResourceRenderers.cs` | Add `AppRoleAssignmentRenderer`, `DirectoryRoleAssignmentRenderer`, `DelegatedPermissionGrantRenderer` classes |
+| `src/Oocx.TfPlan2Md/Providers/AzureAD/Icons/azuread-icons.json` | Add 6 icon rules for assignment attributes |
 | `src/Oocx.TfPlan2Md/CompositionRoot.cs` | Create and wire `IAppRoleResolver`, update `CreateProviderRegistry()` |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/Summaries/ResourceSummaryMappings.cs` | Add `azuread` provider fallback and 3 resource-specific summary key entries |
 
 ### Test Files (to be created by Developer)
 
@@ -245,7 +291,7 @@ Add a rule for `azuread_app_role_assignment` using 🔑:
 |------|---------|
 | Test for `MicrosoftGraphAppRoleResolver` | Resolution with known/unknown GUIDs |
 | Test for `AppRoleIdFormatter` | Formatting with resolved/unresolved GUIDs |
-| Test for `AzureAdSummaryBuilder.BuildAppRoleAssignmentSummaryHtml` | Summary generation with mapped/unmapped principals and roles, computed attribute fallbacks |
+| Test for `AzureAdSummaryBuilder` | Summary generation for all 3 resource types with mapped/unmapped principals and roles, computed attribute fallbacks |
 | Snapshot test data | Terraform plan JSON containing `azuread_app_role_assignment` resources |
 
 ## Design Rationale

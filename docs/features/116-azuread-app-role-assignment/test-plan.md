@@ -2,7 +2,11 @@
 
 ## Overview
 
-This test plan covers the `azuread_app_role_assignment` resource support feature, which adds human-readable summary display and GUID-to-name resolution for app role assignments in Terraform plan reports.
+This test plan covers the Azure AD role and permission assignment support feature, which adds human-readable summary display and GUID-to-name resolution for three resource types in Terraform plan reports:
+
+- `azuread_app_role_assignment` — application permission grants
+- `azuread_directory_role_assignment` — directory role grants
+- `azuread_service_principal_delegated_permission_grant` — delegated permission grants
 
 **Specification:** `docs/features/116-azuread-app-role-assignment/specification.md`
 **Architecture:** `docs/features/116-azuread-app-role-assignment/architecture.md`
@@ -17,7 +21,9 @@ This test plan covers the `azuread_app_role_assignment` resource support feature
 | Computed attributes used as fallbacks when mapper lookups fail | TC-14 | Unit |
 | Unmapped GUIDs display raw GUID gracefully | TC-02, TC-12 | Unit |
 | `AppRoleIdFormatter` formats known app role IDs with icon | TC-05, TC-06, TC-07, TC-08 | Unit |
-| Summary format follows established pattern | TC-09 through TC-15 | Unit |
+| App role assignment summary format follows established pattern | TC-09 through TC-15 | Unit |
+| Directory role assignment summary with mapped principal | TC-18, TC-19 | Unit |
+| Delegated permission grant summary with claims | TC-20, TC-21, TC-22 | Unit |
 | Resource registered in `AzureADModule` | TC-16 | Integration |
 | Summary rendering end-to-end with plan JSON | TC-17 | Integration |
 | Backward compatibility maintained | TC-17 | Integration |
@@ -296,7 +302,101 @@ No exception thrown; summary displays with empty or missing components handled g
 
 ---
 
-### Component 4: Integration Tests
+### Component 4: AzureAdSummaryBuilder.BuildDirectoryRoleAssignmentSummaryHtml
+
+**File:** `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdAppRoleAssignmentTests.cs`
+
+---
+
+#### TC-18: BuildDirectoryRoleAssignmentSummaryHtml_MappedPrincipal_ShowsPrincipalAndRole
+
+**Type:** Unit
+
+**Description:**
+Verifies summary HTML for `azuread_directory_role_assignment` when the principal is resolved via `IPrincipalMapper`.
+
+**Preconditions:**
+- `IPrincipalMapper` maps principal GUID to `"My Service Principal"`
+- State contains `role_definition_id` GUID
+
+**Expected Result:**
+Summary HTML shows the mapped principal with icon and the raw role definition ID:
+`➕\u00A0azuread_directory_role_assignment <b><code>example</code></b> — 👤 My Service Principal (<code>principal-guid</code>) → <code>role-template-id</code>`
+
+---
+
+#### TC-19: BuildDirectoryRoleAssignmentSummaryHtml_RawGuids_ShowsUnmappedValues
+
+**Type:** Unit
+
+**Description:**
+Verifies summary HTML for `azuread_directory_role_assignment` when no principal mappings are available.
+
+**Preconditions:**
+- Empty `IPrincipalMapper`
+- State contains raw GUIDs
+
+**Expected Result:**
+Summary HTML shows raw GUIDs for both principal and role definition ID.
+
+---
+
+### Component 5: AzureAdSummaryBuilder.BuildDelegatedPermissionGrantSummaryHtml
+
+**File:** `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdAppRoleAssignmentTests.cs`
+
+---
+
+#### TC-20: BuildDelegatedPermissionGrantSummaryHtml_WithClaimsAndMappedPrincipals_ShowsFullSummary
+
+**Type:** Unit
+
+**Description:**
+Verifies summary HTML for `azuread_service_principal_delegated_permission_grant` when service principal and resource are mapped and claims are present.
+
+**Preconditions:**
+- `IPrincipalMapper` maps service principal GUID to `"My App"`
+- `IPrincipalMapper` maps resource GUID to `"Microsoft Graph"`
+- State contains `claim_values: ["User.Read", "openid"]`
+
+**Expected Result:**
+Summary HTML: `➕\u00A0azuread_service_principal_delegated_permission_grant <b><code>example</code></b> — 💻 My App (<code>sp-guid</code>) → <code>User.Read, openid</code> → 🎯 Microsoft Graph (<code>resource-guid</code>)`
+
+---
+
+#### TC-21: BuildDelegatedPermissionGrantSummaryHtml_NoClaims_ShowsNoClaimsPlaceholder
+
+**Type:** Unit
+
+**Description:**
+Verifies summary HTML when `claim_values` array is empty.
+
+**Preconditions:**
+- Empty `claim_values` array
+- Empty `IPrincipalMapper`
+
+**Expected Result:**
+Summary HTML shows `<code>(no claims)</code>` for the claims component.
+
+---
+
+#### TC-22: BuildDelegatedPermissionGrantSummaryHtml_RawGuids_ShowsUnmappedValues
+
+**Type:** Unit
+
+**Description:**
+Verifies summary HTML when no principal mappings are available and claims are present.
+
+**Preconditions:**
+- Empty `IPrincipalMapper`
+- State contains raw GUIDs and claim values
+
+**Expected Result:**
+Summary HTML shows raw GUIDs for service principal and resource, with claim values displayed normally.
+
+---
+
+### Component 6: Integration Tests
 
 ---
 

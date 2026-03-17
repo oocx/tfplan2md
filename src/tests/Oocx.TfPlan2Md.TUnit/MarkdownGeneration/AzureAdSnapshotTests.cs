@@ -1,4 +1,5 @@
 using System.IO;
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
@@ -60,6 +61,29 @@ public class AzureAdSnapshotTests
     public void Snapshot_AzureAd_GroupMembers_NoConfiguration_MatchesBaseline()
     {
         AssertAzureAdSnapshot("no-configuration-block-plan.json", "no-configuration-block.md");
+    }
+
+    /// <summary>
+    /// Verifies the Feature 116 Azure AD app role assignment snapshot output matches the approved baseline
+    /// and preserves key rendering invariants.
+    /// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_AppRoleAssignment_MatchesBaseline()
+    {
+        var markdown = RenderAzureAdPlan("azuread-app-role-assignment-plan.json");
+
+        markdown.Should().Contain("User.Read.All");
+        markdown.Should().Contain("azuread_app_role_assignment");
+        markdown.Should().Contain("🔑 User.Read.All (df021288-bdef-4463-88db-98f22de89214)");
+        markdown.Should().Contain("99999999-9999-9999-9999-999999999999");
+        markdown.Should().Contain("My Service Principal");
+        markdown.Should().Contain("👤 My Service Principal");
+        markdown.Should().Contain("🎯 Microsoft Graph");
+        markdown.Should().Contain("→ <code>99999999-9999-9999-9999-999999999999</code> →");
+
+        SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, "azuread-app-role-assignment.md");
+        SnapshotTestAssertions.AssertMatchesSnapshot("azuread-app-role-assignment.md", markdown);
     }
 
     /// <summary>

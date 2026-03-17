@@ -62,9 +62,28 @@
       "icon": "❓"
     },
     {
-      "resourceTypePattern": "(?i)^azuread_app_role_assignment$",
       "attributeNamePattern": "(?i)^app_role_id$",
       "icon": "🔑"
+    },
+    {
+      "attributeNamePattern": "(?i)^principal_object_id$",
+      "icon": "👤"
+    },
+    {
+      "attributeNamePattern": "(?i)^resource_object_id$",
+      "icon": "🎯"
+    },
+    {
+      "attributeNamePattern": "(?i)^service_principal_object_id$",
+      "icon": "💻"
+    },
+    {
+      "attributeNamePattern": "(?i)^role_definition_id$",
+      "icon": "🛡️"
+    },
+    {
+      "attributeNamePattern": "(?i)^claim_values$",
+      "icon": "📋"
     }
   ]
 }

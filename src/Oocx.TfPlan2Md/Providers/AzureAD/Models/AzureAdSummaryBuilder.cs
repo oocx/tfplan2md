@@ -120,7 +120,17 @@ internal static partial class AzureAdSummaryBuilder
 
         if (string.Equals(model.Type, AppRoleAssignmentResourceType, StringComparison.OrdinalIgnoreCase))
         {
-            return BuildAppRoleAssignmentSummaryHtml(model, state, principalMapper, appRoleResolver);
+            return BuildAppRoleAssignmentSummaryHtml(model, state, principalMapper, appRoleResolver, iconProviderRegistry);
+        }
+
+        if (string.Equals(model.Type, DirectoryRoleAssignmentResourceType, StringComparison.OrdinalIgnoreCase))
+        {
+            return BuildDirectoryRoleAssignmentSummaryHtml(model, state, principalMapper, iconProviderRegistry);
+        }
+
+        if (string.Equals(model.Type, DelegatedPermissionGrantResourceType, StringComparison.OrdinalIgnoreCase))
+        {
+            return BuildDelegatedPermissionGrantSummaryHtml(model, state, principalMapper, iconProviderRegistry);
         }
 
         return ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);

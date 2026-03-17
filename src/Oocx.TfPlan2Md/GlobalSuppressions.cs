@@ -147,3 +147,10 @@ using System.Diagnostics.CodeAnalysis;
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
     Target = "~T:Oocx.TfPlan2Md.Parsing.TfPlanJsonContext")]
+
+[assembly: SuppressMessage(
+    "Maintainability",
+    "CA1506:Avoid excessive class coupling",
+    Justification = "Partial class summary builder aggregates multiple resource type dispatches.",
+    Scope = "type",
+    Target = "~T:Oocx.TfPlan2Md.Providers.AzureAD.Models.AzureAdSummaryBuilder")]

@@ -71,6 +71,8 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
         registry.RegisterFactory("azuread_service_principal", summaryFactory);
         registry.RegisterFactory("azuread_invitation", summaryFactory);
         registry.RegisterFactory("azuread_app_role_assignment", summaryFactory);
+        registry.RegisterFactory("azuread_directory_role_assignment", summaryFactory);
+        registry.RegisterFactory("azuread_service_principal_delegated_permission_grant", summaryFactory);
     }
 
     /// <summary>
@@ -80,17 +82,18 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
         // Register app role value formatters (independent of entity mapper)
-        if (_appRoleResolver is not null)
-        {
-            registry.Register(
-                new MatchPattern("(^azuread$|.*/azuread$)", "^azuread_app_role_assignment$", "^app_role_id$", null),
-                new AppRoleIdFormatter(_appRoleResolver));
-        }
+        registry.Register(
+            new MatchPattern(
+                "(^azuread$|.*/azuread$)",
+                null,
+                "^app_role_id$",
+                null),
+            new AppRoleIdFormatter(_appRoleResolver));
 
         if (_principalMapper is not null)
         {
             registry.Register(
-                new MatchPattern("(^azuread$|.*/azuread$)", "^azuread_app_role_assignment$", "^(principal_object_id|resource_object_id)$", null),
+                new MatchPattern("(^azuread$|.*/azuread$)", null, "^(principal_object_id|resource_object_id)$", null),
                 new PrincipalIdFormatter(_principalMapper));
         }
 
@@ -154,5 +157,7 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
         registry.Register(new InvitationRenderer());
         registry.Register(new ServicePrincipalRenderer());
         registry.Register(new AppRoleAssignmentRenderer());
+        registry.Register(new DirectoryRoleAssignmentRenderer());
+        registry.Register(new DelegatedPermissionGrantRenderer());
     }
 }

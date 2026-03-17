@@ -30,6 +30,13 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage(
     "Maintainability",
+    "CA1506:Avoid excessive class coupling",
+    Justification = "JSON source generation context - coupling is from generated code. Related feature: docs/features/116-azuread-app-role-assignment/.",
+    Scope = "type",
+    Target = "~T:Oocx.TfPlan2Md.Platforms.Azure.MicrosoftGraphAppRolesJsonContext")]
+
+[assembly: SuppressMessage(
+    "Maintainability",
     "CA1502:Avoid excessive complexity",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "member",
@@ -140,3 +147,10 @@ using System.Diagnostics.CodeAnalysis;
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
     Target = "~T:Oocx.TfPlan2Md.Parsing.TfPlanJsonContext")]
+
+[assembly: SuppressMessage(
+    "Maintainability",
+    "CA1506:Avoid excessive class coupling",
+    Justification = "Partial class summary builder aggregates multiple resource type dispatches.",
+    Scope = "type",
+    Target = "~T:Oocx.TfPlan2Md.Providers.AzureAD.Models.AzureAdSummaryBuilder")]

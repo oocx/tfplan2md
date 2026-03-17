@@ -1,4 +1,5 @@
 using System.IO;
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
@@ -63,6 +64,29 @@ public class AzureAdSnapshotTests
     }
 
     /// <summary>
+    /// Verifies the Feature 116 Azure AD app role assignment snapshot output matches the approved baseline
+    /// and preserves key rendering invariants.
+    /// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_AppRoleAssignment_MatchesBaseline()
+    {
+        var markdown = RenderAzureAdPlan("azuread-app-role-assignment-plan.json");
+
+        markdown.Should().Contain("<summary>➕ azuread_app_role_assignment <b><code>graph_user_read_all</code></b> — <code>👤 aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee</code> → <code>🛡️ User.Read.All</code> → <code>🎯 11111111-2222-3333-4444-555555555555</code></summary>");
+        markdown.Should().Contain("azuread_app_role_assignment");
+        markdown.Should().Contain("🛡️ User.Read.All (df021288-bdef-4463-88db-98f22de89214)");
+        markdown.Should().Contain("99999999-9999-9999-9999-999999999999");
+        markdown.Should().Contain("My Service Principal");
+        markdown.Should().Contain("👤 My Service Principal");
+        markdown.Should().Contain("🎯 Microsoft Graph");
+        markdown.Should().Contain("→ <code>🛡️ 99999999-9999-9999-9999-999999999999</code> →");
+
+        SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, "azuread-app-role-assignment.md");
+        SnapshotTestAssertions.AssertMatchesSnapshot("azuread-app-role-assignment.md", markdown);
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure AD plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
@@ -73,7 +97,7 @@ public class AzureAdSnapshotTests
         var json = File.ReadAllText(Path.Combine("TestData", testDataFile));
         var plan = _parser.Parse(json);
         var principalMapper = PrincipalMapperFactory.Create(DemoPaths.AzureAdPrincipalMappingPath);
-        var providerRegistry = CreateProviderRegistry();
+        var providerRegistry = CreateProviderRegistry(principalMapper);
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
         var model = new ReportModelBuilder(
@@ -108,11 +132,14 @@ public class AzureAdSnapshotTests
     /// Creates a provider registry that includes Azure AD support.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
+    /// <param name="principalMapper">The principal mapper used by the Azure AD module.</param>
     /// <returns>The configured provider registry.</returns>
-    private static ProviderRegistry CreateProviderRegistry()
+    private static ProviderRegistry CreateProviderRegistry(IPrincipalMapper principalMapper)
     {
         var registry = new ProviderRegistry();
-        registry.RegisterProvider(new AzureADModule());
+        registry.RegisterProvider(new AzureADModule(
+            principalMapper: principalMapper,
+            appRoleResolver: MicrosoftGraphAppRoleResolver.CreateBuiltIn()));
         return registry;
     }
 

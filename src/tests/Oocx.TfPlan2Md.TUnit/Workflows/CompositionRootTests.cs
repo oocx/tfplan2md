@@ -77,6 +77,7 @@ public class CompositionRootTests
         var azdoGroupMapper = root.CreateAzdoGroupMapper(mappingResult, diagnostics: null);
         var azdoProjectMapper = root.CreateAzdoProjectMapper(mappingResult, diagnostics: null);
         var azdoRepositoryMapper = root.CreateAzdoRepositoryMapper(mappingResult, diagnostics: null);
+        var appRoleResolver = root.CreateAppRoleResolver();
 
         var registry = root.CreateProviderRegistry(
             principalMapper,
@@ -86,7 +87,8 @@ public class CompositionRootTests
             azdoUserMapper,
             azdoGroupMapper,
             azdoProjectMapper,
-            azdoRepositoryMapper);
+            azdoRepositoryMapper,
+            appRoleResolver);
 
         var providers = registry.GetProviders();
         var providerNames = providers.Select(p => p.ProviderName).ToList();

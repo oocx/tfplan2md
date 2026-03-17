@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.39.0"></a>
+## [1.39.0](https://github.com/oocx/tfplan2md/compare/v1.38.0...v1.39.0) (2026-03-17)
+
+### ✨ Features
+
+* add azuread_app_role_assignment support with Microsoft Graph app role resolution ([106326a](https://github.com/oocx/tfplan2md/commit/106326aa6493ebb650d50e84f9d914112db9803b))
+* add directory role assignment and delegated permission grant support ([4711c2d](https://github.com/oocx/tfplan2md/commit/4711c2dc938d4292210f010e1ecf292beadbad71))
+
+### 🐛 Bug Fixes
+
+* address Feature 116 review blockers ([585e4f3](https://github.com/oocx/tfplan2md/commit/585e4f3f003eb3fc3602d7fae82f161dfcff28f5))
+* resolve compilation errors in integration tests; add missing tests, UAT artifacts, and features.md entry ([bb9e5f8](https://github.com/oocx/tfplan2md/commit/bb9e5f851776b4254ea53bda0ec6fdf8c371dab1))
+* restore deleted snapshots and correct Feature 116 summary icons SNAPSHOT_UPDATE_OK ([425a340](https://github.com/oocx/tfplan2md/commit/425a340e4aff900f0969e44728d58a9960782ae2))
+
+### 📚 Documentation
+
+* add architecture for azuread-app-role-assignment ([24e6af8](https://github.com/oocx/tfplan2md/commit/24e6af8687b86e29f48da198bdfa8cb08f3eab46))
+* add code review report for feature 116 ([5cb68ee](https://github.com/oocx/tfplan2md/commit/5cb68ee952c258c4759f9548caab4c8c63cc8380))
+* add feature 116 specification for azuread_app_role_assignment ([e188b07](https://github.com/oocx/tfplan2md/commit/e188b074456bf1a60c29de279291848b7b5c3492))
+* add implementation tasks for Azure AD App Role Assignment Support ([ddbdad2](https://github.com/oocx/tfplan2md/commit/ddbdad2cb71266b8887167c34a0c16cc72e83ba0))
+* add release notes for feature 116 ([eb7fc0a](https://github.com/oocx/tfplan2md/commit/eb7fc0a6f51ee3fa04ed40ce89f180949608df68))
+* add test plan and UAT test plan for Feature 116 (Azure AD App Role Assignment) ([301acdb](https://github.com/oocx/tfplan2md/commit/301acdba8f1bfa8d8916272268493fb44bd31f13))
+* update spec/arch/test-plan for expanded scope; add unit tests for resolver, formatter, and summary builders ([54c755a](https://github.com/oocx/tfplan2md/commit/54c755ab036dd2db7c407e3d9fca969a588821a3))
+
 <a name="1.38.0"></a>
 ## [1.38.0](https://github.com/oocx/tfplan2md/compare/v1.37.4...v1.38.0) (2026-03-16)
 

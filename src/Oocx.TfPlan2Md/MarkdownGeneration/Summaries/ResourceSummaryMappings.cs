@@ -75,7 +75,12 @@ internal static class ResourceSummaryMappings
         ["msgraph_resource"] = ["url", "body.displayName"],
         ["msgraph_update_resource"] = ["url", "body.displayName"],
         ["msgraph_resource_action"] = ["url", "action"],
-        ["msgraph_resource_collection"] = ["url", "parent_id"]
+        ["msgraph_resource_collection"] = ["url", "parent_id"],
+
+        // azuread
+        ["azuread_app_role_assignment"] = ["app_role_id", "principal_object_id", "resource_object_id"],
+        ["azuread_directory_role_assignment"] = ["principal_object_id", "role_definition_id"],
+        ["azuread_service_principal_delegated_permission_grant"] = ["service_principal_object_id", "resource_object_id", "claim_values"]
     };
 
     /// <summary>
@@ -84,6 +89,7 @@ internal static class ResourceSummaryMappings
     public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> ProviderFallbacks = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase)
     {
         ["azurerm"] = ["name", "resource_group_name", "location"],
+        ["azuread"] = ["display_name", "principal_object_id"],
         ["azuredevops"] = ["name", "project_id"],
         ["azapi"] = ["name", "type"],
         ["msgraph"] = ["url", "body.displayName"]

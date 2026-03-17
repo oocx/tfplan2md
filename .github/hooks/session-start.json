@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "./scripts/hooks/session-start.sh",
+        "cwd": ".",
+        "timeoutSec": 30,
+        "comment": "Calculate the next available work-item issue number at session start and write it to .next-issue-number"
+      }
+    ]
+  }
+}

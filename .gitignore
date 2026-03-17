@@ -67,3 +67,6 @@ artifacts/*.azdo.html
 artifacts/*.azdo-*.html
 artifacts/uat-minimal.md
 artifacts/uat-simulation-*.md
+
+# Pre-calculated next issue number (written by session-start hook)
+.next-issue-number

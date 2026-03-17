@@ -2842,7 +2842,13 @@ Outputs render as a 5-column table showing the change type, name, description, s
 
 Sensitive output values are masked as `(sensitive value)` by default to prevent accidental exposure of secrets in PR reports. Use `--show-sensitive` to reveal them when needed.
 
+This masking is unconditional: a sensitive output value always shows `(sensitive value)` in the table cell and is **never** emitted in the below-table block, even if the value is large enough to normally be rendered there. Large sensitive outputs are therefore never leaked verbatim in reports.
+
 Computed outputs (not yet known) display `(known after apply)`.
+
+### Large Output Value Formatting
+
+Output values that are too long to display inline in the table (compact JSON exceeding 80 characters, or values with line breaks) are moved to a below-table block for readability. JSON objects and arrays in these below-table blocks are **pretty-printed** with indentation and line breaks for easy review.
 
 ### Display Name Mappings
 
@@ -3025,6 +3031,51 @@ Internal refactoring to eliminate duplicate code, dead code, and unused paramete
 No changes to CLI options, output format, report content, or behaviour. All existing tests continue to pass without modification.
 
 See [docs/features/111-code-simplification/](features/111-code-simplification/) for specification, architecture, and implementation details.
+
+## Azure DevOps User Entitlement Summary Fields (Feature 115)
+
+**Status:** ✅ Implemented
+
+`azuredevops_user_entitlement` resources now display `principal_name`, `account_license_type`, and `licensing_source` in their summary line when those values are non-empty.
+
+**Example summary line (all fields populated):**
+
+```
+➕ azuredevops_user_entitlement module.team.azuredevops_user_entitlement.alice — alice@example.com | express | msdn
+```
+
+**Behaviour:**
+- Fields are shown only when non-empty — absent or null values are silently omitted, keeping the summary clean.
+- When all three fields are empty the summary falls back to the resource address only (no regression from the previous provider-level fallback).
+
+See [docs/features/115-azuredevops-user-entitlement-summary/specification.md](features/115-azuredevops-user-entitlement-summary/specification.md) for the full specification.
+
+## Azure AD App Role Assignment Enhancement (Feature 116)
+
+**Status:** ✅ Implemented
+
+Adds enhanced rendering for three Azure AD resource types:
+
+- **`azuread_app_role_assignment`** — Microsoft Graph API permission assignments
+- **`azuread_directory_role_assignment`** — Azure AD directory role assignments
+- **`azuread_service_principal_delegated_permission_grant`** — OAuth2 delegated permission grants
+
+### Key Capabilities
+
+- **GUID Resolution**: `app_role_id` GUIDs are resolved to human-readable Microsoft Graph permission names (e.g., `df021288-bdef-4463-88db-98f22de89214` → `User.Read.All`)
+- **Principal/Resource Resolution**: `principal_object_id` and `resource_object_id` are resolved to display names via `IPrincipalMapper`
+- **Computed Attribute Fallbacks**: Falls back to `principal_display_name` and `resource_display_name` from Terraform state when mapper has no entry
+- **Icon Mappings**: Resources use contextual icons — 🛡️ (app role), 👤 (principal), 🎯 (resource), 💻 (service principal), 🛡️ (directory role), 📋 (delegated permission)
+
+### Example Summary Lines
+
+```
+➕ azuread_app_role_assignment example — 👤 My Service Principal → 🛡️ User.Read.All → 🎯 Microsoft Graph
+➕ azuread_directory_role_assignment example — 👤 My Service Principal → 🛡️ fdd7a751-...
+➕ azuread_service_principal_delegated_permission_grant example — 💻 My App → 📋 User.Read, openid → 🎯 Microsoft Graph
+```
+
+See [docs/features/116-azuread-app-role-assignment/specification.md](features/116-azuread-app-role-assignment/specification.md) for the full specification.
 
 ## Future Considerations
 

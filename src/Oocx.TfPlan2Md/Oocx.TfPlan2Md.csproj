@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>13</LangVersion>
     <RootNamespace>Oocx.TfPlan2Md</RootNamespace>
-    <Version>1.37.3</Version>
+    <Version>1.39.0</Version>
     <AssemblyName>tfplan2md</AssemblyName>
     <RuntimeIdentifiers>linux-x64;linux-arm64;win-x64;win-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <PublishAot>true</PublishAot>
@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <AdditionalFiles Include="Platforms/Azure/AzureRoleDefinitions.json" EmbedAsJson="true" />
+    <AdditionalFiles Include="Platforms/Azure/MicrosoftGraphAppRoles.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/Shared/Icons/azure-common-icons.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/AzureAD/Icons/azuread-icons.json" EmbedAsJson="true" />

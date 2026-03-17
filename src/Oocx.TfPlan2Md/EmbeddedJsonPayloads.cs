@@ -15,6 +15,12 @@ internal static class EmbeddedJsonPayloads
     internal static ReadOnlySpan<byte> AzureRoleDefinitions => global::EmbeddedJsonResources.AzureRoleDefinitions.GetBytes();
 
     /// <summary>
+    /// Gets Microsoft Graph app roles JSON bytes.
+    /// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+    /// </summary>
+    internal static ReadOnlySpan<byte> MicrosoftGraphAppRoles => global::EmbeddedJsonResources.MicrosoftGraphAppRoles.GetBytes();
+
+    /// <summary>
     /// Gets AzAPI documentation mapping JSON bytes.
     /// </summary>
     internal static ReadOnlySpan<byte> AzureApiDocumentationMappings => global::EmbeddedJsonResources.AzureApiDocumentationMappings.GetBytes();

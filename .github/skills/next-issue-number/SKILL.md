@@ -9,15 +9,32 @@ description: Determine the next available issue number across all change types (
 Ensure unique issue numbering across all change types (feature, fix, workflow) by:
 1. Finding the highest number used in local docs folders (docs/features/, docs/issues/, docs/workflow/)
 2. Finding the highest number used in remote branches on GitHub (feature/NNN-*, fix/NNN-*, workflow/NNN-*)
-3. Calculating the next available number (max + 1)
-4. Immediately pushing the new branch to GitHub to reserve the number for other agents
+3. Finding the highest number used in recent `copilot/*` remote branches (less than one week old)
+4. Calculating the next available number (max + 1)
+5. Immediately pushing the new branch to GitHub to reserve the number for other agents
 
 This prevents duplicate issue numbers when multiple agents work concurrently or when work-in-progress exists on remote branches but not yet in main.
+
+## Session Start Hook
+
+A `sessionStart` hook (`.github/hooks/session-start.json`) automatically runs `scripts/next-issue-number.sh` when a new agent session begins and writes the result to `.next-issue-number`. This means the next issue number is pre-calculated for you at session start.
+
+**Read the pre-calculated value first** (fast, no network call required):
+```bash
+if [ -f .next-issue-number ]; then
+    NEXT_NUMBER=$(cat .next-issue-number)
+else
+    NEXT_NUMBER=$(scripts/next-issue-number.sh)
+fi
+echo "Next issue number: $NEXT_NUMBER"
+```
+
+The `.next-issue-number` file is gitignored and refreshed each session. If it is missing or stale, fall back to running the script directly.
 
 ## Hard Rules
 ### Must
 - [ ] Check ALL change types (feature, fix, workflow), not just one type
-- [ ] Check both local docs folders AND remote GitHub branches
+- [ ] Check both local docs folders AND remote GitHub branches (including recent copilot/* branches)
 - [ ] Use the helper script `scripts/next-issue-number.sh` which handles all lookups
 - [ ] Push the new branch immediately after creation (before making any changes) to reserve the number
 - [ ] Format the number as 3 digits with leading zeros (e.g., 033, 034, 035)
@@ -31,8 +48,12 @@ This prevents duplicate issue numbers when multiple agents work concurrently or 
 
 ## Golden Example
 ```bash
-# Step 1: Determine the next issue number
-NEXT_NUMBER=$(scripts/next-issue-number.sh)
+# Step 1: Determine the next issue number (prefer pre-calculated value from session hook)
+if [ -f .next-issue-number ]; then
+    NEXT_NUMBER=$(cat .next-issue-number)
+else
+    NEXT_NUMBER=$(scripts/next-issue-number.sh)
+fi
 echo "Next issue number: $NEXT_NUMBER"
 
 # Step 2: Create the branch with the determined number
@@ -48,9 +69,13 @@ git push -u origin HEAD
 ## Actions
 
 ### For Requirements Engineer (New Features)
-1. **Before creating a feature branch**, run the helper script to get the next number:
+1. **Before creating a feature branch**, get the next number:
    ```bash
-   NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   if [ -f .next-issue-number ]; then
+       NEXT_NUMBER=$(cat .next-issue-number)
+   else
+       NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   fi
    ```
 2. Update and switch to main:
    ```bash
@@ -67,9 +92,13 @@ git push -u origin HEAD
 5. Proceed with gathering requirements and creating the specification
 
 ### For Issue Analyst (Bug Fixes)
-1. **Before creating a fix branch**, run the helper script to get the next number:
+1. **Before creating a fix branch**, get the next number:
    ```bash
-   NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   if [ -f .next-issue-number ]; then
+       NEXT_NUMBER=$(cat .next-issue-number)
+   else
+       NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   fi
    ```
 2. Update and switch to main:
    ```bash
@@ -86,9 +115,13 @@ git push -u origin HEAD
 5. Proceed with issue investigation and analysis
 
 ### For Workflow Engineer (Workflow Improvements)
-1. **Before creating a workflow branch**, run the helper script to get the next number:
+1. **Before creating a workflow branch**, get the next number:
    ```bash
-   NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   if [ -f .next-issue-number ]; then
+       NEXT_NUMBER=$(cat .next-issue-number)
+   else
+       NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   fi
    ```
 2. Update and switch to main:
    ```bash
@@ -116,7 +149,7 @@ Next available number based on local docs: 033
 In this case, manually verify on GitHub that no higher numbers exist in remote branches.
 
 ### If the calculated number already exists
-The script checks both local and remote sources. If it still returns a number that exists:
+The script checks local docs, named branches, and recent copilot/* branches. If it still returns a number that exists:
 1. Verify the script ran correctly: `scripts/next-issue-number.sh`
 2. Check if someone pushed a new branch since you ran the script
 3. Delete your branch and re-run the script to get a fresh number

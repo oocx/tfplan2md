@@ -1,0 +1,43 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "planned_values": {
+    "outputs": {
+      "sensitive_credentials": {
+        "sensitive": true,
+        "value": null
+      },
+      "role_assignments": {
+        "sensitive": false,
+        "value": [
+          {"principal": "alice@example.com", "role": "Contributor", "scope": "/subscriptions/abc123"},
+          {"principal": "bob@example.com", "role": "Reader", "scope": "/subscriptions/abc123"},
+          {"principal": "svc-deploy@example.com", "role": "Owner", "scope": "/subscriptions/abc123/resourceGroups/prod-rg"}
+        ]
+      }
+    }
+  },
+  "resource_changes": [],
+  "output_changes": {
+    "sensitive_credentials": {
+      "actions": ["create"],
+      "before": null,
+      "after": {"api_key": "sk-very-long-secret-token-that-exceeds-eighty-characters-1234567890abcdef", "endpoint": "https://api.example.com/v2"},
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": true
+    },
+    "role_assignments": {
+      "actions": ["create"],
+      "before": null,
+      "after": [
+        {"principal": "alice@example.com", "role": "Contributor", "scope": "/subscriptions/abc123"},
+        {"principal": "bob@example.com", "role": "Reader", "scope": "/subscriptions/abc123"},
+        {"principal": "svc-deploy@example.com", "role": "Owner", "scope": "/subscriptions/abc123/resourceGroups/prod-rg"}
+      ],
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  }
+}

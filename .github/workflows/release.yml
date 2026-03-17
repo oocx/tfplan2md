@@ -354,12 +354,22 @@ jobs:
             mcr.microsoft.com/dotnet/sdk:10.0-alpine \
             sh -c 'apk add --no-cache clang build-base zlib-dev linux-headers && dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r "$RID" --self-contained true -p:PublishAot=true -o "/work/artifacts/$PLATFORM"'
 
+      - name: Fix artifact ownership (musl builds)
+        if: startsWith(matrix.platform, 'linux-musl-')
+        run: sudo chown -R "$(id -u):$(id -g)" "artifacts/${{ matrix.platform }}"
 
       - name: Install UPX (Linux)
         if: startsWith(matrix.platform, 'linux-') && matrix.compress_with_upx
         run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends upx-ucl
+          # Non-musl Linux builds run inside a Docker container as root (no sudo needed).
+          # Musl builds run directly on the GitHub-hosted runner as a non-root user (sudo required).
+          if [ "$(id -u)" = "0" ]; then
+            apt-get update -qq
+            apt-get install -y --no-install-recommends upx-ucl
+          else
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends upx-ucl
+          fi
 
       - name: Install UPX (Windows)
         if: matrix.os == 'windows-latest' && matrix.compress_with_upx

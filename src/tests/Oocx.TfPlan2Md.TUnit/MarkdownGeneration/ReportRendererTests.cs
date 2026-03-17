@@ -180,6 +180,124 @@ public class ReportRendererTests
     }
 
     /// <summary>
+    /// Verifies that a sensitive AND large output shows "(sensitive value)" in the table cell,
+    /// not "_(see below)_".
+    /// Related issue: docs/issues/fix-sensitive-large-value-rendering/analysis.md (Bug 1A).
+    /// </summary>
+    [Test]
+    public void Render_SensitiveLargeOutput_TableCellShowsSensitiveValue()
+    {
+        // A value long enough to be classified as large (> 80 chars compact) but also sensitive.
+        var largeSecret = new string('x', 90);
+        var model = CreateModel(
+            moduleChanges: [],
+            globalOutputs:
+            [
+                new OutputChangeModel
+                {
+                    Name = "jwt_token",
+                    Description = "A large sensitive value",
+                    IsSensitive = true,
+                    Action = "create",
+                    ActionSymbol = "➕",
+                    ProviderName = "registry.terraform.io/hashicorp/azurerm",
+                    Value = largeSecret,
+                    IsComputed = false,
+                    IsMasked = true,
+                    ModuleAddress = string.Empty,
+                    IsLargeOutputValue = true,
+                    ReferencedAttributeName = "jwt_token"
+                }
+            ]);
+
+        var renderer = new ReportRenderer();
+        var markdown = renderer.Render(model, CreateContext());
+
+        markdown.Should().Contain("(sensitive value)");
+        markdown.Should().NotContain("_(see below)_");
+    }
+
+    /// <summary>
+    /// Verifies that a sensitive AND large output does not render the raw value in a below-table block.
+    /// Related issue: docs/issues/fix-sensitive-large-value-rendering/analysis.md (Bug 1B).
+    /// </summary>
+    [Test]
+    public void Render_SensitiveLargeOutput_BelowTableBlockOmitted()
+    {
+        // A value long enough to be classified as large (> 80 chars compact) but also sensitive.
+        var largeSecret = new string('s', 90);
+        var model = CreateModel(
+            moduleChanges: [],
+            globalOutputs:
+            [
+                new OutputChangeModel
+                {
+                    Name = "access_token",
+                    Description = "A large sensitive value",
+                    IsSensitive = true,
+                    Action = "create",
+                    ActionSymbol = "➕",
+                    ProviderName = "registry.terraform.io/hashicorp/azurerm",
+                    Value = largeSecret,
+                    IsComputed = false,
+                    IsMasked = true,
+                    ModuleAddress = string.Empty,
+                    IsLargeOutputValue = true,
+                    ReferencedAttributeName = "access_token"
+                }
+            ]);
+
+        var renderer = new ReportRenderer();
+        var markdown = renderer.Render(model, CreateContext());
+
+        // The raw secret must not appear anywhere in the rendered markdown.
+        markdown.Should().NotContain(largeSecret);
+        // No code block should be emitted for this output.
+        markdown.Should().NotContain("```json");
+    }
+
+    /// <summary>
+    /// Verifies that a large JSON array output is rendered as pretty-printed JSON in the below-table block.
+    /// Related issue: docs/issues/fix-sensitive-large-value-rendering/analysis.md (Bug 2).
+    /// </summary>
+    [Test]
+    public void Render_LargeJsonArrayOutput_BelowTableIsPrettyPrinted()
+    {
+        // Build a JsonElement representing a large array value.
+        var json = """[{"principal":"user@example.com","role":"Contributor"},{"principal":"sp@tenant.io","role":"Reader"}]""";
+        using var doc = System.Text.Json.JsonDocument.Parse(json);
+        var jsonElement = doc.RootElement.Clone();
+
+        var model = CreateModel(
+            moduleChanges: [],
+            globalOutputs:
+            [
+                new OutputChangeModel
+                {
+                    Name = "role_assignments",
+                    Description = "Role assignments",
+                    IsSensitive = false,
+                    Action = "create",
+                    ActionSymbol = "➕",
+                    ProviderName = "registry.terraform.io/hashicorp/azurerm",
+                    Value = jsonElement,
+                    IsComputed = false,
+                    IsMasked = false,
+                    ModuleAddress = string.Empty,
+                    IsLargeOutputValue = true,
+                    ReferencedAttributeName = "role_assignments"
+                }
+            ]);
+
+        var renderer = new ReportRenderer();
+        var markdown = renderer.Render(model, CreateContext());
+
+        // Pretty-printed JSON must contain line breaks (indented output).
+        markdown.Should().Contain("```json");
+        markdown.Should().Contain("\n  {");
+    }
+
+    /// <summary>
     /// Creates render context for report renderer tests.
     /// </summary>
     /// <returns>Render context instance.</returns>

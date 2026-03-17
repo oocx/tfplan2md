@@ -5,6 +5,75 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.39.0"></a>
+## [1.39.0](https://github.com/oocx/tfplan2md/compare/v1.38.0...v1.39.0) (2026-03-17)
+
+### ✨ Features
+
+* add azuread_app_role_assignment support with Microsoft Graph app role resolution ([106326a](https://github.com/oocx/tfplan2md/commit/106326aa6493ebb650d50e84f9d914112db9803b))
+* add directory role assignment and delegated permission grant support ([4711c2d](https://github.com/oocx/tfplan2md/commit/4711c2dc938d4292210f010e1ecf292beadbad71))
+
+### 🐛 Bug Fixes
+
+* address Feature 116 review blockers ([585e4f3](https://github.com/oocx/tfplan2md/commit/585e4f3f003eb3fc3602d7fae82f161dfcff28f5))
+* resolve compilation errors in integration tests; add missing tests, UAT artifacts, and features.md entry ([bb9e5f8](https://github.com/oocx/tfplan2md/commit/bb9e5f851776b4254ea53bda0ec6fdf8c371dab1))
+* restore deleted snapshots and correct Feature 116 summary icons SNAPSHOT_UPDATE_OK ([425a340](https://github.com/oocx/tfplan2md/commit/425a340e4aff900f0969e44728d58a9960782ae2))
+
+### 📚 Documentation
+
+* add architecture for azuread-app-role-assignment ([24e6af8](https://github.com/oocx/tfplan2md/commit/24e6af8687b86e29f48da198bdfa8cb08f3eab46))
+* add code review report for feature 116 ([5cb68ee](https://github.com/oocx/tfplan2md/commit/5cb68ee952c258c4759f9548caab4c8c63cc8380))
+* add feature 116 specification for azuread_app_role_assignment ([e188b07](https://github.com/oocx/tfplan2md/commit/e188b074456bf1a60c29de279291848b7b5c3492))
+* add implementation tasks for Azure AD App Role Assignment Support ([ddbdad2](https://github.com/oocx/tfplan2md/commit/ddbdad2cb71266b8887167c34a0c16cc72e83ba0))
+* add release notes for feature 116 ([eb7fc0a](https://github.com/oocx/tfplan2md/commit/eb7fc0a6f51ee3fa04ed40ce89f180949608df68))
+* add test plan and UAT test plan for Feature 116 (Azure AD App Role Assignment) ([301acdb](https://github.com/oocx/tfplan2md/commit/301acdba8f1bfa8d8916272268493fb44bd31f13))
+* update spec/arch/test-plan for expanded scope; add unit tests for resolver, formatter, and summary builders ([54c755a](https://github.com/oocx/tfplan2md/commit/54c755ab036dd2db7c407e3d9fca969a588821a3))
+
+<a name="1.38.0"></a>
+## [1.38.0](https://github.com/oocx/tfplan2md/compare/v1.37.4...v1.38.0) (2026-03-16)
+
+### ✨ Features
+
+* display principal_name, account_license_type, and licensing_source in azuredevops_user_entitlement summary ([1f49e72](https://github.com/oocx/tfplan2md/commit/1f49e72cd6ec8f315d08f99651f495b9b3ce013b))
+
+### 🐛 Bug Fixes
+
+* rename feature 048 to 115 (next free number across features/issues/workflow) ([4c99c92](https://github.com/oocx/tfplan2md/commit/4c99c92ee2b2cc062268c72f4ff0b468e0dcebe4))
+* resolve musl binary build failure due to Docker root ownership of artifacts ([28fe338](https://github.com/oocx/tfplan2md/commit/28fe33890cd7c87ca9d059e19058f3ac18d3e85e))
+
+### 📚 Documentation
+
+* add feature specification for azuredevops_user_entitlement summary fields ([186e946](https://github.com/oocx/tfplan2md/commit/186e946926f72a5e430304318e7e08c3225edc7c))
+* add release-notes.md for feature 115 (azuredevops_user_entitlement summary fields) ([1732124](https://github.com/oocx/tfplan2md/commit/1732124919c8d1bc64e1d9e42f97231c71ab5ec1))
+* architecture review for feature 048 ([b2a26ef](https://github.com/oocx/tfplan2md/commit/b2a26efc1b50dcf86408c811abce244550d12c3a))
+* code review for feature 048 ([ec72d65](https://github.com/oocx/tfplan2md/commit/ec72d65c0b8aa8adfe3bf8603d9b3a4c35717345))
+* document azuredevops_user_entitlement summary fields for feature 048 ([7d8792f](https://github.com/oocx/tfplan2md/commit/7d8792f86690b34acdae71a14940e51a2383f744))
+* tasks for feature 048 ([d4ac139](https://github.com/oocx/tfplan2md/commit/d4ac13921774bde925951ab7c978858ed9eb7d58))
+* test plan for feature 048 ([78bf0af](https://github.com/oocx/tfplan2md/commit/78bf0afec26924ceadc7b1c4722f4046f3ff08ac))
+* update work-protocol for feature 048 developer implementation ([c20d6df](https://github.com/oocx/tfplan2md/commit/c20d6df7a4de06213fe2cb8a030c583c062730b2))
+
+<a name="1.37.4"></a>
+## [1.37.4](https://github.com/oocx/tfplan2md/compare/v1.37.3...v1.37.4) (2026-03-16)
+
+### 🐛 Bug Fixes
+
+* add sudo for UPX install in musl builds ([ad63ca2](https://github.com/oocx/tfplan2md/commit/ad63ca207320f0fbe0f65606c11c2c96dba5e7ab))
+* sensitive large output values no longer leak; JSON large values are pretty-printed ([de0cd1f](https://github.com/oocx/tfplan2md/commit/de0cd1f46dbd114c34b23d3040816c32eee85e34))
+
+### 📚 Documentation
+
+* add issue analysis for musl build failure (apt-get permission denied) ([9aef043](https://github.com/oocx/tfplan2md/commit/9aef0437dc936e81d08efcdd8d0c4fa90c3c938d))
+* add release notes for musl build fix ([a0ea32b](https://github.com/oocx/tfplan2md/commit/a0ea32bd16a6b9b3791a3d0138d16a68ed298969))
+* add technical writer work protocol entry for musl fix ([e7dee12](https://github.com/oocx/tfplan2md/commit/e7dee120df90d028040a25c7f82eb3a15940c0d6))
+* append developer work log entry to work-protocol.md ([30bffe8](https://github.com/oocx/tfplan2md/commit/30bffe8cd7c0e1e23516a5358f381ed0dfef9cbd))
+* code review report for sensitive large value fixes ([6798814](https://github.com/oocx/tfplan2md/commit/6798814ad4382ffae9779b1c2dac27583d6825c8))
+* code review report for sensitive large value fixes ([27d50dc](https://github.com/oocx/tfplan2md/commit/27d50dc7df1c86549b34f6de6e72caa8d3862662))
+* document correct behavior for sensitive and large output values ([eeeec06](https://github.com/oocx/tfplan2md/commit/eeeec06fb5a7c999fa4356fc311049fcf89046b5))
+* issue analysis for sensitive large value rendering bugs ([12aa3b6](https://github.com/oocx/tfplan2md/commit/12aa3b6151d8a1b902c950e7557083142df141c8))
+* release manager sign-off for sensitive large value fixes ([302815e](https://github.com/oocx/tfplan2md/commit/302815e97b0a80aeee6a67e41ff21a07354435a9))
+* release manager sign-off for sensitive large value fixes ([7f6bbc2](https://github.com/oocx/tfplan2md/commit/7f6bbc2f3f523ad297d759c81cd971a949243353))
+* UAT validation results for sensitive large value fixes ([48ee9f8](https://github.com/oocx/tfplan2md/commit/48ee9f8d0b1f385b741ff284f5e597ef1353f5fd))
+
 <a name="1.37.3"></a>
 ## [1.37.3](https://github.com/oocx/tfplan2md/compare/v1.37.2...v1.37.3) (2026-03-15)
 

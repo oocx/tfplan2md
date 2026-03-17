@@ -1,0 +1,52 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_user_entitlement.alice",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_user_entitlement",
+      "name": "alice",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "principal_name": "alice@example.com",
+          "account_license_type": "express",
+          "licensing_source": "msdn"
+        },
+        "after_unknown": {
+          "id": true,
+          "descriptor": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_user_entitlement.bob",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_user_entitlement",
+      "name": "bob",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "principal_name": "bob@example.com",
+          "account_license_type": "stakeholder",
+          "licensing_source": ""
+        },
+        "after_unknown": {
+          "id": true,
+          "descriptor": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

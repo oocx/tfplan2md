@@ -156,6 +156,16 @@ internal sealed class CompositionRoot(CliOptions options)
     }
 
     /// <summary>
+    /// Creates the Microsoft Graph app role resolver for app role assignment resolution.
+    /// Related feature: docs/features/116-azuread-app-role-assignment/specification.md.
+    /// </summary>
+    /// <returns>A resolver for Microsoft Graph app role GUIDs.</returns>
+    internal IAppRoleResolver CreateAppRoleResolver()
+    {
+        return MicrosoftGraphAppRoleResolver.CreateBuiltIn();
+    }
+
+    /// <summary>
     /// Creates and configures the provider registry with all supported Terraform providers.
     /// Registers AzApi, AzureAD, AzureRM, and AzureDevOps modules.
     /// </summary>
@@ -167,6 +177,7 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <param name="azdoGroupMapper">The mapper for Azure DevOps group display names.</param>
     /// <param name="azdoProjectMapper">The mapper for Azure DevOps project display names.</param>
     /// <param name="azdoRepositoryMapper">The mapper for Azure DevOps repository display names.</param>
+    /// <param name="appRoleResolver">The resolver for Microsoft Graph app role GUIDs.</param>
     /// <returns>A configured provider registry with all modules registered.</returns>
     internal ProviderRegistry CreateProviderRegistry(
         IPrincipalMapper principalMapper,
@@ -176,13 +187,14 @@ internal sealed class CompositionRoot(CliOptions options)
         AzdoUserMapper azdoUserMapper,
         AzdoGroupMapper azdoGroupMapper,
         AzdoProjectMapper azdoProjectMapper,
-        AzdoRepositoryMapper azdoRepositoryMapper)
+        AzdoRepositoryMapper azdoRepositoryMapper,
+        IAppRoleResolver appRoleResolver)
     {
         var registry = new ProviderRegistry();
         var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget);
 
         registry.RegisterProvider(new AzApiModule(scopeFormatter, entityMapper));
-        registry.RegisterProvider(new AzureADModule(entityMapper));
+        registry.RegisterProvider(new AzureADModule(entityMapper, principalMapper, appRoleResolver));
         registry.RegisterProvider(new AzureRMModule(
             largeValueFormat: largeValueFormat,
             principalMapper: principalMapper,
@@ -316,6 +328,9 @@ internal sealed class CompositionRoot(CliOptions options)
         var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
         var roleDefinitionResolver = CreateRoleDefinitionResolver(mappingResult, diagnosticContext);
 
+        // Create app role resolver for Microsoft Graph permissions
+        var appRoleResolver = CreateAppRoleResolver();
+
         // Create Azure-specific mappers and formatters
         var principalMapper = CreatePrincipalMapper(mappingResult, diagnosticContext);
         var entityMapper = CreateEntityMapper(mappingResult, diagnosticContext);
@@ -336,7 +351,8 @@ internal sealed class CompositionRoot(CliOptions options)
             azdoUserMapper,
             azdoGroupMapper,
             azdoProjectMapper,
-            azdoRepositoryMapper);
+            azdoRepositoryMapper,
+            appRoleResolver);
         var providerContributionSet = CreateProviderContributionSet(providerRegistry);
         var valueFormatterRegistry = providerContributionSet.CreateValueFormatterRegistry();
         var iconProviderRegistry = providerContributionSet.CreateIconProviderRegistry();

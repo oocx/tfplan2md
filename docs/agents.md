@@ -23,7 +23,7 @@ Throughout the workflow, the Maintainer coordinates handoffs between agents and 
 
 For well-defined features or bugs, use the **Workflow Orchestrator** agent to automate the complete workflow:
 
-- **GitHub (Cloud) - RECOMMENDED**: Assign a GitHub issue to `@copilot` to trigger automated orchestration from issue to release. The orchestrator runs as a coding agent with full delegation capabilities via the `task` tool.
+- **GitHub (Cloud) - RECOMMENDED**: Label a GitHub issue with `copilot` to automatically assign it to `@copilot` and trigger automated orchestration from issue to release. Alternatively, manually assign the issue to `@copilot`. The orchestrator runs as a coding agent with full delegation capabilities via the `task` tool.
 - **VS Code (Local) - LIMITED**: Use `@workflow-orchestrator` in chat for interactive orchestration. Note that full programmatic delegation is limited in VS Code context compared to GitHub.
 
 **How It Works**:
@@ -44,6 +44,40 @@ For well-defined features or bugs, use the **Workflow Orchestrator** agent to au
 - Highly interactive work requiring maintainer decisions at each step
 
 **Verification note:** If a change only touches agent instructions / skills / documentation (for example `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, or `docs/`), running `dotnet test` is not required because the test suite does not validate those changes. Run `dotnet test` when C# code changes.
+
+---
+
+## GitHub Hooks Automation
+
+Several GitHub Actions workflows automate recurring steps in the agent workflow so the Maintainer doesn't need to perform them manually.
+
+### Issue Label → Auto-assign to @copilot
+
+**Workflow:** `.github/workflows/issue-copilot-assign.yml`
+**Trigger:** `issues.labeled` — label name = `copilot`
+
+When an issue is labeled with `copilot`, GitHub Actions automatically assigns it to `@copilot`. GitHub's native @copilot assignment then creates a `copilot/*` branch and draft PR, and the Workflow Orchestrator coding agent starts running.
+
+**Usage:** Add the `copilot` label to any issue to kick off fully automated end-to-end implementation.
+
+### PR Merge → Retrospective Reminder
+
+**Workflow:** `.github/workflows/pr-merge-retrospective.yml`
+**Trigger:** `pull_request.closed` — merged = true, base branch = `main`, head branch matches `feature/*` or `fix/*`
+
+When a feature or fix PR is merged, GitHub Actions posts a comment on the PR reminding the team to run the Retrospective agent. The comment includes the work item folder path (inferred from the branch name) and instructions for both VS Code and GitHub execution modes.
+
+**Purpose:** Ensures the retrospective step is never skipped after a delivery.
+
+### Future Automation Opportunities
+
+The following GitHub events have been identified as candidates for future workflow automation (see `docs/workflow/117-github-hooks-automation/tasks.md`):
+
+| ID | Automation | Trigger | Status |
+|----|-----------|---------|--------|
+| 3 | PR review CHANGES_REQUESTED → developer notification | `pull_request_review.submitted` | ⬜ Not started |
+| 4 | CI failure → structured developer feedback | `workflow_run.completed` (failure) | ⬜ Not started |
+| 7 | Weekly agent validation health check | `schedule` | ⬜ Not started |
 
 ---
 

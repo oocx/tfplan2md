@@ -2,9 +2,15 @@ using System.Collections.Generic;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureAD;
 using Oocx.TfPlan2Md.Providers.AzureAD.Models;
+using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.Providers.AzureAD;
@@ -263,6 +269,101 @@ public class AzureAdAppRoleAssignmentTests
         summary.Should().Contain(ServicePrincipalGuid);
         summary.Should().Contain(ResourceGuid);
         summary.Should().Contain("User.Read");
+    }
+
+    // ──────────────────────────────────────────────
+    // TC-11: Delete action icon test
+    // ──────────────────────────────────────────────
+
+    /// <summary>
+    /// TC-11: Verifies the delete action uses the ❌ icon prefix.
+    /// </summary>
+    [Test]
+    public void AppRoleAssignment_DeleteAction_UsesDeleteIcon()
+    {
+        var state = ParseState($$"""
+        {
+            "app_role_id": "{{UserReadAllGuid}}",
+            "principal_object_id": "{{PrincipalGuid}}",
+            "resource_object_id": "{{ResourceGuid}}"
+        }
+        """);
+
+        var summary = BuildSummary("azuread_app_role_assignment", "example", state, new NullPrincipalMapper(),
+            action: "delete",
+            appRoleResolver: MicrosoftGraphAppRoleResolver.CreateBuiltIn());
+
+        summary.Should().StartWith("❌");
+    }
+
+    // ──────────────────────────────────────────────
+    // TC-16: AzureADModule integration test
+    // ──────────────────────────────────────────────
+
+    /// <summary>
+    /// TC-16: Verifies AzureADModule registers renderers for app role, directory role,
+    /// and delegated permission grant resource types.
+    /// </summary>
+    [Test]
+    public void AzureADModule_RegistersAllNewResourceRenderers()
+    {
+        var module = new AzureADModule();
+        var rendererRegistry = new ResourceRendererRegistry();
+
+        module.RegisterResourceRenderers(rendererRegistry);
+
+        rendererRegistry.GetRenderer("azuread_app_role_assignment").Should().NotBeNull();
+        rendererRegistry.GetRenderer("azuread_directory_role_assignment").Should().NotBeNull();
+        rendererRegistry.GetRenderer("azuread_service_principal_delegated_permission_grant").Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// TC-16b: Verifies AzureADModule registers factories for the new resource types.
+    /// </summary>
+    [Test]
+    public void AzureADModule_RegistersAllNewResourceFactories()
+    {
+        var module = new AzureADModule();
+        var factoryRegistry = new ResourceViewModelFactoryRegistry();
+
+        module.RegisterFactories(factoryRegistry);
+
+        factoryRegistry.TryGetFactory("azuread_app_role_assignment", out _).Should().BeTrue();
+        factoryRegistry.TryGetFactory("azuread_directory_role_assignment", out _).Should().BeTrue();
+        factoryRegistry.TryGetFactory("azuread_service_principal_delegated_permission_grant", out _).Should().BeTrue();
+    }
+
+    // ──────────────────────────────────────────────
+    // TC-17: End-to-end integration test
+    // ──────────────────────────────────────────────
+
+    /// <summary>
+    /// TC-17: End-to-end test that parses a Terraform plan JSON containing an
+    /// azuread_app_role_assignment and renders it to markdown.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    [Category("Integration")]
+    public async Task AppRoleAssignment_EndToEnd_RendersMarkdown()
+    {
+        var planJson = await File.ReadAllTextAsync("TestData/azuread-app-role-assignment-plan.json");
+        var parser = new TerraformPlanParser();
+        var plan = parser.Parse(planJson);
+
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureADModule(
+            appRoleResolver: MicrosoftGraphAppRoleResolver.CreateBuiltIn()));
+
+        var builder = new ReportModelBuilder(
+            services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
+        var model = builder.Build(plan);
+
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
+        var markdown = renderer.Render(model);
+
+        markdown.Should().Contain("azuread_app_role_assignment");
+        markdown.Should().Contain("graph_user_read_all");
+        markdown.Should().Contain("User.Read.All");
     }
 
     // ──────────────────────────────────────────────

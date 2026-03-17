@@ -1,0 +1,54 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_app_role_assignment.known_role",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_app_role_assignment",
+      "name": "known_role",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "app_role_id": "df021288-bdef-4463-88db-98f22de89214",
+          "principal_object_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+          "resource_object_id": "11111111-2222-3333-4444-555555555555"
+        },
+        "after_unknown": {
+          "id": true,
+          "principal_display_name": true,
+          "resource_display_name": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_app_role_assignment.unknown_role",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_app_role_assignment",
+      "name": "unknown_role",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "app_role_id": "99999999-9999-9999-9999-999999999999",
+          "principal_object_id": "bbbbbbbb-cccc-dddd-eeee-ffffffffffff",
+          "resource_object_id": "22222222-3333-4444-5555-666666666666",
+          "principal_display_name": "My Service Principal",
+          "resource_display_name": "Microsoft Graph"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

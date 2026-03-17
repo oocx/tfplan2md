@@ -3050,6 +3050,33 @@ See [docs/features/111-code-simplification/](features/111-code-simplification/) 
 
 See [docs/features/115-azuredevops-user-entitlement-summary/specification.md](features/115-azuredevops-user-entitlement-summary/specification.md) for the full specification.
 
+## Azure AD App Role Assignment Enhancement (Feature 116)
+
+**Status:** ✅ Implemented
+
+Adds enhanced rendering for three Azure AD resource types:
+
+- **`azuread_app_role_assignment`** — Microsoft Graph API permission assignments
+- **`azuread_directory_role_assignment`** — Azure AD directory role assignments
+- **`azuread_service_principal_delegated_permission_grant`** — OAuth2 delegated permission grants
+
+### Key Capabilities
+
+- **GUID Resolution**: `app_role_id` GUIDs are resolved to human-readable Microsoft Graph permission names (e.g., `df021288-bdef-4463-88db-98f22de89214` → `User.Read.All`)
+- **Principal/Resource Resolution**: `principal_object_id` and `resource_object_id` are resolved to display names via `IPrincipalMapper`
+- **Computed Attribute Fallbacks**: Falls back to `principal_display_name` and `resource_display_name` from Terraform state when mapper has no entry
+- **Icon Mappings**: Resources use contextual icons — 🔑 (app role), 👤 (principal), 🎯 (resource), 💻 (service principal), 🛡️ (directory role), 📋 (delegated permission)
+
+### Example Summary Lines
+
+```
+➕ azuread_app_role_assignment example — 🔑 User.Read.All → 👤 My Service Principal → 🎯 Microsoft Graph
+➕ azuread_directory_role_assignment example — 👤 My Service Principal → 🛡️ fdd7a751-...
+➕ azuread_service_principal_delegated_permission_grant example — 💻 My App → 📋 User.Read, openid → 🎯 Microsoft Graph
+```
+
+See [docs/features/116-azuread-app-role-assignment/specification.md](features/116-azuread-app-role-assignment/specification.md) for the full specification.
+
 ## Future Considerations
 
 The following features may be added in future versions:

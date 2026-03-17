@@ -60,7 +60,7 @@ internal static partial class AzureAdSummaryBuilder
         // Build summary text: {principal} → {role} → {resource}
         var principalSummary = BuildResolvedPrincipalSummary(
             model, "principal_object_id", principalObjectId ?? string.Empty, principalName, iconProviderRegistry);
-        var roleSummary = FormatCodeSummary(roleName);
+        var roleSummary = FormatSummaryValue(model, "app_role_id", roleName, iconProviderRegistry);
         var resourceSummary = BuildResolvedPrincipalSummary(
             model, "resource_object_id", resourceObjectId ?? string.Empty, resourceName, iconProviderRegistry);
 
@@ -91,7 +91,7 @@ internal static partial class AzureAdSummaryBuilder
         var principalSummary = BuildResolvedPrincipalSummary(
             model, "principal_object_id", principalId, principalName, iconProviderRegistry);
 
-        var roleSummary = FormatCodeSummary(roleTemplateId);
+        var roleSummary = FormatSummaryValue(model, "role_definition_id", roleTemplateId, iconProviderRegistry);
 
         var summaryText = $"{principalSummary} {MemberArrow} {roleSummary}";
         return BuildSummaryHtml(model, summaryText);
@@ -121,8 +121,8 @@ internal static partial class AzureAdSummaryBuilder
             model, "service_principal_object_id", servicePrincipalId, spName, iconProviderRegistry);
 
         var claimText = claimValues.Count > 0
-            ? FormatCodeSummary(string.Join(", ", claimValues))
-            : FormatCodeSummary("(no claims)");
+            ? FormatSummaryValue(model, "claim_values", string.Join(", ", claimValues), iconProviderRegistry)
+            : FormatSummaryValue(model, "claim_values", "(no claims)", iconProviderRegistry);
 
         var resourceName = ResolvePrincipalName(resourceId, principalMapper, null);
         var resourceSummary = BuildResolvedPrincipalSummary(
@@ -150,14 +150,14 @@ internal static partial class AzureAdSummaryBuilder
     {
         if (string.IsNullOrWhiteSpace(resolvedName) || string.IsNullOrWhiteSpace(objectId))
         {
-            return FormatCodeSummary(string.IsNullOrWhiteSpace(objectId) ? "(unknown)" : objectId);
+            return FormatSummaryValue(model, attributeName, string.IsNullOrWhiteSpace(objectId) ? "(unknown)" : objectId, iconProviderRegistry);
         }
 
         var isMapped = !string.Equals(resolvedName, objectId, System.StringComparison.OrdinalIgnoreCase);
 
         return isMapped
             ? BuildPrincipalSummary(model, attributeName, resolvedName, objectId, iconProviderRegistry)
-            : FormatCodeSummary(objectId);
+            : FormatSummaryValue(model, attributeName, objectId, iconProviderRegistry);
     }
 
     /// <summary>

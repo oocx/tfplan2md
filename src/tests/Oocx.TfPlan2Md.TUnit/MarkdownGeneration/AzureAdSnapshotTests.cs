@@ -73,14 +73,14 @@ public class AzureAdSnapshotTests
     {
         var markdown = RenderAzureAdPlan("azuread-app-role-assignment-plan.json");
 
-        markdown.Should().Contain("<summary>➕ azuread_app_role_assignment <b><code>graph_user_read_all</code></b> — <code>aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee</code> → <code>User.Read.All</code> → <code>11111111-2222-3333-4444-555555555555</code></summary>");
+        markdown.Should().Contain("<summary>➕ azuread_app_role_assignment <b><code>graph_user_read_all</code></b> — <code>👤 aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee</code> → <code>🛡️ User.Read.All</code> → <code>🎯 11111111-2222-3333-4444-555555555555</code></summary>");
         markdown.Should().Contain("azuread_app_role_assignment");
-        markdown.Should().Contain("🔑 User.Read.All (df021288-bdef-4463-88db-98f22de89214)");
+        markdown.Should().Contain("🛡️ User.Read.All (df021288-bdef-4463-88db-98f22de89214)");
         markdown.Should().Contain("99999999-9999-9999-9999-999999999999");
         markdown.Should().Contain("My Service Principal");
         markdown.Should().Contain("👤 My Service Principal");
         markdown.Should().Contain("🎯 Microsoft Graph");
-        markdown.Should().Contain("→ <code>99999999-9999-9999-9999-999999999999</code> →");
+        markdown.Should().Contain("→ <code>🛡️ 99999999-9999-9999-9999-999999999999</code> →");
 
         SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, "azuread-app-role-assignment.md");
         SnapshotTestAssertions.AssertMatchesSnapshot("azuread-app-role-assignment.md", markdown);

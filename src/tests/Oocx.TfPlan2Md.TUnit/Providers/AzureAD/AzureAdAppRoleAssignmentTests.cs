@@ -67,6 +67,9 @@ public class AzureAdAppRoleAssignmentTests
         var summary = BuildSummary("azuread_app_role_assignment", "example", state, mapper,
             appRoleResolver: MicrosoftGraphAppRoleResolver.CreateBuiltIn());
 
+        summary.Should().Contain("🛡️");
+        summary.Should().Contain("👤");
+        summary.Should().Contain("🎯");
         summary.Should().Contain("User.Read.All");
         summary.Should().Contain("My Service Principal");
         summary.Should().Contain("Microsoft Graph");
@@ -91,6 +94,9 @@ public class AzureAdAppRoleAssignmentTests
         var summary = BuildSummary("azuread_app_role_assignment", "example", state, new NullPrincipalMapper(),
             appRoleResolver: MicrosoftGraphAppRoleResolver.CreateBuiltIn());
 
+        summary.Should().Contain("🛡️");
+        summary.Should().Contain("👤");
+        summary.Should().Contain("🎯");
         summary.Should().Contain(unknownRoleGuid);
         summary.Should().Contain(PrincipalGuid);
         summary.Should().Contain(ResourceGuid);
@@ -177,6 +183,7 @@ public class AzureAdAppRoleAssignmentTests
 
         var summary = BuildSummary("azuread_directory_role_assignment", "example", state, mapper);
 
+        summary.Should().Contain("🛡️");
         summary.Should().Contain("My Service Principal");
         summary.Should().Contain(roleTemplateId);
         summary.Should().Contain("\u2192"); // arrow separator
@@ -226,6 +233,9 @@ public class AzureAdAppRoleAssignmentTests
 
         var summary = BuildSummary("azuread_service_principal_delegated_permission_grant", "example", state, mapper);
 
+        summary.Should().Contain("💻");
+        summary.Should().Contain("📋");
+        summary.Should().Contain("🎯");
         summary.Should().Contain("My App");
         summary.Should().Contain("User.Read, openid");
         summary.Should().Contain("Microsoft Graph");

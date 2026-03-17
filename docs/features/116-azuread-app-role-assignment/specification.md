@@ -68,7 +68,7 @@ Register attribute-level icon mappings for all three resource types. These icons
 
 | Attribute | Icon | Rationale |
 |-----------|------|-----------|
-| `app_role_id` | 🔑 | Permission key being granted |
+| `app_role_id` | 🛡️ | Application role / permission being granted |
 | `principal_object_id` | 👤 | The principal receiving the assignment |
 | `resource_object_id` | 🎯 | The target resource API |
 | `service_principal_object_id` | 💻 | Service principal (delegated permission grants) |
@@ -230,7 +230,7 @@ The following Azure AD resources use similar GUID-based attributes and could ben
 - [ ] `service_principal_object_id` is resolved using `IPrincipalMapper` for delegated permission grants
 - [ ] Computed attributes (`principal_display_name`, `resource_display_name`) are used as fallbacks when mapper lookups fail
 - [ ] Unmapped GUIDs display the raw GUID gracefully (no errors)
-- [ ] Icon mappings registered for all 6 assignment attributes (🔑 `app_role_id`, 👤 `principal_object_id`, 🎯 `resource_object_id`, 💻 `service_principal_object_id`, 🛡️ `role_definition_id`, 📋 `claim_values`)
+- [ ] Icon mappings registered for all 6 assignment attributes (🛡️ `app_role_id`, 👤 `principal_object_id`, 🎯 `resource_object_id`, 💻 `service_principal_object_id`, 🛡️ `role_definition_id`, 📋 `claim_values`)
 - [ ] Value formatters scoped to all `azuread` resources (not just `azuread_app_role_assignment`)
 - [ ] The app role resolver follows the same embedded-JSON-to-frozen-dictionary pattern as `AzureRoleDefinitionsRegistry`
 - [ ] All three resource types are registered in `AzureADModule.cs`
@@ -245,4 +245,4 @@ The following Azure AD resources use similar GUID-based attributes and could ben
 
 2. **Display format for resolved app roles:** Should the resolved app role in the detail table show `User.Read.All (df021288-...)` (name + GUID, matching the Azure RBAC role format), or just `User.Read.All` (name only, since the GUID column is already in the raw attribute)?
 
-3. **Icon for app role assignments:** Should `azuread_app_role_assignment` have a dedicated icon (e.g., 🔑 for permissions), or reuse an existing icon from the Azure AD icon set?
+3. **Icon for app role assignments:** Should `azuread_app_role_assignment` reuse the existing role icon pattern (`🛡️`) or use a dedicated permission icon?

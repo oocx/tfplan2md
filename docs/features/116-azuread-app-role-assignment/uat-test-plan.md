@@ -25,7 +25,7 @@ Verify that `azuread_app_role_assignment` resources render correctly in GitHub a
   - App role ID resolution (known GUID → permission name)
   - Unknown GUID fallback (raw GUID display)
   - Summary format: `{action} azuread_app_role_assignment <b><code>{name}</code></b> — <code>{role}</code> → <code>{principal}</code> on <code>{resource}</code>`
-  - Detail table value formatting with 🔑 icon
+  - Detail table value formatting with 🛡️ icon
   - Computed attribute display
 
 **Example Creation Command:**
@@ -64,19 +64,19 @@ In the **feature-specific report** (first comment, labeled "🎯 Feature Test"):
 - `azuread_app_role_assignment.unknown_role` — create action with an unknown (fabricated) GUID
 
 **Exact Attributes:**
-- `app_role_id` — should display with 🔑 icon and resolved name (e.g., `🔑 User.Read.All (df021288-...)`) for known GUIDs
+- `app_role_id` — should display with 🛡️ icon and resolved name (e.g., `🛡️ User.Read.All (df021288-...)`) for known GUIDs
 - `principal_object_id` — should display with principal icon when mapped, or raw GUID as fallback
 - `resource_object_id` — should display with principal icon when mapped, or use computed `resource_display_name` as fallback
 
 **Expected Outcome:**
 - Summary line for known role: `➕ azuread_app_role_assignment **`user_read_all`** — `User.Read.All` → `{principal}` on `{resource}`
 - Summary line for unknown role: shows raw GUID in the role position
-- Detail table: `app_role_id` cell shows `🔑 User.Read.All (df021288-bdef-4463-88db-98f22de89214)` for the known role
+- Detail table: `app_role_id` cell shows `🛡️ User.Read.All (df021288-bdef-4463-88db-98f22de89214)` for the known role
 - Computed attributes (`principal_display_name`, `resource_display_name`) display their string values as-is
 
 **Before/After Context:**
 - **Before:** `azuread_app_role_assignment` resources would show a generic summary with no GUID resolution — all attributes display as raw GUIDs
-- **After:** Summary line shows human-readable role name, principal name, and resource name; detail table formats `app_role_id` with 🔑 icon and resolved permission name
+- **After:** Summary line shows human-readable role name, principal name, and resource name with consistent summary icons; detail table formats `app_role_id` with 🛡️ and the resolved permission name
 
 ---
 

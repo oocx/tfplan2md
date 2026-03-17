@@ -44,7 +44,7 @@ internal sealed class AppRoleIdFormatter : IValueFormatter
             return null;
         }
 
-        var roleText = $"🔑{MarkdownHelpers.NonBreakingSpace}{roleInfo.FullName}";
+        var roleText = $"🛡️{MarkdownHelpers.NonBreakingSpace}{roleInfo.FullName}";
         return MarkdownHelpers.FormatCodeTable(roleText);
     }
 }

@@ -63,7 +63,7 @@
     },
     {
       "attributeNamePattern": "(?i)^app_role_id$",
-      "icon": "🔑"
+      "icon": "🛡️"
     },
     {
       "attributeNamePattern": "(?i)^principal_object_id$",

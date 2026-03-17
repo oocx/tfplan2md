@@ -12,7 +12,7 @@ namespace Oocx.TfPlan2Md.Tests.Platforms.Azure;
 public class AppRoleIdFormatterTests
 {
     /// <summary>
-    /// TC-05: Verifies a known Microsoft Graph app role GUID is formatted with the 🔑 icon.
+    /// TC-05: Verifies a known Microsoft Graph app role GUID is formatted with the 🛡️ icon.
     /// </summary>
     [Test]
     public void TryFormat_KnownAppRoleId_ReturnsFormattedString()
@@ -24,7 +24,7 @@ public class AppRoleIdFormatterTests
 
         var result = formatter.TryFormat(context);
 
-        result.Should().Be("`🔑\u00a0User.Read.All (df021288-bdef-4463-88db-98f22de89214)`");
+        result.Should().Be("`🛡️\u00a0User.Read.All (df021288-bdef-4463-88db-98f22de89214)`");
     }
 
     /// <summary>
@@ -75,6 +75,6 @@ public class AppRoleIdFormatterTests
         var result = formatter.TryFormat(context);
 
         result.Should().Contain("Directory.Read.All");
-        result.Should().Contain("🔑");
+        result.Should().Contain("🛡️");
     }
 }

@@ -20,7 +20,7 @@ This feature adds human-readable summary display and GUID-to-name resolution for
 | Embedded JSON source generation | `AdditionalFiles` + `EmbedAsJson="true"` in `.csproj` | Add new entry for `MicrosoftGraphAppRoles.json` |
 | JSON serialization context | `AzureRoleDefinitionsJsonContext` | New `MicrosoftGraphAppRolesJsonContext` (identical pattern) |
 | `EmbeddedJsonPayloads` accessor | `AzureRoleDefinitions` property | New `MicrosoftGraphAppRoles` property |
-| Icon registration | `azuread-icons.json` rules | 6 icon rules: 🔑 `app_role_id`, 👤 `principal_object_id`, 🎯 `resource_object_id`, 💻 `service_principal_object_id`, 🛡️ `role_definition_id`, 📋 `claim_values` |
+| Icon registration | `azuread-icons.json` rules | 6 icon rules: 🛡️ `app_role_id`, 👤 `principal_object_id`, 🎯 `resource_object_id`, 💻 `service_principal_object_id`, 🛡️ `role_definition_id`, 📋 `claim_values` |
 | Resource renderer | `AzureAdDelegatingRenderer` subclasses | New `AppRoleAssignmentRenderer`, `DirectoryRoleAssignmentRenderer`, `DelegatedPermissionGrantRenderer` subclasses |
 | Provider module wiring | `AzureADModule` constructor + `CompositionRoot.CreateProviderRegistry()` | Pass `IAppRoleResolver` to `AzureADModule`, wire in `CompositionRoot` |
 | Provider fallback summary keys | `ResourceSummaryMappings.ProviderFallbacks` | `azuread` provider fallback includes `display_name` and `principal_object_id` |
@@ -198,7 +198,7 @@ Contains three builder methods for the three resource types:
 
 - `internal sealed class AppRoleIdFormatter : IValueFormatter`
 - Constructor takes `IAppRoleResolver?` (defaults to `MicrosoftGraphAppRoleResolver.CreateBuiltIn()`)
-- `TryFormat()` resolves the GUID via `IAppRoleResolver.GetAppRole()`, formats as `🔑 {Name} ({GUID})` (matching `RoleDefinitionFormatter` format: icon + FullName)
+- `TryFormat()` resolves the GUID via `IAppRoleResolver.GetAppRole()`, formats as `🛡️ {Name} ({GUID})` (matching existing role formatting conventions)
 - Returns `null` if the GUID cannot be resolved (raw value displayed)
 
 ### 9. Resource Renderers
@@ -232,7 +232,7 @@ Add 6 rules for assignment-related attributes:
 
 | Attribute Pattern | Icon | Description |
 |-------------------|------|-------------|
-| `^app_role_id$` | 🔑 | App role permission being granted |
+| `^app_role_id$` | 🛡️ | App role permission being granted |
 | `^principal_object_id$` | 👤 | Principal receiving the assignment |
 | `^resource_object_id$` | 🎯 | Target resource API |
 | `^service_principal_object_id$` | 💻 | Service principal (delegated permission grants) |

@@ -120,16 +120,16 @@ Follows the pattern established in `PrincipalIdFormatterTests` and `AzureValueFo
 **Type:** Unit
 
 **Description:**
-Verifies a known Microsoft Graph app role GUID is formatted with the 🔑 icon.
+Verifies a known Microsoft Graph app role GUID is formatted with the 🛡️ icon.
 
 **Test Steps:**
 1. Create `AppRoleIdFormatter` (using default built-in resolver)
 2. Create `ServiceResolutionContext("azuread", "azuread_app_role_assignment", "app_role_id", "df021288-bdef-4463-88db-98f22de89214")`
 3. Call `TryFormat(context)`
-4. Assert result equals the string `` `🔑\u00a0User.Read.All (df021288-bdef-4463-88db-98f22de89214)` `` (literal backticks wrapping icon + non-breaking space + name + GUID, produced by `MarkdownHelpers.FormatCodeTable()`)
+4. Assert result equals the string `` `🛡️\u00a0User.Read.All (df021288-bdef-4463-88db-98f22de89214)` `` (literal backticks wrapping icon + non-breaking space + name + GUID, produced by `MarkdownHelpers.FormatCodeTable()`)
 
 **Expected Result:**
-Returns the formatted inline-code string: backtick, 🔑, non-breaking space, role name, space, GUID in parens, backtick. This matches the `RoleDefinitionFormatter` output pattern.
+Returns the formatted inline-code string: backtick, 🛡️, non-breaking space, role name, space, GUID in parens, backtick. This matches the existing role formatting pattern.
 
 ---
 
@@ -435,7 +435,7 @@ End-to-end test using a Terraform plan JSON containing `azuread_app_role_assignm
 
 **Expected Result:**
 - Summary line rendered with resolved app role name
-- Detail table shows formatted `app_role_id` with 🔑 icon
+- Detail table shows formatted `app_role_id` with 🛡️ icon
 - Computed attributes displayed as-is
 - No rendering errors or missing sections
 

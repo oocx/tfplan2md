@@ -1,320 +1,166 @@
-# Issue: Fix Security Issues Detected by GitHub
+# Issue: GitHub Code Scanning Findings
 
 ## Problem Description
 
-GitHub has flagged multiple security issues for this repository. Direct access to GitHub's Security APIs (code scanning, Dependabot, secret scanning alerts) was not available in this analysis environment (HTTP 403), so this analysis combines:
+This investigation focused specifically on the GitHub **code scanning** findings for `oocx/tfplan2md`.
 
-1. Manual review of open Dependabot pull requests (available via the standard REST API)
-2. Local `dotnet list package --vulnerable --include-transitive` scan
-3. Manual security review of CI/CD workflow files
-4. Manual review of C# source code for common security patterns
+Direct access to the repository's code scanning alerts was **not available** in this environment:
+
+- `github-mcp-server-list_code_scanning_alerts` returned `403 Resource not accessible by integration`
+
+Because the exact alert list could not be queried, this analysis identifies the **most likely current CodeQL findings** from the codebase itself, prioritizing findings with strong evidence and minimal-fix paths.
+
+## Most Likely Findings
+
+### 1. Command injection in Docker test fixture
+
+**Confidence:** High  
+**Likely alert type:** CodeQL command-line / process argument injection  
+
+**Impacted file:**
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixture.cs#L191-L197`
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixture.cs#L228-L234`
+
+**Evidence:**
+
+Both container-launch paths build a `docker` command by flattening a user-influenced argument list into a single string:
+
+```csharp
+var psi = new ProcessStartInfo("docker", string.Join(" ", arguments))
+```
+
+The `arguments` list includes caller-supplied `args` from:
+
+- `RunContainerAsync(..., string[]? args = null, ...)`
+- `RunContainerWithStdinAsync(..., string[]? args = null, ...)`
+
+This is exactly the pattern CodeQL flags in C#: constructing process arguments with string concatenation instead of `ProcessStartInfo.ArgumentList`.
+
+**Root cause:**
+
+The fixture treats process arguments as a pre-escaped shell string instead of as discrete tokens. Even with `UseShellExecute = false`, CodeQL treats this as unsafe because spaces/quoting are interpreted by the target process invocation boundary and the code bypasses the safe `ArgumentList` API.
 
 ---
 
-## Security Issues Found
+### 2. Command injection in markdownlint Docker fixture
 
-### Issue 1 — Outdated `docker/login-action` (v3 → v4)
+**Confidence:** High  
+**Likely alert type:** CodeQL command-line / process argument injection  
 
-**Severity:** Medium  
-**Type:** Dependabot dependency update  
-**GitHub PR:** [#605 — chore(deps): bump docker/login-action from 3 to 4](https://github.com/oocx/tfplan2md/pull/605)
+**Impacted file:**
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixture.cs#L117-L125`
 
-#### Steps to Reproduce
+**Evidence:**
 
-1. Open `.github/workflows/release.yml`
-2. Observe `uses: docker/login-action@v3` at line 594
-3. Note that v4 has been available since May 2025
+The markdownlint fixture uses the same unsafe pattern:
 
-#### Expected Behavior
-
-The workflow should use the latest stable major version of `docker/login-action` to ensure it runs on a supported Node.js runtime and receives security patches.
-
-#### Actual Behavior
-
-The workflow uses `docker/login-action@v3`, which:
-- Runs on Node 20 (soon-to-be-deprecated in GitHub Actions)
-- Contains older versions of `@actions/core` (pre-3.0.0) which have known security patches in newer versions
-- Contains older `@docker/actions-toolkit` dependency versions
-
-#### Root Cause Analysis
-
-**Affected Component:**
-- File: `.github/workflows/release.yml#L594`
-
-**What's Broken:**
-
-`docker/login-action` v3 uses `@actions/core` version `1.11.1`. The update to v4 bumps `@actions/core` to `3.0.0`, which contains security improvements. Additionally, the Node.js 20 runtime used by v3 is being deprecated by GitHub in favor of Node 24.
-
-The `docker/login-action` also handles Docker Hub credentials (username + password) at runtime. Running the credential-handling logic on an older, less-maintained dependency chain increases supply-chain risk.
-
-#### Suggested Fix
-
-Update `.github/workflows/release.yml` line 594:
-```yaml
-# Before:
-uses: docker/login-action@v3
-# After:
-uses: docker/login-action@v4
+```csharp
+var arguments = $"run --rm -i {MarkdownLintImage} --stdin";
+var psi = new ProcessStartInfo("docker", arguments)
 ```
+
+This is lower risk than `DockerFixture` because the current interpolated value is constant, but it still matches the insecure process-construction pattern and is a likely CodeQL finding.
+
+**Root cause:**
+
+Arguments are composed as a single string instead of added via `ArgumentList`, so the fixture relies on manual argument formatting instead of the framework's tokenized API.
 
 ---
 
-### Issue 2 — Outdated `docker/build-push-action` (v6 → v7)
+### 3. Path traversal in wildcard expansion for SARIF inputs
 
-**Severity:** Medium  
-**Type:** Dependabot dependency update  
-**GitHub PR:** [#606 — chore(deps): bump docker/build-push-action from 6 to 7](https://github.com/oocx/tfplan2md/pull/606)
+**Confidence:** Medium  
+**Likely alert type:** CodeQL path injection / path traversal
 
-#### Steps to Reproduce
+**Impacted files:**
+- `src/Oocx.TfPlan2Md/CodeAnalysis/WildcardExpander.cs#L44-L58`
+- `src/Oocx.TfPlan2Md/CodeAnalysis/WildcardExpander.cs#L70-L81`
+- call site: `src/Oocx.TfPlan2Md/CodeAnalysis/CodeAnalysisLoader.cs#L43`
 
-1. Open `.github/workflows/release.yml`
-2. Observe `uses: docker/build-push-action@v6` at line 604
-3. Note that v7 has been available since May 2025
+**Evidence:**
 
-#### Expected Behavior
+`WildcardExpander` turns CLI-supplied `--code-analysis-results` patterns into filesystem enumeration roots:
 
-The workflow should use the latest stable major version of `docker/build-push-action`.
-
-#### Actual Behavior
-
-The workflow uses `docker/build-push-action@v6`, which:
-- Runs on Node 20 (soon-to-be-deprecated in GitHub Actions)
-- Contains vulnerable transitive dependencies:
-  - `undici` (pre-5.29.0) — had multiple CVEs including HTTP header injection
-  - `lodash` (pre-4.17.23) — had prototype pollution CVEs in older versions
-  - `minimatch` (pre-3.1.5) — had a ReDoS vulnerability
-- Contains older `@actions/core` (pre-3.0.0)
-
-#### Root Cause Analysis
-
-**Affected Component:**
-- File: `.github/workflows/release.yml#L604`
-
-**What's Broken:**
-
-`docker/build-push-action` v6 pins `undici` at `5.28.4`, `lodash` at `4.17.21`, and `minimatch` at `3.1.2`. The v7 release bumps these to patched versions (undici 5.29.0, lodash 4.17.23, minimatch 3.1.5) as well as moving to Node 24 runtime and `@actions/core` 3.0.0.
-
-Supply-chain vulnerabilities in actions that handle build secrets (like Docker Hub tokens) are particularly important to patch.
-
-#### Suggested Fix
-
-Update `.github/workflows/release.yml` line 604:
-```yaml
-# Before:
-uses: docker/build-push-action@v6
-# After:
-uses: docker/build-push-action@v7
+```csharp
+var root = ResolveRecursiveRoot(pattern);
+foreach (var file in Directory.EnumerateFiles(root, filePattern, SearchOption.AllDirectories))
 ```
 
----
+For recursive patterns, the root is derived directly from the raw pattern:
 
-### Issue 3 — `DOCKERHUB_USERNAME` Stored as a GitHub Secret
-
-**Severity:** Low  
-**Type:** Security misconfiguration / supply chain risk
-
-#### Steps to Reproduce
-
-1. Open `.github/workflows/release.yml`, lines 580–597
-2. Observe that `${{ secrets.DOCKERHUB_USERNAME }}` is used to construct Docker image tag prefixes (e.g., `oocx/tfplan2md:latest`)
-3. Note that the Docker Hub username (`oocx`) is publicly visible in the Docker Hub image URL and README
-
-#### Expected Behavior
-
-Non-sensitive configuration values (like a public Docker Hub namespace) should be stored as GitHub Actions **variables** (not secrets), or hardcoded directly if they are static. Secrets should be reserved for sensitive values like passwords, tokens, and API keys.
-
-#### Actual Behavior
-
-`DOCKERHUB_USERNAME` is stored as a GitHub Secret and used inline in `run:` steps to construct image tags. This means:
-
-1. **Debugging is harder**: The username value is masked in logs, making it difficult to see the actual image tag being constructed.
-2. **Undefined secret causes silent failure**: If `DOCKERHUB_USERNAME` is not set, the image tag becomes `/tfplan2md:latest` (with an empty prefix), which is an invalid Docker image reference that may fail silently or publish to an unintended repository.
-3. **Public value treated as private**: The Docker Hub username `oocx` is visible in the repository's README, Docker Hub page, and public image tags — it's not a sensitive value and doesn't need masking.
-4. **OIDC alternative not used**: Modern Docker Hub publishing can use OIDC token federation instead of stored credentials, eliminating the need to store a long-lived `DOCKERHUB_TOKEN` secret at all.
-
-#### Root Cause Analysis
-
-**Affected Component:**
-- File: `.github/workflows/release.yml#L580-L597`
-
-**What's Broken:**
-
-The `DOCKERHUB_USERNAME` secret is used in a `run:` step to construct the image tag string:
-```yaml
-TAGS="${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:${{ needs.release.outputs.version }}"
+```csharp
+var rootCandidate = pattern[..recursiveIndex].TrimEnd(...);
+return string.IsNullOrWhiteSpace(rootCandidate)
+    ? Directory.GetCurrentDirectory()
+    : rootCandidate;
 ```
 
-This pattern has two problems:
-- The GitHub Actions expression `${{ secrets.X }}` in a `run:` block injects the secret value directly into the shell script. GitHub masks this value in logs, but it's still stored in the workflow environment.
-- Using a secret to store a public value defeats the purpose of secrets (protecting sensitive data).
+No validation rejects `..` traversal segments before the code enumerates files.
 
-**Why It Happened:**
+**Root cause:**
 
-The Docker Hub username was stored alongside the `DOCKERHUB_TOKEN` secret for convenience, treating both as "Docker Hub credentials". However, the username is public configuration while the token is private credentials — they should be handled differently.
+The code canonicalizes matched file paths only **after** enumeration (`Path.GetFullPath(file)`), but it does not canonicalize and validate the enumeration root **before** using it. That leaves a likely CodeQL data flow from untrusted CLI pattern input to filesystem traversal.
 
-#### Suggested Fix
+## Minimal Fix Approach
 
-**Option A (Recommended): Use a GitHub Actions Variable**
+### Fix 1: Tokenize Docker process arguments
 
-Convert `DOCKERHUB_USERNAME` from a secret to a repository variable (`vars.DOCKERHUB_USERNAME`) via the repository Settings → Variables page. Then update the workflow to reference it as:
-```yaml
-TAGS="${{ vars.DOCKERHUB_USERNAME }}/tfplan2md:${{ needs.release.outputs.version }}"
-```
-And for the login step:
-```yaml
-username: ${{ vars.DOCKERHUB_USERNAME }}
-```
+Update the affected test fixtures to build `ProcessStartInfo` like this:
 
-**Option B (Simplest): Hardcode the username**
+- construct with `new ProcessStartInfo { FileName = "docker", ... }`
+- add each argument through `psi.ArgumentList.Add(...)`
+- stop using `string.Join(" ", arguments)` and interpolated argument strings
 
-Since the Docker Hub username is a static value (`oocx`) that is publicly visible:
-```yaml
-TAGS="oocx/tfplan2md:${{ needs.release.outputs.version }}"
-```
-And:
-```yaml
-username: oocx
-```
+**Smallest required code changes:**
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixture.cs`
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixture.cs`
 
----
+### Fix 2: Validate wildcard roots before directory enumeration
 
-### Issue 4 — No CodeQL Security Scanning Workflow
+Add a small validation/canonicalization step in `WildcardExpander` so directory enumeration never runs on a root containing path traversal outside the intended resolved location.
 
-**Severity:** Low  
-**Type:** Missing security control
+The smallest likely acceptable change is:
 
-#### Steps to Reproduce
+- resolve the root to a full path before enumeration
+- reject patterns whose directory portion contains parent traversal outside the resolved intended root (for example `..` path segments that escape the base path)
+- use the validated full path for `Directory.EnumerateFiles`
 
-1. Browse `.github/workflows/` directory
-2. Observe no `codeql.yml` or security scanning workflow
-3. Note that the PR validation workflow does not run CodeQL
+**Smallest required code changes:**
+- `src/Oocx.TfPlan2Md/CodeAnalysis/WildcardExpander.cs`
 
-#### Expected Behavior
+## Targeted Tests To Add or Update
 
-For a public C# repository, GitHub recommends setting up CodeQL code scanning to automatically detect common security vulnerabilities (path traversal, injection, insecure deserialization, etc.) in pull requests.
+The repository uses **TUnit** in `src/tests/Oocx.TfPlan2Md.TUnit/`. The smallest targeted tests consistent with existing conventions are:
 
-#### Actual Behavior
+### 1. Add a focused WildcardExpander security test
 
-No CodeQL workflow is configured. The repository processes untrusted user-provided input (Terraform plan JSON files), reads and writes files from user-specified paths, and includes complex JSON parsing logic — all areas where CodeQL analysis could catch security vulnerabilities.
+**Update:** `src/tests/Oocx.TfPlan2Md.TUnit/CodeAnalysis/WildcardExpanderTests.cs`
 
-#### Root Cause Analysis
+Add one test that proves traversal-style patterns are rejected (or otherwise safely normalized, depending on implementation choice), for example:
 
-**Affected Components:**
-- File: `src/Oocx.TfPlan2Md/ProgramEntry.cs#L174-L180` (file path from user input)
-- File: `src/Oocx.TfPlan2Md/ProgramEntry.cs#L134-L136` (output file write)
-- File: `src/Oocx.TfPlan2Md/CodeAnalysis/WildcardExpander.cs#L26-L58` (wildcard path expansion)
+- `Expand_RecursivePatternWithParentTraversal_ThrowsArgumentException`
 
-**What's Missing:**
+This is the only production-code security test clearly needed.
 
-The project currently relies only on:
-- `dotnet list package --vulnerable` (NuGet package vulnerability scanning)
-- Manual code review
+### 2. Add unit tests for safe Docker argument construction
 
-GitHub CodeQL for C# would provide:
-- CWE-022 (Path Traversal) detection — relevant because user-controlled paths are passed to `File.Exists`, `File.ReadAllTextAsync`, `Directory.EnumerateFiles`
-- CWE-078 (OS Command Injection) detection
-- CWE-089 (SQL Injection) detection
-- CWE-502 (Deserialization) detection
+Because the current Docker tests are integration tests that actually launch containers, the minimal targeted test approach is to extract a small internal helper that creates `ProcessStartInfo`, then verify it uses `ArgumentList`.
 
-**Why It Happened:**
+**Suggested new tests:**
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixtureSecurityTests.cs`
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixtureTests.cs`
 
-The project was set up without a CodeQL workflow. Given it's a CLI tool (not a web service), the risk surface is lower, but adding CodeQL is a recommended security practice for public repositories on GitHub.
+**Suggested assertions:**
+- the resulting `ProcessStartInfo.ArgumentList` contains each token separately
+- arguments containing spaces remain a single token
+- no helper falls back to concatenated `Arguments` strings
 
-#### Suggested Fix
+If the Developer keeps the fix inline and does not extract a helper, the fallback is to rely on existing Docker integration tests plus a smaller regression test around the new helper logic wherever it ends up.
 
-Add a CodeQL workflow at `.github/workflows/codeql.yml`:
+## Findings Ruled Lower Priority
 
-```yaml
-name: CodeQL
+Other file reads/writes in `ProgramEntry.cs` also use user-supplied paths, but those are part of the CLI's explicit contract (`input file`, `output file`) and are a weaker match for the current task than the three findings above. I did not find equally strong evidence of additional current CodeQL alerts beyond these areas.
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 8 * * 1'  # Weekly on Monday
+## Technical Writer Involvement
 
-permissions:
-  security-events: write
-  contents: read
-
-jobs:
-  analyze:
-    name: Analyze (C#)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: csharp
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          global-json-file: src/global.json
-
-      - name: Build
-        run: dotnet build src/tfplan2md.slnx --no-restore --configuration Release
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-```
-
----
-
-## NuGet Package Vulnerability Scan Results
-
-Running `dotnet list src/tfplan2md.slnx package --vulnerable --include-transitive` confirms:
-
-```
-The given project `Oocx.TfPlan2Md` has no vulnerable packages given the current sources.
-The given project `Oocx.TfPlan2Md.TUnit` has no vulnerable packages given the current sources.
-The given project `JsonEmbedGenerator` has no vulnerable packages given the current sources.
-The given project `Oocx.TfPlan2Md.CoverageEnforcer` has no vulnerable packages given the current sources.
-The given project `Oocx.TfPlan2Md.HtmlRenderer` has no vulnerable packages given the current sources.
-The given project `Oocx.TfPlan2Md.ScreenshotGenerator` has no vulnerable packages given the current sources.
-The given project `Oocx.TfPlan2Md.TerraformShowRenderer` has no vulnerable packages given the current sources.
-```
-
-✅ **No vulnerable NuGet packages detected.**
-
----
-
-## Summary Table
-
-| # | Issue | Severity | Type | Fix |
-|---|-------|----------|------|-----|
-| 1 | `docker/login-action@v3` outdated | Medium | Dependabot | Update to `@v4` in `release.yml:594` |
-| 2 | `docker/build-push-action@v6` outdated | Medium | Dependabot | Update to `@v7` in `release.yml:604` |
-| 3 | `DOCKERHUB_USERNAME` as secret | Low | Misconfiguration | Use `vars.DOCKERHUB_USERNAME` or hardcode |
-| 4 | No CodeQL scanning | Low | Missing control | Add `.github/workflows/codeql.yml` |
-
----
-
-## Priority Order for Fixing
-
-1. **Issues 1 & 2 (Outdated Docker Actions)** — Fix together in one commit. High ROI: Dependabot PRs already exist (#605, #606), this is a straightforward version bump. Addresses actual transitive dependency CVEs (`undici`, `lodash`).
-
-2. **Issue 4 (Add CodeQL Workflow)** — Add a CodeQL workflow. Low effort, high value for ongoing security. The workflow runs automatically and will flag any future issues.
-
-3. **Issue 3 (DOCKERHUB_USERNAME secret)** — Convert from secret to variable. Requires a repository settings change (not just a code change), and the Developer will need to note that the repository maintainer must create a `DOCKERHUB_USERNAME` variable in GitHub Settings → Variables (or update the workflow to hardcode the value).
-
----
-
-## Related Tests
-
-After the fix is implemented:
-- [ ] Verify the Docker publish workflow succeeds in a release run (integration test)
-- [ ] Verify CodeQL workflow runs without errors on the main branch
-- [ ] Verify `docker/login-action@v4` authenticates successfully (requires Docker Hub credentials in CI)
-- [ ] Verify `docker/build-push-action@v7` builds and pushes the image successfully
-
-## Additional Context
-
-- Open Dependabot PRs: [#605](https://github.com/oocx/tfplan2md/pull/605), [#606](https://github.com/oocx/tfplan2md/pull/606)
-- GitHub Issue: [#610 — Fix security issues detected by GitHub](https://github.com/oocx/tfplan2md/issues/610)
-- Local vulnerability scan confirmed no vulnerable NuGet packages (run date: 2025-07-10)
+**Not needed** unless the Developer changes CLI behavior for wildcard patterns in a user-visible way (for example, rejecting previously accepted `--code-analysis-results` patterns). If the fix stays internal and only hardens unsafe path/process handling, Technical Writer involvement can be skipped.

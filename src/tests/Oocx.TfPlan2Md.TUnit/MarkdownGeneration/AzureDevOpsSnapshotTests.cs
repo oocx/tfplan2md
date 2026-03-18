@@ -67,6 +67,18 @@ public class AzureDevOpsSnapshotTests
     }
 
     /// <summary>
+    /// Verifies the Azure DevOps build definition snapshot output matches the approved baseline.
+    /// This test covers the fix for the sensitive attribute bug where all variable attributes were
+    /// incorrectly shown as "(sensitive)" when any variable had is_secret = true.
+    /// Related issue: docs/issues/118-build-definition-variable-rendering/analysis.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureDevOps_BuildDefinitions_MatchesBaseline()
+    {
+        AssertAzureDevOpsSnapshot("azuredevops-build-definitions.json", "azuredevops-build-definitions.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure DevOps plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

@@ -227,6 +227,6 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
     public void RegisterResourceRenderers(ResourceRendererRegistry registry)
     {
         registry.Register(new VariableGroupRenderer());
-        registry.Register(new AzureDevOpsDelegatingRenderer("azuredevops_build_definition"));
+        registry.Register(new BuildDefinitionRenderer(_azdoRepositoryMapper));
     }
 }

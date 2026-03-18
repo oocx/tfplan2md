@@ -766,7 +766,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 | **Coverage Data** | Push to `main` | Publish coverage badge + history to `coverage-data` branch |
 | **CI** | Push to `main` | Auto-version with [Versionize](https://github.com/versionize/versionize) when Docker-relevant files change |
 | **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
-| **CodeQL** | Push/PR to `main`, weekly schedule | Static analysis security scanning (C# source code) |
+| **CodeQL** | Push/PR to `main`, weekly schedule | Static analysis security scanning (C# source code) — managed by GitHub's CodeQL default setup |
 
 ### Code Coverage
 

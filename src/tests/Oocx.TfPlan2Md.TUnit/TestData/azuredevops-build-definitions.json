@@ -94,6 +94,13 @@
           "repository": [],
           "pull_request_trigger": [],
           "schedules": []
+        },
+        "after_sensitive": {
+          "variable": [
+            { "allow_override": true, "is_secret": true, "name": true, "secret_value": true, "value": true },
+            { "allow_override": true, "is_secret": true, "name": true, "secret_value": true, "value": true },
+            false
+          ]
         }
       }
     },

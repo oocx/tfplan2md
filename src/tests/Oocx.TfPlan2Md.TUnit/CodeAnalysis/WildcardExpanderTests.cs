@@ -99,6 +99,58 @@ public class WildcardExpanderTests
     }
 
     /// <summary>
+    /// Verifies traversal-style recursive roots are rejected before enumeration.
+    /// </summary>
+    [Test]
+    public void Expand_RecursivePatternWithParentTraversal_ThrowsArgumentException()
+    {
+        var testDir = Path.Combine(GetTempRoot(), Path.GetRandomFileName());
+        var nestedDir = Path.Combine(testDir, "nested");
+        Directory.CreateDirectory(nestedDir);
+
+        try
+        {
+            var pattern = Path.Combine(nestedDir, "..", "**", "*.sarif");
+
+            var act = () => WildcardExpander.Expand([pattern]);
+
+            act.Should().Throw<ArgumentException>();
+        }
+        finally
+        {
+            Directory.Delete(nestedDir);
+            Directory.Delete(testDir);
+        }
+    }
+
+    /// <summary>
+    /// Verifies recursive patterns rooted at the parent directory are rejected.
+    /// </summary>
+    [Test]
+    public void Expand_RecursivePatternStartingWithParentTraversal_ThrowsArgumentException()
+    {
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var testDir = Path.Combine(GetTempRoot(), Path.GetRandomFileName());
+        var nestedDir = Path.Combine(testDir, "nested");
+        Directory.CreateDirectory(nestedDir);
+
+        try
+        {
+            Directory.SetCurrentDirectory(nestedDir);
+
+            var act = () => WildcardExpander.Expand([Path.Combine("..", "**", "*.sarif")]);
+
+            act.Should().Throw<ArgumentException>();
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(currentDirectory);
+            Directory.Delete(nestedDir);
+            Directory.Delete(testDir);
+        }
+    }
+
+    /// <summary>
     /// Gets a unique temporary directory under the repository .tmp directory.
     /// </summary>
     /// <returns>The absolute directory path.</returns>

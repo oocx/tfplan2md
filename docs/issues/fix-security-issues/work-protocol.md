@@ -97,3 +97,18 @@
 
 **Problems Encountered:**
 - GitHub code scanning alerts could not be queried directly in this environment (`403 Resource not accessible by integration`), so findings are based on code evidence rather than the authoritative GitHub alert list
+
+### Developer — 2026-03-18
+
+**Summary:** Applied the minimal code and test changes needed to address the likely code-scanning findings identified in the refreshed analysis. Docker-backed test fixtures now build `ProcessStartInfo` instances with tokenized `ArgumentList` entries instead of flattened command strings, and SARIF wildcard expansion now rejects parent-traversal roots before directory enumeration. Added targeted regression tests for both areas and validated the branch with the TUnit suite.
+
+**Artifacts Produced:**
+- `src/Oocx.TfPlan2Md/CodeAnalysis/WildcardExpander.cs` — Hardened wildcard root resolution by canonicalizing enumeration roots and rejecting `..` traversal segments before filesystem enumeration
+- `src/tests/Oocx.TfPlan2Md.TUnit/CodeAnalysis/WildcardExpanderTests.cs` — Added regression coverage proving traversal-style recursive patterns are rejected
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixture.cs` — Switched Docker process startup to a shared tokenized `ProcessStartInfo` helper
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixtureSecurityTests.cs` — Added focused assertions for safe Docker argument tokenization
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixture.cs` — Switched markdownlint Docker startup to tokenized argument construction
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixtureTests.cs` — Added focused assertions for safe markdownlint argument tokenization
+
+**Problems Encountered:**
+- The initial targeted test invocation timed out because the test platform ended up executing the full TUnit project; rerunning with a longer timeout completed successfully with all tests passing

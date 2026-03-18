@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Oocx.TfPlan2Md.CodeAnalysis;
 
@@ -54,7 +53,7 @@ internal static class WildcardExpander
         {
             var directory = Path.GetDirectoryName(pattern);
             var filePattern = Path.GetFileName(pattern);
-            var root = directory ?? Directory.GetCurrentDirectory();
+            var root = ResolveEnumerationRoot(directory);
             foreach (var file in Directory.EnumerateFiles(root, filePattern, SearchOption.TopDirectoryOnly))
             {
                 yield return file;
@@ -72,12 +71,51 @@ internal static class WildcardExpander
         var recursiveIndex = pattern.IndexOf("**", StringComparison.Ordinal);
         if (recursiveIndex <= 0)
         {
-            return Directory.GetCurrentDirectory();
+            return ResolveEnumerationRoot(null);
         }
 
         var rootCandidate = pattern[..recursiveIndex].TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        return string.IsNullOrWhiteSpace(rootCandidate)
+        return ResolveEnumerationRoot(rootCandidate);
+    }
+
+    /// <summary>
+    /// Resolves and validates an enumeration root before it reaches filesystem APIs.
+    /// </summary>
+    /// <param name="rootCandidate">The directory portion derived from the user-supplied pattern.</param>
+    /// <returns>A canonical full path that is safe to enumerate.</returns>
+    /// <exception cref="ArgumentException">Thrown when the root contains parent traversal segments.</exception>
+    private static string ResolveEnumerationRoot(string? rootCandidate)
+    {
+        var root = string.IsNullOrWhiteSpace(rootCandidate)
             ? Directory.GetCurrentDirectory()
             : rootCandidate;
+
+        ValidateRootSegments(root);
+        return Path.GetFullPath(root);
+    }
+
+    /// <summary>
+    /// Rejects explicit parent traversal segments so wildcard roots cannot escape via relative navigation.
+    /// </summary>
+    /// <param name="root">The root path to validate.</param>
+    /// <exception cref="ArgumentException">Thrown when the root includes a <c>..</c> segment.</exception>
+    private static void ValidateRootSegments(string root)
+    {
+        var normalizedRoot = root
+            .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+            .TrimEnd(Path.DirectorySeparatorChar);
+        var parentSegment = $"..{Path.DirectorySeparatorChar}";
+        var trailingParentSegment = $"{Path.DirectorySeparatorChar}..";
+        var embeddedParentSegment = $"{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}";
+
+        if (string.Equals(normalizedRoot, "..", StringComparison.Ordinal) ||
+            normalizedRoot.StartsWith(parentSegment, StringComparison.Ordinal) ||
+            normalizedRoot.EndsWith(trailingParentSegment, StringComparison.Ordinal) ||
+            normalizedRoot.Contains(embeddedParentSegment, StringComparison.Ordinal))
+        {
+            throw new ArgumentException(
+                $"Wildcard root '{root}' must not contain parent traversal segments.",
+                nameof(root));
+        }
     }
 }

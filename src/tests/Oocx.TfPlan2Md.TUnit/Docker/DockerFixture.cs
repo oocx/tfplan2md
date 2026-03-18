@@ -51,12 +51,7 @@ public class DockerFixture
         Log("Checking docker availability via 'docker version'");
         try
         {
-            var psi = new ProcessStartInfo("docker", "version")
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false
-            };
+            var psi = CreateDockerProcessStartInfo(["version"]);
 
             using var process = Process.Start(psi);
             if (process == null)
@@ -93,13 +88,9 @@ public class DockerFixture
         }
 
         Log($"Building docker image {FullImageName} from {repoRoot}");
-        var psi = new ProcessStartInfo("docker", $"build -t {FullImageName} -f src/Dockerfile .")
-        {
-            WorkingDirectory = repoRoot,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false
-        };
+        var psi = CreateDockerProcessStartInfo(
+            ["build", "-t", FullImageName, "-f", "src/Dockerfile", "."],
+            workingDirectory: repoRoot);
 
         using var process = Process.Start(psi);
         if (process == null)
@@ -118,12 +109,7 @@ public class DockerFixture
         Log($"Checking if docker image {Instance.FullImageName} exists");
         try
         {
-            var psi = new ProcessStartInfo("docker", $"image inspect {Instance.FullImageName}")
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false
-            };
+            var psi = CreateDockerProcessStartInfo(["image", "inspect", Instance.FullImageName]);
 
             using var process = Process.Start(psi);
             if (process == null)
@@ -188,13 +174,7 @@ public class DockerFixture
         }
 
         Log($"Running docker with args: {string.Join(' ', arguments)}");
-        var psi = new ProcessStartInfo("docker", string.Join(" ", arguments))
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            RedirectStandardInput = true,
-            UseShellExecute = false
-        };
+        var psi = CreateDockerProcessStartInfo(arguments, redirectStandardInput: true);
 
         using var process = Process.Start(psi);
         if (process == null)
@@ -225,13 +205,7 @@ public class DockerFixture
         }
 
         Log($"Running docker (stdin) with args: {string.Join(' ', arguments)}");
-        var psi = new ProcessStartInfo("docker", string.Join(" ", arguments))
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            RedirectStandardInput = true,
-            UseShellExecute = false
-        };
+        var psi = CreateDockerProcessStartInfo(arguments, redirectStandardInput: true);
 
         using var process = Process.Start(psi);
         if (process == null)
@@ -249,6 +223,36 @@ public class DockerFixture
         Log($"docker run (stdin) exit code: {process.ExitCode}");
 
         return (process.ExitCode, stdout, stderr);
+    }
+
+    /// <summary>
+    /// Creates a Docker <see cref="ProcessStartInfo"/> using tokenized arguments to avoid command injection.
+    /// </summary>
+    /// <param name="arguments">The Docker arguments to pass as discrete tokens.</param>
+    /// <param name="workingDirectory">The optional working directory for the Docker process.</param>
+    /// <param name="redirectStandardInput">True when the Docker process should accept stdin.</param>
+    /// <returns>A configured <see cref="ProcessStartInfo"/> instance.</returns>
+    internal static ProcessStartInfo CreateDockerProcessStartInfo(
+        IEnumerable<string> arguments,
+        string? workingDirectory = null,
+        bool redirectStandardInput = false)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "docker",
+            WorkingDirectory = workingDirectory ?? string.Empty,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            RedirectStandardInput = redirectStandardInput,
+            UseShellExecute = false
+        };
+
+        foreach (var argument in arguments)
+        {
+            psi.ArgumentList.Add(argument);
+        }
+
+        return psi;
     }
 
     private static void Log(string message)

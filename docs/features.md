@@ -2343,8 +2343,8 @@ Example of a modified NSG rule with a port change and description update:
 For `azuredevops_build_definition`, pipeline configuration is displayed as structured tables for variables, triggers, repository settings, schedules, and jobs. This solves the common problem where Terraform marks all build definition nested blocks as sensitive, making it impossible to review pipeline configuration changes.
 
 **Features:**
-- **Variables table**: Shows all pipeline variables with Name, Value, Is Secret, and Allow Override columns
-- **Secret protection**: Secret variables (`is_secret: true`) display as `(sensitive / hidden)` while showing all metadata
+- **Variables table**: Shows all pipeline variables with Name, Value, Secret, and Allow Override columns
+- **Secret protection**: Secret variables (`is_secret: true`) display as `(sensitive / hidden)` while showing all metadata (name, secret flag, allow override)
 - **Semantic diffing**: Variables matched by name across before/after states, showing Added (➕), Modified (🔄), Removed (❌), or Unchanged (⏺️)
 - **Trigger tables**: CI triggers, pull request triggers, and schedules displayed as separate tables when present
 - **Repository table**: Source repository configuration showing type, repo ID, branch, YAML path, and build status reporting
@@ -2353,41 +2353,57 @@ For `azuredevops_build_definition`, pipeline configuration is displayed as struc
 
 **Table columns (Variables):**
 - **Change**: Icon indicating the type of change (update operations only)
-- **Name**: Variable name (formatted as inline code)
+- **Name**: Variable name (formatted as inline code with 🆔 icon)
 - **Value**: Variable value or `(sensitive / hidden)` for secret variables
-- **Is Secret**: Boolean flag indicating if the variable is a secret
-- **Allow Override**: Boolean flag indicating if the variable can be overridden at queue time
+- **Secret**: Boolean flag indicating if the variable is a secret (`✅ true` / `❌ false`)
+- **Allow Override**: Boolean flag indicating if the variable can be overridden at queue time (`✅ true` / `❌ false`)
+
+**Example output for create operation:**
+
+```markdown
+**Build Definition:** `example-pipeline`
+
+**Path:** `\\Pipelines`
+
+**Agent Pool:** `Default`
+
+#### Variables
+
+| Name | Value | Secret | Allow Override |
+| ---- | ----- | ------ | -------------- |
+| `🆔 BUILD_CONFIGURATION` | `Release` | `❌ false` | `✅ true` |
+| `🆔 API_KEY` | `(sensitive / hidden)` | `✅ true` | `❌ false` |
+```
 
 **Example output for update operation:**
 
 ```markdown
-**Pipeline Name:** `example-pipeline`
+**Build Definition:** `example-pipeline`
 
 **Path:** `\\Pipelines`
 
 #### Variables
 
-| Change | Name | Value | Is Secret | Allow Override |
-| ------ | ---- | ----- | --------- | -------------- |
-| ➕ | `NEW_VAR` | `value` | `false` | `true` |
-| 🔄 | `BUILD_CONFIG` | - `Debug`<br>+ `Release` | `false` | `true` |
-| 🔄 | `API_KEY` | `(sensitive / hidden)` | - `false`<br>+ `true` | `true` |
-| ❌ | `OLD_VAR` | `old-value` | `false` | `true` |
+| Change | Name | Value | Secret | Allow Override |
+| ------ | ---- | ----- | ------ | -------------- |
+| ➕ | `🆔 NEW_VAR` | `new-value` | `❌ false` | `❌ false` |
+| 🔄 | `🆔 BUILD_CONFIG` | `- debug`<br>`+ release` | `❌ false` | `- true`<br>`+ false` |
+| ❌ | `🆔 OLD_VAR` | `old-value` | `❌ false` | `❌ false` |
 
-#### CI Trigger
+#### CI Triggers
 
-| Use YAML | Override (Branch Filters) |
-| -------- | ------------------------- |
-| `true` | - |
+| Use YAML | Override Branch Filters |
+| -------- | ----------------------- |
+| `✅ true` | `main` |
 
 #### Repository
 
-| Type | Repo ID | Branch | YAML Path | Report Build Status |
-| ---- | ------- | ------ | --------- | ------------------- |
-| `TfsGit` | `80128bc2-17ff-45f8-ad59-d7609a605c75` | `refs/heads/master` | `azure-pipelines.yml` | `true` |
+| Type | Repo ID | Branch | YAML Path | Report Status | Service Connection |
+| ---- | ------- | ------ | --------- | ------------- | ------------------ |
+| `TfsGit` | `🗃️ 87654321-...` | `⎇ refs/heads/main` | `pipelines/ci.yml` | `✅ true` | - |
 ```
 
-Note how the `API_KEY` variable shows its metadata (name, is_secret flag, allow_override) but displays `(sensitive / hidden)` instead of the actual secret value. Modified attributes show before/after values with `-` and `+` prefixes; unchanged attributes show a single value without prefix.
+Note how the `API_KEY` variable shows its metadata (name, secret flag, allow_override) but displays `(sensitive / hidden)` instead of the actual secret value. Modified attributes show before/after values with `-` and `+` prefixes; unchanged attributes show a single value without prefix.
 
 This template makes it possible to review build definition changes in CI/CD pipelines without exposing secret values, while providing full visibility into pipeline variables, triggers, and repository configuration.
 

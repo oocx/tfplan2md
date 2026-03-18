@@ -9,6 +9,14 @@
 
 <!-- Each agent appends their entry below when they complete their work. -->
 
+### Technical Writer
+- **Date:** 2026-03-18
+- **Summary:** Created release notes for issue 118 and updated `docs/features.md` to correct the variable column names (`Is Secret` → `Secret`) and update the example output tables to match the actual renderer output (including `🆔` name icons, `✅`/`❌` boolean formatting, and correct CI trigger/repository column headings).
+- **Artifacts Produced:**
+  - `docs/issues/118-build-definition-variable-rendering/release-notes.md` — New release notes describing the bug fix (sensitive attribute bleed) and the feature (connected tabular renderer)
+  - `docs/features.md` — Updated Azure DevOps Build Definitions section: corrected column names, added create-operation example, updated update-operation example to match snapshot
+- **Problems Encountered:** The existing documentation (from Feature 094) used column header "Is Secret" while the actual implementation uses "Secret". This was corrected to match the snapshot output.
+
 ### Developer
 - **Date:** 2026-03-18
 - **Summary:** Implemented `BuildDefinitionRenderer` class in `AzureDevOpsResourceRenderers.cs` modelled after `VariableGroupRenderer`. The renderer uses `BuildDefinitionViewModelFactory` to read variable data directly from before/after JSON, completely bypassing the `SensitivityHelper` hierarchical check that caused the bug. Only the `value`/`secret_value` field is masked for secret variables; `name`, `is_secret`, and `allow_override` correctly display actual values.

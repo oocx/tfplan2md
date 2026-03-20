@@ -5,6 +5,8 @@ using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.RenderTargets;
+using Oocx.TfPlan2Md.RenderTargets.Bitbucket;
+
 
 namespace Oocx.TfPlan2Md;
 
@@ -128,6 +130,11 @@ internal static class ProgramEntry
         if (services.DiagnosticContext is not null)
         {
             markdown += "\n\n" + DiagnosticMarkdownFormatter.Format(services.DiagnosticContext.CreateSnapshot());
+        }
+
+        if (options.RenderTarget == RenderTarget.Bitbucket)
+        {
+            markdown = BitbucketMarkdownPostProcessor.Process(markdown);
         }
 
         // Write output

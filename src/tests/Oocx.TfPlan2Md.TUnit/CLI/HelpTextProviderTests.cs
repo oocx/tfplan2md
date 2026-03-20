@@ -63,6 +63,14 @@ public class HelpTextProviderTests
             .And.Contain("Target platform for rendering");
     }
 
+    [Test]
+    public void GetHelpText_IncludesBitbucketRenderTarget()
+    {
+        var help = HelpTextProvider.GetHelpText();
+
+        help.Should().Contain("bitbucket");
+    }
+
     /// <summary>
     /// TC-02: Help text includes --debug flag documentation.
     /// </summary>

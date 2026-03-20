@@ -294,7 +294,7 @@ This makes it easy to conditionally post PR comments, upload artifacts, or skip 
     {% call docs.pageSection("render-targets", "Render Targets", "The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.") %}
       {{ docs.formatComparison(docsPage.renderTargets) }}
       <div class="docs-migration-note">
-        <p class="docs-migration-note-text"><strong>Migration note:</strong> The <code>--large-value-format</code> flag has been deprecated and replaced by <code>--render-target</code>. Use <code>--render-target azuredevops</code> for <code>inline-diff</code> behavior or <code>--render-target github</code> for <code>standard-diff</code> behavior.</p>
+        <p class="docs-migration-note-text"><strong>Migration note:</strong> The <code>--large-value-format</code> flag has been deprecated and replaced by <code>--render-target</code>. Use <code>--render-target azuredevops</code> for <code>inline-diff</code> behavior, or <code>--render-target github</code> / <code>--render-target bitbucket</code> for <code>standard-diff</code> behavior.</p>
       </div>
     {% endcall %}
 

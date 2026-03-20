@@ -232,7 +232,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name>` | Use a built-in template by name (`default`, `summary`) |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
-| `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
+| `--render-target <github\|azuredevops\|bitbucket>` | Target platform for rendering: `github` (simple diff), `azuredevops` (inline diff, default), or `bitbucket` (markdown-only simple diff for Bitbucket PR comments) |
 | `--details <auto\|open\|closed>` | Control resource details display: `auto` (expand resources with findings, default), `open` (expand all), `closed` (collapse all) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--code-analysis-results <pattern>` | SARIF file pattern for static analysis findings (can be specified multiple times) |
@@ -248,17 +248,21 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 
 #### Render Target Selection
 
-The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
+The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved out of the main attribute table. On platforms that support HTML details they render in collapsible sections; the Bitbucket target rewrites those sections into plain markdown because Bitbucket comments do not support arbitrary HTML:
 
 - **`azuredevops`** (default, alias: `azdo`): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps PR comments (GitHub strips styles but content remains readable).
 - **`github`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
+- **`bitbucket`**: Markdown-only output for Bitbucket PR comments. Uses simple diff blocks and strips raw HTML such as `<details>`, `<summary>`, and `<code>`.
 
 Example:
 ```bash
 terraform show -json plan.tfplan | tfplan2md --render-target github
+
+# Bitbucket PR comment rendering
+terraform show -json plan.tfplan | tfplan2md --render-target bitbucket
 ```
 
-**Migration note:** The `--large-value-format` flag has been deprecated and replaced by `--render-target`. Use `--render-target azuredevops` for `inline-diff` behavior or `--render-target github` for `simple-diff` behavior.
+**Migration note:** The `--large-value-format` flag has been deprecated and replaced by `--render-target`. Use `--render-target azuredevops` for `inline-diff` behavior, or `--render-target github` / `--render-target bitbucket` for `simple-diff` behavior.
 
 #### Debug Output
 

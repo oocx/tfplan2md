@@ -277,6 +277,28 @@ public class ProgramMainTests
     }
 
     /// <summary>
+    /// Verifies that the Bitbucket render target emits markdown without raw HTML tags that Bitbucket comments do not support.
+    /// </summary>
+    [Test]
+    public async Task Main_WithBitbucketRenderTarget_RendersMarkdownWithoutRawHtmlTags()
+    {
+        var inputPath = GetTestDataPath("azapi-create-plan.json");
+        var outputPath = GetTempPath("bitbucket-render-target-output.md");
+
+        var result = await RunMainAsync([inputPath, "--output", outputPath, "--render-target", "bitbucket"]);
+
+        result.ExitCode.Should().Be(0);
+        result.StdOut.Should().NotContain("##vso[task.setvariable variable=tfplan2md_haschanges]");
+
+        var output = await File.ReadAllTextAsync(outputPath);
+        output.Should().NotContain("<details");
+        output.Should().NotContain("<summary>");
+        output.Should().NotContain("<code");
+        output.Should().NotContain("<b>");
+        output.Should().Contain("Resource Changes");
+    }
+
+    /// <summary>
     /// Verifies that the Azure DevOps pipeline variable is NOT emitted when no output file is specified (stdout mode).
     /// </summary>
     [Test]

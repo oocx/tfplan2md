@@ -382,6 +382,19 @@ public class CliParserTests
     }
 
     [Test]
+    public void Parse_RenderTargetBitbucket_SetsOption()
+    {
+        // Arrange
+        var args = new[] { "plan.json", "--render-target", "bitbucket" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.RenderTarget.ToString().Should().Be("Bitbucket");
+    }
+
+    [Test]
     public void Parse_RenderTargetDefault_IsAzureDevOps()
     {
         // Arrange

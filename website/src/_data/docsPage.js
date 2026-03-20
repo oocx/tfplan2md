@@ -127,6 +127,13 @@ apt-get update
       description: "Traditional diff format with +/- markers. Fully portable and works on both GitHub and Azure DevOps.",
       usage: "--render-target github",
       code: "```diff\n  #!/bin/bash\n- echo \"v1.0\"\n+ echo \"v2.0\"\n  apt-get update\n```"
+    },
+    {
+      id: "bitbucket",
+      title: "bitbucket",
+      description: "Markdown-only output for Bitbucket PR comments. Uses simple diff blocks and rewrites HTML-only sections into plain markdown.",
+      usage: "--render-target bitbucket",
+      code: "```diff\n  #!/bin/bash\n- echo \"v1.0\"\n+ echo \"v2.0\"\n  apt-get update\n```"
     }
   ],
 

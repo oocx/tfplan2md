@@ -73,12 +73,17 @@ internal static partial class AzApiBodyRenderer
 
     private static void WriteLargeCreateDeleteProperties(
         MarkdownWriter writer,
-        IReadOnlyList<AzApiCreateDeletePropertyPlan> properties)
+        IReadOnlyList<AzApiCreateDeletePropertyPlan> properties,
+        IRenderContext context)
     {
         if (properties.Count == 0)
         {
             return;
         }
+
+        var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(context.RenderTarget) == LargeValueFormat.SimpleDiff
+            ? "simple-diff"
+            : "inline-diff";
 
         writer.Raw("<details>\n<summary>Large body properties</summary>\n\n");
 
@@ -93,7 +98,7 @@ internal static partial class AzApiBodyRenderer
             }
             else
             {
-                writer.Raw(MarkdownHelpers.FormatLargeValue(null, property.Value?.ToString(), "inline-diff"));
+                writer.Raw(MarkdownHelpers.FormatLargeValue(null, property.Value?.ToString(), largeValueFormat));
                 writer.Raw("\n");
             }
 
@@ -110,6 +115,10 @@ internal static partial class AzApiBodyRenderer
             return;
         }
 
+        var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(context.RenderTarget) == LargeValueFormat.SimpleDiff
+            ? "simple-diff"
+            : "inline-diff";
+
         writer.Raw("<details>\n<summary>Large body property changes</summary>\n\n");
 
         foreach (var property in properties)
@@ -123,7 +132,7 @@ internal static partial class AzApiBodyRenderer
             }
             else
             {
-                writer.Raw(MarkdownHelpers.FormatLargeValue(property.Before?.ToString(), property.After?.ToString(), "inline-diff"));
+                writer.Raw(MarkdownHelpers.FormatLargeValue(property.Before?.ToString(), property.After?.ToString(), largeValueFormat));
                 writer.Raw("\n");
             }
 

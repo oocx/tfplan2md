@@ -169,6 +169,23 @@ public class ProgramMainTests
     }
 
     /// <summary>
+    /// Verifies HCP run-id mode fails with an actionable error when TFE_TOKEN is missing.
+    /// </summary>
+    [Test]
+    public async Task Main_WithHcpRunIdWithoutToken_ReturnsError()
+    {
+        var previousToken = Environment.GetEnvironmentVariable("TFE_TOKEN");
+        Environment.SetEnvironmentVariable("TFE_TOKEN", null);
+
+        var result = await RunMainAsync(["--hcp-run-id", "run-abc123"]);
+
+        result.ExitCode.Should().Be(1);
+        result.StdErr.Should().Contain("TFE_TOKEN");
+
+        Environment.SetEnvironmentVariable("TFE_TOKEN", previousToken);
+    }
+
+    /// <summary>
     /// Verifies the CLI returns exit code 10 when fail-on severity is met.
     /// </summary>
     [Test]

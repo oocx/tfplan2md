@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.Diagnostics;
+using Oocx.TfPlan2Md.Input;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.RenderTargets;
@@ -165,6 +166,13 @@ internal static class ProgramEntry
     /// <returns>The input content, or <c>null</c> when the input cannot be read.</returns>
     private static async Task<string?> ReadInputAsync(CliOptions options)
     {
+        if (options.HcpRunId is not null)
+        {
+            using var httpClient = new HttpClient();
+            var hcpInput = new HcpTerraformPlanInput(httpClient);
+            return await hcpInput.GetPlanJsonAsync(options.HcpRunId, CancellationToken.None);
+        }
+
         if (options.InputFile is null)
         {
             using var reader = new StreamReader(Console.OpenStandardInput());

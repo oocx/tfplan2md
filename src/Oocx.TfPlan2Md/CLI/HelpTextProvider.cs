@@ -24,6 +24,7 @@ public static class HelpTextProvider
             ("-t, --template <name>", "Use a built-in template by name (default or summary)."),
             ("--report-title <title>", "Override the report title (level-1 heading) with a custom value."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
+            ("--hcp-run-id <id>", "Fetch plan JSON from HCP Terraform using a run ID (requires TFE_TOKEN user/team token with workspace admin access; optional TFE_ADDRESS)."),
             ("--render-target <github|azuredevops>", "Target platform for rendering (default: azuredevops). When azuredevops and --output is used, emits ##vso[task.setvariable variable=tfplan2md_haschanges]true/false."),
             ("--details <auto|open|closed>", "Control resource details display (default: auto)."),
             ("--code-analysis-results <pattern>", "SARIF file pattern for static analysis findings (repeatable)."),
@@ -48,6 +49,9 @@ public static class HelpTextProvider
             string.Empty,
             "# With principal mapping",
             "tfplan2md --principal-mapping principals.json plan.json",
+            string.Empty,
+            "# From HCP Terraform run ID",
+            "tfplan2md --hcp-run-id run-abc123",
             string.Empty,
             "# With code analysis (auto-expand resources with findings)",
             "tfplan2md --code-analysis-results checkov.sarif plan.json",
@@ -74,7 +78,7 @@ public static class HelpTextProvider
         sb.AppendLine();
         sb.AppendLine("Arguments:");
         sb.AppendLine("  input-file           Path to the Terraform plan JSON file.");
-        sb.AppendLine("                       If omitted, reads from stdin.");
+        sb.AppendLine("                       If omitted, reads from stdin (unless --hcp-run-id is provided).");
         sb.AppendLine();
         sb.AppendLine("Options:");
         foreach (var (option, description) in options)

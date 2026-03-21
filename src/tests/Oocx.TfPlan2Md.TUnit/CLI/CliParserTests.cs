@@ -14,6 +14,7 @@ public class CliParserTests
     private const string CustomSbn = "custom.sbn";
     private const string TemplateFlag = "--template";
     private const string ReportTitleFlag = "--report-title";
+    private const string HcpRunIdFlag = "--hcp-run-id";
     private const string PrincipalsJson = "principals.json";
     private const string PrincipalMappingFlag = "--principal-mapping";
     [Test]
@@ -69,6 +70,46 @@ public class CliParserTests
 
         // Assert
         options.InputFile.Should().Be("plan.json");
+    }
+
+    [Test]
+    public void Parse_HcpRunIdFlag_SetsHcpRunId()
+    {
+        // Arrange
+        var args = new[] { HcpRunIdFlag, "run-abc123" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.HcpRunId.Should().Be("run-abc123");
+        options.InputFile.Should().BeNull();
+    }
+
+    [Test]
+    public void Parse_HcpRunIdWithoutValue_ThrowsCliParseException()
+    {
+        // Arrange
+        var args = new[] { HcpRunIdFlag };
+
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>().Which.Message.Should().Contain("--hcp-run-id requires a value");
+    }
+
+    [Test]
+    public void Parse_HcpRunIdWithInputFile_ThrowsCliParseException()
+    {
+        // Arrange
+        var args = new[] { HcpRunIdFlag, "run-abc123", "plan.json" };
+
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>().Which.Message.Should().Contain("cannot be combined");
     }
 
     [Test]

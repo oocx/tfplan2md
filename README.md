@@ -42,6 +42,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 ## Features
 
 - 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output
+- ☁️ **Native HCP Terraform input** - Fetch plan JSON directly from HCP Terraform using `--hcp-run-id`
 - 🔍 **Static analysis integration** - Display security and quality findings from Checkov, Trivy, TFLint, and Semgrep (SARIF 2.1.0 format) directly in reports
 - ✅ **Validated markdown output** - Comprehensive testing ensures GitHub/Azure DevOps compatibility
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
@@ -213,6 +214,25 @@ docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json
 dotnet run --project src/Oocx.TfPlan2Md -- plan.json
 ```
 
+### From HCP Terraform run ID
+
+```bash
+# Requires TFE_TOKEN in environment
+tfplan2md --hcp-run-id run-abc123
+
+# Optional: override HCP address for Terraform Enterprise/private installs
+TFE_ADDRESS="https://tfe.example.com" tfplan2md --hcp-run-id run-abc123
+```
+
+Authentication and endpoint behavior:
+
+- `TFE_TOKEN` is required when `--hcp-run-id` is used.
+- Use a user/team token with workspace admin access for `TFE_TOKEN` (`organization` tokens are not accepted for plan JSON output endpoints).
+- `TFE_ADDRESS` is optional; default is `https://app.terraform.io`.
+- `TFE_ADDRESS` must be an absolute `https://` URL.
+- Input modes are mutually exclusive: use either `--hcp-run-id`, positional `plan.json`, or stdin.
+- The fetched JSON is passed into the existing parser/render pipeline unchanged.
+
 ### With output file
 
 ```bash
@@ -231,6 +251,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name>` | Use a built-in template by name (`default`, `summary`) |
+| `--hcp-run-id <id>` | Fetch plan JSON from HCP Terraform by run ID (requires `TFE_TOKEN`, optional `TFE_ADDRESS`) |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
 | `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--details <auto\|open\|closed>` | Control resource details display: `auto` (expand resources with findings, default), `open` (expand all), `closed` (collapse all) |
@@ -646,6 +667,8 @@ The demo includes:
 - Complex nested attributes
 
 See [examples/comprehensive-demo/README.md](examples/comprehensive-demo/README.md) for details.
+
+For native HCP Terraform run ID input usage, see [examples/hcp-run-id/README.md](examples/hcp-run-id/README.md).
 
 ## Built-in Templates
 

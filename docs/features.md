@@ -699,6 +699,28 @@ tfplan2md plan.json --report-title "Drift Detection Results"
   ```bash
   tfplan2md plan.json
   ```
+- **HCP Terraform run ID**: Fetch Terraform plan JSON directly from HCP Terraform
+  ```bash
+  # Requires TFE_TOKEN
+  tfplan2md --hcp-run-id run-abc123
+
+  # Optional Terraform Enterprise/private address override
+  TFE_ADDRESS="https://tfe.example.com" tfplan2md --hcp-run-id run-abc123
+  ```
+
+### HCP Terraform Authentication
+
+When using `--hcp-run-id`, tfplan2md reads authentication and endpoint settings from environment variables:
+
+- `TFE_TOKEN` (**required**) - Bearer token for HCP Terraform/Terraform Enterprise API requests.
+  - Use a user/team token with workspace admin access; organization tokens are not accepted for plan JSON output endpoints.
+- `TFE_ADDRESS` (optional) - Base URL for API requests; defaults to `https://app.terraform.io` and must be an absolute `https://` URL.
+
+Behavior:
+
+- `--hcp-run-id` cannot be combined with positional input file arguments.
+- Missing `TFE_TOKEN` returns a clear actionable error.
+- Non-success API responses and malformed payloads return explicit errors.
 
 ## Output
 
@@ -1032,6 +1054,7 @@ Simple single-command interface with flags:
 |------|-------------|
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <name>` | Use a built-in template by name (`default`, `summary`) |
+| `--hcp-run-id <id>` | Fetch plan JSON from HCP Terraform by run ID (requires `TFE_TOKEN`, optional `TFE_ADDRESS`) |
 | `--report-title <text>` | Override the report's level-1 heading |
 | `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |

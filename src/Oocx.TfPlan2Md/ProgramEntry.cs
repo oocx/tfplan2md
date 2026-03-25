@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.Diagnostics;
+using Oocx.TfPlan2Md.Input;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.RenderTargets;
@@ -165,6 +166,15 @@ internal static class ProgramEntry
     /// <returns>The input content, or <c>null</c> when the input cannot be read.</returns>
     private static async Task<string?> ReadInputAsync(CliOptions options)
     {
+        if (options.HcpRunId is not null)
+        {
+            await EnsureNoRedirectedStdinContentAsync(Console.IsInputRedirected, Console.OpenStandardInput(), CancellationToken.None);
+
+            using var httpClient = new HttpClient();
+            var hcpInput = new HcpTerraformPlanInput(httpClient);
+            return await hcpInput.GetPlanJsonAsync(options.HcpRunId, CancellationToken.None);
+        }
+
         if (options.InputFile is null)
         {
             using var reader = new StreamReader(Console.OpenStandardInput());
@@ -178,6 +188,38 @@ internal static class ProgramEntry
         }
 
         return await File.ReadAllTextAsync(options.InputFile);
+    }
+
+    /// <summary>
+    /// Ensures HCP run-id mode is not combined with actual piped stdin content.
+    /// </summary>
+    /// <param name="isInputRedirected">Whether stdin is redirected for this process.</param>
+    /// <param name="inputStream">The standard input stream to probe.</param>
+    /// <param name="cancellationToken">Cancellation signal for asynchronous stream reads.</param>
+    /// <returns>A completed task when redirected stdin is empty or not redirected.</returns>
+    internal static async Task EnsureNoRedirectedStdinContentAsync(
+        bool isInputRedirected,
+        Stream inputStream,
+        CancellationToken cancellationToken)
+    {
+        _ = cancellationToken;
+
+        if (!isInputRedirected)
+        {
+            return;
+        }
+
+        if (!inputStream.CanSeek)
+        {
+            throw new InvalidOperationException("--hcp-run-id cannot be combined with redirected stdin streams. Use either --hcp-run-id without redirected stdin, positional input file, or stdin.");
+        }
+
+        if (inputStream.Length > inputStream.Position)
+        {
+            throw new InvalidOperationException("--hcp-run-id cannot be combined with stdin input. Use either --hcp-run-id, positional input file, or stdin.");
+        }
+
+        await Task.CompletedTask;
     }
 
     /// <summary>

@@ -11,7 +11,7 @@ namespace Oocx.TfPlan2Md.Tests.CLI;
 /// <summary>
 /// End-to-end tests for the top-level program entry point to validate CLI behavior.
 /// </summary>
-[NotInParallel("CLI")]
+[NotInParallel("EnvironmentVariables")]
 public class ProgramMainTests
 {
     /// <summary>
@@ -166,6 +166,107 @@ public class ProgramMainTests
         var result = await RunMainAsync([inputPath, "--template", templatePath, "--output", outputPath]);
 
         result.ExitCode.Should().Be(1);
+    }
+
+    /// <summary>
+    /// Verifies HCP run-id mode fails with an actionable error when TFE_TOKEN is missing.
+    /// </summary>
+    [Test]
+    public async Task Main_WithHcpRunIdWithoutToken_ReturnsError()
+    {
+        var previousToken = Environment.GetEnvironmentVariable("TFE_TOKEN");
+        try
+        {
+            Environment.SetEnvironmentVariable("TFE_TOKEN", null);
+
+            var result = await RunMainAsync(["--hcp-run-id", "run-abc123"]);
+
+            result.ExitCode.Should().Be(1);
+            (result.StdErr.Contains("TFE_TOKEN")
+                || result.StdErr.Contains("cannot be combined with redirected stdin streams"))
+                .Should()
+                .BeTrue();
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("TFE_TOKEN", previousToken);
+        }
+    }
+
+    [Test]
+    public async Task EnsureNoRedirectedStdinContentAsync_WhenRedirectedAndNonEmpty_Throws()
+    {
+        var input = new MemoryStream(Encoding.UTF8.GetBytes("{\"format_version\":\"1.2\"}"));
+
+        var act = () => ProgramEntry.EnsureNoRedirectedStdinContentAsync(true, input, CancellationToken.None);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(act);
+        ex.Should().NotBeNull();
+        ex!.Message.Should().Contain("cannot be combined with stdin input");
+    }
+
+    [Test]
+    public async Task EnsureNoRedirectedStdinContentAsync_WhenRedirectedAndEmpty_DoesNotThrow()
+    {
+        using var input = new MemoryStream([]);
+
+        var act = () => ProgramEntry.EnsureNoRedirectedStdinContentAsync(true, input, CancellationToken.None);
+
+        await act.Should().NotThrowAsync();
+    }
+
+    [Test]
+    public async Task EnsureNoRedirectedStdinContentAsync_WhenRedirectedAndNonSeekable_Throws()
+    {
+        using var input = new NonSeekableReadThrowStream();
+
+        var act = () => ProgramEntry.EnsureNoRedirectedStdinContentAsync(true, input, CancellationToken.None);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(act);
+        ex.Should().NotBeNull();
+        ex!.Message.Should().Contain("cannot be combined with redirected stdin streams");
+    }
+
+    private sealed class NonSeekableReadThrowStream : Stream
+    {
+        public override bool CanRead => true;
+
+        public override bool CanSeek => false;
+
+        public override bool CanWrite => false;
+
+        public override long Length => throw new NotSupportedException();
+
+        public override long Position
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
+        public override void Flush()
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            throw new InvalidOperationException("Read should not be called for non-seekable stdin probe.");
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException();
+        }
     }
 
     /// <summary>

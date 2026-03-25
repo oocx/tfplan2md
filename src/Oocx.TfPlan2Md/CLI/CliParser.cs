@@ -13,6 +13,11 @@ internal record CliOptions
     public string? InputFile { get; init; }
 
     /// <summary>
+    /// Gets the HCP Terraform run id used to fetch plan JSON as input.
+    /// </summary>
+    public string? HcpRunId { get; init; }
+
+    /// <summary>
     /// Gets the list of code analysis SARIF file patterns provided via CLI.
     /// Related feature: docs/features/056-static-analysis-integration/specification.md.
     /// </summary>
@@ -129,6 +134,7 @@ internal static class CliParser
     public static CliOptions Parse(string[] args)
     {
         string? inputFile = null;
+        string? hcpRunId = null;
         string? outputFile = null;
         string? templatePath = null;
         string? principalMappingFile = null;
@@ -200,6 +206,22 @@ internal static class CliParser
                     {
                         throw new CliParseException("--output requires a file path argument.");
                     }
+                    break;
+                case "--hcp-run-id":
+                    if (i + 1 < args.Length)
+                    {
+                        if (inputFile is not null)
+                        {
+                            throw new CliParseException("--hcp-run-id cannot be combined with an input file argument.");
+                        }
+
+                        hcpRunId = args[++i];
+                    }
+                    else
+                    {
+                        throw new CliParseException("--hcp-run-id requires a value.");
+                    }
+
                     break;
                 case "--template" or "-t":
                     if (i + 1 < args.Length)
@@ -289,6 +311,12 @@ internal static class CliParser
                     {
                         throw new CliParseException($"Unexpected argument: {arg}. Only one input file can be specified.");
                     }
+
+                    if (hcpRunId is not null)
+                    {
+                        throw new CliParseException("Input file argument cannot be combined with --hcp-run-id.");
+                    }
+
                     // Positional argument is the input file
                     inputFile = arg;
                     break;
@@ -298,6 +326,7 @@ internal static class CliParser
         return new CliOptions
         {
             InputFile = inputFile,
+            HcpRunId = hcpRunId,
             OutputFile = outputFile,
             TemplatePath = templatePath,
             ShowSensitive = showSensitive,

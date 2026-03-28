@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.RegularExpressions;
-using Oocx.TfPlan2Md.MarkdownGeneration;
 
 namespace Oocx.TfPlan2Md.RenderTargets.Bitbucket;
 
@@ -121,9 +120,9 @@ internal static class BitbucketMarkdownPostProcessor
     /// <returns>Plain text content.</returns>
     private static string ConvertHtmlToPlainText(string content, string lineBreakReplacement)
     {
-        var withoutBreaks = BreakRegex.Replace(content, lineBreakReplacement);
-        var decoded = WebUtility.HtmlDecode(withoutBreaks);
-        return decoded.Replace("\u00A0", " ", StringComparison.Ordinal);
+        var decoded = WebUtility.HtmlDecode(content);
+        var withoutBreaks = BreakRegex.Replace(decoded, lineBreakReplacement);
+        return withoutBreaks.Replace("\u00A0", " ", StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -138,9 +137,34 @@ internal static class BitbucketMarkdownPostProcessor
             return string.Empty;
         }
 
-        var escaped = MarkdownHelpers.EscapeMarkdown(content);
-        var fence = content.Contains('`') ? "``" : "`";
-        return $"{fence}{escaped}{fence}";
+        var fence = GetInlineCodeFence(content);
+        return $"{fence}{content}{fence}";
+    }
+
+    /// <summary>
+    /// Selects an inline-code fence longer than any backtick run in the content.
+    /// </summary>
+    /// <param name="content">Inline content to wrap.</param>
+    /// <returns>A markdown code-span fence that does not collide with the content.</returns>
+    private static string GetInlineCodeFence(string content)
+    {
+        var longestBacktickRun = 0;
+        var currentBacktickRun = 0;
+
+        foreach (var character in content)
+        {
+            if (character == '`')
+            {
+                currentBacktickRun++;
+                longestBacktickRun = Math.Max(longestBacktickRun, currentBacktickRun);
+            }
+            else
+            {
+                currentBacktickRun = 0;
+            }
+        }
+
+        return new string('`', longestBacktickRun + 1);
     }
 
     /// <summary>

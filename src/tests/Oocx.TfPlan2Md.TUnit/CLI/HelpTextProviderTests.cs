@@ -59,7 +59,7 @@ public class HelpTextProviderTests
     {
         var help = HelpTextProvider.GetHelpText();
 
-        help.Should().Contain("--render-target <github|azuredevops>")
+        help.Should().Contain("--render-target <github|azuredevops|bitbucket>")
             .And.Contain("Target platform for rendering");
     }
 

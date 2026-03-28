@@ -391,7 +391,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        options.RenderTarget.ToString().Should().Be("Bitbucket");
+        options.RenderTarget.Should().Be(RenderTarget.Bitbucket);
     }
 
     [Test]

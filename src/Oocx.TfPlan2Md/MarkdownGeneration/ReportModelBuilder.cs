@@ -247,7 +247,7 @@ internal partial class ReportModelBuilder
     /// <returns>The corresponding LargeValueFormat value.</returns>
     internal static LargeValueFormat ConvertRenderTargetToLargeValueFormat(RenderTargets.RenderTarget target)
     {
-        return target == RenderTargets.RenderTarget.GitHub
+        return target is RenderTargets.RenderTarget.GitHub or RenderTargets.RenderTarget.Bitbucket
             ? LargeValueFormat.SimpleDiff
             : LargeValueFormat.InlineDiff;
     }

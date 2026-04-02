@@ -726,6 +726,7 @@ The summary table includes a "Resource Types" column that shows which resource t
 - Empty when an action has 0 resources
 - The Total row shows only the sum of displayed actions (Add + Change + Replace + Destroy), excluding no-op resources
 
+    - **`bitbucket`**: Markdown-only output that removes HTML-only constructs and rewrites them into plain markdown for Bitbucket comments.
 **Example:**
 ```markdown
 | Action | Count | Resource Types |
@@ -943,7 +944,30 @@ To improve readability, large attribute values (multi-line or >100 characters) a
 Control the display format using the `--render-target` CLI option:
 ```bash
 tfplan2md plan.json --render-target github
+tfplan2md plan.json --render-target bitbucket
 ```
+
+## Bitbucket Render Target
+
+**Status:** ✅ Implemented (Feature 119)
+
+tfplan2md supports a dedicated Bitbucket render target for environments where Bitbucket pull request comments do not reliably render HTML-enhanced markdown.
+
+### Features
+
+- **New CLI option**: `--render-target bitbucket`
+- **Markdown-only degradation**: rewrites HTML-only constructs such as `<details>`, `<summary>`, `<code>`, `<pre><code>`, `<b>`, and `<span>` into plain markdown or plain text
+- **Safer inline code rendering**: decoded literal characters remain readable inside markdown code spans
+- **Large-value compatibility**: large values use fenced markdown code blocks instead of HTML code blocks
+- **Bitbucket-focused readability**: removes raw HTML that would otherwise render poorly or not at all in Bitbucket comments
+
+### Usage
+
+```bash
+tfplan2md plan.json --render-target bitbucket
+```
+
+Use this target when the report will be pasted into Bitbucket pull request comments or descriptions.
 
 ### Module Grouping (NEW)
 
@@ -1033,7 +1057,7 @@ Simple single-command interface with flags:
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <name>` | Use a built-in template by name (`default`, `summary`) |
 | `--report-title <text>` | Override the report's level-1 heading |
-| `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
+| `--render-target <github\|azuredevops\|bitbucket>` | Target platform for rendering: `github` (simple diff), `azuredevops` (inline diff, default), or `bitbucket` (markdown-only output for Bitbucket comments) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |

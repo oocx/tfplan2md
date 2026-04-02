@@ -262,11 +262,11 @@ internal static class CliParser
                     }
                     else
                     {
-                        throw new CliParseException("--render-target requires a value (github or azuredevops).");
+                        throw new CliParseException("--render-target requires a value (github, azuredevops, or bitbucket).");
                     }
                     break;
                 case "--large-value-format":
-                    throw new CliParseException("--large-value-format is deprecated. Use --render-target instead (github or azuredevops).");
+                    throw new CliParseException("--large-value-format is deprecated. Use --render-target instead (github, azuredevops, or bitbucket).");
                 case "--debug":
                     debug = true;
                     break;
@@ -332,7 +332,8 @@ internal static class CliParser
         {
             "github" => RenderTarget.GitHub,
             "azuredevops" or "azdo" => RenderTarget.AzureDevOps,
-            _ => throw new CliParseException("--render-target must be 'github' or 'azuredevops' (alias: azdo).")
+            "bitbucket" => RenderTarget.Bitbucket,
+            _ => throw new CliParseException("--render-target must be 'github', 'azuredevops' (alias: azdo), or 'bitbucket'.")
         };
     }
 

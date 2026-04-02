@@ -45,7 +45,7 @@ pageId: "features/large-values"
         <h3 class="highlights-title">Smart Formatting</h3>
         <ul class="highlights-list">
           <li><strong>Automatic Detection:</strong> Values longer than a threshold are automatically moved.</li>
-          <li><strong>Collapsible Sections:</strong> Details are hidden by default to reduce noise.</li>
+          <li><strong>Collapsible Sections:</strong> Details are hidden by default where HTML details are supported; Bitbucket falls back to plain markdown sections.</li>
           <li><strong>Line-by-Line Diffs:</strong> Changes within large text blocks are highlighted.</li>
           <li><strong>Syntax Highlighting:</strong> JSON, YAML, and scripts are formatted for readability.</li>
         </ul>
@@ -54,9 +54,9 @@ pageId: "features/large-values"
       <div class="feature-example">
         <h3 class="example-title">Configuration</h3>
         <p class="feature-detail-description">Control the diff format for large values using the <code>--render-target</code> CLI option:</p>
-        {{ codeWindow("Command", '<pre><code># Default: azuredevops (HTML with character-level highlighting)\ntfplan2md plan.json\n\n# GitHub-compatible diff format (markdown code blocks)\ntfplan2md plan.json --render-target github</code></pre>') }}
+        {{ codeWindow("Command", '<pre><code># Default: azuredevops (HTML with character-level highlighting)\ntfplan2md plan.json\n\n# GitHub-compatible diff format (markdown code blocks)\ntfplan2md plan.json --render-target github\n\n# Bitbucket-compatible markdown output\ntfplan2md plan.json --render-target bitbucket</code></pre>') }}
         <p class="feature-detail-description" style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
-          <em>Note: The <code>--large-value-format</code> flag has been deprecated. Use <code>--render-target azuredevops</code> instead of <code>inline-diff</code>, or <code>--render-target github</code> instead of <code>standard-diff</code>.</em>
+          <em>Note: The <code>--large-value-format</code> flag has been deprecated. Use <code>--render-target azuredevops</code> instead of <code>inline-diff</code>, or <code>--render-target github</code> / <code>--render-target bitbucket</code> instead of <code>standard-diff</code>.</em>
         </p>
       </div>
     {% endcall %}

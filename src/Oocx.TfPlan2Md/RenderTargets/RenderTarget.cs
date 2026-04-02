@@ -18,5 +18,10 @@ internal enum RenderTarget
     /// <summary>
     /// Target Azure DevOps pull request rendering (inline HTML diff format).
     /// </summary>
-    AzureDevOps
+    AzureDevOps,
+
+    /// <summary>
+    /// Target Bitbucket pull request comment rendering using markdown-only output.
+    /// </summary>
+    Bitbucket
 }

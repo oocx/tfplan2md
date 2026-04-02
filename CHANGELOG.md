@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.41.0"></a>
+## [1.41.0](https://github.com/oocx/tfplan2md/compare/v1.40.0...v1.41.0) (2026-04-01)
+
+### ✨ Features
+
+* **render-target:** add bitbucket markdown target ([fe06a3e](https://github.com/oocx/tfplan2md/commit/fe06a3edfa3aaa67844537875278d99f4ac25e54))
+
+### 🐛 Bug Fixes
+
+* **render-target:** preserve bitbucket markdown content ([d09a42b](https://github.com/oocx/tfplan2md/commit/d09a42b2cabdaa08e2189eacb75250fb7284779c))
+
+### 📚 Documentation
+
+* add bitbucket render target architecture review ([919e1de](https://github.com/oocx/tfplan2md/commit/919e1de1e53528e75e5d50b692c7de9bd4a13080))
+
 <a name="1.40.0"></a>
 ## [1.40.0](https://github.com/oocx/tfplan2md/compare/v1.39.0...v1.40.0) (2026-03-18)
 

@@ -864,9 +864,11 @@ Users select the render target via `--render-target` flag:
 ```bash
 tfplan2md plan.json --render-target github      # Use simple diff format
 tfplan2md plan.json --render-target azuredevops # Use inline diff format (alias: azdo)
+tfplan2md plan.json --render-target bitbucket   # Use markdown-only simple diff for Bitbucket comments
 ```
 
 The selected `IDiffFormatter` is injected into the rendering context and used by C# renderers via the `FormatDiff` helper.
+The Bitbucket target reuses the simple diff formatter and applies a final markdown cleanup pass to remove HTML that Bitbucket comments do not render.
 
 **Design Rationale:**
 

@@ -59,8 +59,16 @@ public class HelpTextProviderTests
     {
         var help = HelpTextProvider.GetHelpText();
 
-        help.Should().Contain("--render-target <github|azuredevops>")
+        help.Should().Contain("--render-target <github|azuredevops|bitbucket>")
             .And.Contain("Target platform for rendering");
+    }
+
+    [Test]
+    public void GetHelpText_IncludesBitbucketRenderTarget()
+    {
+        var help = HelpTextProvider.GetHelpText();
+
+        help.Should().Contain("bitbucket");
     }
 
     /// <summary>

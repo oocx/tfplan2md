@@ -43,7 +43,7 @@ internal static partial class AzApiBodyRenderer
             WriteCreateDeleteArrayGroup(writer, group, context);
         }
 
-        WriteLargeCreateDeleteProperties(writer, plan.LargeProperties);
+        WriteLargeCreateDeleteProperties(writer, plan.LargeProperties, context);
 
         if (plan.IsEmpty)
         {

@@ -24,7 +24,7 @@ public static class HelpTextProvider
             ("-t, --template <name>", "Use a built-in template by name (default or summary)."),
             ("--report-title <title>", "Override the report title (level-1 heading) with a custom value."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
-            ("--render-target <github|azuredevops>", "Target platform for rendering (default: azuredevops). When azuredevops and --output is used, emits ##vso[task.setvariable variable=tfplan2md_haschanges]true/false."),
+            ("--render-target <github|azuredevops|bitbucket>", "Target platform for rendering (default: azuredevops). Use bitbucket for markdown-only output in Bitbucket comments. When azuredevops and --output is used, emits ##vso[task.setvariable variable=tfplan2md_haschanges]true/false."),
             ("--details <auto|open|closed>", "Control resource details display (default: auto)."),
             ("--code-analysis-results <pattern>", "SARIF file pattern for static analysis findings (repeatable)."),
             ("--code-analysis-minimum-level <level>", "Minimum severity to display (critical, high, medium, low, informational)."),
@@ -60,6 +60,9 @@ public static class HelpTextProvider
             string.Empty,
             "# GitHub-friendly rendering",
             "tfplan2md plan.json --render-target github",
+            string.Empty,
+            "# Bitbucket-friendly rendering",
+            "tfplan2md plan.json --render-target bitbucket",
             string.Empty,
             "# With output file and built-in summary template",
             "tfplan2md plan.json --output plan.md --template summary"

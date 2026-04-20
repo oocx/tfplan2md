@@ -1,0 +1,30 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_app_role_assignment.this",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_app_role_assignment",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "app_role_id": "fb221be6-99f2-473f-bd32-01c6a0e9ca3b",
+          "principal_object_id": "55fb3b1b-e3f4-4fcc-8edf-837e722ec927",
+          "resource_object_id": "31939070-7533-4b31-8a67-29e18a4ad777"
+        },
+        "after_unknown": {
+          "id": true,
+          "principal_display_name": true,
+          "resource_display_name": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

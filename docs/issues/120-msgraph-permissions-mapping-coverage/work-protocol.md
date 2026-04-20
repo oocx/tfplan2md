@@ -89,3 +89,16 @@
   - GitHub UAT PR oocx/tfplan2md-uat#120; Azure DevOps UAT PR test#108.
 - **Production code touched:** None. Only test/fixture artifacts and this work-protocol entry. No changes to `src/Oocx.TfPlan2Md/` or `src/tests/`.
 - **Problems Encountered:** Submodule gitlinks missing from the repo (see operational notes); worked around without affecting UAT outcome.
+
+### Release Manager
+- **Date:** 2026-04-20
+- **Summary:** Verified branch clean and rebased (10 commits ahead of `origin/main`, 0 behind). All required agents (Issue Analyst, Developer, Technical Writer, Code Reviewer (Approve), UAT Tester (Pass)) logged in this protocol. Created PR following the repo Problem / Change / Verification template and linking issue #120.
+- **PR:** https://github.com/oocx/tfplan2md/pull/648 — title `fix(azure): expand Microsoft Graph app role mapping (closes #120)`. Patch-level Conventional Commit (`fix(azure): …`) so Versionize will produce a patch bump from current latest tag `v1.41.0`.
+- **CI status at handoff:** `pending` (workflows queued / not yet reported on head SHA `1f014f6`); awaiting PR Validation completion before merge.
+- **Merge:** Not performed by this agent. The standard `scripts/pr-github.sh create-and-merge` path requires `git push -u origin HEAD` as a precondition, which is rejected in this sandbox (`remote: Permission to oocx/tfplan2md.git denied to oocx … 403`) — the coding-agent bot has API-only auth and the orchestrator handles git pushes via `report_progress`. PR creation was therefore performed via the coding-agent native `create_pull_request` tool (GitHub API, no git push required); the **rebase merge must be executed by the maintainer or orchestrator** once CI on PR #648 is green. Repo policy: **Rebase and merge only** (linear history).
+- **Release artifacts:** None produced yet. Versionize / release pipeline runs post-merge on `main`; tag detection and release-workflow trigger deferred until the merge happens.
+- **Follow-up items:**
+  1. Maintainer/orchestrator: rebase-merge PR #648 once CI is green (use `scripts/pr-github.sh create-and-merge` from an environment with push rights, or the GitHub UI's "Rebase and merge" button — never squash/merge-commit).
+  2. Post-merge: monitor CI on `main`, detect new tag (expected `v1.41.1`), trigger `release.yml` with that tag, verify GitHub Release + Docker image artifacts.
+  3. Workflow Engineer (separate from #120): the bot's lack of git-push permission means `scripts/pr-github.sh` cannot be used end-to-end from coding-agent sandboxes — consider documenting `create_pull_request` as the sanctioned PR-creation path for that environment, or splitting the script's push step out.
+- **Problems Encountered:** Sandbox `git push` blocked (see Merge note above); worked around by using the `create_pull_request` tool. Did not improvise further — merge handoff to maintainer per task instructions ("STOP and report back if blocked").

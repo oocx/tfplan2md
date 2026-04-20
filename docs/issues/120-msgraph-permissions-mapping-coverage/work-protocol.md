@@ -59,3 +59,33 @@
 - **Decision:** **Approved.** No production code changes requested. Hand off to the **UAT Tester** as the next agent, since this fix changes user-visible markdown output (a previously raw GUID now renders as `🛡️ Policy.ReadWrite.Authorization (fb221be6-…)` in both the summary line and the attribute table).
 - **Artifacts Produced:** This work-protocol entry. No standalone `code-review.md` produced (bug fix workflow; findings inlined here per the existing pattern).
 - **Problems Encountered:** None.
+
+### UAT Tester
+- **Date:** 2026-04-20
+- **Summary:** Validated the issue #120 fix (`Policy.ReadWrite.Authorization` mapping for app role GUID `fb221be6-99f2-473f-bd32-01c6a0e9ca3b`) end-to-end via local rendering + live UAT PRs on GitHub and Azure DevOps. **Verdict: PASS.** The maintainer's exact scenario now resolves correctly in both the resource summary header and the `app_role_id` attribute row, and no production code was modified by this UAT pass.
+- **Fixture & Local Render:**
+  - Built minimal plan fixture `artifacts/uat-issue-120/plan.json` with a single `azuread_app_role_assignment.this` create using the maintainer's exact GUIDs (`app_role_id=fb221be6-…`, `principal_object_id=55fb3b1b-…`, `resource_object_id=31939070-…`).
+  - Built `artifacts/uat-issue-120/principals.json` mapping `55fb3b1b-…` → `governance-id-lv1-gwc` and `31939070-…` → `Microsoft Graph` (these GUIDs are user-environment IDs, not well-known).
+  - Ran `dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- --principal-mapping artifacts/uat-issue-120/principals.json --output artifacts/uat-issue-120/output.md artifacts/uat-issue-120/plan.json` against the current HEAD (`682a83b`).
+- **Rendered output (verbatim, both summary header line and attribute row):**
+  ```
+  ➕ azuread_app_role_assignment <b><code>this</code></b> — <code>👤 governance-id-lv1-gwc</code> (<code>55fb3b1b-e3f4-4fcc-8edf-837e722ec927</code>) → <code>🛡️ Policy.ReadWrite.Authorization</code> → <code>🎯 Microsoft Graph</code> (<code>31939070-7533-4b31-8a67-29e18a4ad777</code>)
+
+  | app_role_id | `🛡️ Policy.ReadWrite.Authorization (fb221be6-99f2-473f-bd32-01c6a0e9ca3b)` |
+  ```
+  - **app_role_id row matches the maintainer's expected output exactly.**
+  - **Summary header** resolves the role name to `🛡️ Policy.ReadWrite.Authorization` (no raw GUID), which is the established convention in this repo — confirmed by the existing snapshot `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuread-app-role-assignment.md`, where the working `User.Read.All` case also renders as `🛡️ User.Read.All` (name only) in the summary and `🛡️ User.Read.All (df021288-…)` in the attribute row. The maintainer's expected example included the GUID after the role name in the summary, but that would deviate from the existing summary-builder convention; the actual render is consistent with how every other resolved Graph permission is shown today. Treating this as **Pass** (convention-consistent); flagged here for awareness.
+  - Pre-existing minor quirk (out of scope for #120): `resource_object_id` in the attribute table shows `👤 Microsoft Graph (…)` — the 👤 emoji comes from the principal-mapping path, not the resource-mapping path. The summary line correctly uses 🎯. Not in scope for this issue.
+- **Live Platform UAT (`scripts/uat-run.sh --create-only`):**
+  - Used `docs/issues/120-msgraph-permissions-mapping-coverage/uat-plan.md` (= the rendered output above, with current-HEAD commit hash so the freshness check passes) as `--report` and detailed scenario validation as `--instructions`. Comprehensive demo regression artifacts were appended automatically by the script.
+  - **GitHub UAT PR:** https://github.com/oocx/tfplan2md-uat/pull/120 — fetched the posted comment via `gh api` and confirmed the rendered markdown matches local output verbatim, including the `🛡️ Policy.ReadWrite.Authorization (fb221be6-…)` attribute cell.
+  - **Azure DevOps UAT PR:** https://dev.azure.com/oocx/test/_git/test/pullrequest/108 — created with the same artifact + regression demo comment.
+  - PRs left open for maintainer visual approval; cleanup deferred to a follow-up `scripts/uat-run.sh --cleanup-last` once approved (state in `.tmp/uat-run/last-run.json`).
+- **Operational notes:**
+  - The repo's `.gitmodules` declares `uat-repos/github` and `uat-repos/azdo` submodules but the actual gitlinks are not present in `origin/main`'s tree, so `git submodule update --init --recursive` exits 0 without cloning anything. Worked around by cloning both UAT repos directly with `GH_UAT_TOKEN` / `AZDO_UAT_TOKEN` and excluding `uat-repos/` via `.git/info/exclude` so `uat-run.sh`'s "working tree clean" precondition passes. Worth a tracking item for the workflow engineer (separate from this fix).
+- **Artifacts Produced:**
+  - `artifacts/uat-issue-120/plan.json`, `artifacts/uat-issue-120/principals.json`, `artifacts/uat-issue-120/output.md` — local UAT fixture + render.
+  - `docs/issues/120-msgraph-permissions-mapping-coverage/uat-plan.md` — the artifact posted to both UAT PRs.
+  - GitHub UAT PR oocx/tfplan2md-uat#120; Azure DevOps UAT PR test#108.
+- **Production code touched:** None. Only test/fixture artifacts and this work-protocol entry. No changes to `src/Oocx.TfPlan2Md/` or `src/tests/`.
+- **Problems Encountered:** Submodule gitlinks missing from the repo (see operational notes); worked around without affecting UAT outcome.

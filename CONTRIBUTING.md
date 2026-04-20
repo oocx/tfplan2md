@@ -469,6 +469,79 @@ The mappings are stored in JSON format:
 - Feature specification: [docs/features/048-azure-api-doc-mapping/specification.md](docs/features/048-azure-api-doc-mapping/specification.md)
 - Architecture design: [docs/features/048-azure-api-doc-mapping/architecture.md](docs/features/048-azure-api-doc-mapping/architecture.md)
 
+## Maintaining Microsoft Graph App Role Mappings
+
+The Azure AD provider resolves Microsoft Graph application-permission GUIDs (e.g., `app_role_id` on `azuread_app_role_assignment`) to human-readable names (e.g., `Policy.ReadWrite.Authorization`) using the embedded mapping at `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`. The mapping is regenerated from the upstream source of the [Microsoft Graph permissions reference](https://learn.microsoft.com/graph/permissions-reference) (the `microsoftgraph/microsoft-graph-docs-contrib` markdown that the Learn page is built from).
+
+**Scope:** Microsoft Graph **application** permissions only. Delegated `oauth2PermissionScopes` GUIDs and non-Graph APIs (SharePoint, Exchange, Office 365, Intune, Azure Service Management, etc.) are intentionally out of scope.
+
+### When to Update Mappings
+
+Update the mappings when:
+- A user reports a well-known Microsoft Graph app permission GUID that renders as a raw GUID instead of its friendly name
+- Microsoft adds new Graph application permissions
+- Regular maintenance (maintainer's discretion)
+
+### Update Process
+
+**Prerequisites:**
+- Python 3.7 or later (standard library only)
+- Internet connection (script fetches the upstream markdown from GitHub)
+
+**Steps:**
+
+1. **Run the regeneration script:**
+   ```bash
+   python3 scripts/update-msgraph-app-roles.py
+   ```
+   This downloads the upstream permissions reference markdown, extracts every well-known Microsoft Graph application permission GUID, and writes the sorted `{guid: name}` mapping to `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`. The script prints an added/removed/total summary on each run and is idempotent.
+
+2. **Preview without writing:**
+   ```bash
+   python3 scripts/update-msgraph-app-roles.py --dry-run
+   ```
+
+3. **Use a custom source or output path** (e.g., for offline regeneration from a local checkout of the docs repo):
+   ```bash
+   python3 scripts/update-msgraph-app-roles.py \
+     --source /path/to/permissions-reference.md \
+     --output src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json
+   ```
+
+4. **Test the changes:**
+   ```bash
+   dotnet build
+   dotnet test
+   ```
+
+5. **Commit the updated mappings:**
+   ```bash
+   git add src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json
+   git commit -m "chore: update Microsoft Graph app role mappings"
+   ```
+
+### Script Options
+
+The `update-msgraph-app-roles.py` script supports the following options:
+
+- `--source URL_OR_PATH` — Override the upstream markdown source (default: the raw `microsoftgraph/microsoft-graph-docs-contrib` permissions reference)
+- `--output PATH` — Custom output file path (default: `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`)
+- `--dry-run` — Print the added/removed/total summary without writing the file
+- `--help` — Show help message
+
+### Mapping File Format
+
+The mappings are stored as a flat sorted `{guid: name}` JSON object so that `MicrosoftGraphAppRolesRegistry` can load them as a `FrozenDictionary`:
+
+```json
+{
+  "fb221be6-99f2-473f-bd32-01c6a0e9ca3b": "Policy.ReadWrite.Authorization",
+  "df021288-bdef-4463-88db-98f22de89214": "User.Read.All"
+}
+```
+
+GUIDs are sorted lexicographically for deterministic diffs across regenerations.
+
 ## Release Process
 
 Releases are automated via GitHub Actions:

@@ -3102,7 +3102,9 @@ Adds enhanced rendering for three Azure AD resource types:
 
 ### Key Capabilities
 
-- **GUID Resolution**: `app_role_id` GUIDs are resolved to human-readable Microsoft Graph permission names (e.g., `df021288-bdef-4463-88db-98f22de89214` → `User.Read.All`)
+- **GUID Resolution**: `app_role_id` GUIDs are resolved to human-readable Microsoft Graph permission names (e.g., `df021288-bdef-4463-88db-98f22de89214` → `User.Read.All`, `fb221be6-99f2-473f-bd32-01c6a0e9ca3b` → `Policy.ReadWrite.Authorization`) in both the resource summary line and the attribute table. The embedded mapping covers all 673 well-known Microsoft Graph **application** permission GUIDs published in the [Microsoft Graph permissions reference](https://learn.microsoft.com/graph/permissions-reference).
+- **Scope of the mapping**: Microsoft Graph **application** permissions only. Delegated `oauth2PermissionScopes` GUIDs and non-Graph APIs (SharePoint, Exchange, Office 365, Intune, Azure Service Management, etc.) are intentionally out of scope and will continue to render as raw GUIDs.
+- **Maintainable**: Maintainers can refresh the embedded mapping by running `python3 scripts/update-msgraph-app-roles.py`, which regenerates the JSON from the upstream Microsoft Graph permissions reference markdown source. See [CONTRIBUTING.md](../CONTRIBUTING.md#maintaining-microsoft-graph-app-role-mappings) for details.
 - **Principal/Resource Resolution**: `principal_object_id` and `resource_object_id` are resolved to display names via `IPrincipalMapper`
 - **Computed Attribute Fallbacks**: Falls back to `principal_display_name` and `resource_display_name` from Terraform state when mapper has no entry
 - **Icon Mappings**: Resources use contextual icons — 🛡️ (app role), 👤 (principal), 🎯 (resource), 💻 (service principal), 🛡️ (directory role), 📋 (delegated permission)

@@ -28,3 +28,11 @@
 - **Test Run:** `scripts/test-with-timeout.sh --timeout-seconds 600 -- dotnet test --solution src/tfplan2md.slnx` → **1254 passed, 0 failed, 0 skipped** (3m 07s).
 - **Snapshot Updates:** None required. The only real Microsoft Graph GUID present in `azuread-app-role-assignment-plan.json` (`df021288-bdef-4463-88db-98f22de89214` / `User.Read.All`) is preserved in the upstream reference, so the existing `azuread-app-role-assignment.md` snapshot is unchanged.
 - **Problems Encountered:** Network egress in this sandbox does not allow `learn.microsoft.com`; the script's default source URL points at the upstream raw markdown on GitHub, which is the actual source of truth for the Learn page (the Learn page is generated from that markdown). This is documented in the script's docstring and `--help`. Discovered as a side-effect that several of the original 131 entries had wrong GUIDs (delegated-permission GUIDs labelled as app-permission GUIDs, e.g. AuditLog.Read.All `89fe6a52-…` is actually the *delegated* GUID, not the app GUID). The regenerated file replaces them with the canonical upstream values.
+
+### Technical Writer
+- **Date:** 2025-04-20
+- **Summary:** Updated user-facing and contributor documentation to reflect the expanded Microsoft Graph application-permission mapping (131 → 673) and the new maintainer regeneration script. Made explicit the scope (Graph application permissions only; delegated scopes and non-Graph APIs are out of scope) so users are not surprised when a delegated-scope GUID still renders as a raw GUID. No code or tests were modified.
+- **Artifacts Produced:**
+  - `docs/features.md` — Expanded the Feature 116 "GUID Resolution" bullet to mention that all 673 well-known Graph **application** permission GUIDs are now resolved (with `Policy.ReadWrite.Authorization` as a second example), added an explicit "Scope of the mapping" bullet, and pointed maintainers at the new regeneration script.
+  - `CONTRIBUTING.md` — Added a new "Maintaining Microsoft Graph App Role Mappings" section mirroring the existing "Maintaining Azure API Documentation Mappings" section: when to update, prerequisites, regeneration / dry-run / custom-source steps, script options, and the flat `{guid: name}` mapping file format. Linked from `docs/features.md`.
+- **Problems Encountered:** None.

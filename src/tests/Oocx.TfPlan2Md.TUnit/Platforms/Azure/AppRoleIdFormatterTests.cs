@@ -77,4 +77,23 @@ public class AppRoleIdFormatterTests
         result.Should().Contain("Directory.Read.All");
         result.Should().Contain("🛡️");
     }
+
+    /// <summary>
+    /// Issue 120: pins the maintainer's exact scenario — formatter must produce
+    /// "🛡️ Policy.ReadWrite.Authorization (fb221be6-…)" for the Microsoft Graph
+    /// app role GUID fb221be6-99f2-473f-bd32-01c6a0e9ca3b.
+    /// Related issue: docs/issues/120-msgraph-permissions-mapping-coverage.
+    /// </summary>
+    [Test]
+    public void TryFormat_PolicyReadWriteAuthorizationGuid_ReturnsFormattedString()
+    {
+        var formatter = new AppRoleIdFormatter();
+        var context = new ServiceResolutionContext(
+            "azuread", "azuread_app_role_assignment", "app_role_id",
+            "fb221be6-99f2-473f-bd32-01c6a0e9ca3b");
+
+        var result = formatter.TryFormat(context);
+
+        result.Should().Be("`🛡️\u00a0Policy.ReadWrite.Authorization (fb221be6-99f2-473f-bd32-01c6a0e9ca3b)`");
+    }
 }

@@ -97,4 +97,47 @@ public class MicrosoftGraphAppRoleResolverTests
         result.Name.Should().Be("Directory.Read.All");
         result.FullName.Should().Be("Directory.Read.All (7ab1d382-f21e-4acd-a863-ba3e13f7da61)");
     }
+
+    /// <summary>
+    /// Issue 120: pins the maintainer's exact scenario — Policy.ReadWrite.Authorization
+    /// (GUID fb221be6-99f2-473f-bd32-01c6a0e9ca3b) must resolve from the expanded
+    /// well-known mapping. Related issue: docs/issues/120-msgraph-permissions-mapping-coverage.
+    /// </summary>
+    [Test]
+    public void GetAppRole_PolicyReadWriteAuthorization_ResolvesToName()
+    {
+        var resolver = MicrosoftGraphAppRoleResolver.CreateBuiltIn();
+
+        var result = resolver.GetAppRole("fb221be6-99f2-473f-bd32-01c6a0e9ca3b");
+
+        result.Name.Should().Be("Policy.ReadWrite.Authorization");
+        result.Id.Should().Be("fb221be6-99f2-473f-bd32-01c6a0e9ca3b");
+        result.FullName.Should().Be("Policy.ReadWrite.Authorization (fb221be6-99f2-473f-bd32-01c6a0e9ca3b)");
+    }
+
+    /// <summary>
+    /// Issue 120: representative cross-section of the expanded well-known mapping —
+    /// includes entries already present before the regeneration plus several newly
+    /// added ones across different permission families. Guards against regressions
+    /// in future regenerations of MicrosoftGraphAppRoles.json.
+    /// </summary>
+    [Test]
+    [Arguments("fb221be6-99f2-473f-bd32-01c6a0e9ca3b", "Policy.ReadWrite.Authorization")]
+    [Arguments("246dd0d5-5bd0-4def-940b-0421030a5b68", "Policy.Read.All")]
+    [Arguments("df021288-bdef-4463-88db-98f22de89214", "User.Read.All")]
+    [Arguments("7ab1d382-f21e-4acd-a863-ba3e13f7da61", "Directory.Read.All")]
+    [Arguments("9a5d68dd-52b0-4cc2-bd40-abcf44ac3a30", "Application.Read.All")]
+    [Arguments("1bfefb4e-e0b5-418b-a88f-73c46d2cc8e9", "Application.ReadWrite.All")]
+    [Arguments("b0afded3-3588-46d8-8b3d-9842eff778da", "AuditLog.Read.All")]
+    [Arguments("9e3f62cf-ca93-4989-b6ce-bf83c28f9fe8", "RoleManagement.ReadWrite.Directory")]
+    public void GetAppRole_RepresentativeWellKnownGuids_ResolveToExpectedNames(
+        string appRoleId,
+        string expectedName)
+    {
+        var resolver = MicrosoftGraphAppRoleResolver.CreateBuiltIn();
+
+        var result = resolver.GetAppRole(appRoleId);
+
+        result.Name.Should().Be(expectedName);
+    }
 }

@@ -53,6 +53,10 @@ internal sealed class SummaryEnrichmentStage : ISummaryEnrichmentStage
         var toDestroy = BuildActionSummary(resourceChanges.Where(change => change.Action is DeleteAction or ForgetAction));
         var toReplace = BuildActionSummary(resourceChanges.Where(change => change.Action == ReplaceAction));
         var noOp = BuildActionSummary(resourceChanges.Where(change => change.Action == NoOpAction));
+
+        // Imports and moves are orthogonal to the action buckets above: a single resource
+        // may appear in both an action row (e.g., Add) and the Imports/Moves row when the
+        // change carries import or move metadata.
         var imports = BuildActionSummary(resourceChanges.Where(change => change.ImportId is not null));
         var moves = BuildActionSummary(resourceChanges.Where(change => change.MovedFromAddress is not null));
 

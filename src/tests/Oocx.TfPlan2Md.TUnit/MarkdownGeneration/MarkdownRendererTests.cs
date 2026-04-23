@@ -407,7 +407,7 @@ public class MarkdownRendererTests
     }
 
     [Test]
-    public void Render_SummaryTable_ShowsEmptyCellWhenNoActionResources()
+    public void Render_SummaryTable_OmitsRowsWithZeroCount()
     {
         // Arrange
         var json = File.ReadAllText("TestData/create-only-plan.json");
@@ -418,8 +418,12 @@ public class MarkdownRendererTests
         // Act
         var markdown = _renderer.Render(model);
 
-        // Assert
-        markdown.Should().Contain($"| {ActionIcons.Delete}{Nbsp}Destroy | 0 |");
+        // Assert - rows with count 0 (Change, Replace, Destroy, Import, Move) must not appear
+        markdown.Should().NotContain($"| {ActionIcons.Delete}{Nbsp}Destroy | 0 |");
+        markdown.Should().NotContain($"| {ActionIcons.Update}{Nbsp}Change | 0 |");
+        markdown.Should().NotContain($"| {ActionIcons.Replace}{Nbsp}Replace | 0 |");
+        markdown.Should().NotContain($"| 📥{Nbsp}Import |");
+        markdown.Should().NotContain($"| 🔀{Nbsp}Move |");
     }
 
     [Test]
@@ -834,6 +838,8 @@ public class MarkdownRendererTests
                 ToDestroy = new ActionSummary(0, []),
                 ToReplace = new ActionSummary(0, []),
                 NoOp = new ActionSummary(0, []),
+                Imports = new ActionSummary(0, []),
+                Moves = new ActionSummary(0, []),
                 Total = 0
             },
             ShowUnchangedValues = false,

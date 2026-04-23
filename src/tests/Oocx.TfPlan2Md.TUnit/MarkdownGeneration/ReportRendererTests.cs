@@ -342,6 +342,8 @@ public class ReportRendererTests
                 ToDestroy = new ActionSummary(0, []),
                 ToReplace = new ActionSummary(0, []),
                 NoOp = new ActionSummary(0, []),
+                Imports = new ActionSummary(0, []),
+                Moves = new ActionSummary(0, []),
                 Total = 0
             },
             CodeAnalysis = null,

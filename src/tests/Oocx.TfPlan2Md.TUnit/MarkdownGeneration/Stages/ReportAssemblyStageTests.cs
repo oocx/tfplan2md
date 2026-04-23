@@ -111,6 +111,8 @@ public class ReportAssemblyStageTests
                 ToDestroy = new ActionSummary(0, []),
                 ToReplace = new ActionSummary(0, []),
                 NoOp = new ActionSummary(0, []),
+                Imports = new ActionSummary(0, []),
+                Moves = new ActionSummary(0, []),
                 Total = 1
             },
             CodeAnalysisReport: null,

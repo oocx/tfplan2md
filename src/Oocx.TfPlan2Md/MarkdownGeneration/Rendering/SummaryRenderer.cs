@@ -24,7 +24,18 @@ internal static class SummaryRenderer
         writer.Heading("Summary", 2);
         writer.BlankLine();
 
-        if (summary.Total == 0)
+        var rows = new (string Label, ActionSummary Summary)[]
+        {
+            ("➕\u00A0Add", summary.ToAdd),
+            ("🔄\u00A0Change", summary.ToChange),
+            ("♻️\u00A0Replace", summary.ToReplace),
+            ("❌\u00A0Destroy", summary.ToDestroy),
+            ("📥\u00A0Import", summary.Imports),
+            ("🔀\u00A0Move", summary.Moves),
+        };
+
+        var visibleRows = rows.Where(row => row.Summary.Count > 0).ToList();
+        if (visibleRows.Count == 0)
         {
             writer.Paragraph("No changes");
             writer.BlankLine();
@@ -34,10 +45,10 @@ internal static class SummaryRenderer
         writer.Raw("| Action | Count | Resource Types |\n");
         writer.Raw("| -------- | ------- | ---------------- |\n");
 
-        writer.TableRow(["➕\u00A0Add", summary.ToAdd.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToAdd.Breakdown)]);
-        writer.TableRow(["🔄\u00A0Change", summary.ToChange.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToChange.Breakdown)]);
-        writer.TableRow(["♻️\u00A0Replace", summary.ToReplace.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToReplace.Breakdown)]);
-        writer.TableRow(["❌\u00A0Destroy", summary.ToDestroy.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(summary.ToDestroy.Breakdown)]);
+        foreach (var (label, actionSummary) in visibleRows)
+        {
+            writer.TableRow([label, actionSummary.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), FormatBreakdown(actionSummary.Breakdown)]);
+        }
 
         var totalText = summary.Total.ToString(System.Globalization.CultureInfo.InvariantCulture);
         if (boldTotal)

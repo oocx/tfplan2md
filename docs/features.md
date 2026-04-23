@@ -83,28 +83,23 @@ The debug information section (enabled with `--debug` flag) is displayed in a co
 
 **Implementation:** The debug section is wrapped in `<details>` tags with `<summary>🐛 Debug Information</summary>` and is collapsed by default (no `open` attribute).
 
-### No-Changes Summary
+### Concise Summary Table
 
-When a Terraform plan contains no changes (zero add, change, replace, or destroy actions), the Summary section displays a simple "No changes" message instead of an empty summary table.
+The Summary table only includes rows for actions and refactoring operations whose count is greater than zero, and adds dedicated rows for `📥 Import` and `🔀 Move` operations when present. When no row would have any content, the table is replaced by a simple "No changes" message instead of being shown empty.
 
-**Before (empty table):**
+**Example (plan with adds, imports, and moves only):**
 ```markdown
 ## Summary
 
 | Action | Count | Resource Types |
 | -------- | ------- | ---------------- |
-| ➕ Add | 0 | |
-| 🔄 Change | 0 | |
-| ♻️ Replace | 0 | |
-| ❌ Destroy | 0 | |
-| **Total** | **0** | |
-
-## Resource Changes
-
-No changes
+| ➕ Add | 2 | 1 azurerm_resource_group<br/>1 azurerm_virtual_network |
+| 📥 Import | 2 | 1 azurerm_resource_group<br/>1 azurerm_storage_account |
+| 🔀 Move | 1 | 1 azurerm_virtual_network |
+| **Total** | **2** | |
 ```
 
-**After (clean message):**
+**No-changes example:**
 ```markdown
 ## Summary
 
@@ -112,13 +107,11 @@ No changes
 ```
 
 **Benefits:**
+- **Cleaner tables**: Zero-count action rows no longer clutter the summary
+- **Visibility for refactoring**: Imports and moves are now first-class entries in the summary
 - **Professional appearance**: No-changes plans show a clean, simple message
-- **Reduced redundancy**: Resource Changes section is omitted when Summary already shows "No changes"
-- **Better PR reviews**: Easier to scan multiple modules where many may have no changes (e.g., unaffected modules in a monorepo)
 
-**Implementation:** 
-- Templates check `summary.total == 0` and render "No changes" text instead of the table
-- Resource Changes section is omitted when `module_changes.size == 0` to avoid redundancy
+**Implementation:** The renderer hides any row whose `ActionSummary.Count` is 0; if all rows are filtered out, "No changes" is rendered instead of the table. The Resource Changes section is omitted when there are no module changes to display.
 
 ### User Experience
 

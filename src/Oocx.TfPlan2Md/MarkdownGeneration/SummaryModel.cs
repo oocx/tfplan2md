@@ -31,6 +31,16 @@ internal sealed record SummaryModel
     public required ActionSummary NoOp { get; init; }
 
     /// <summary>
+    /// Gets the summary of resources brought into state via Terraform import blocks.
+    /// </summary>
+    public required ActionSummary Imports { get; init; }
+
+    /// <summary>
+    /// Gets the summary of resources relocated via Terraform moved blocks.
+    /// </summary>
+    public required ActionSummary Moves { get; init; }
+
+    /// <summary>
     /// Gets the Total count of resources with changes, excluding no-op resources.
     /// Calculated as: ToAdd.Count + ToChange.Count + ToDestroy.Count + ToReplace.Count.
     /// </summary>

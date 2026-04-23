@@ -53,6 +53,8 @@ internal sealed class SummaryEnrichmentStage : ISummaryEnrichmentStage
         var toDestroy = BuildActionSummary(resourceChanges.Where(change => change.Action is DeleteAction or ForgetAction));
         var toReplace = BuildActionSummary(resourceChanges.Where(change => change.Action == ReplaceAction));
         var noOp = BuildActionSummary(resourceChanges.Where(change => change.Action == NoOpAction));
+        var imports = BuildActionSummary(resourceChanges.Where(change => change.ImportId is not null));
+        var moves = BuildActionSummary(resourceChanges.Where(change => change.MovedFromAddress is not null));
 
         return new SummaryModel
         {
@@ -61,6 +63,8 @@ internal sealed class SummaryEnrichmentStage : ISummaryEnrichmentStage
             ToDestroy = toDestroy,
             ToReplace = toReplace,
             NoOp = noOp,
+            Imports = imports,
+            Moves = moves,
             Total = toAdd.Count + toChange.Count + toDestroy.Count + toReplace.Count
         };
     }

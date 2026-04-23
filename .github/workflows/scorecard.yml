@@ -8,7 +8,7 @@ on:
   # Allow manual runs
   workflow_dispatch:
 
-permissions: read-all
+permissions: {}
 
 jobs:
   analysis:

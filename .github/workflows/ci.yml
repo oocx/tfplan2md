@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
 
 # CI Optimization: Tests removed from this workflow to eliminate redundancy.
 # All quality gates (format, build, test, lint, vulnerability scan) run in PR Validation.
@@ -28,6 +28,8 @@ jobs:
   version:
     name: Version and Tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout

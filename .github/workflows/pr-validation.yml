@@ -10,13 +10,14 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
-  checks: write
 
 jobs:
   validate:
     name: Validate PR
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      checks: write
 
     steps:
       - name: Checkout

@@ -1,5 +1,5 @@
 # Build stage - use Alpine SDK for musl compatibility
-FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine@sha256:828a5235b7df373cc96b5ca74a4823a19f9e1fea654abf01e1cb1dd9c767b718 AS build
 WORKDIR /workspace
 
 # Copy all files

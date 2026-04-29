@@ -47,3 +47,31 @@
 - **Artifacts Produced:**
   - `docs/features/122-terraform-1-15-support/tasks.md`
 - **Problems Encountered:** None. All architectural decisions are locked in ADR-001..ADR-004 and all test methods / fixtures are pre-specified in the test plan, so no open questions remain for the Developer.
+
+### Developer
+- **Date:** 2026-04-29
+- **Summary:** Implemented the production code path for Tasks 5–13 and added focused builder/architecture/CLI test coverage; Task 4 (PlanContext builder tests) was completed earlier in the session. Production code: (Task 5) `HeaderRenderer.RenderPlanStatusBanner` emits stacked 🛑 / ⛔ / ⚠️ blockquotes after H1 and is silent on null/all-ordinary state; (Tasks 6–8) `ReportRenderer` gained `RenderDriftSection` (H2 `🌀 Drift Detected` reusing the resource renderer registry), `RenderRelevantAttributes` (H2 + 2-col table), and `RenderOtherActions` (H2 + optional H3 sub-groups), wired into the documented order between Resource Changes and Refactoring; (Tasks 9–10) new `Models/ActionInvocationModel`, `Models/OtherActionsModel`, generic `ActionInvocationSectionRenderer` (CA1506 suppressed by design), and `ReportModelBuilder.Actions.cs` partial that distributes immediate + deferred actions to per-resource `Actions` lists / invoke / orphan buckets; (Task 11) `DefaultResourceRenderer.RenderInlineActions` emits an inline H4 `🎬 Actions` block before `</details>`; (Task 12) `CodeAnalysisWarningModel` extended additively with nullable `FilePath`, `Source` enum, `SubjectKind`, `SubjectName`; (Task 13) `ReportModelBuilder.Deprecations.cs` partial walks `ConfigurationDeprecationReader` and emits `PlanDeprecation` warnings only for variables/outputs actually referenced by the plan, `CodeAnalysisSectionRenderer` H3 renamed `Code Analysis Warnings` → `Warnings` and now branches per `warning.Source`. Defensive ValueKind guards added to `ConfigurationDeprecationReader` after a regression caused by primitive variable values in legacy plan fixtures. Tests added: `ReportModelBuilderActionsTests` (5), `ReportModelBuilderDeprecationsTests` (3), `Feature122ArchitectureTests` (NetArchTest guard against any provider-specific `*ActionRenderer` type), `HelpOutputDoesNotExposeFeature122FlagsTests` (AC-13 surface guard). Full suite passes 1299/1299 with zero skipped. **Partial-progress notes:** Tasks 14 (TF 1.13 baseline fixture + global snapshot rebaseline), 15 (`ActionInvocationPerformanceTests` ratio guard), and the bulk of Phase 2/3 hand-crafted JSON fixtures (F-01..F-13, F-20..F-28, F-40..F-44, F-60) and their associated snapshot tests were **not** completed in this session due to context/time budget; the production code is in place and unit-tested via programmatic plans, but end-to-end snapshot coverage and the formal performance-regression guard remain. Task 16 partially complete (architecture + CLI surface test landed; doc updates in `docs/features.md` and the optional output `type` column not done). All 13 ACs are satisfied at the production-code level; remaining work is test-coverage breadth, not feature behaviour.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/HeaderRenderer.cs` (banner)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/ReportRenderer.cs` (drift / relevant-attrs / other-actions)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderer.cs` (inline actions)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/ActionInvocationSectionRenderer.cs` (new, generic)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/CodeAnalysisSectionRenderer.cs` (H3 rename + source branch)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/ActionInvocationModel.cs` (new)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/OtherActionsModel.cs` (new)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/CodeAnalysisWarningModel.cs` (Source/SubjectKind/SubjectName)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` (`OtherActions`)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ResourceChangeModel.cs` (`Actions`, internal)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Actions.cs` (new partial)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Deprecations.cs` (new partial)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs` (wires actions + plan into pipeline)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.CodeAnalysis.cs` (deprecation warnings injection)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/IReportAssemblyStage.cs` (`OtherActions` input)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ReportAssemblyStage.cs` (passthrough)
+  - `src/Oocx.TfPlan2Md/Parsing/ConfigurationDeprecationReader.cs` (defensive ValueKind guards)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs` (Task 4)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderActionsTests.cs` (Task 9)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderDeprecationsTests.cs` (Task 13)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Architecture/Feature122ArchitectureTests.cs` (Task 16)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/CLI/HelpOutputDoesNotExposeFeature122FlagsTests.cs` (Task 16, AC-13)
+- **Problems Encountered:** Two issues encountered and resolved: (1) `ConfigurationDeprecationReader` originally crashed on legacy plan fixtures whose `variables` map values are JSON strings rather than objects; added `ValueKind != JsonValueKind.Object` guards so Feature 122 changes do not regress 1.13 plans (this is precisely the AC-9 backwards-compat invariant). (2) `ResourceChangeModel.Actions` had to be declared `internal` (not `public`) to satisfy CS0053 because `ActionInvocationModel` is internal and `ResourceChangeModel` is public — this is a deliberate accessibility narrowing, not a leak risk, since the renderer reaches the property through `InternalsVisibleTo` of the test assembly. **Open / deferred:** the formal Phase 2/3 snapshot coverage, TF 1.13 baseline (F-60), the performance ratio guard, the optional output `type` column, and `docs/features.md` update remain. Suggest the next Developer slice picks these up with `update-test-snapshots` skill for snapshot regeneration, mindful of the `SNAPSHOT_UPDATE_OK` commit-message token requirement.

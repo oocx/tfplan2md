@@ -1,0 +1,52 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.15.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.a",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "a",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "old" },
+        "after": { "name": "new" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "variables": {
+    "old_var_a": { "value": "value-a" },
+    "old_var_b": { "value": "value-b" }
+  },
+  "output_changes": {
+    "legacy_output": {
+      "actions": ["update"],
+      "before": "old",
+      "after": "new",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "variables": {
+        "old_var_a": {
+          "deprecated": "Use new_var_a instead."
+        },
+        "old_var_b": {
+          "deprecated": "Use new_var_b instead."
+        }
+      },
+      "outputs": {
+        "legacy_output": {
+          "deprecated": "Use new_output instead."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.a",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "a",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "name": "created" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "action_invocations": [
+    {
+      "address": "example_action.checked",
+      "type": "example_action",
+      "name": "checked",
+      "provider_name": "registry.terraform.io/example/example",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "summary": "Pre-flight check",
+          "detail": "Action pre-flight check returned a warning."
+        }
+      ],
+      "lifecycle_action_trigger": {
+        "triggering_resource_address": "example_resource.a",
+        "action_trigger_event": "before_create",
+        "actions_list_index": 0
+      }
+    }
+  ]
+}

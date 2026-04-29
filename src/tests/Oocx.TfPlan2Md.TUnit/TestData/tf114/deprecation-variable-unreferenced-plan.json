@@ -1,0 +1,30 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.15.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.a",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "a",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "old" },
+        "after": { "name": "new" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "variables": {
+        "unused_deprecated_var": {
+          "deprecated": "This variable is deprecated but not referenced by the plan."
+        }
+      }
+    }
+  }
+}

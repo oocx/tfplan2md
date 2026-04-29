@@ -73,17 +73,17 @@ internal sealed class HeaderRenderer
         var lines = new List<string>(3);
         if (status.Errored == true)
         {
-            lines.Add("> 🛑 **Plan errored** — Terraform encountered errors while computing this plan.");
+            lines.Add("> 🛑\u00A0**Plan errored** — Terraform encountered errors while computing this plan.");
         }
 
         if (status.Applyable == false)
         {
-            lines.Add("> ⛔ **Plan is not applyable** — Terraform refused to apply this plan.");
+            lines.Add("> ⛔\u00A0**Plan is not applyable** — Terraform refused to apply this plan.");
         }
 
         if (status.Complete == false)
         {
-            lines.Add("> ⚠️ **Plan is incomplete** — this plan does not represent the full intended state.");
+            lines.Add("> ⚠️\u00A0**Plan is incomplete** — this plan does not represent the full intended state.");
         }
 
         if (lines.Count == 0)

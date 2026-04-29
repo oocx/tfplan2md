@@ -1,0 +1,16 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [],
+  "action_invocations": [
+    {
+      "address": "example_action.standalone",
+      "type": "example_action",
+      "name": "standalone",
+      "provider_name": "registry.terraform.io/example/example",
+      "invoke_action_trigger": {
+        "reason": "Explicitly invoked via -invoke flag"
+      }
+    }
+  ]
+}

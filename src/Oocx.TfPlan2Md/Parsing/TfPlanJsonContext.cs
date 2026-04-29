@@ -15,6 +15,12 @@ namespace Oocx.TfPlan2Md.Parsing;
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(PrincipalMappingFile))]
 [JsonSerializable(typeof(MappingEntry))]
+[JsonSerializable(typeof(ActionInvocation))]
+[JsonSerializable(typeof(LifecycleActionTrigger))]
+[JsonSerializable(typeof(InvokeActionTrigger))]
+[JsonSerializable(typeof(RelevantAttribute))]
+[JsonSerializable(typeof(IReadOnlyList<ActionInvocation>))]
+[JsonSerializable(typeof(IReadOnlyList<RelevantAttribute>))]
 internal partial class TfPlanJsonContext : JsonSerializerContext
 {
 }

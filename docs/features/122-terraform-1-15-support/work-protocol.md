@@ -40,3 +40,10 @@
 - **Artifacts Produced:**
   - `docs/features/122-terraform-1-15-support/test-plan.md`
 - **Problems Encountered:** None unresolved. The H3 rename impact on existing snapshots is the only intentional global rendering change in this feature and is explicitly carved out by AC-9; the snapshot-update protocol (`SNAPSHOT_UPDATE_OK` token in commit message) is the documented mechanism and is referenced in the test plan.
+
+### Task Planner
+- **Date:** 2026-04-29
+- **Summary:** Translated the spec, four ADRs, and the QE test plan into a 16-task, test-first implementation breakdown grouped into five phases that map 1:1 to the maintainer's requested grouping (Phase 1 JSON model & parsing per ADR-001; Phase 2 H2 model + renderers per ADR-002; Phase 3 H1 action model + renderer per ADR-003; Phase 4 M2 deprecations into the existing warnings pipeline per ADR-004; Phase 5 backwards-compat snapshot regen, performance guard, and cross-cutting verification). Each task lists the ADR / acceptance-criterion references it implements, the specific fixtures from the QE inventory it claims (F-01..F-60), the production files / test methods to create or modify, and explicit done-when criteria. Ordering ensures `dotnet build` and `dotnet test` succeed after every task: parsing changes ship before model extensions; model extensions ship before renderer changes; new renderers are author-and-unit-tested in isolation before being wired into `ReportRenderer.Render`; the H3 `Code Analysis Warnings` → `Warnings` rename is scoped to a single dedicated rebaseline task (Task 14) that uses the documented `SNAPSHOT_UPDATE_OK` protocol. No production code, tests, or fixtures were authored at this stage — strictly planning per Plan Mode boundaries.
+- **Artifacts Produced:**
+  - `docs/features/122-terraform-1-15-support/tasks.md`
+- **Problems Encountered:** None. All architectural decisions are locked in ADR-001..ADR-004 and all test methods / fixtures are pre-specified in the test plan, so no open questions remain for the Developer.

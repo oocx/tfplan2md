@@ -18,16 +18,35 @@ internal partial class ReportModelBuilder
     /// Builds the code analysis report model and attaches findings to resources.
     /// </summary>
     /// <param name="allChanges">The full list of resource changes to update.</param>
+    /// <param name="plan">Parsed Terraform plan, used to surface 1.15+ deprecation warnings.</param>
     /// <returns>The code analysis report model when inputs are provided; otherwise <c>null</c>.</returns>
-    private CodeAnalysisReportModel? BuildCodeAnalysisReport(List<ResourceChangeModel> allChanges)
+    private CodeAnalysisReportModel? BuildCodeAnalysisReport(List<ResourceChangeModel> allChanges, Parsing.TerraformPlan plan)
     {
+        var deprecationWarnings = BuildDeprecationWarnings(plan);
+
         if (_codeAnalysisInput is null)
         {
-            return null;
+            if (deprecationWarnings.Count == 0)
+            {
+                return null;
+            }
+
+            return new CodeAnalysisReportModel
+            {
+                Summary = BuildSummaryModel(new List<CodeAnalysisFindingModel>()),
+                Tools = Array.Empty<CodeAnalysisToolModel>(),
+                Warnings = deprecationWarnings,
+                Findings = Array.Empty<CodeAnalysisFindingModel>(),
+                ModuleFindings = Array.Empty<CodeAnalysisModuleFindingsModel>(),
+                UnmatchedFindings = Array.Empty<CodeAnalysisFindingModel>()
+            };
         }
 
         var tools = BuildToolModels(_codeAnalysisInput.Model.Tools);
-        var warnings = BuildWarningModels(_codeAnalysisInput.Warnings);
+        var sarifWarnings = BuildWarningModels(_codeAnalysisInput.Warnings);
+        var warnings = sarifWarnings.Count == 0 && deprecationWarnings.Count == 0
+            ? (IReadOnlyList<CodeAnalysisWarningModel>)Array.Empty<CodeAnalysisWarningModel>()
+            : sarifWarnings.Concat(deprecationWarnings).ToList();
         var effectiveMinimumLevel = GetEffectiveMinimumLevel(_codeAnalysisInput.MinimumLevel, _codeAnalysisInput.FailOnLevel);
 
         var findings = new List<CodeAnalysisFindingModel>();
@@ -124,7 +143,8 @@ internal partial class ReportModelBuilder
             .Select(warning => new CodeAnalysisWarningModel
             {
                 FilePath = warning.FilePath,
-                Message = warning.Message
+                Message = warning.Message,
+                Source = CodeAnalysisWarningSource.SarifProcessingFailure
             })
             .ToList();
     }

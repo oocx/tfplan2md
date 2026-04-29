@@ -165,4 +165,13 @@ public class ResourceChangeModel
     /// </summary>
     internal IReadOnlyDictionary<string, IReadOnlyList<string>> ConfigurationReferences { get; set; } =
         new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Gets or sets the action invocations attached to this resource via
+    /// <c>lifecycle_action_trigger.triggering_resource_address</c>. Populated by
+    /// <c>ReportModelBuilder.Actions</c> after parent-child merging. Empty for
+    /// resources without lifecycle-triggered actions.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-003-inline-action-rendering.md.
+    /// </summary>
+    internal IReadOnlyList<Models.ActionInvocationModel> Actions { get; set; } = [];
 }

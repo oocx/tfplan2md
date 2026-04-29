@@ -76,7 +76,8 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
             FilteredResourceCount = input.FilteredResourceCount,
             PlanStatus = planStatus,
             Drift = drift,
-            RelevantAttributes = relevantAttributes
+            RelevantAttributes = relevantAttributes,
+            OtherActions = input.OtherActions
         };
     }
 

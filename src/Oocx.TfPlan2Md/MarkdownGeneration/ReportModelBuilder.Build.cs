@@ -38,7 +38,7 @@ internal partial class ReportModelBuilder
             .Build(allChanges)
             .ToList();
 
-        var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
+        var codeAnalysisReport = BuildCodeAnalysisReport(allChanges, plan);
 
         // CRITICAL: Calculate summary BEFORE parent-child merging.
         // Parent-child grouping is visual only and must NOT affect resource counts.
@@ -65,6 +65,7 @@ internal partial class ReportModelBuilder
         var planStatus = BuildPlanStatus(plan);
         var drift = BuildResourceDrift(plan, _configurationReferenceIndex);
         var relevantAttributes = BuildRelevantAttributes(plan);
+        var otherActions = BuildActionInvocations(plan, allChanges);
 
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
@@ -88,7 +89,8 @@ internal partial class ReportModelBuilder
             {
                 PlanStatus = planStatus,
                 Drift = drift,
-                RelevantAttributes = relevantAttributes
+                RelevantAttributes = relevantAttributes,
+                OtherActions = otherActions
             });
     }
 }

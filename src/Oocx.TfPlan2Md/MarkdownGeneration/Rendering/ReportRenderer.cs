@@ -68,11 +68,122 @@ internal sealed class ReportRenderer
         CodeAnalysisSectionRenderer.RenderSummary(writer, model.CodeAnalysis);
         RenderResourceChanges(writer, model, effectiveContext);
         CodeAnalysisSectionRenderer.RenderOtherFindings(writer, model.CodeAnalysis);
+        RenderOtherActions(writer, model, effectiveContext);
+        RenderDriftSection(writer, model, effectiveContext);
+        RenderRelevantAttributes(writer, model.RelevantAttributes);
         RenderRefactoring(writer, model.RefactoringOperations);
         RenderOutputs(writer, model.GlobalOutputs, effectiveContext);
         RenderFilteredResourceInfo(writer, model);
 
         return writer.Build();
+    }
+
+    /// <summary>
+    /// Renders the "🌀 Drift Detected" H2 section listing every entry from
+    /// <see cref="ReportModel.Drift"/>. Section is omitted when drift is empty.
+    /// Reuses the resource renderer registry so each drift entry is rendered
+    /// with the same provider-specific styling as in the main "Resource Changes"
+    /// section.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// </summary>
+    /// <param name="writer">Markdown writer.</param>
+    /// <param name="model">Report model.</param>
+    /// <param name="context">Render context.</param>
+    private void RenderDriftSection(MarkdownWriter writer, ReportModel model, IRenderContext context)
+    {
+        if (model.Drift.Count == 0)
+        {
+            return;
+        }
+
+        writer.Heading("🌀\u00A0Drift Detected", 2);
+        writer.BlankLine();
+
+        foreach (var change in model.Drift)
+        {
+            var renderer = _resourceRendererRegistry.GetRenderer(change.Type) ?? _defaultResourceRenderer;
+            renderer.Render(writer, change, context);
+        }
+    }
+
+    /// <summary>
+    /// Renders the "Relevant Attributes" H2 section. Each entry is rendered as a
+    /// row in a two-column table (Resource, Attribute path). Section is omitted
+    /// when the collection is empty so plans without this Terraform 1.14+ field
+    /// produce no diff against pre-feature snapshots.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// </summary>
+    /// <param name="writer">Markdown writer.</param>
+    /// <param name="attributes">Relevant attribute models.</param>
+    private static void RenderRelevantAttributes(
+        MarkdownWriter writer,
+        IReadOnlyList<RelevantAttributeModel> attributes)
+    {
+        if (attributes.Count == 0)
+        {
+            return;
+        }
+
+        writer.Heading("Relevant Attributes", 2);
+        writer.BlankLine();
+        writer.Raw("| Resource | Attribute path |\n");
+        writer.Raw("| -------- | -------------- |\n");
+
+        foreach (var attr in attributes)
+        {
+            writer.TableRow([
+                MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(attr.Resource)),
+                MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(attr.AttributePath))
+            ]);
+        }
+
+        writer.BlankLine();
+    }
+
+    /// <summary>
+    /// Renders the "🎬 Other Actions" H2 section for action invocations that do
+    /// not attach to any rendered resource (invoke-mode actions and lifecycle
+    /// orphans). Section is omitted when both groups are empty.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-003-inline-action-rendering.md.
+    /// </summary>
+    /// <param name="writer">Markdown writer.</param>
+    /// <param name="model">Report model.</param>
+    /// <param name="context">Render context.</param>
+    private static void RenderOtherActions(MarkdownWriter writer, ReportModel model, IRenderContext context)
+    {
+        var other = model.OtherActions;
+        if (other is null)
+        {
+            return;
+        }
+
+        if (other.InvokeActions.Count == 0 && other.LifecycleOrphanActions.Count == 0)
+        {
+            return;
+        }
+
+        writer.Heading("🎬\u00A0Other Actions", 2);
+        writer.BlankLine();
+
+        if (other.InvokeActions.Count > 0)
+        {
+            writer.Heading("Invoke actions", 3);
+            writer.BlankLine();
+            foreach (var action in other.InvokeActions)
+            {
+                ActionInvocationSectionRenderer.Render(writer, action, context);
+            }
+        }
+
+        if (other.LifecycleOrphanActions.Count > 0)
+        {
+            writer.Heading("Lifecycle actions without a matching resource change", 3);
+            writer.BlankLine();
+            foreach (var action in other.LifecycleOrphanActions)
+            {
+                ActionInvocationSectionRenderer.Render(writer, action, context);
+            }
+        }
     }
 
     /// <summary>

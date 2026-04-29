@@ -62,6 +62,11 @@ public static class ConfigurationDeprecationReader
 
         foreach (var variable in variables.EnumerateObject())
         {
+            if (variable.Value.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
             if (variable.Value.TryGetProperty("deprecated", out var deprecated) &&
                 deprecated.ValueKind == JsonValueKind.String)
             {
@@ -80,6 +85,11 @@ public static class ConfigurationDeprecationReader
 
         foreach (var output in outputs.EnumerateObject())
         {
+            if (output.Value.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
             if (!output.Value.TryGetProperty("deprecated", out var deprecated) ||
                 deprecated.ValueKind != JsonValueKind.String)
             {

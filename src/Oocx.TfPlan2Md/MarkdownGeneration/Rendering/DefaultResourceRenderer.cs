@@ -60,6 +60,8 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
         RenderCodeAnalysisFindings(writer, change);
         RenderLargeAttributes(writer, largeAttributes, smallAttributes.Length > 0 || !string.IsNullOrWhiteSpace(change.TagsBadges), context);
 
+        RenderInlineActions(writer, change, context);
+
         if (policy.UseMultilineDetailsSummary)
         {
             writer.BlankLine();
@@ -67,6 +69,31 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
 
         writer.DetailsClose();
         writer.BlankLine();
+    }
+
+    /// <summary>
+    /// Renders the inline "🎬 Actions" H4 sub-section listing every Terraform 1.14+
+    /// action invocation attached to this resource via <c>lifecycle_action_trigger</c>.
+    /// Section is silent when the resource has no attached actions, preserving
+    /// pre-feature snapshots for plans without action_invocations.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-003-inline-action-rendering.md.
+    /// </summary>
+    /// <param name="writer">Markdown writer.</param>
+    /// <param name="change">Resource change model.</param>
+    /// <param name="context">Render context.</param>
+    private static void RenderInlineActions(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
+    {
+        if (change.Actions.Count == 0)
+        {
+            return;
+        }
+
+        writer.Heading("🎬\u00A0Actions", 4);
+        writer.BlankLine();
+        foreach (var action in change.Actions)
+        {
+            ActionInvocationSectionRenderer.Render(writer, action, context);
+        }
     }
 
     /// <summary>Determines the appropriate details opening tag.</summary>

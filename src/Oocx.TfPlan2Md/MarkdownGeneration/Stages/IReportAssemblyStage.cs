@@ -60,4 +60,11 @@ internal sealed record ReportAssemblyInput(
     /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
     /// </summary>
     public IReadOnlyList<RelevantAttributeModel>? RelevantAttributes { get; init; }
+
+    /// <summary>
+    /// Gets the action invocations that do not attach to any rendered resource
+    /// (invoke-mode actions and lifecycle orphans). Null when no such actions exist.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-003-inline-action-rendering.md.
+    /// </summary>
+    public OtherActionsModel? OtherActions { get; init; }
 }

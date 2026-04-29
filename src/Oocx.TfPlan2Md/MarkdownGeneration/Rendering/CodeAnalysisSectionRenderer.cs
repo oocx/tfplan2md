@@ -65,14 +65,24 @@ internal static class CodeAnalysisSectionRenderer
             return;
         }
 
-        writer.Heading("Code Analysis Warnings", 3);
+        writer.Heading("Warnings", 3);
         writer.BlankLine();
 
         foreach (var warning in codeAnalysis.Warnings)
         {
-            writer.Paragraph($"⚠️\u00A0**Warning:** Unable to process code analysis file {MarkdownHelpers.FormatCodeTable(warning.FilePath)}");
-            writer.Paragraph($"- Error: {MarkdownHelpers.EscapeMarkdown(warning.Message)}");
-            writer.BlankLine();
+            switch (warning.Source)
+            {
+                case CodeAnalysisWarningSource.PlanDeprecation:
+                    writer.Paragraph(
+                        $"⚠️\u00A0**Deprecated {MarkdownHelpers.EscapeMarkdown(warning.SubjectKind ?? "item")}** {MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdown(warning.SubjectName ?? string.Empty))}: {MarkdownHelpers.EscapeMarkdown(warning.Message)}");
+                    writer.BlankLine();
+                    break;
+                default:
+                    writer.Paragraph($"⚠️\u00A0**Warning:** Unable to process code analysis file {MarkdownHelpers.FormatCodeTable(warning.FilePath ?? string.Empty)}");
+                    writer.Paragraph($"- Error: {MarkdownHelpers.EscapeMarkdown(warning.Message)}");
+                    writer.BlankLine();
+                    break;
+            }
         }
     }
 

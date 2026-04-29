@@ -1,0 +1,39 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.test",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "test",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "old-value"
+        },
+        "after": {
+          "name": "new-value"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "variables": {
+        "test_var": {
+          "default": "value"
+        }
+      },
+      "outputs": {
+        "test_output": {
+          "value": "example"
+        }
+      }
+    }
+  }
+}

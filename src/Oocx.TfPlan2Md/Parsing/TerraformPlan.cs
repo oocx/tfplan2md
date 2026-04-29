@@ -12,7 +12,15 @@ public record TerraformPlan(
     [property: JsonPropertyName("resource_changes")] IReadOnlyList<ResourceChange> ResourceChanges,
     [property: JsonPropertyName("timestamp")] string? Timestamp = null,
     [property: JsonPropertyName("configuration")] JsonElement? Configuration = null,
-    [property: JsonPropertyName("output_changes")] IReadOnlyDictionary<string, OutputChange>? OutputChanges = null
+    [property: JsonPropertyName("output_changes")] IReadOnlyDictionary<string, OutputChange>? OutputChanges = null,
+    [property: JsonPropertyName("action_invocations")] IReadOnlyList<ActionInvocation>? ActionInvocations = null,
+    [property: JsonPropertyName("deferred_action_invocations")] IReadOnlyList<ActionInvocation>? DeferredActionInvocations = null,
+    [property: JsonPropertyName("resource_drift")] IReadOnlyList<ResourceChange>? ResourceDrift = null,
+    [property: JsonPropertyName("relevant_attributes")] IReadOnlyList<RelevantAttribute>? RelevantAttributes = null,
+    [property: JsonPropertyName("applyable")] bool? Applyable = null,
+    [property: JsonPropertyName("complete")] bool? Complete = null,
+    [property: JsonPropertyName("errored")] bool? Errored = null,
+    [property: JsonPropertyName("variables")] IReadOnlyDictionary<string, JsonElement>? Variables = null
 );
 
 /// <summary>

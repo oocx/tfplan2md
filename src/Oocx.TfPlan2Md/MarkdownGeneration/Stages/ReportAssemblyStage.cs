@@ -48,6 +48,9 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
 
         var moduleGroups = BuildModuleGroups(input.DisplayChanges, outputsByModule);
         var refactoringOperations = BuildRefactoringOperations(input.AllChanges);
+        var planStatus = BuildPlanStatusFromInput(input);
+        var drift = input.Drift ?? new List<ResourceChangeModel>();
+        var relevantAttributes = input.RelevantAttributes ?? new List<RelevantAttributeModel>();
 
         return new ReportModel
         {
@@ -70,7 +73,25 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
             DetailsDisplayMode = input.DetailsDisplayMode,
             RefactoringOperations = refactoringOperations,
             GlobalOutputs = globalOutputs,
-            FilteredResourceCount = input.FilteredResourceCount
+            FilteredResourceCount = input.FilteredResourceCount,
+            PlanStatus = planStatus,
+            Drift = drift,
+            RelevantAttributes = relevantAttributes
+        };
+    }
+
+    private static PlanStatusModel? BuildPlanStatusFromInput(ReportAssemblyInput input)
+    {
+        if (input.PlanStatus is null)
+        {
+            return null;
+        }
+
+        return new PlanStatusModel
+        {
+            Applyable = input.PlanStatus.Applyable,
+            Complete = input.PlanStatus.Complete,
+            Errored = input.PlanStatus.Errored
         };
     }
 

@@ -41,4 +41,23 @@ internal sealed record ReportAssemblyInput(
     bool IgnoreAzureIdCaseChanges,
     bool ShowSensitive,
     RenderTargets.RenderTarget RenderTarget,
-    RenderTargets.DetailsDisplayMode DetailsDisplayMode);
+    RenderTargets.DetailsDisplayMode DetailsDisplayMode)
+{
+    /// <summary>
+    /// Gets the plan status information from Terraform 1.14+ plans.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// </summary>
+    public PlanStatusModel? PlanStatus { get; init; }
+
+    /// <summary>
+    /// Gets resource drift detected outside Terraform.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// </summary>
+    public IReadOnlyList<ResourceChangeModel>? Drift { get; init; }
+
+    /// <summary>
+    /// Gets the relevant attributes that influenced downstream resource computation.
+    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// </summary>
+    public IReadOnlyList<RelevantAttributeModel>? RelevantAttributes { get; init; }
+}

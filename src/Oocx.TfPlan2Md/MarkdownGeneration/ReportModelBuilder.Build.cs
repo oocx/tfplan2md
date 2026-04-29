@@ -60,6 +60,12 @@ internal partial class ReportModelBuilder
         // Related feature: docs/features/097-terraform-outputs/specification.md
         var allOutputs = BuildOutputModels(plan);
 
+        // Build plan-context models from Terraform 1.14+ fields
+        // Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md
+        var planStatus = BuildPlanStatus(plan);
+        var drift = BuildResourceDrift(plan, _configurationReferenceIndex);
+        var relevantAttributes = BuildRelevantAttributes(plan);
+
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
         return (_reportAssemblyStage ?? CreateReportAssemblyStage()).Build(
@@ -78,6 +84,11 @@ internal partial class ReportModelBuilder
                 IgnoreAzureIdCaseChanges: _ignoreAzureIdCaseChanges,
                 ShowSensitive: _showSensitive,
                 RenderTarget: _renderTarget,
-                DetailsDisplayMode: _detailsDisplayMode));
+                DetailsDisplayMode: _detailsDisplayMode)
+            {
+                PlanStatus = planStatus,
+                Drift = drift,
+                RelevantAttributes = relevantAttributes
+            });
     }
 }

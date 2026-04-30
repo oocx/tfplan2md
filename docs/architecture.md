@@ -412,7 +412,7 @@ flowchart LR
 
 **Key Classes:**
 - `TerraformPlanParser` - Main parser
-- `TerraformPlan` (record) - Root plan model (FormatVersion, TerraformVersion, ResourceChanges, Timestamp, Configuration, **ActionInvocations, DeferredActionInvocations, ResourceDrift, RelevantAttributes, Applyable, Complete, Errored**)
+- `TerraformPlan` (record) - Root plan model (FormatVersion, TerraformVersion, ResourceChanges, Timestamp, Configuration, ActionInvocations, DeferredActionInvocations, ResourceDrift, RelevantAttributes, Applyable, Complete, Errored)
 - `ResourceChange` (record) - Individual resource change (Address, Type, Change, ActionReason, PreviousAddress); also reused for `resource_drift[]` entries
 - `Change` (record) - Before/after/actions for a resource (with AfterUnknown, Importing support)
 - `ActionInvocation` (record) - A provider action invocation from `action_invocations[]` or `deferred_action_invocations[]` (Address, Type, Name, ProviderName, LifecycleActionTrigger, InvokeActionTrigger, ConfigValues, ConfigSensitive, ConfigUnknown)
@@ -456,9 +456,9 @@ flowchart LR
 
 | Class | Responsibility |
 |-------|---------------|
-| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 9 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging, Outputs, **Actions, Deprecations, PlanContext**) |
-| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations, **OtherActions, PlanStatus, DriftChanges, RelevantAttributes**) |
-| `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info, **Actions (inline action invocations)** |
+| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 9 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging, Outputs, Actions, Deprecations, PlanContext) |
+| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations, OtherActions, PlanStatus, DriftChanges, RelevantAttributes) |
+| `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info, Actions (inline action invocations) |
 | `AttributeChangeModel` | Single attribute change |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Orchestrate C# rendering pipeline; validate output is compatible with GitHub and Azure DevOps |

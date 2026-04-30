@@ -3116,7 +3116,7 @@ See [docs/features/116-azuread-app-role-assignment/specification.md](features/11
 
 **Status:** ✅ Implemented
 
-tfplan2md now renders every new field introduced by Terraform 1.14 and 1.15 in the `terraform show -json` plan format. All new sections are **always-on** — no CLI flag or opt-in is needed. Plans produced by Terraform 1.13 and earlier continue to render identically (backwards-compatible, additive).
+tfplan2md now renders every new field introduced by Terraform 1.14 and 1.15 in the `terraform show -json` plan format. All new sections are **always-on** — no CLI flag or opt-in is needed. Plans produced by Terraform 1.13 and all earlier supported versions continue to render identically (backwards-compatible, additive).
 
 ### Action Invocations (Terraform 1.14)
 
@@ -3130,7 +3130,7 @@ Provider-shipped Actions (e.g., `aws_lambda_invoke`, `aws_cloudfront_create_inva
 - **Generic renderer** — a single `ActionInvocationSectionRenderer` handles every action type from any provider; no provider-specific renderer is required.
 - **Sensitivity masking** — `config_values` are masked via the existing `SensitivityHelper` using `config_sensitive` / `config_unknown` metadata.
 
-#### Example (inline actions block)
+#### Inline Actions Block Example
 
 ```markdown
 #### 🎬 Actions
@@ -3185,7 +3185,7 @@ Variables and outputs marked `deprecated` in `configuration.root_module` now pro
 
 ### Backwards Compatibility
 
-Plans from Terraform 1.13 and earlier that lack any of the new fields render identically to previous versions of tfplan2md. All new fields are optional in the parsed model; missing fields are treated as absent and produce no output.
+Plans from Terraform 1.13 and all earlier supported versions that lack any of the new fields render identically to previous versions of tfplan2md. All new fields are optional in the parsed model; missing fields are treated as absent and produce no output.
 
 See [docs/features/122-terraform-1-15-support/](features/122-terraform-1-15-support/) for the full specification, ADRs, and implementation details.
 

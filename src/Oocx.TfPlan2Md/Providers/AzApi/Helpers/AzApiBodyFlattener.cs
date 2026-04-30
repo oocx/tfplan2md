@@ -148,6 +148,15 @@ internal static class AzApiBodyFlattener
             return;
         }
 
+        if (value is bool boolean)
+        {
+            // ConvertJsonValue returns C# bool for JSON true/false. Store as lowercase string
+            // so Value?.ToString() does not produce Pascal-case "True"/"False".
+            var boolText = boolean ? "true" : "false";
+            result.Add(new AzApiBodyProperty(prefix, boolText, false));
+            return;
+        }
+
         if (value is JsonElement element)
         {
             FlattenJsonElement(element, prefix, result);
@@ -325,6 +334,15 @@ internal static class AzApiBodyFlattener
                     FlattenJsonElement(array[index], $"{prefix}[{index}]", result);
                 }
 
+                break;
+
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+                // Use raw JSON text ("true"/"false") so the value round-trips as lowercase through
+                // Value?.ToString() and reaches TryFormatBoolean correctly. ConvertJsonValue returns
+                // a boxed C# bool whose .ToString() produces "True"/"False" (Pascal case).
+                var boolText = element.GetRawText();
+                result.Add(new AzApiBodyProperty(prefix, boolText, false));
                 break;
 
             default:

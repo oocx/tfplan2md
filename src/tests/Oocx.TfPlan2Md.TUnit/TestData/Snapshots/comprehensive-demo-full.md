@@ -234,7 +234,7 @@ _No attribute changes._
 
 | Property | Value |
 |----------|-------|
-| external | `✅ True` |
+| external | `✅ true` |
 | targetPort | `🔌 8080` |
 | transport | `auto` |
 

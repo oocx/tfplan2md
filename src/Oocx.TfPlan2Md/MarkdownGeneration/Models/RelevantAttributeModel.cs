@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// Indicates an upstream resource attribute that influenced downstream resource computation.
 /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
 /// </summary>
-internal class RelevantAttributeModel
+internal sealed class RelevantAttributeModel
 {
     /// <summary>
     /// Gets the resource address of the upstream resource.

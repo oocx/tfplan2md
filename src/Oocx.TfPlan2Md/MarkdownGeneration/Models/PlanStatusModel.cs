@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// (applyable, complete, errored).
 /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
 /// </summary>
-internal class PlanStatusModel
+internal sealed class PlanStatusModel
 {
     /// <summary>
     /// Gets a value indicating whether the plan is applyable.

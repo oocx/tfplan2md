@@ -100,3 +100,11 @@
   - `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/RelevantAttributeModel.cs` (sealed)
   - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/deprecation-*.md` (4 snapshots regenerated, SNAPSHOT_UPDATE_OK)
 - **Problems Encountered:** None beyond the two issues found and fixed above.
+
+### UAT Tester
+- **Date:** 2026-04-30
+- **Summary:** Validated all six Feature 122 acceptance criteria against GitHub UAT PR #123 and Azure DevOps UAT PR #110. Inspected the rendered markdown in the feature-specific UAT comment (Comment 1, id=4356010675). All six test cases passed: plan-status banners render as three stacked blockquotes immediately after the H1 title; drift-detected section renders as `## 🌀 Drift Detected` with resource `<details>` entries; inline actions render as `#### 🎬 Actions` inside the parent resource's `<details>` block; deferred actions have a `⏳` name prefix and a `> ⏳ **Deferred**` callout; deprecation warnings appear under a `### Warnings` H3 (not "Code Analysis Warnings") within the Code Analysis Summary section; and relevant attributes render as `## Relevant Attributes` with a two-column `Resource | Attribute path` table. UAT PRs cleaned up after approval.
+- **Artifacts Produced:**
+  - `docs/features/122-terraform-1-15-support/work-protocol.md` (this entry)
+- **Problems Encountered:** None.
+- **UAT Result:** ✅ **PASSED** — all 6 test cases verified.

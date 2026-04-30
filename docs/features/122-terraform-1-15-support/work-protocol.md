@@ -75,3 +75,13 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/Architecture/Feature122ArchitectureTests.cs` (Task 16)
   - `src/tests/Oocx.TfPlan2Md.TUnit/CLI/HelpOutputDoesNotExposeFeature122FlagsTests.cs` (Task 16, AC-13)
 - **Problems Encountered:** Two issues encountered and resolved: (1) `ConfigurationDeprecationReader` originally crashed on legacy plan fixtures whose `variables` map values are JSON strings rather than objects; added `ValueKind != JsonValueKind.Object` guards so Feature 122 changes do not regress 1.13 plans (this is precisely the AC-9 backwards-compat invariant). (2) `ResourceChangeModel.Actions` had to be declared `internal` (not `public`) to satisfy CS0053 because `ActionInvocationModel` is internal and `ResourceChangeModel` is public — this is a deliberate accessibility narrowing, not a leak risk, since the renderer reaches the property through `InternalsVisibleTo` of the test assembly. **Open / deferred:** the formal Phase 2/3 snapshot coverage, TF 1.13 baseline (F-60), the performance ratio guard, the optional output `type` column, and `docs/features.md` update remain. Suggest the next Developer slice picks these up with `update-test-snapshots` skill for snapshot regeneration, mindful of the `SNAPSHOT_UPDATE_OK` commit-message token requirement.
+
+### Technical Writer
+- **Date:** 2026-04-29
+- **Summary:** Updated all user-facing and developer documentation to reflect the Feature 122 implementation. Added a Feature 122 entry to `docs/features.md` covering all three sub-scopes (action invocations, plan-context awareness, deprecation warnings) with examples. Added a bullet to `README.md` Features list for Terraform 1.14/1.15 plan-JSON support. Updated `docs/architecture.md` to document new parsing records (`ActionInvocation`, `LifecycleActionTrigger`, `InvokeActionTrigger`, `RelevantAttribute`, `ConfigurationDeprecationReader`), new model types (`ActionInvocationModel`, `OtherActionsModel`, `PlanStatusModel`, `RelevantAttributeModel`), new renderer (`ActionInvocationSectionRenderer`), extended `ReportModelBuilder` partial split (now 9 files), updated `ReportModel` and `ResourceChangeModel` class diagrams with new properties, updated Model Components table, and documented the extended `CodeAnalysisWarningModel` with `Source`/`SubjectKind`/`SubjectName`.
+- **Artifacts Produced:**
+  - `docs/features.md` (Feature 122 entry added)
+  - `README.md` (Features list bullet added)
+  - `docs/architecture.md` (Parsing, MarkdownGeneration, and CodeAnalysis component sections updated)
+  - `docs/features/122-terraform-1-15-support/work-protocol.md` (this entry)
+- **Problems Encountered:** None. All implementation details were well-documented in the Developer work-protocol entry and the ADRs.

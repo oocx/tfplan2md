@@ -412,9 +412,14 @@ flowchart LR
 
 **Key Classes:**
 - `TerraformPlanParser` - Main parser
-- `TerraformPlan` (record) - Root plan model (FormatVersion, TerraformVersion, ResourceChanges, Timestamp, Configuration)
-- `ResourceChange` (record) - Individual resource change (Address, Type, Change, ActionReason, PreviousAddress)
+- `TerraformPlan` (record) - Root plan model (FormatVersion, TerraformVersion, ResourceChanges, Timestamp, Configuration, **ActionInvocations, DeferredActionInvocations, ResourceDrift, RelevantAttributes, Applyable, Complete, Errored**)
+- `ResourceChange` (record) - Individual resource change (Address, Type, Change, ActionReason, PreviousAddress); also reused for `resource_drift[]` entries
 - `Change` (record) - Before/after/actions for a resource (with AfterUnknown, Importing support)
+- `ActionInvocation` (record) - A provider action invocation from `action_invocations[]` or `deferred_action_invocations[]` (Address, Type, Name, ProviderName, LifecycleActionTrigger, InvokeActionTrigger, ConfigValues, ConfigSensitive, ConfigUnknown)
+- `LifecycleActionTrigger` (record) - Lifecycle-event trigger info (TriggeringResourceAddress, ActionTriggerEvent)
+- `InvokeActionTrigger` (record) - Invoke-mode trigger info (TriggerAddress)
+- `RelevantAttribute` (record) - An upstream dependency that influenced plan changes (Resource, Attribute)
+- `ConfigurationDeprecationReader` - Helper that reads `deprecated` fields from `configuration.root_module.variables` and `.outputs` (with `JsonValueKind` guards for legacy primitive values)
 - `ReplacePathsConverter` - Custom JSON converter for replace paths
 - `TfPlanJsonContext` - AOT-safe JSON serialization context (System.Text.Json source generator)
 - `ConfigurationReferenceResolver` - Resolves configuration references
@@ -451,15 +456,16 @@ flowchart LR
 
 | Class | Responsibility |
 |-------|---------------|
-| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 6 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging, Outputs) |
-| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations) |
-| `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info |
+| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 9 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging, Outputs, **Actions, Deprecations, PlanContext**) |
+| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations, **OtherActions, PlanStatus, DriftChanges, RelevantAttributes**) |
+| `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info, **Actions (inline action invocations)** |
 | `AttributeChangeModel` | Single attribute change |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Orchestrate C# rendering pipeline; validate output is compatible with GitHub and Azure DevOps |
-| `ReportRenderer` | Top-level renderer that calls `HeaderRenderer`, `SummaryRenderer`, and per-resource renderers |
+| `ReportRenderer` | Top-level renderer that calls `HeaderRenderer`, `SummaryRenderer`, and per-resource renderers; also renders drift, relevant-attributes, and other-actions sections |
 | `ResourceRendererRegistry` | Dispatch resource types to provider-registered `IResourceRenderer` implementations |
-| `DefaultResourceRenderer` | Fallback renderer for unmapped resource types |
+| `DefaultResourceRenderer` | Fallback renderer for unmapped resource types; renders inline `🎬 Actions` block when resource has action invocations |
+| `ActionInvocationSectionRenderer` | Generic renderer for a single action invocation (address, type, provider, trigger event / invoke indicator, masked config values); provider-agnostic |
 | `MarkdownWriter` | Stream-based markdown output builder used by all renderers |
 | `RenderContext` | Carries global rendering state (options, icons, formatters) through the rendering tree |
 | `RenderTarget` (enum) | Target platform for rendering (GitHub, AzureDevOps); controls diff formatting and markdown features |
@@ -467,6 +473,11 @@ flowchart LR
 | `RefactoringOperationModel` | Track terraform import and move operations |
 | `ChildResourceGroup` / `ChildResourceRow` | Hierarchical child resource table data |
 | `ParentChildRelationshipRegistry` | Register and resolve parent-child resource relationships |
+| `ActionInvocationModel` | View model for a single action invocation (address, type, provider, trigger event, config values, deferred flag) |
+| `OtherActionsModel` | View model for the `🎬 Other Actions` H2 section (invoke-mode actions and orphan lifecycle actions) |
+| `PlanStatusModel` | View model for the plan-status banner (errored, applyable, complete flags) |
+| `RelevantAttributeModel` | View model for a single entry in the Relevant Attributes table (resource address, attribute path) |
+| `CodeAnalysisWarningModel` | Warning entry (file, line, message); extended with optional `Source` enum (`Sarif` / `PlanDeprecation`), `SubjectKind` (`variable` / `output`), and `SubjectName` to support multi-source warnings |
 
 **Design Principle: Logic in Code, Not Renderers**
 
@@ -541,6 +552,10 @@ classDiagram
         +IReadOnlyList~RefactoringOperationModel~ RefactoringOperations
         +bool ShowUnchangedValues
         +RenderTarget RenderTarget
+        +PlanStatusModel? PlanStatus
+        +IReadOnlyList~ResourceChangeModel~ DriftChanges
+        +IReadOnlyList~RelevantAttributeModel~ RelevantAttributes
+        +OtherActionsModel? OtherActions
     }
     
     class ModuleChangeGroup {
@@ -588,6 +603,7 @@ classDiagram
         +string? ImportId
         +string? MovedFromAddress
         +bool IsRefactoringAlreadyApplied
+        +IReadOnlyList~ActionInvocationModel~ Actions
     }
     
     class AttributeChangeModel {
@@ -643,15 +659,19 @@ classDiagram
 
 | Model Class | Purpose | Template Access |
 |-------------|---------|-----------------|
-| `ReportModel` | Root container for all report data | Direct properties: `terraform_version`, `summary`, `module_changes`, `code_analysis`, `refactoring_operations`, etc. |
+| `ReportModel` | Root container for all report data | Direct properties: `terraform_version`, `summary`, `module_changes`, `code_analysis`, `refactoring_operations`, `plan_status`, `drift_changes`, `relevant_attributes`, `other_actions`, etc. |
 | `ModuleChangeGroup` | Groups resources by Terraform module | Iterate via `module_changes`, access `module_address` and `changes` |
 | `SummaryModel` | Aggregated statistics for the summary table | Access via `summary.to_add.count`, `summary.total`, etc. |
 | `ActionSummary` | Per-action statistics with type breakdown | `count` for total, `breakdown` for per-type counts |
 | `ResourceTypeBreakdown` | Count of resources per type for an action | `type` (resource type name), `count` (number) |
-| `ResourceChangeModel` | Single resource with all change details | Full resource data including `child_resource_groups`, `code_analysis_findings`, `import_id`, `moved_from_address` |
+| `ResourceChangeModel` | Single resource with all change details | Full resource data including `child_resource_groups`, `code_analysis_findings`, `import_id`, `moved_from_address`, `actions` |
 | `AttributeChangeModel` | Single attribute's before/after values | `name`, `before`, `after`, `is_sensitive`, `is_large` |
 | `RefactoringOperationModel` | Terraform import/move operations | `operation`, `address`, `resource_type`, `details`, `status`, `is_already_applied` |
 | `CodeAnalysisReportModel` | Code analysis results from SARIF | `summary` (counts by severity), `module_findings` (grouped by module) |
+| `ActionInvocationModel` | Single action invocation (inline under resource) | `address`, `type`, `provider_name`, `trigger_event`, `is_deferred`, masked `config_values` |
+| `OtherActionsModel` | `🎬 Other Actions` section data | `invoke_actions`, `lifecycle_orphan_actions` lists |
+| `PlanStatusModel` | Plan-status banner data | `errored`, `applyable`, `complete` flags |
+| `RelevantAttributeModel` | Single upstream dependency | `resource` (address), `attribute` (path) |
 
 **Precomputed Properties:**
 
@@ -932,6 +952,7 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 | `ResourceMapper` | Map SARIF findings to Terraform resource changes |
 | `WildcardExpander` | Expand glob patterns for SARIF file discovery |
 | `CodeAnalysisInput` | Input record (model, warnings, minimum level, fail-on level) |
+| `CodeAnalysisWarningModel` | Warning entry extended (Feature 122) with optional `Source` enum (`Sarif` / `PlanDeprecation`), `SubjectKind`, and `SubjectName` to carry both SARIF parse warnings and plan deprecation warnings through the same pipeline |
 
 **Data Flow:**
 

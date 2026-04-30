@@ -55,6 +55,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps build definitions and variable groups, Azure AD resources, and inline parent-child tables for memberships and Azure network resources)
 - 📚 **Azure API documentation links** - Reliable links to Microsoft Learn REST API documentation for 92 Azure resource types (AzAPI provider)
 - 🔇 **Case-insensitive Azure ID filter** - Azure resource ID attribute changes that differ only in casing (ARM API quirk) are suppressed by default (`--ignore-azure-id-case-changes`), reducing noise in reports
+- 🎬 **Terraform 1.14/1.15 plan-JSON support** - Action invocations (`action_invocations[]`, `deferred_action_invocations[]`) rendered inline under their triggering resource; plan-context sections for drift detection (`🌀 Drift Detected`), relevant attributes, and plan-status banners (errored / not applyable / incomplete); deprecation warnings for variables and outputs flagged `deprecated` in Terraform 1.15 plans
 
 ## Installation
 

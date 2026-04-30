@@ -3112,6 +3112,83 @@ Adds enhanced rendering for three Azure AD resource types:
 
 See [docs/features/116-azuread-app-role-assignment/specification.md](features/116-azuread-app-role-assignment/specification.md) for the full specification.
 
+## Terraform 1.14 / 1.15 Plan-JSON Support (Feature 122)
+
+**Status:** ✅ Implemented
+
+tfplan2md now renders every new field introduced by Terraform 1.14 and 1.15 in the `terraform show -json` plan format. All new sections are **always-on** — no CLI flag or opt-in is needed. Plans produced by Terraform 1.13 and earlier continue to render identically (backwards-compatible, additive).
+
+### Action Invocations (Terraform 1.14)
+
+Provider-shipped Actions (e.g., `aws_lambda_invoke`, `aws_cloudfront_create_invalidation`) and lifecycle action triggers (`lifecycle { action_trigger { … } }`) are now surfaced in reports.
+
+#### Features
+
+- **Inline rendering** — lifecycle-triggered actions are rendered as a `🎬 Actions` H4 block inside the `<details>` section of the resource that triggers them, using the same parent-child registry pattern as existing inline children (NSG rules, Azure AD group members, etc.).
+- **`🎬 Other Actions` section** — invoke-mode actions and orphan lifecycle actions (whose triggering resource has no section in the plan) are collected in a dedicated H2 section placed between Resource Changes and the plan-context cluster. Sub-groups separate _Invoke actions_ from _Other lifecycle actions_.
+- **Deferred actions** — entries from `deferred_action_invocations[]` render in the same inline location under their triggering resource, with a `⏳` prefix and a deferred callout block.
+- **Generic renderer** — a single `ActionInvocationSectionRenderer` handles every action type from any provider; no provider-specific renderer is required.
+- **Sensitivity masking** — `config_values` are masked via the existing `SensitivityHelper` using `config_sensitive` / `config_unknown` metadata.
+
+#### Example (inline actions block)
+
+```markdown
+#### 🎬 Actions
+
+| Action | Type | Provider | Trigger |
+|--------|------|----------|---------|
+| `aws_lambda_invoke.invoke_function` | `invoke` | `registry.terraform.io/hashicorp/aws` | `after_create` |
+```
+
+### Plan-Context Awareness (Terraform 1.14)
+
+New top-level plan-JSON fields (`applyable`, `complete`, `errored`, `resource_drift[]`, `relevant_attributes[]`) are now rendered to give reviewers full context on the state of the plan.
+
+#### Plan Status Banner
+
+A status banner is emitted immediately after the report title when any of the following is true:
+
+| Condition | Banner |
+|-----------|--------|
+| `errored: true` | 🛑 **This plan errored.** Terraform encountered errors and the plan may be incomplete. |
+| `applyable: false` | ⛔ **This plan is not applyable.** |
+| `complete: false` | ⚠️ **This plan is incomplete.** Some changes may be deferred or pending. |
+
+No banner is emitted for ordinary, applyable, complete plans.
+
+#### 🌀 Drift Detected Section
+
+When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Each drifted resource is listed using the same resource renderer registry as regular changes, showing the out-of-band changes detected in the live infrastructure.
+
+#### Relevant Attributes Section
+
+When `relevant_attributes[]` is present, a `Relevant Attributes` H2 section renders a two-column table showing the upstream resource addresses and attribute paths that influenced changes in this plan.
+
+### Deprecation Warnings (Terraform 1.15)
+
+Variables and outputs marked `deprecated` in `configuration.root_module` now produce warnings in the `### Warnings` section of the report (formerly `### Code Analysis Warnings`).
+
+#### Features
+
+- **Only referenced deprecations** — a warning is emitted only if the deprecated variable or output is actually referenced by the plan. Unreferenced declarations do not produce noise.
+- **Warning format** — each entry shows the subject kind (_variable_ or _output_), its name, and the deprecation message from Terraform.
+- **Unified warnings section** — the H3 heading is renamed from "Code Analysis Warnings" to "Warnings" to accommodate entries from multiple sources (SARIF findings and plan deprecations) in one place.
+
+#### Example
+
+```markdown
+### Warnings
+
+> ⚠️ **Warning:** Variable `legacy_api_key` is deprecated: Use `api_key` instead.
+> ⚠️ **Warning:** Output `old_endpoint` is deprecated: Replaced by `service_endpoint`.
+```
+
+### Backwards Compatibility
+
+Plans from Terraform 1.13 and earlier that lack any of the new fields render identically to previous versions of tfplan2md. All new fields are optional in the parsed model; missing fields are treated as absent and produce no output.
+
+See [docs/features/122-terraform-1-15-support/](features/122-terraform-1-15-support/) for the full specification, ADRs, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

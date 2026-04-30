@@ -106,6 +106,13 @@ jobs:
             exit 1
           fi
 
+      - name: Configure git hooks
+        run: |
+          # Point git at scripts/hooks/ so the commit-msg hook validates
+          # conventional commit messages for all commits made by coding agents.
+          git config core.hooksPath scripts/hooks
+          echo "✓ Git hooks configured (core.hooksPath=scripts/hooks)"
+
       - name: Setup complete
         run: |
           echo "✓ GitHub Copilot coding agent environment ready"

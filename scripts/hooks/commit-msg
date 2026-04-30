@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# commit-msg - git commit-msg hook.
+#
+# Validates that every commit message follows the Conventional Commits format:
+#
+#   type(optional-scope): description
+#
+# Valid types: feat, fix, docs, ci, chore, refactor, style, test, perf,
+#              workflow, build, revert
+#
+# Merge commits, revert auto-commits, fixup!, and squash! commits are skipped.
+#
+# This hook is installed via `git config core.hooksPath scripts/hooks` in
+# copilot-setup-steps.yml so it applies to all git commits in Copilot agent
+# sessions.
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(head -n1 "$COMMIT_MSG_FILE")
+
+# Skip auto-generated commit messages that don't follow conventional format
+if [[ "$COMMIT_MSG" =~ ^(Merge |Revert |fixup!|squash!|Initial commit) ]]; then
+  exit 0
+fi
+
+# Skip empty messages (git will reject them on its own)
+if [[ -z "${COMMIT_MSG// /}" ]]; then
+  exit 0
+fi
+
+VALID_TYPES="feat|fix|docs|ci|chore|refactor|style|test|perf|workflow|build|revert"
+PATTERN="^($VALID_TYPES)(\([^)]+\))?: .+"
+
+if ! echo "$COMMIT_MSG" | grep -Eq "$PATTERN"; then
+  echo "" >&2
+  echo "❌ Commit message does not follow Conventional Commits format." >&2
+  echo "" >&2
+  echo "  Expected:  type(optional-scope): description" >&2
+  echo "  Valid types: feat, fix, docs, ci, chore, refactor, style, test, perf, workflow, build, revert" >&2
+  echo "" >&2
+  echo "  Examples:" >&2
+  echo "    feat: add new feature" >&2
+  echo "    fix(cli): resolve argument parsing issue" >&2
+  echo "    docs: update README" >&2
+  echo "    workflow: improve agent handoff instructions" >&2
+  echo "" >&2
+  echo "  Your message: $COMMIT_MSG" >&2
+  echo "" >&2
+  exit 1
+fi
+
+exit 0

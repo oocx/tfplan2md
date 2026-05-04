@@ -367,7 +367,7 @@ jobs:
             -w /work \
             -e RID="${{ matrix.rid }}" \
             -e PLATFORM="${{ matrix.platform }}" \
-            mcr.microsoft.com/dotnet/sdk:10.0-alpine@sha256:828a5235b7df373cc96b5ca74a4823a19f9e1fea654abf01e1cb1dd9c767b718 \
+            mcr.microsoft.com/dotnet/sdk:10.0-alpine@sha256:0191ff386e93923edf795d363ea0ae0669ce467ada4010b370644b670fa495c1 \
             sh -c 'apk add --no-cache clang build-base zlib-dev linux-headers && dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r "$RID" --self-contained true -p:PublishAot=true -o "/work/artifacts/$PLATFORM"'
 
       - name: Fix artifact ownership (musl builds)
@@ -452,7 +452,7 @@ jobs:
             docker run --rm \
               --platform ${{ matrix.docker_platform }} \
               -v "$(pwd)/artifacts/${{ matrix.platform }}:/musl_binary" \
-              mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine@sha256:06c12910f2a94dfb35e70d6e5cc30f707ae54d91755979ae6cd5a7d004a27dfe \
+              mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine@sha256:4f08c162590324de60f31937f5b5fa9f2b5eddaa4f0aaec3c872f855bf16c36c \
               /musl_binary/${{ matrix.binary_name }} --help > /dev/null
           else
             artifacts/${{ matrix.platform }}/${{ matrix.binary_name }} --help > /dev/null

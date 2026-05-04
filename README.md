@@ -101,8 +101,6 @@ The Docker image is an AOT-compiled native binary built from scratch for optimal
 
 ### Option 3: Pre-built Binaries
 
-**Available starting with the next release**
-
 Download pre-built binaries for your platform from [GitHub Releases](https://github.com/oocx/tfplan2md/releases):
 
 #### Available Platforms
@@ -111,6 +109,8 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 |----------|-------------|---------|-------|
 | **Linux** | x64 | `tfplan2md_VERSION_linux-x64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
 | **Linux** | ARM64 | `tfplan2md_VERSION_linux-arm64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
+| **Linux (musl)** | x64 | `tfplan2md_VERSION_linux-musl-x64.tar.gz` | Alpine Linux and other musl-based distributions |
+| **Linux (musl)** | ARM64 | `tfplan2md_VERSION_linux-musl-arm64.tar.gz` | Alpine Linux ARM64 and other musl-based distributions |
 | **Windows** | x64 | `tfplan2md_VERSION_windows-x64.zip` | Windows 10+ (x64) |
 | **macOS** | Apple Silicon | `tfplan2md_VERSION_macos-arm64.tar.gz` | macOS 11+ (M1/M2/M3) |
 
@@ -119,7 +119,7 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 1. **Download the binary for your platform:**
    ```bash
    VERSION="1.x.x"  # Replace with desired version
-   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, windows-x64, macos-arm64
+   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, linux-musl-x64, linux-musl-arm64, windows-x64, macos-arm64
    
    # Linux/macOS (tar.gz)
    wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_${PLATFORM}.tar.gz
@@ -165,7 +165,7 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
   - Debian 13 (Trixie) or newer
   - RHEL 10 or newer
   - Other glibc-based distributions with glibc 2.39+
-- **Note:** For Alpine Linux or musl-based systems, use the Docker image
+- **Note:** For Alpine Linux or other musl-based systems, use the `linux-musl-x64` or `linux-musl-arm64` binary or the Docker image
 
 **Windows:**
 - Windows 10 version 1607 or newer (x64)

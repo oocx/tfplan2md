@@ -2,27 +2,30 @@
 
 ## Status
 
-Accepted (Phase 1: Linux x64 implemented)
+Accepted (All phases implemented)
 
 ## Implementation Status
 
-**Phase 1 (Completed):** Linux x64 binary distribution
-- Implemented in release workflow
-- Available via GitHub Releases starting with the next version
-- Archive naming: `tfplan2md_<version>_linux_x64.tar.gz`
-- Includes SHA256SUMS for checksum verification
-- Self-contained Native AOT binary (~5MB compressed)
+**All Phases Completed.**
 
-**Phase 2 (Planned):** Additional platforms
-- linux-arm64 (glibc) - ARM-based cloud instances
-- darwin-arm64 - macOS Apple Silicon
-- darwin-x64 - macOS Intel
-- win-x64 - Windows 10/11/Server
+All six platforms are built and published as release assets on every GitHub Release:
 
-**Phase 3 (Future):** Complete coverage
-- linux-musl-x64 - Alpine standalone
-- linux-musl-arm64 - ARM Alpine
-- win-arm64 - Windows ARM
+| Platform | Archive | Notes |
+|----------|---------|-------|
+| linux-x64 | `tfplan2md_<version>_linux-x64.tar.gz` | Ubuntu 24.04+, glibc 2.39 |
+| linux-arm64 | `tfplan2md_<version>_linux-arm64.tar.gz` | Ubuntu 24.04+ ARM64, glibc 2.39 |
+| linux-musl-x64 | `tfplan2md_<version>_linux-musl-x64.tar.gz` | Alpine Linux x64 (musl) |
+| linux-musl-arm64 | `tfplan2md_<version>_linux-musl-arm64.tar.gz` | Alpine Linux ARM64 (musl) |
+| macos-arm64 | `tfplan2md_<version>_macos-arm64.tar.gz` | macOS 11+ Apple Silicon |
+| windows-x64 | `tfplan2md_<version>_windows-x64.zip` | Windows 10+ x64 |
+
+A `SHA256SUMS` file is also included for checksum verification.
+
+> **Note:** Releases v1.42.1 and v1.43.0 are affected by a regression (fix #123) where
+> AMD64-only Docker image digest pins caused the `linux-arm64` and `linux-musl-arm64`
+> builds to fail. The fix removes the container override for the `linux-arm64` job and
+> adds `--platform linux/arm64` to the musl Docker build steps. Releases from v1.44.0
+> onward include all six platform binaries.
 
 ## Context
 

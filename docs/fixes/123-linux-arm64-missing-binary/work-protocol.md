@@ -59,3 +59,51 @@ None. The analysis document was thorough and the fixes were straightforward.
 ### Status
 
 Done. Ready for Code Reviewer.
+
+---
+
+## Technical Writer Agent Log
+
+**Date:** 2025-07-11
+**Branch:** fix/123-linux-arm64-missing-binary (copilot/fix-linux-arm64-binary-issue)
+
+### Summary
+
+Updated documentation to reflect the linux-arm64 and linux-musl-arm64 build fix and to
+accurately document all six supported release platforms.
+
+### Changes Made
+
+**File: `README.md`**
+- Removed stale "Available starting with the next release" notice (these binaries have been
+  available since v1.42.0; the notice was never removed after the initial rollout).
+- Added `linux-musl-x64` and `linux-musl-arm64` to the Available Platforms table (they were
+  being built by the release workflow but not listed in the docs).
+- Updated the PLATFORM example comment to include all six choices.
+- Updated the Linux requirements note: now correctly states that Alpine/musl users can use
+  the dedicated `linux-musl-x64` or `linux-musl-arm64` binary instead of only Docker.
+
+**File: `docs/adr-008-multi-platform-binary-distribution.md`**
+- Updated Status from "Accepted (Phase 1: Linux x64 implemented)" to "Accepted (All phases
+  implemented)".
+- Replaced the Phase 1/2/3 implementation status table with a definitive table showing all
+  six platforms that are built and released.
+- Added a note about the v1.42.1/v1.43.0 regression and the fix.
+
+**File: `CONTRIBUTING.md`**
+- Updated Release Process step 4 to mention that the release workflow also builds pre-built
+  binaries for all six platforms and uploads them with a SHA256SUMS checksum file.
+
+### Artifacts Produced
+
+- `README.md` — updated
+- `docs/adr-008-multi-platform-binary-distribution.md` — updated
+- `CONTRIBUTING.md` — updated
+
+### Problems Encountered
+
+None.
+
+### Status
+
+Done. Ready for Code Reviewer.

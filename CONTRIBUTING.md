@@ -557,6 +557,7 @@ Releases are automated via GitHub Actions:
    - If found, uses those notes for the GitHub Release (blog-post style, user-facing)
    - Otherwise, falls back to extracting notes from `CHANGELOG.md`
    - Builds and pushes the Docker image to Docker Hub
+   - Builds pre-built binaries for all six supported platforms (linux-x64, linux-arm64, linux-musl-x64, linux-musl-arm64, macos-arm64, windows-x64) and uploads them as release assets alongside a `SHA256SUMS` checksum file
 
 ### Release Notes
 

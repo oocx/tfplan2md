@@ -26,3 +26,25 @@ The Terraform `import` and `moved` block rendering was validated on both GitHub 
 
 ## Evidence
 Artifact used: `artifacts/refactoring-demo.md`
+
+---
+
+## Focused Bug-Fix UAT Attempt (Issue 123)
+
+**Date:** 2026-05-12  
+**Tester:** Copilot (UAT Tester Agent)  
+**Result:** ⛔ BLOCKED
+
+### Scope
+- Pending-import false-positive scenario (`importing.id + no-op` should remain `✅ Ready`)
+- Related moved behavior (`no-op` moved resources may still show already-moved warning)
+
+### Blocker
+- Required UAT plan artifact is missing: `docs/features/038-terraform-import-moved-blocks/uat-plan.md`.
+- Per UAT workflow guardrail, when `uat-test-plan.md` exists, `uat-plan.md` must exist before running `scripts/uat-run.sh`.
+
+### Additional Validation Notes
+- Existing artifact `artifacts/refactoring-demo.md` still contains outdated pending-import warning text (`⚠️ already imported`), so it is not suitable for this focused UAT pass.
+
+### Next Action
+- Developer must generate/update the feature UAT artifact (`uat-plan.md`) with the fixed pending-import behavior, then UAT can be executed.

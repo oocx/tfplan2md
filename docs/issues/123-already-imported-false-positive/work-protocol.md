@@ -45,3 +45,10 @@
 - **Artifacts Produced:** `docs/issues/123-already-imported-false-positive/code-review.md`, `docs/issues/123-already-imported-false-positive/work-protocol.md`
 - **Problems Encountered:** Docker build failed in this environment due Alpine registry TLS/package index fetch issues during `apk add`, so container verification remains environment-dependent.
 - **Next Agent:** UAT Tester
+
+### UAT Tester
+- **Date:** 2026-05-12
+- **Summary:** Started focused UAT for the pending-import false-positive fix using feature `038` guidance, but UAT execution is blocked before `scripts/uat-run.sh` because the required feature UAT artifact file is missing.
+- **Artifacts Produced:** `docs/features/038-terraform-import-moved-blocks/uat-report.md`, `docs/issues/123-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** `docs/features/038-terraform-import-moved-blocks/uat-test-plan.md` exists, but required `docs/features/038-terraform-import-moved-blocks/uat-plan.md` is missing. Existing `artifacts/refactoring-demo.md` also still shows outdated pending-import warning text, so it cannot be used as the focused fix artifact.
+- **Next Agent:** Developer

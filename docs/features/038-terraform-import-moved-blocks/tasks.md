@@ -51,7 +51,7 @@ Increase the Scriban template loop limit to 10000 to improve reliability for lar
 Update the report models to store refactoring metadata and implement logic to populate it.
 
 **Acceptance Criteria:**
-- [x] `ResourceChangeModel` has `ImportId`, `MovedFromAddress`, and `IsRefactoringAlreadyApplied`.
+- [x] `ResourceChangeModel` has `ImportId`, `MovedFromAddress`, `IsImportAlreadyApplied`, and `IsMoveAlreadyApplied`.
 - [x] `ReportModel` has a `RefactoringOperations` list.
 - [x] `ReportModelBuilder` correctly identifies refactoring resources.
 - [x] `no-op` resources are selectively RETAINED if they contain refactoring metadata.
@@ -72,7 +72,7 @@ Update `ResourceSummaryHtmlBuilder` to prepend refactoring icons and labels to t
 **Acceptance Criteria:**
 - [x] Summary HTML includes 📥 *Imported* for imports.
 - [x] Summary HTML includes 🔀 *Moved from* `address` for moves.
-- [x] Unnecessary refactorings include (⚠️ *already imported/moved*) warning.
+- [x] Already-applied warnings use operation-specific wording, while pending imports remain warning-free.
 - [x] Non-breaking spaces used for icon+label (TC-08).
 - [x] Formatting uses `<code>` and `<i>` per style guide.
 - [x] Unit tests (TC-04, TC-05) verify output.

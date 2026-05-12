@@ -30,7 +30,7 @@ Report rendering constraints:
 Reviewers need refactoring visibility without hunting through Terraform configuration:
 1. Inline context: each affected resource’s `<summary>` line should indicate it is imported or moved.
 2. Report-level overview: a consolidated Refactoring Summary table (imports and moves) should appear near the end of the report.
-3. Hygiene warnings: identify refactoring blocks that appear to be already imported/moved (Terraform reports `actions = ["no-op"]`), and warn that the block can be removed.
+3. Hygiene warnings: identify already-applied moved blocks, while avoiding false-positive `already imported` warnings for pending imports that Terraform may also report as `actions = ["no-op"]`.
 
 Non-goals (per spec):
 - No generation/recommendations of refactoring blocks.
@@ -83,7 +83,8 @@ Introduce refactoring metadata at two levels:
 Extend `ResourceChangeModel` with minimal, provider-agnostic fields:
 - `ImportId` (nullable string)
 - `MovedFromAddress` (nullable string)
-- `IsRefactoringAlreadyApplied` (bool; true when the resource is import/move *and* action is `no-op`)
+- `IsImportAlreadyApplied` (bool)
+- `IsMoveAlreadyApplied` (bool)
 
 This keeps the resource template rendering simple and supports the requirement:
 > “Resource summary lines without import/moved annotations render exactly as before.”
@@ -106,8 +107,9 @@ Rationale:
 
 ### 3) Unnecessary block detection
 
-Classification rule (per spec):
-- If a resource has import/move metadata and `actions = ["no-op"]`, then mark it as **Already imported/moved**.
+Classification rule (current behavior):
+- If a resource has move metadata and `actions = ["no-op"]`, mark it as **Already moved**.
+- If a resource has import metadata, keep it visible as an import, but do **not** infer **Already imported** from `actions = ["no-op"]` alone.
 
 Important interaction with current behavior:
 - The current default report filters out `no-op` resources from `ReportModel.Changes` to avoid template iteration limits.
@@ -169,7 +171,7 @@ Add/extend tests to cover:
   - `change.importing.id` is parsed when present and null otherwise
 - Model building:
   - Refactoring operations list is generated and sorted correctly
-  - `IsRefactoringAlreadyApplied` is true only for import/move with `no-op`
+- `IsImportAlreadyApplied` and `IsMoveAlreadyApplied` are tracked independently so import and move warnings can diverge safely
   - No-op resources remain excluded unless they carry refactoring metadata
 - Rendering (snapshot tests):
   - Default report unchanged when no import/move exists

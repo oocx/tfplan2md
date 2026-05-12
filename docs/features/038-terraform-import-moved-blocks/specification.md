@@ -2,13 +2,13 @@
 
 ## Overview
 
-Add visibility for Terraform `import` and `moved` blocks in generated reports. These blocks are used for refactoring infrastructure code without destroying and recreating resources. Users need to see which resources are being imported from existing infrastructure or moved within their configuration, and be warned when import/moved blocks are no longer necessary.
+Add visibility for Terraform `import` and `moved` blocks in generated reports. These blocks are used for refactoring infrastructure code without destroying and recreating resources. Users need to see which resources are being imported from existing infrastructure or moved within their configuration, and the report must avoid false-positive "already imported" warnings for pending imports.
 
 ## User Goals
 
 - Quickly identify which resources are being imported from existing infrastructure or moved to different addresses
 - Understand the scope of refactoring operations in a plan at a glance
-- Be warned when import/moved blocks remain in the configuration after they've been applied (unnecessary blocks)
+- Be warned when moved blocks remain in the configuration after they've been applied, without incorrectly marking pending imports as already imported
 - See import/moved annotations inline with each affected resource for context
 
 ## Scope
@@ -19,15 +19,15 @@ Add visibility for Terraform `import` and `moved` blocks in generated reports. T
    - Display a new "Refactoring Summary" section at the end of the report (after all resource changes)
    - Only appears when the plan contains import or moved operations
    - Lists all imported and moved resources
-   - Shows warnings for unnecessary import/moved blocks
+   - Shows warnings for already-applied moves and keeps pending imports marked as ready
 
 2. **Resource-Level Annotations**
    - Add "imported" or "moved from `<previous_address>`" annotations to the summary line of each affected resource
    - Annotations appear in the `<summary>` element alongside other resource context
 
 3. **Unnecessary Block Detection**
-   - Detect import/moved blocks that reference resources with no-op actions (already imported/moved)
-   - Display warnings in the Refactoring Summary table
+   - Detect already-applied moved blocks from plan metadata
+   - Keep pending imports with `importing.id` visible without inferring `already imported` from `no-op` alone
 
 ### Out of Scope
 
@@ -50,7 +50,7 @@ When import or moved operations exist, a new section appears at the end of the r
 |-----------|----------|---------|--------|
 | 📥 Import | azurerm_resource_group `existing-rg` | ID: `i-1234567890abcdef0` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `hub` | From: `module.old.azurerm_virtual_network.hub` | ✅ Ready |
-| 📥 Import | azurerm_storage_account `legacy-storage` | ID: `/subscriptions/.../storageAccounts/old` | ⚠️ Already imported |
+| 🔀 Move | azurerm_subnet `legacy-subnet` | From: `module.old.azurerm_subnet.legacy-subnet` | ⚠️ Already moved |
 ```
 
 **Column Definitions:**
@@ -59,7 +59,7 @@ When import or moved operations exist, a new section appears at the end of the r
 - **Details**: Import ID or previous address (code-formatted)
 - **Status**: 
   - ✅ Ready - will be applied in this plan
-  - ⚠️ Already imported/moved - no-op, block can be removed
+  - ⚠️ Already moved - the move has already been applied and the block can be removed
 
 ### 2. Resource-Level Annotations
 
@@ -75,9 +75,9 @@ Each resource's summary line includes import/moved context:
 <summary>➕ azurerm_virtual_network <b><code>hub</code></b> — 🔀 <i>Moved from</i> <code>module.old.azurerm_virtual_network.hub</code> | <code>🆔 vnet-hub</code> <code>🌍 eastus</code></summary>
 ```
 
-**Unnecessary Import (no-op):**
+**Already-applied Move (no-op):**
 ```html
-<summary>⚪ azurerm_storage_account <b><code>legacy-storage</code></b> — 📥 <i>Imported</i> (⚠️ <i>already imported</i>)</summary>
+<summary>⚪ azurerm_subnet <b><code>legacy-subnet</code></b> — 🔀 <i>Moved from</i> <code>module.old.azurerm_subnet.legacy-subnet</code> (⚠️ <i>already moved</i>)</summary>
 ```
 
 ### 3. Refactoring Summary Section Behavior
@@ -97,7 +97,7 @@ Each resource's summary line includes import/moved context:
 - [ ] Each moved resource shows "🔀 Moved from `<previous_address>`" in its summary line
 - [ ] Import operations show the import ID in the Refactoring Summary
 - [ ] Move operations show the previous address in the Refactoring Summary
-- [ ] Unnecessary import/moved blocks (no-op resources) show warning status
+- [ ] Already-applied moved resources show warning status, while pending imports remain `✅ Ready`
 - [ ] Warnings clearly indicate blocks can be removed from configuration
 - [ ] All code values (resource names, IDs, addresses) follow report style guide formatting
 - [ ] Icons use non-breaking spaces to prevent line wrapping
@@ -119,6 +119,6 @@ Based on Terraform plan JSON format (format_version 1.0+):
 - Check `resource_changes[].previous_address` field
 - Contains previous resource address string for moved resources
 
-**Unnecessary block detection:**
-- Import/moved blocks with `resource_changes[].change.actions = ["no-op"]`
-- These indicate the import/move was already imported/moved in a previous run
+**Already-applied detection:**
+- Moves use `resource_changes[].previous_address` together with `resource_changes[].change.actions = ["no-op"]`
+- Imports use `resource_changes[].change.importing.id` for visibility, but `["no-op"]` alone is not treated as proof that the import was already applied

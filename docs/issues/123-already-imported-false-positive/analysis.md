@@ -97,3 +97,11 @@ An additional design constraint is that the model uses one shared flag (`IsRefac
 
 - Existing documentation in `docs/issues/063-already-imported-false-positive/analysis.md` describes an older root cause (`read` actions falling through to `no-op`). That no longer matches the current code because `ResourceChangeStage` already defines and handles `TerraformActions.Read`.
 - `scripts/next-issue-number.sh` returned `123`, but also emitted `integer expression expected` while computing the next number. The numbering result appears usable, but the script warning should be tracked separately if it recurs.
+
+## Resolution Status
+
+Fixed in commit `ec524808`.
+
+- Pending imports that include `change.importing.id` and `actions: ["no-op"]` now stay `✅ Ready` instead of showing `⚠️ Already imported`.
+- Already-applied state is tracked separately for imports and moves, so no-op moved resources can still render `already moved` without leaking that status to imports.
+- The intentional snapshot update in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/refactoring-comprehensive.md` is correct because it captures this user-visible status change from false-positive warning to ready import.

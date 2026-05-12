@@ -50,11 +50,11 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 **User Goal**: Identify refactoring blocks that have already been applied and can be safely removed from the configuration.
 
 **Test PR Context**:
-- **GitHub & Azure DevOps**: Verify the warning status (⚠️ Already imported/moved) in the summary table and the inline warning in resource summary lines.
+- **GitHub & Azure DevOps**: Verify that already-applied moves show warning status (⚠️ Already moved) and that pending imports remain `✅ Ready` without an inline warning.
 
 **Expected Output**:
-- Refactoring Summary table shows ⚠️ status for no-op refactoring resources.
-- Resource summary line shows 📥 *Imported* (⚠️ *already imported*) for no-op imports.
+- Refactoring Summary table shows ⚠️ status for already-applied moved resources.
+- Resource summary line keeps `📥 *Imported*` without `(⚠️ *already imported*)` for pending no-op imports.
 
 **Success Criteria**:
 - [ ] Warnings are clearly visible.
@@ -169,18 +169,18 @@ The output HTML contains `🔀&nbsp;<i>Moved from</i> <code>old.address</code>`.
 **Type:** Unit / Integration
 
 **Description:**
-Verify that no-op resources are included in the report if they have refactoring metadata, and they are marked as "Already imported" (imports) or "Already moved" (moves).
+Verify that no-op resources with refactoring metadata are retained in the report, while pending imports are not mislabeled as already imported.
 
 **Preconditions:**
-- Plan JSON where a resource has `importing` metadata BUT `actions = ["no-op"]`.
+- Plan JSON where a resource has `importing` metadata and `actions = ["no-op"]`.
 
 **Test Steps:**
 1. Build the `ReportModel`.
 2. Verify the resource is present in `ReportModel.Changes`.
-3. Verify `ResourceChangeModel.IsRefactoringAlreadyApplied` is true.
+3. Verify `ResourceChangeModel.IsImportAlreadyApplied` is false.
 
 **Expected Result:**
-The resource is not filtered out and is correctly classified as already imported/moved.
+The resource is not filtered out and remains classified as a ready import.
 
 **Test Data:**
 `no-op-import.json`
@@ -244,8 +244,8 @@ Zero diff.
 List any new test data files needed:
 - `import-resource.json` - Plan with a simple resource import.
 - `moved-resource.json` - Plan with a resource move.
-- `no-op-import.json` - Plan with an import that is already imported (no-op).
-- `refactoring-comprehensive.json` - Plan with multiple imports and moves, including ready and already-applied statuses.
+- `no-op-import.json` - Plan with a pending import rendered as `✅ Ready` even when Terraform reports `["no-op"]`.
+- `refactoring-comprehensive.json` - Plan with multiple imports and moves, including the pending-import regression coverage updated by issue 123.
 
 ## Edge Cases
 

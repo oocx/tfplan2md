@@ -6,7 +6,7 @@ If your plan contains Terraform `import` or `moved` blocks, tfplan2md now makes 
 
 - **Refactoring Summary** section that lists import/move operations and their status in one place.
 - **Inline annotations** on affected resources (e.g., imported / moved-from) so you can spot refactors while reviewing changes.
-- **Warnings for no-op blocks** (e.g., an import block for a resource that is already imported), to help keep configuration clean.
+- **Warnings only when a refactoring is clearly already applied** — no-op moved resources can be flagged as already moved, while pending imports stay `✅ Ready` instead of being mislabeled.
 
 No changes to how you run tfplan2md.
 

@@ -23,9 +23,9 @@ Verify that Terraform `import` and `moved` block metadata renders correctly and 
 **Verify:**
 - **Table Presence:** Section `## Refactoring Summary` appears only if imports/moves exist.
 - **Sorting:** Imports must appear before Moves. Within each group, resources should be sorted alphabetically.
-- **Status Icons:** 
-  - ✅ **Ready** status for active changes.
-  - ⚠️ **Already imported/moved** status for no-op changes.
+ - **Status Icons:** 
+   - ✅ **Ready** status for active changes, including pending imports that Terraform has not yet applied.
+   - ⚠️ **Already moved** status only for no-op moves that Terraform clearly indicates were already applied.
 - **Formatting:** Resource addresses, import IDs, and previous addresses must be code-formatted (using backticks).
 
 ### 2. Resource-Level Annotations
@@ -36,7 +36,7 @@ Verify that Terraform `import` and `moved` block metadata renders correctly and 
 - **Moved Resource:** Should show `🔀 Moved from <old-address>` (e.g., `azurerm_virtual_network.hub`).
 - **Already-applied status:** Should keep pending no-op imports as `📥 Imported` without a warning, while no-op moves may show `🔀 Moved from … (⚠️ already moved)` when Terraform clearly indicates the move was already applied.
 
-  Note: Wording should be consistent with the refactoring summary table.
+  Note: Wording should be consistent with the refactoring summary table: pending imports remain `Ready`, while only already-applied moves use the warning wording.
 
 **Expected Outcome:**
 - Annotations are placed after the resource type/name and before other context (like location or ID).

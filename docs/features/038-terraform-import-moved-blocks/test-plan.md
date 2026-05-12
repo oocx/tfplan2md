@@ -36,7 +36,7 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 **Expected Output**:
 - "Refactoring Summary" section exists.
 - Table shows 📥 Import and 🔀 Move operations with ✅ Ready status.
-- Summary lines for affected resources include 📥 *Imported* or 🔀 *Moved from*.
+- Summary lines for affected resources include 📥 <i>Imported</i> or 🔀 <i>Moved from</i>.
 
 **Success Criteria**:
 - [ ] Icons and labels are properly aligned.
@@ -54,7 +54,7 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 
 **Expected Output**:
 - Refactoring Summary table shows ⚠️ status for already-applied moved resources.
-- Resource summary line keeps `📥 *Imported*` without `(⚠️ *already imported*)` for pending no-op imports.
+- Resource summary line keeps `📥 <i>Imported</i>` without `(⚠️ <i>already imported</i>)` for pending no-op imports.
 
 **Success Criteria**:
 - [ ] Warnings are clearly visible.

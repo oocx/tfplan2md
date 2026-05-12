@@ -52,3 +52,17 @@
 - **Artifacts Produced:** `docs/features/038-terraform-import-moved-blocks/uat-report.md`, `docs/issues/123-already-imported-false-positive/work-protocol.md`
 - **Problems Encountered:** `docs/features/038-terraform-import-moved-blocks/uat-test-plan.md` exists, but required `docs/features/038-terraform-import-moved-blocks/uat-plan.md` is missing. Existing `artifacts/refactoring-demo.md` also still shows outdated pending-import warning text, so it cannot be used as the focused fix artifact.
 - **Next Agent:** Developer
+
+### UAT Tester (Re-run)
+- **Date:** 2026-05-12
+- **Summary:** Re-ran focused UAT after unblock commit `76d18d4e` and verified the pending-import false-positive is fixed: imports render as `✅ Ready` and no false “already imported” warning appears.
+- **Artifacts Produced:** `docs/features/038-terraform-import-moved-blocks/uat-report.md`, `docs/features/038-terraform-import-moved-blocks/work-protocol.md`, `docs/issues/123-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** None.
+- **Next Agent:** Release Manager
+
+### Release Manager
+- **Date:** 2026-05-12
+- **Summary:** Completed release-stage verification for the bug-fix workflow: confirmed code review approval, confirmed focused UAT re-run pass with recorded GitHub/Azure DevOps links, verified clean working tree, prepared bug-fix release notes, and generated release screenshot evidence for the visual output change.
+- **Artifacts Produced:** `docs/issues/123-already-imported-false-positive/release-notes.md`, `docs/issues/123-already-imported-false-positive/issue-123-import-ready.png`, `docs/issues/123-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** GitHub MCP pull request lookup did not return an open PR for branch `copilot/fix-tfplan2md-import-blocks` in this environment, so PR validation/check-run verification must be confirmed from the active Copilot PR context by Maintainer.
+- **Next Agent:** Retrospective

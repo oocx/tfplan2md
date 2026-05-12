@@ -32,3 +32,9 @@
 - **Artifacts Produced:** `docs/issues/123-already-imported-false-positive/code-review.md`, `docs/issues/123-already-imported-false-positive/work-protocol.md`
 - **Problems Encountered:** Docker/container verification could not be completed in this environment because `docker build -f src/Dockerfile .` failed with a `403 Forbidden` response while resolving the pinned MCR base-image digest.
 - **Next Agent:** Developer
+
+### Developer (Rework)
+- **Date:** 2026-05-12
+- **Summary:** Completed the remaining blocker-only rework by recording this completion entry and adding a commit message with the required `SNAPSHOT_UPDATE_OK` rationale for the intentional snapshot baseline update (`⚠️ Already imported` → `✅ Ready` for pending `importing.id + no-op` resources).
+- **Artifacts Produced:** `docs/issues/123-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** None.

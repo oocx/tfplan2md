@@ -48,3 +48,30 @@ Artifact used: `artifacts/refactoring-demo.md`
 
 ### Next Action
 - Developer must generate/update the feature UAT artifact (`uat-plan.md`) with the fixed pending-import behavior, then UAT can be executed.
+
+---
+
+## Focused Bug-Fix UAT Re-run (Issue 123, Unblocked)
+
+**Date:** 2026-05-12  
+**Tester:** Copilot (UAT Tester Agent)  
+**Result:** ✅ PASS
+
+### Scope
+- Re-validate import/move rendering after unblock commit `76d18d4e`
+- Confirm pending imports render as `✅ Ready` (no false `already imported` warning)
+
+### Platform Results
+
+| Platform | Status | PR Link |
+| -------- | ------ | ------- |
+| GitHub | ✅ PASS | https://github.com/oocx/tfplan2md-uat/pull/124 |
+| Azure DevOps | ✅ PASS | https://dev.azure.com/oocx/test/_git/test/pullrequest/111 |
+
+### Validation Details
+- `docs/features/038-terraform-import-moved-blocks/uat-plan.md` exists and was used as the focused feature artifact.
+- Refactoring Summary shows Imports before Moves with `✅ Ready` for imports/moves in this focused case.
+- Resource-level annotations render expected import/move markers (`📥 Imported`, `🔀 Moved from`) with code-formatted details.
+
+### Notes
+- UAT run succeeded via `scripts/uat-run.sh --create-only` and posted both focused feature and regression artifacts.

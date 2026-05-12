@@ -62,7 +62,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
     }
 
     [Test]
-    public void BuildSummaryHtml_AlreadyApplied_AddsWarningSuffix()
+    public void BuildSummaryHtml_AlreadyImported_AddsWarningSuffix()
     {
         // Arrange
         var model = new ResourceChangeModel
@@ -77,7 +77,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
             AttributeChanges = [],
             AfterJson = new Dictionary<string, object?>(),
             ImportId = "legacy-import",
-            IsRefactoringAlreadyApplied = true
+            IsImportAlreadyApplied = true
         };
 
         // Act
@@ -85,6 +85,29 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
 
         // Assert
         summary.Should().Contain($"(⚠️{NonBreakingSpace}*already imported*)");
+    }
+
+    [Test]
+    public void BuildSummaryHtml_PendingImport_DoesNotAddAlreadyImportedSuffix()
+    {
+        var model = new ResourceChangeModel
+        {
+            Address = "azurerm_storage_account.legacy",
+            ModuleAddress = string.Empty,
+            Type = "azurerm_storage_account",
+            Name = "legacy",
+            ProviderName = "provider",
+            Action = "no-op",
+            ActionSymbol = ActionIcons.NoOp,
+            AttributeChanges = [],
+            AfterJson = new Dictionary<string, object?>(),
+            ImportId = "legacy-import"
+        };
+
+        var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
+
+        summary.Should().Contain($"📥{NonBreakingSpace}*Imported*")
+            .And.NotContain($"⚠️{NonBreakingSpace}*already imported*");
     }
 
     [Test]
@@ -104,7 +127,8 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
             AfterJson = new Dictionary<string, object?>(),
             ImportId = "import-id",
             MovedFromAddress = "module.old.azurerm_virtual_network.hub",
-            IsRefactoringAlreadyApplied = true
+            IsImportAlreadyApplied = true,
+            IsMoveAlreadyApplied = true
         };
 
         // Act

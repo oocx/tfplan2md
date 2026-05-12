@@ -29,7 +29,7 @@ public class ReportModelBuilderRefactoringOperationTests
     }
 
     [Test]
-    public void Build_NoOpImport_IncludesChangeAndMarksAlreadyApplied()
+    public void Build_NoOpImport_IncludesChangeAndMarksAsReady()
     {
         var plan = _parser.Parse(File.ReadAllText("TestData/no-op-import.json"));
 
@@ -38,11 +38,11 @@ public class ReportModelBuilderRefactoringOperationTests
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.NoOp);
         change.ImportId.Should().NotBeNull();
-        change.IsRefactoringAlreadyApplied.Should().BeTrue();
+        change.IsImportAlreadyApplied.Should().BeFalse();
 
         var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
         operation.Operation.Should().Be("Import");
-        operation.Status.Should().Be("AlreadyApplied");
+        operation.Status.Should().Be("Ready");
     }
 
     [Test]
@@ -95,7 +95,7 @@ public class ReportModelBuilderRefactoringOperationTests
             .Select(operation => $"{operation.Operation}:{operation.Status}:{operation.Address}")
             .Should()
             .Equal(
-                "Import:AlreadyApplied:type.import.noop",
+                "Import:Ready:type.import.noop",
                 "Import:Ready:type.import.ready",
                 "Move:AlreadyApplied:type.move.noop",
                 "Move:Ready:type.move.ready");
@@ -111,7 +111,7 @@ public class ReportModelBuilderRefactoringOperationTests
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.Read);
         change.ImportId.Should().NotBeNull();
-        change.IsRefactoringAlreadyApplied.Should().BeFalse();
+        change.IsImportAlreadyApplied.Should().BeFalse();
 
         var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
         operation.Operation.Should().Be("Import");
@@ -139,7 +139,7 @@ public class ReportModelBuilderRefactoringOperationTests
 
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.Read);
-        change.IsRefactoringAlreadyApplied.Should().BeFalse();
+        change.IsImportAlreadyApplied.Should().BeFalse();
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class ReportModelBuilderRefactoringOperationTests
 
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.Create);
-        change.IsRefactoringAlreadyApplied.Should().BeFalse();
+        change.IsImportAlreadyApplied.Should().BeFalse();
         model.RefactoringOperations.Should().ContainSingle().Which.Status.Should().Be("Ready");
     }
 
@@ -188,12 +188,12 @@ public class ReportModelBuilderRefactoringOperationTests
 
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.Update);
-        change.IsRefactoringAlreadyApplied.Should().BeFalse();
+        change.IsImportAlreadyApplied.Should().BeFalse();
         model.RefactoringOperations.Should().ContainSingle().Which.Status.Should().Be("Ready");
     }
 
     [Test]
-    public void Build_ImportWithNoOpAction_MarksAsAlreadyApplied()
+    public void Build_ImportWithNoOpAction_MarksAsReady()
     {
         var plan = new TerraformPlan(
             "1.0",
@@ -213,8 +213,8 @@ public class ReportModelBuilderRefactoringOperationTests
 
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.NoOp);
-        change.IsRefactoringAlreadyApplied.Should().BeTrue();
-        model.RefactoringOperations.Should().ContainSingle().Which.Status.Should().Be("AlreadyApplied");
+        change.IsImportAlreadyApplied.Should().BeFalse();
+        model.RefactoringOperations.Should().ContainSingle().Which.Status.Should().Be("Ready");
     }
 
     [Test]
@@ -239,7 +239,7 @@ public class ReportModelBuilderRefactoringOperationTests
 
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(TerraformActions.Read);
-        change.IsRefactoringAlreadyApplied.Should().BeFalse();
+        change.IsMoveAlreadyApplied.Should().BeFalse();
 
         var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
         operation.Operation.Should().Be("Move");

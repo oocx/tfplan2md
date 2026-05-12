@@ -115,10 +115,18 @@ public class ResourceChangeModel
     public string? MovedFromAddress { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether the refactoring operation has already been applied.
+    /// Gets a value indicating whether the import operation has already been applied.
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// Related issue: docs/issues/123-already-imported-false-positive/analysis.md.
     /// </summary>
-    public bool IsRefactoringAlreadyApplied { get; init; }
+    public bool IsImportAlreadyApplied { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the move operation has already been applied.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// Related issue: docs/issues/123-already-imported-false-positive/analysis.md.
+    /// </summary>
+    public bool IsMoveAlreadyApplied { get; init; }
 
     /// <summary>
     /// Gets the sensitivity map for the resource state before the change.

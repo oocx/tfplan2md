@@ -32,7 +32,7 @@ _No attribute changes._
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>  azurerm_storage_account <b><code>legacy</code></b> — 📥 *Imported* (⚠️ *already imported*)</summary>
+<summary>  azurerm_storage_account <b><code>legacy</code></b> — 📥 *Imported*</summary>
 <br>
 
 _No attribute changes._
@@ -43,6 +43,6 @@ _No attribute changes._
 
 | Operation | Resource | Details | Status |
 | --------- | -------- | ------- | ------ |
-| 📥 Import | azurerm_storage_account `legacy` | ID: Storage Account `🆔 legacy` in resource group `📁 rg-legacy` of subscription `🔑 00000000-0000-0000-0000-000000000000` | ⚠️ Already imported |
 | 📥 Import | azurerm_resource_group `existing` | ID: `rg-existing` | ✅ Ready |
+| 📥 Import | azurerm_storage_account `legacy` | ID: Storage Account `🆔 legacy` in resource group `📁 rg-legacy` of subscription `🔑 00000000-0000-0000-0000-000000000000` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `hub` | From: `module.old.azurerm_virtual_network.hub` | ✅ Ready |

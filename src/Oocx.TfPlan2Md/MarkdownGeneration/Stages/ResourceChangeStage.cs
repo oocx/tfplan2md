@@ -167,7 +167,14 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         var attributeChanges = BuildAttributeChanges(resourceChange.Change, resourceChange.ProviderName, configurationReferences);
         var importId = string.IsNullOrWhiteSpace(resourceChange.Change.Importing?.Id) ? null : resourceChange.Change.Importing?.Id;
         var movedFromAddress = string.IsNullOrWhiteSpace(resourceChange.PreviousAddress) ? null : resourceChange.PreviousAddress;
-        var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null || movedFromAddress is not null);
+        // Terraform can emit importing.id together with a no-op action before apply for pending
+        // import blocks. Treat imports as ready unless the plan exposes stronger evidence that the
+        // import is unnecessary, otherwise the report overstates "already imported" warnings.
+        // Any future "already imported" detection must rely on explicit Terraform metadata that
+        // distinguishes stale import blocks from pending imports without guessing from no-op.
+        // Related issue: docs/issues/123-already-imported-false-positive/analysis.md.
+        var isImportAlreadyApplied = false;
+        var isMoveAlreadyApplied = action == NoOpAction && movedFromAddress is not null;
 
         var model = new ResourceChangeModel
         {
@@ -187,7 +194,8 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
             ReplacePaths = resourceChange.Change.ReplacePaths,
             ImportId = importId,
             MovedFromAddress = movedFromAddress,
-            IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied,
+            IsImportAlreadyApplied = isImportAlreadyApplied,
+            IsMoveAlreadyApplied = isMoveAlreadyApplied,
             HasWholeResourceUnknownAfterApply = hasWholeResourceUnknownAfterApply,
             ConfigurationReferences = configurationReferences,
             ResourceChange = resourceChange

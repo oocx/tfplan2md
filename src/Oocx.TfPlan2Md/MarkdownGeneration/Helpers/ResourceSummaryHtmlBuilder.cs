@@ -184,7 +184,11 @@ internal static class ResourceSummaryHtmlBuilder
     /// <returns>Warning suffix or empty string when not applicable.</returns>
     private static string BuildAlreadyAppliedSuffix(ResourceChangeModel model, string operation)
     {
-        if (!model.IsRefactoringAlreadyApplied)
+        var isAlreadyApplied = operation.Equals("Import", StringComparison.OrdinalIgnoreCase)
+            ? model.IsImportAlreadyApplied
+            : operation.Equals("Move", StringComparison.OrdinalIgnoreCase) && model.IsMoveAlreadyApplied;
+
+        if (!isAlreadyApplied)
         {
             return string.Empty;
         }

@@ -171,8 +171,8 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
                     ResourceType = change.Type,
                     ResourceName = resourceName,
                     Details = change.ImportId,
-                    Status = change.IsRefactoringAlreadyApplied ? AlreadyAppliedStatus : ReadyStatus,
-                    IsAlreadyApplied = change.IsRefactoringAlreadyApplied
+                    Status = change.IsImportAlreadyApplied ? AlreadyAppliedStatus : ReadyStatus,
+                    IsAlreadyApplied = change.IsImportAlreadyApplied
                 });
             }
 
@@ -185,8 +185,8 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
                     ResourceType = change.Type,
                     ResourceName = resourceName,
                     Details = change.MovedFromAddress,
-                    Status = change.IsRefactoringAlreadyApplied ? AlreadyAppliedStatus : ReadyStatus,
-                    IsAlreadyApplied = change.IsRefactoringAlreadyApplied
+                    Status = change.IsMoveAlreadyApplied ? AlreadyAppliedStatus : ReadyStatus,
+                    IsAlreadyApplied = change.IsMoveAlreadyApplied
                 });
             }
         }

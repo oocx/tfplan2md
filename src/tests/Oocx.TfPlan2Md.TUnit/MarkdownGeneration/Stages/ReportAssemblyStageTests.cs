@@ -62,22 +62,22 @@ public class ReportAssemblyStageTests
             "type.import.ready",
             string.Empty,
             importId: "id-ready",
-            isRefactoringAlreadyApplied: false);
+            isImportAlreadyApplied: false);
         var importAlreadyApplied = CreateChange(
             "type.import.applied",
             string.Empty,
             importId: "id-applied",
-            isRefactoringAlreadyApplied: true);
+            isImportAlreadyApplied: true);
         var moveReady = CreateChange(
             "type.move.ready",
             string.Empty,
             movedFromAddress: "module.old.type.move.ready",
-            isRefactoringAlreadyApplied: false);
+            isMoveAlreadyApplied: false);
         var moveAlreadyApplied = CreateChange(
             "type.move.applied",
             string.Empty,
             movedFromAddress: "module.old.type.move.applied",
-            isRefactoringAlreadyApplied: true);
+            isMoveAlreadyApplied: true);
 
         var model = stage.Build(CreateInput(
             allChanges: [moveReady, importReady, moveAlreadyApplied, importAlreadyApplied],
@@ -132,7 +132,8 @@ public class ReportAssemblyStageTests
         string moduleAddress,
         string? importId = null,
         string? movedFromAddress = null,
-        bool isRefactoringAlreadyApplied = false)
+        bool isImportAlreadyApplied = false,
+        bool isMoveAlreadyApplied = false)
     {
         return new ResourceChangeModel
         {
@@ -146,7 +147,8 @@ public class ReportAssemblyStageTests
             AttributeChanges = [],
             ImportId = importId,
             MovedFromAddress = movedFromAddress,
-            IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied
+            IsImportAlreadyApplied = isImportAlreadyApplied,
+            IsMoveAlreadyApplied = isMoveAlreadyApplied
         };
     }
 

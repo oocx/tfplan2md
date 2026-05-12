@@ -41,7 +41,7 @@ Verify that Terraform `import` and `moved` block metadata renders correctly and 
 **Expected Outcome:**
 - Annotations are placed after the resource type/name and before other context (like location or ID).
 - Icons (`📥`, `🔀`) and labels use non-breaking spaces and do not wrap.
-- Inside `<summary>`, data is wrapped in `<code>` and labels in `<i>`.
+- Inside `<summary>`, data is wrapped in `<code>` and labels use markdown emphasis (`*...*`).
 
 **Before/After Context:**
 - **Before:** Refactoring operations were invisible in the report; reviewers had to check HCL or the raw plan output to know if a resource was being imported or moved.

@@ -122,7 +122,7 @@ Use the existing precomputed summary HTML path:
 - `ResourceSummaryHtmlBuilder.BuildSummaryHtml(...)` should prepend a refactoring annotation when present.
 
 Formatting rules (from spec + style guide):
-- Inside `<summary>`, use HTML `<code>` tags for data and `<i>` tags for labels.
+- Inside `<summary>`, use HTML `<code>` tags for data and markdown emphasis (`*...*`) for labels.
 - Use non-breaking spaces for icon+label sequences.
 - Preserve the existing summary output exactly when no refactoring metadata exists.
 

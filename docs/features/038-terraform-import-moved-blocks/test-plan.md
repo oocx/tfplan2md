@@ -36,11 +36,11 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 **Expected Output**:
 - "Refactoring Summary" section exists.
 - Table shows 📥 Import and 🔀 Move operations with ✅ Ready status.
-- Summary lines for affected resources include 📥 <i>Imported</i> or 🔀 <i>Moved from</i>.
+- Summary lines for affected resources include 📥 *Imported* or 🔀 *Moved from*.
 
 **Success Criteria**:
 - [ ] Icons and labels are properly aligned.
-- [ ] `<code>` and `<i>` tags are used correctly in summary lines.
+- [ ] `<code>` tags and markdown emphasis (`*...*`) are used correctly in summary lines.
 - [ ] Non-breaking spaces prevent icons from separating from labels.
 
 ---
@@ -54,7 +54,7 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 
 **Expected Output**:
 - Refactoring Summary table shows ⚠️ status for already-applied moved resources.
-- Resource summary line keeps `📥 <i>Imported</i>` without `(⚠️ <i>already imported</i>)` for pending no-op imports.
+- Resource summary line keeps `📥 *Imported*` without `(⚠️ *already imported*)` for pending no-op imports.
 
 **Success Criteria**:
 - [ ] Warnings are clearly visible.
@@ -142,7 +142,7 @@ Verify that `ResourceSummaryHtmlBuilder` prepends the "📥 Imported" annotation
 1. Call `ResourceSummaryHtmlBuilder.BuildSummaryHtml`.
 
 **Expected Result:**
-The output HTML contains `📥&nbsp;<i>Imported</i>` and the import ID in `🆔&nbsp;<code>some-id</code>`.
+The output HTML contains `📥&nbsp;*Imported*` and the import ID in `🆔&nbsp;<code>some-id</code>`.
 
 ---
 
@@ -160,7 +160,7 @@ Verify that `ResourceSummaryHtmlBuilder` prepends the "🔀 Moved from" annotati
 1. Call `ResourceSummaryHtmlBuilder.BuildSummaryHtml`.
 
 **Expected Result:**
-The output HTML contains `🔀&nbsp;<i>Moved from</i> <code>old.address</code>`.
+The output HTML contains `🔀&nbsp;*Moved from* <code>old.address</code>`.
 
 ---
 

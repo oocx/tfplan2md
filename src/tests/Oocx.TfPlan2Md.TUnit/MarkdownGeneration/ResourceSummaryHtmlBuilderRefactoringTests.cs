@@ -32,7 +32,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
         var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
 
         // Assert
-        summary.Should().Contain($"📥{NonBreakingSpace}<i>Imported</i>");
+        summary.Should().Contain($"📥{NonBreakingSpace}*Imported*");
     }
 
     [Test]
@@ -58,7 +58,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
         var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
 
         // Assert
-        summary.Should().Contain($"🔀{NonBreakingSpace}<i>Moved from</i> <code>{movedFrom}</code>");
+        summary.Should().Contain($"🔀{NonBreakingSpace}*Moved from* <code>{movedFrom}</code>");
     }
 
     [Test]
@@ -84,7 +84,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
         var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
 
         // Assert
-        summary.Should().Contain($"(⚠️{NonBreakingSpace}<i>already imported</i>)");
+        summary.Should().Contain($"(⚠️{NonBreakingSpace}*already imported*)");
     }
 
     [Test]
@@ -106,8 +106,8 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
 
         var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
 
-        summary.Should().Contain($"📥{NonBreakingSpace}<i>Imported</i>")
-            .And.NotContain($"⚠️{NonBreakingSpace}<i>already imported</i>");
+        summary.Should().Contain($"📥{NonBreakingSpace}*Imported*")
+            .And.NotContain($"⚠️{NonBreakingSpace}*already imported*");
     }
 
     [Test]
@@ -135,9 +135,9 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
         var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
 
         // Assert
-        summary.Should().Contain($"📥{NonBreakingSpace}<i>Imported</i>")
-            .And.Contain($"🔀{NonBreakingSpace}<i>Moved from</i>")
-            .And.Contain($"⚠️{NonBreakingSpace}<i>already imported</i>")
-            .And.Contain($"⚠️{NonBreakingSpace}<i>already moved</i>");
+        summary.Should().Contain($"📥{NonBreakingSpace}*Imported*")
+            .And.Contain($"🔀{NonBreakingSpace}*Moved from*")
+            .And.Contain($"⚠️{NonBreakingSpace}*already imported*")
+            .And.Contain($"⚠️{NonBreakingSpace}*already moved*");
     }
 }

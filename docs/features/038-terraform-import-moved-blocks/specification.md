@@ -67,17 +67,17 @@ Each resource's summary line includes import/moved context:
 
 **Imported Resource:**
 ```html
-<summary>➕ azurerm_resource_group <b><code>existing-rg</code></b> — 📥 <i>Imported</i> | <code>🆔 rg-existing</code> <code>🌍 eastus</code></summary>
+<summary>➕ azurerm_resource_group <b><code>existing-rg</code></b> — 📥 *Imported* | <code>🆔 rg-existing</code> <code>🌍 eastus</code></summary>
 ```
 
 **Moved Resource:**
 ```html
-<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — 🔀 <i>Moved from</i> <code>module.old.azurerm_virtual_network.hub</code> | <code>🆔 vnet-hub</code> <code>🌍 eastus</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — 🔀 *Moved from* <code>module.old.azurerm_virtual_network.hub</code> | <code>🆔 vnet-hub</code> <code>🌍 eastus</code></summary>
 ```
 
 **Already-applied Move (no-op):**
 ```html
-<summary>⚪ azurerm_subnet <b><code>legacy-subnet</code></b> — 🔀 <i>Moved from</i> <code>module.old.azurerm_subnet.legacy-subnet</code> (⚠️ <i>already moved</i>)</summary>
+<summary>⚪ azurerm_subnet <b><code>legacy-subnet</code></b> — 🔀 *Moved from* <code>module.old.azurerm_subnet.legacy-subnet</code> (⚠️ *already moved*)</summary>
 ```
 
 ### 3. Refactoring Summary Section Behavior

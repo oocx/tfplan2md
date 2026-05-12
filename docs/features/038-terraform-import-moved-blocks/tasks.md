@@ -70,11 +70,11 @@ Update the report models to store refactoring metadata and implement logic to po
 Update `ResourceSummaryHtmlBuilder` to prepend refactoring icons and labels to the resource summary lines.
 
 **Acceptance Criteria:**
-- [x] Summary HTML includes 📥 <i>Imported</i> for imports.
-- [x] Summary HTML includes 🔀 <i>Moved from</i> `address` for moves.
+- [x] Summary HTML includes 📥 *Imported* for imports.
+- [x] Summary HTML includes 🔀 *Moved from* `address` for moves.
 - [x] Already-applied warnings use operation-specific wording, while pending imports remain warning-free.
 - [x] Non-breaking spaces used for icon+label (TC-08).
-- [x] Formatting uses `<code>` and `<i>` per style guide.
+- [x] Formatting uses `<code>` and markdown emphasis (`*...*`) per style guide.
 - [x] Unit tests (TC-04, TC-05) verify output.
 
 **Dependencies:** Task 3

@@ -4,6 +4,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 SCRIPT_PATH="${REPO_ROOT}/scripts/validate-release-notes.sh"
 TEST_ROOT="${REPO_ROOT}/.tmp/validate-release-notes-test-$$"
+TEST_PNG_BASE64='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII='
 
 cleanup() {
   rm -rf "$TEST_ROOT"
@@ -150,7 +151,7 @@ echo "OK: fails when script changes lack a work item folder"
 # Case 6: screenshot references must use raw URLs plus metadata
 git checkout -q "$BASE_SHA"
 mkdir -p docs/features/999-screenshot-validation
-printf '%s' 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII=' | base64 -d > docs/features/999-screenshot-validation/example.png
+printf '%s' "$TEST_PNG_BASE64" | base64 -d > docs/features/999-screenshot-validation/example.png
 cat > docs/features/999-screenshot-validation/release-notes.md <<'EOF'
 # Release Notes
 
@@ -184,7 +185,7 @@ echo "OK: fails when screenshot references are missing raw URLs/metadata"
 # Case 7: valid screenshot metadata should pass
 git checkout -q "$BASE_SHA"
 mkdir -p docs/features/999-valid-screenshot
-printf '%s' 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII=' | base64 -d > docs/features/999-valid-screenshot/example.png
+printf '%s' "$TEST_PNG_BASE64" | base64 -d > docs/features/999-valid-screenshot/example.png
 cat > docs/features/999-valid-screenshot/release-notes.md <<'EOF'
 # Release Notes
 

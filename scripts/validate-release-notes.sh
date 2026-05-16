@@ -4,6 +4,14 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
+# Paths that indicate the PR is changing workflow or shipped behavior and therefore
+# must be anchored to a documented work item with release artifacts.
+WORK_ITEM_REQUIRED_PATTERN='^(src/|scripts/|\.github/|examples/|docs/agents\.md$|docs/spec\.md$|README\.md$|CONTRIBUTING\.md$)'
+
+# Release-note screenshots must point at versioned raw GitHub URLs inside this repo's
+# docs work-item folders so the images render correctly in GitHub Releases.
+SCREENSHOT_URL_PATTERN='^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/docs/(features|issues|workflow)/[^/]+/[^/]+\.png$'
+
 base_ref=""
 head_ref=""
 
@@ -51,7 +59,7 @@ while IFS= read -r file; do
     changed_work_items["docs/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"]=1
   fi
 
-  if [[ "$file" =~ ^(src/|scripts/|\.github/|examples/|docs/agents\.md$|docs/spec\.md$|README\.md$|CONTRIBUTING\.md$) ]]; then
+  if [[ "$file" =~ $WORK_ITEM_REQUIRED_PATTERN ]]; then
     work_item_required=true
   fi
 done <<< "$changed_files"
@@ -86,7 +94,7 @@ validate_release_notes_file() {
     [[ -z "$screenshot_ref" ]] && continue
     screenshot_count=$((screenshot_count + 1))
 
-    if ! printf '%s\n' "$screenshot_ref" | grep -Eq '^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/docs/(features|issues|workflow)/[^/]+/[^/]+\.png$'; then
+    if ! printf '%s\n' "$screenshot_ref" | grep -Eq "$SCREENSHOT_URL_PATTERN"; then
       invalid_screenshots+=("${release_notes_path} -> ${screenshot_ref} (must use raw.githubusercontent.com URL under docs/)")
       continue
     fi
@@ -114,7 +122,14 @@ validate_release_notes_file() {
   while IFS= read -r metadata_line; do
     [[ -z "$metadata_line" ]] && continue
     metadata_count=$((metadata_count + 1))
-    if [[ "$metadata_line" != *"focus="* ]] || { [[ "$metadata_line" != *"selector="* ]] && [[ "$metadata_line" != *"target-resource-id="* ]]; }; then
+    has_focus=false
+    has_target=false
+    [[ "$metadata_line" == *"focus="* ]] && has_focus=true
+    if [[ "$metadata_line" == *"selector="* ]] || [[ "$metadata_line" == *"target-resource-id="* ]]; then
+      has_target=true
+    fi
+
+    if [[ "$has_focus" != true || "$has_target" != true ]]; then
       invalid_screenshot_metadata+=("${release_notes_path} -> ${metadata_line}")
     fi
   done < <(grep -E '^<!-- release-screenshot:' "$release_notes_file" || true)

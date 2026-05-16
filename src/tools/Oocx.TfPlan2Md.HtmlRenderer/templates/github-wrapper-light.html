@@ -1378,10 +1378,10 @@ className:"string",endsParent:!0,variants:[{begin:/"/,end:/"/,contains:[a]},{
 begin:/'/,end:/'/,contains:[a]},{begin:/[^\s"'=<>`]+/}]}]}]};return{
 name:"HTML, XML",
 aliases:["html","xhtml","rss","atom","xjb","xsd","xsl","plist","wsf","svg"],
-case_insensitive:!0,unicodeRegex:!0,contains:[{className:"meta",begin:/<![a-zA-Z]/,
+case_insensitive:!0,unicodeRegex:!0,contains:[{className:"meta",begin:/<![A-Z]/,
 end:/>/,relevance:10,contains:[i,o,s,r,{begin:/\[/,end:/\]/,contains:[{
-className:"meta",begin:/<![a-zA-Z]/,end:/>/,contains:[i,r,o,s]}]}]
-},e.COMMENT(/<!--/,/-->/,{relevance:10}),{begin:/<!\[CDATA\[/,end:/\]\]>/,
+className:"meta",begin:/<![A-Z]/,end:/>/,contains:[i,r,o,s]}]}]
+},e.COMMENT(/<!--/,/-->|--!>/,{relevance:10}),{begin:/<!\[CDATA\[/,end:/\]\]>/,
 relevance:10},a,{className:"meta",end:/\?>/,variants:[{begin:/<\?xml/,
 relevance:10,contains:[o]},{begin:/<\?[a-z][a-z0-9]+/}]},{className:"tag",
 begin:/<style(?=\s|>)/,end:/>/,keywords:{name:"style"},contains:[l],starts:{

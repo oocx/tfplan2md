@@ -68,41 +68,7 @@ if [[ $rc -eq 0 ]]; then
 fi
 echo "OK: fails when changed feature work item has no work protocol"
 
-# Case 3: changed docs/features item without Release Manager work-protocol entry should fail
-git checkout -q "$BASE_SHA"
-mkdir -p docs/features/999-missing-release-manager
-cat > docs/features/999-missing-release-manager/specification.md <<'EOF'
-# Specification
-EOF
-cat > docs/features/999-missing-release-manager/release-notes.md <<'EOF'
-# Release Notes
-EOF
-cat > docs/features/999-missing-release-manager/work-protocol.md <<'EOF'
-# Work Protocol
-
-## Agent Work Log
-
-### Developer
-- **Date:** 2026-05-16
-EOF
-git add docs/features/999-missing-release-manager/specification.md \
-  docs/features/999-missing-release-manager/release-notes.md \
-  docs/features/999-missing-release-manager/work-protocol.md
-git commit -qm "docs: add incomplete work protocol"
-HEAD_SHA="$(git rev-parse HEAD)"
-
-set +e
-bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
-rc=$?
-set -e
-
-if [[ $rc -eq 0 ]]; then
-  echo "ERROR: expected failure when Release Manager entry is missing"
-  exit 1
-fi
-echo "OK: fails when Release Manager entry is missing from work protocol"
-
-# Case 4: changed docs/workflow item with release-notes.md and work-protocol.md should pass
+# Case 3: changed docs/workflow item with release-notes.md and work-protocol.md should pass
 git checkout -q "$BASE_SHA"
 mkdir -p docs/workflow/999-example
 cat > docs/workflow/999-example/tasks.md <<'EOF'

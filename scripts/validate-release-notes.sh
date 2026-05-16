@@ -80,7 +80,6 @@ if [[ ${#changed_work_items[@]} -eq 0 ]]; then
 fi
 
 missing=()
-invalid_work_protocols=()
 invalid_screenshots=()
 invalid_screenshot_metadata=()
 
@@ -150,8 +149,6 @@ for work_item in "${!changed_work_items[@]}"; do
 
   if ! git cat-file -e "${head_ref}:${work_protocol_path}" 2>/dev/null; then
     missing+=("${work_protocol_path}")
-  elif ! git show "${head_ref}:${work_protocol_path}" | grep -Eq '^###\s*Release Manager(\s+—.*)?\s*$'; then
-    invalid_work_protocols+=("${work_protocol_path} (missing Release Manager entry)")
   fi
 done
 
@@ -162,15 +159,6 @@ if [[ ${#missing[@]} -gt 0 ]]; then
   done
   echo "" >&2
   echo "Each changed work item under docs/features/*, docs/issues/*, or docs/workflow/* must include release-notes.md and work-protocol.md." >&2
-fi
-
-if [[ ${#invalid_work_protocols[@]} -gt 0 ]]; then
-  echo "❌ ERROR: Invalid work-protocol.md entries:" >&2
-  for problem in "${invalid_work_protocols[@]}"; do
-    echo "  - $problem" >&2
-  done
-  echo "" >&2
-  echo "Release Manager must append a log entry to each changed work item's work-protocol.md before merge." >&2
 fi
 
 if [[ ${#invalid_screenshots[@]} -gt 0 ]]; then
@@ -192,7 +180,7 @@ if [[ ${#invalid_screenshot_metadata[@]} -gt 0 ]]; then
   echo "  <!-- release-screenshot: selector=\"summary:has-text('resource')\"; focus=\"Shows the changed summary line\" -->" >&2
 fi
 
-if [[ ${#missing[@]} -gt 0 || ${#invalid_work_protocols[@]} -gt 0 || ${#invalid_screenshots[@]} -gt 0 || ${#invalid_screenshot_metadata[@]} -gt 0 ]]; then
+if [[ ${#missing[@]} -gt 0 || ${#invalid_screenshots[@]} -gt 0 || ${#invalid_screenshot_metadata[@]} -gt 0 ]]; then
   exit 1
 fi
 

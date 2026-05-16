@@ -54,11 +54,6 @@
     <AdditionalFiles Include="Providers/AzureDevOps/Icons/azuredevops-icons.json" EmbedAsJson="true" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="10.0.8" />
-    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.8" />
-  </ItemGroup>
-
   <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile" DependsOnTargets="SetSourceRevisionId">
     <PropertyGroup>
       <_BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</_BuildInfoFile>

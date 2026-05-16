@@ -35,27 +35,13 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.556"
         }
       },
-      "Microsoft.DotNet.ILCompiler": {
-        "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "RJxitcN5CCyZDcPNXKLsecwKvACzmy8C1z8hGM9+hFcnPhv1jDysJFFIeUHIPWaZ6wDAfYtZcgKEtegvL2Nz8A=="
-      },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "dVbSXGIFNR5nZcv2tOLoWI+a9T4jtFd77IYjuND+QVe360qWgAF7H0WtoopYhRw/+SgpGUTyrkrh+65+ClNnfw=="
-      },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",
         "resolved": "1.2.0.556",
         "contentHash": "zvn9Mqs/ox/83cpYPignI8hJEM2A93s2HkHs8HYMOAQW0PkampyoErAiIyKxgTLqbbad29HX/shv/6LGSjPJNQ=="
       },
       "tfplan2md": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.DotNet.ILCompiler": "[10.0.8, )",
-          "Microsoft.NET.ILLink.Tasks": "[10.0.8, )"
-        }
+        "type": "Project"
       }
     }
   }

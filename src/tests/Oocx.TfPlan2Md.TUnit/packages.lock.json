@@ -90,20 +90,10 @@
         "resolved": "2.0.0",
         "contentHash": "QcZrCETsBJqy/vQpFtJc+jSXQ0K5sucQ6NUFbTNVHD4vfZZOwjZ/3sBzczkC4DityhD3AVO/+K/+9ioLs1AgRA=="
       },
-      "Microsoft.DotNet.ILCompiler": {
-        "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "RJxitcN5CCyZDcPNXKLsecwKvACzmy8C1z8hGM9+hFcnPhv1jDysJFFIeUHIPWaZ6wDAfYtZcgKEtegvL2Nz8A=="
-      },
       "Microsoft.Extensions.DependencyModel": {
         "type": "Transitive",
         "resolved": "6.0.2",
         "contentHash": "HS5YsudCGSVoCVdsYJ5FAO9vx0z04qSAXgVzpDJSQ1/w/X9q8hrQVGU2p+Yfui+2KcXLL+Zjc0SX3yJWtBmYiw=="
-      },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "dVbSXGIFNR5nZcv2tOLoWI+a9T4jtFd77IYjuND+QVe360qWgAF7H0WtoopYhRw/+SgpGUTyrkrh+65+ClNnfw=="
       },
       "Microsoft.Testing.Extensions.CodeCoverage": {
         "type": "Transitive",
@@ -182,11 +172,7 @@
         }
       },
       "tfplan2md": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.DotNet.ILCompiler": "[10.0.8, )",
-          "Microsoft.NET.ILLink.Tasks": "[10.0.8, )"
-        }
+        "type": "Project"
       },
       "tfplan2md-coverage": {
         "type": "Project"

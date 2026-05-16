@@ -86,12 +86,13 @@ validate_release_notes_file() {
     [[ -z "$screenshot_ref" ]] && continue
     screenshot_count=$((screenshot_count + 1))
 
-    if [[ ! "$screenshot_ref" =~ ^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/(docs/(features|issues|workflow)/[^/]+/[^)]+\.png)$ ]]; then
+    if ! printf '%s\n' "$screenshot_ref" | grep -Eq '^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/docs/(features|issues|workflow)/[^/]+/[^/]+\.png$'; then
       invalid_screenshots+=("${release_notes_path} -> ${screenshot_ref} (must use raw.githubusercontent.com URL under docs/)")
       continue
     fi
 
-    local repo_image_path="${BASH_REMATCH[1]}"
+    local repo_image_path
+    repo_image_path="$(printf '%s\n' "$screenshot_ref" | sed -E 's#^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/(docs/(features|issues|workflow)/[^/]+/[^/]+\.png)$#\1#')"
     if ! git cat-file -e "${head_ref}:${repo_image_path}" 2>/dev/null; then
       invalid_screenshots+=("${release_notes_path} -> ${repo_image_path} (referenced PNG does not exist)")
       continue

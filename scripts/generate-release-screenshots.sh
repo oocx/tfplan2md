@@ -72,7 +72,7 @@ Example:
     --plan examples/comprehensive-demo/comprehensive-demo.json \\
     --output-prefix feature-065-icons \\
     --output-dir docs/features/065-tenant-display-mapping \\
-    --selector "details:has(summary:has-text('azurerm_role_assignment'))" \\
+    --selector "summary:has-text('azurerm_role_assignment')" \\
     --render-target github
 
 Output:
@@ -80,6 +80,10 @@ Output:
 
 For full control (dark mode, 2x DPI, thumbnails, lightbox):
   Use scripts/generate-screenshot.sh instead
+
+Selector guidance:
+  - Use --selector "summary:has-text('resource_id')" for summary-line / heading changes
+  - Use --target-resource-id "resource_id" only when the changed rendering is inside the expanded resource details
 EOF
 }
 
@@ -261,8 +265,9 @@ for attempt in $(seq 1 $MAX_RETRIES); do
         echo ""
         echo "Next steps:"
         echo "  1. Review the screenshot to ensure it captures the intended content"
-        echo "  2. Reference it in release notes using: ![Description](./${OUTPUT_PREFIX}.png)"
-        echo "  3. Keep release note screenshots under 580×400 for optimal readability"
+        echo "  2. Add a metadata comment in release-notes.md with selector= or target-resource-id= plus focus="
+        echo "  3. Reference the PNG using a raw.githubusercontent.com URL (not a relative path)"
+        echo "  4. Keep release note screenshots under 580×400 for optimal readability"
         exit 0
     else
         SCREENSHOT_EXIT_CODE=$?

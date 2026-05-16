@@ -2,8 +2,8 @@
 
 | ID | Title | Source | Status | Rationale | Impact | Effort | Risk | Notes |
 |---:|---|---|---|---|---|---|---|---|
-| 1 | Enforce release-notes + work-protocol guardrails in PR validation | problem statement / prior-work 079 | 🟡 In progress | The cloud orchestrator can finish a change without a Release Manager handoff, so release artifacts are skipped silently. | High | Med | Low | Add validation for workflow work items, work-protocol presence, and Release Manager log entries. |
-| 2 | Require screenshot targeting metadata for release-note images | problem statement / prior-work 084 | 🟡 In progress | Screenshot files can exist while still showing the wrong part of the report; reviewers need explicit capture intent. | High | Med | Low | Validate screenshot URLs/files and require per-image selector/target metadata plus focus rationale. |
+| 1 | Enforce release-notes + work-protocol guardrails in PR validation | problem statement / prior-work 079 | ✅ Done | The cloud orchestrator can finish a change without a Release Manager handoff, so release artifacts are skipped silently. | High | Med | Low | Added validation for workflow work items, work-protocol presence, and Release Manager log entries. |
+| 2 | Require screenshot targeting metadata for release-note images | problem statement / prior-work 084 | ✅ Done | Screenshot files can exist while still showing the wrong part of the report; reviewers need explicit capture intent. | High | Med | Low | Validates screenshot URLs/files and requires per-image selector/target metadata plus focus rationale. |
 
 ## Recommendations
 

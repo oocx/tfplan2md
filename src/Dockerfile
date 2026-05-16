@@ -6,7 +6,17 @@ WORKDIR /workspace
 COPY . .
 
 # Install native toolchain prerequisites for NativeAOT (Alpine uses apk)
-RUN apk add --no-cache upx clang build-base zlib-dev linux-headers bash lld
+# Versions pinned for reproducibility against Alpine 3.23 (base image digest pinned above).
+# To refresh versions: docker run --rm <base-image> sh -c \
+#   "apk info -v upx clang lld build-base zlib-dev linux-headers bash"
+RUN apk add --no-cache \
+    upx=5.0.2-r0 \
+    clang=21.1.2-r2 \
+    build-base=0.5-r3 \
+    zlib-dev=1.3.2-r0 \
+    linux-headers=6.16.12-r0 \
+    bash=5.3.3-r1 \
+    lld=21.1.2-r1
 
 # Restore and build (skip tests - Playwright requires glibc)
 RUN dotnet restore src/tfplan2md.slnx

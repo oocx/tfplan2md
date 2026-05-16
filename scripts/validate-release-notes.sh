@@ -4,9 +4,13 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
-# Paths that indicate the PR is changing workflow or shipped behavior and therefore
-# must be anchored to a documented work item with release artifacts.
-WORK_ITEM_REQUIRED_PATTERN='^(src/|scripts/|\.github/|examples/|docs/agents\.md$|docs/spec\.md$|README\.md$|CONTRIBUTING\.md$)'
+# Directory paths that indicate the PR is changing workflow or shipped behavior and
+# therefore must be anchored to a documented work item with release artifacts.
+WORK_ITEM_REQUIRED_DIR_PATTERN='^(src/|scripts/|\.github/|examples/)'
+
+# Individual documentation files that can change workflow expectations globally and
+# should therefore also require a matching work item folder.
+WORK_ITEM_REQUIRED_FILE_PATTERN='^(docs/agents\.md$|docs/spec\.md$|README\.md$|CONTRIBUTING\.md$)'
 
 # Release-note screenshots must point at versioned raw GitHub URLs inside this repo's
 # docs work-item folders so the images render correctly in GitHub Releases.
@@ -59,7 +63,7 @@ while IFS= read -r file; do
     changed_work_items["docs/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"]=1
   fi
 
-  if [[ "$file" =~ $WORK_ITEM_REQUIRED_PATTERN ]]; then
+  if [[ "$file" =~ $WORK_ITEM_REQUIRED_DIR_PATTERN ]] || [[ "$file" =~ $WORK_ITEM_REQUIRED_FILE_PATTERN ]]; then
     work_item_required=true
   fi
 done <<< "$changed_files"
@@ -82,6 +86,7 @@ invalid_screenshot_metadata=()
 validate_release_notes_file() {
   local release_notes_path="$1"
   local release_notes_file="${REPO_ROOT}/${release_notes_path}"
+  local temp_image_file=""
   local screenshot_count=0
   local metadata_count=0
 
@@ -106,9 +111,13 @@ validate_release_notes_file() {
       continue
     fi
 
-    if command -v identify >/dev/null 2>&1 && [[ -f "${REPO_ROOT}/${repo_image_path}" ]]; then
+    if command -v identify >/dev/null 2>&1; then
       local dimensions
-      dimensions="$(identify -format '%w %h' "${REPO_ROOT}/${repo_image_path}" 2>/dev/null || true)"
+      temp_image_file="$(mktemp)"
+      git show "${head_ref}:${repo_image_path}" > "$temp_image_file"
+      dimensions="$(identify -format '%w %h' "$temp_image_file" 2>/dev/null || true)"
+      rm -f "$temp_image_file"
+      temp_image_file=""
       if [[ "$dimensions" =~ ^([0-9]+)\ ([0-9]+)$ ]]; then
         local width="${BASH_REMATCH[1]}"
         local height="${BASH_REMATCH[2]}"
@@ -137,6 +146,10 @@ validate_release_notes_file() {
   if (( screenshot_count > 0 && metadata_count != screenshot_count )); then
     invalid_screenshot_metadata+=("${release_notes_path} (expected ${screenshot_count} release-screenshot metadata comment(s), found ${metadata_count})")
   fi
+
+  if [[ -n "$temp_image_file" ]]; then
+    rm -f "$temp_image_file"
+  fi
 }
 
 for work_item in "${!changed_work_items[@]}"; do
@@ -151,7 +164,7 @@ for work_item in "${!changed_work_items[@]}"; do
 
   if ! git cat-file -e "${head_ref}:${work_protocol_path}" 2>/dev/null; then
     missing+=("${work_protocol_path}")
-  elif [[ -f "${REPO_ROOT}/${work_protocol_path}" ]] && ! grep -Eq '^### Release Manager\b' "${REPO_ROOT}/${work_protocol_path}"; then
+  elif ! git show "${head_ref}:${work_protocol_path}" | grep -Eq '^### Release Manager\b'; then
     invalid_work_protocols+=("${work_protocol_path} (missing Release Manager entry)")
   fi
 done

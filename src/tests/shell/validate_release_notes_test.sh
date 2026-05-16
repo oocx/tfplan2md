@@ -4,6 +4,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 SCRIPT_PATH="${REPO_ROOT}/scripts/validate-release-notes.sh"
 TEST_ROOT="${REPO_ROOT}/.tmp/validate-release-notes-test-$$"
+# 1x1 transparent PNG used for screenshot URL/dimension validation cases.
 TEST_PNG_BASE64='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII='
 
 cleanup() {

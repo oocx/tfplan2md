@@ -183,6 +183,16 @@ For each stage:
    - If agent output is not acceptable, delegate back with specific feedback and instructions for improvement
    - If blocked, create PR comment with blocker details and wait for maintainer response
 
+   **CRITICAL — Before Release Manager stage**: Before delegating to Release Manager, you **MUST** verify that `work-protocol.md` is complete with entries from all required agents for the workflow type. Read the file with the `view` tool and check that every required agent has a `### <Agent Name>` entry:
+
+   | Workflow Type | Required agent entries |
+   |---|---|
+   | Feature (`docs/features/`) | Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer, Technical Writer, Code Reviewer |
+   | Bug Fix (`docs/issues/`) | Issue Analyst, Developer, Technical Writer, Code Reviewer |
+   | Workflow (`docs/workflow/`) | Workflow Engineer |
+
+   If **any** required entry is missing, **do NOT delegate to Release Manager**. Instead, re-delegate to the missing agent(s) with explicit instructions to complete their work and append their log entry, then re-verify before proceeding to Release Manager. This check is the primary guard against CI failures caused by skipped stages.
+
    **CRITICAL — After Release Manager stage**: Before proceeding to Retrospective, you **MUST** verify that `release-notes.md` physically exists in the work item folder (e.g. `docs/features/NNN-.../release-notes.md`). Use the `view` tool or a bash `ls` to confirm the file is present. If the file does NOT exist, the Release Manager did **not** complete its work. **Do NOT proceed to Retrospective.** Instead, re-delegate to the Release Manager with explicit instructions to create `release-notes.md` and call `report_progress` before completing. This verification is mandatory on every run — PR validation will fail if the file is missing, causing the first CI attempt to always fail.
 
 4. **Update Progress**: Mark stage complete in todo list
@@ -206,7 +216,13 @@ For each stage:
 - Provide error logs and failure context to Developer
 - After fixes, return to Release Manager
 
-**Missing Release Notes (CRITICAL):**
+**Missing Work-Protocol Entries (CRITICAL — check BEFORE Release Manager):**
+- Before delegating to Release Manager, read `work-protocol.md` and verify all required agents have entries (see table in "Check Agent Output" step above)
+- If any entry is missing, re-delegate to that agent with: "Your work-protocol.md entry is missing. Please append your log entry to [work-protocol path] and call `report_progress` before completing."
+- After the agent completes, re-check the file before proceeding to Release Manager
+- This prevents CI failures — catching missing stages during orchestration is far cheaper than a failed PR build
+
+**Missing Release Notes (CRITICAL — check AFTER Release Manager):**
 - After Release Manager completes, verify `release-notes.md` exists in the work item folder
 - If `release-notes.md` is missing, re-delegate to Release Manager with explicit instruction: "You must create `release-notes.md` in the work item folder and call `report_progress` before completing. The file was not found after your previous run."
 - Do NOT proceed to Retrospective until the file exists — PR validation will fail without it
@@ -313,7 +329,8 @@ When a subagent (Developer, Technical Writer, etc.) completes work that modifies
 ### 8. Complete Workflow
 
 When all stages complete:
-- **Verify `release-notes.md` exists** in the work item folder — check the file with `view` or `ls` before proceeding
+- **Verify `work-protocol.md` is complete** — all required agents have entries (see table in step 3 above); do this BEFORE delegating to Release Manager
+- **Verify `release-notes.md` exists** in the work item folder — check the file with `view` or `ls` AFTER Release Manager completes
 - Verify all other deliverables are created
 - Ensure PR is created and merged
 - Trigger Retrospective agent
@@ -379,7 +396,8 @@ Workflow orchestration is complete when:
 - [ ] Code review approved
 - [ ] Tests passing
 - [ ] UAT completed (if user-facing feature)
-- [ ] **`release-notes.md` exists in the work item folder** (verified by orchestrator — not assumed)
+- [ ] **`work-protocol.md` contains entries from ALL required agents** (verified by orchestrator before delegating to Release Manager)
+- [ ] **`release-notes.md` exists in the work item folder** (verified by orchestrator after Release Manager completes)
 - [ ] PR created and merged by Release Manager
 - [ ] Retrospective completed
 - [ ] No unresolved blockers

@@ -183,6 +183,8 @@ For each stage:
    - If agent output is not acceptable, delegate back with specific feedback and instructions for improvement
    - If blocked, create PR comment with blocker details and wait for maintainer response
 
+   **CRITICAL — After Release Manager stage**: Before proceeding to Retrospective, you **MUST** verify that `release-notes.md` physically exists in the work item folder (e.g. `docs/features/NNN-.../release-notes.md`). Use the `view` tool or a bash `ls` to confirm the file is present. If the file does NOT exist, the Release Manager did **not** complete its work. **Do NOT proceed to Retrospective.** Instead, re-delegate to the Release Manager with explicit instructions to create `release-notes.md` and call `report_progress` before completing. This verification is mandatory on every run — PR validation will fail if the file is missing, causing the first CI attempt to always fail.
+
 4. **Update Progress**: Mark stage complete in todo list
 
 5. **Prepare Next Stage**: Gather outputs for next agent
@@ -203,6 +205,11 @@ For each stage:
 - If Release Manager reports build/CI failures, delegate to Developer
 - Provide error logs and failure context to Developer
 - After fixes, return to Release Manager
+
+**Missing Release Notes (CRITICAL):**
+- After Release Manager completes, verify `release-notes.md` exists in the work item folder
+- If `release-notes.md` is missing, re-delegate to Release Manager with explicit instruction: "You must create `release-notes.md` in the work item folder and call `report_progress` before completing. The file was not found after your previous run."
+- Do NOT proceed to Retrospective until the file exists — PR validation will fail without it
 
 ### 5. Track and Report Progress
 Throughout orchestration:
@@ -306,7 +313,8 @@ When a subagent (Developer, Technical Writer, etc.) completes work that modifies
 ### 8. Complete Workflow
 
 When all stages complete:
-- Verify all deliverables are created
+- **Verify `release-notes.md` exists** in the work item folder — check the file with `view` or `ls` before proceeding
+- Verify all other deliverables are created
 - Ensure PR is created and merged
 - Trigger Retrospective agent
 - Report final summary to maintainer
@@ -371,6 +379,7 @@ Workflow orchestration is complete when:
 - [ ] Code review approved
 - [ ] Tests passing
 - [ ] UAT completed (if user-facing feature)
+- [ ] **`release-notes.md` exists in the work item folder** (verified by orchestrator — not assumed)
 - [ ] PR created and merged by Release Manager
 - [ ] Retrospective completed
 - [ ] No unresolved blockers

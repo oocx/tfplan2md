@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "./scripts/hooks/validate-work-protocol.sh",
+        "cwd": ".",
+        "timeoutSec": 15,
+        "comment": "Deny report_progress if work-protocol.md is missing required agent log entries. Triggered only after the pre-Release-Manager agent has run (Code Reviewer for features/bugs, Workflow Engineer for workflow changes), to avoid blocking early-stage intermediate pushes."
+      }
+    ]
+  }
+}

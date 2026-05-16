@@ -156,7 +156,27 @@ Format:
 | `website-visual-assets` | Generate website HTML exports and screenshots using HtmlRenderer/ScreenshotGenerator and wire the resulting assets into the site source. |
 | `validate-agent` | Validate agent definitions for consistency, model availability, handoff integrity, and tool existence. |
 
-### Prefer GitHub Chat Tools For PR Inspection
+### Agent Hooks
+
+Hooks provide **deterministic, runtime-enforced** guardrails for agent sessions. Unlike instructions (which are non-deterministic and can be ignored), hooks run as shell commands at specific lifecycle events and can block operations outright.
+
+Hook configurations live in `.github/hooks/*.json` and scripts in `scripts/hooks/`.
+
+| Hook File | Event | Script | Purpose |
+| :--- | :--- | :--- | :--- |
+| `deny-unauthorized-subagents.json` | `preToolUse` | `deny-unauthorized-subagents.sh` | Blocks the Workflow Orchestrator from invoking generic agents (`explore`, `task`, `general-purpose`); only custom agents are permitted. |
+| `session-start.json` | `sessionStart` | `session-start.sh` | Calculates the next available work-item issue number at session start and caches it in `.next-issue-number`. |
+| `validate-work-protocol.json` | `preToolUse` | `validate-work-protocol.sh` | Blocks `report_progress` (the push tool) if any `work-protocol.md` in the pending commits is missing required agent log entries. Triggered only after the "pre-Release-Manager" agent has run (Code Reviewer for features/bugs; Workflow Engineer for workflow items), so early-stage intermediate pushes are not affected. |
+
+**Validate-Work-Protocol hook — required agents by workflow type:**
+
+| Workflow Type | Path Prefix | Required Agent Entries |
+| :--- | :--- | :--- |
+| Feature | `docs/features/` | Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer, Technical Writer, Code Reviewer, Release Manager |
+| Bug Fix | `docs/issues/` | Issue Analyst, Developer, Technical Writer, Code Reviewer, Release Manager |
+| Workflow | `docs/workflow/` | Workflow Engineer, Release Manager |
+
+
 
 When working in VS Code chat, prefer **GitHub chat tools** for read-only PR inspection (details, files, reviews, status checks, comments). This has two benefits:
 
@@ -634,6 +654,7 @@ The first agent in the workflow creates `work-protocol.md` using this template:
 - **Code Reviewer** must check the Work Protocol to verify that all required agents (per the workflow type) have logged their work before approving. Missing agent entries are a **Blocker** issue.
 - **Code Reviewer** must also verify that global documentation was updated where applicable (see [Global Documentation Checks](#global-documentation-checks)).
 - **Release Manager** must verify that all required agents have logged entries in the Work Protocol before creating a PR or proceeding with the release.
+- **`validate-work-protocol` hook** (deterministic): blocks `report_progress` when `work-protocol.md` is missing required agent entries for the workflow type, once the pre-Release-Manager stage is reached. See [Agent Hooks](#agent-hooks).
 - **PR Validation** also enforces the release artifact guardrail: changed work items must include `release-notes.md` and `work-protocol.md`, each changed work protocol must contain a `Release Manager` entry, and each release-note screenshot must include valid targeting metadata plus a valid raw GitHub image URL.
 
 ### Global Documentation Checks

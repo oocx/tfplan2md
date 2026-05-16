@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 SCRIPT_PATH="${REPO_ROOT}/scripts/validate-release-notes.sh"
 TEST_ROOT="${REPO_ROOT}/.tmp/validate-release-notes-test-$$"
-# 1x1 transparent PNG used for screenshot URL/dimension validation cases.
+# Base64 for a 1x1 transparent PNG used in screenshot URL/dimension validation cases.
 TEST_PNG_BASE64='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII='
 
 cleanup() {
@@ -209,5 +209,40 @@ HEAD_SHA="$(git rev-parse HEAD)"
 
 bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
 echo "OK: passes when screenshot metadata and raw URL are valid"
+
+# Case 8: malformed screenshot metadata should fail
+git checkout -q "$BASE_SHA"
+mkdir -p docs/features/999-malformed-screenshot
+printf '%s' "$TEST_PNG_BASE64" | base64 -d > docs/features/999-malformed-screenshot/example.png
+cat > docs/features/999-malformed-screenshot/release-notes.md <<'EOF'
+# Release Notes
+
+<!-- release-screenshot: selector="summary:has-text('azurerm_resource_group.example')"; focus="" -->
+![Screenshot](https://raw.githubusercontent.com/oocx/tfplan2md/v1.0.0/docs/features/999-malformed-screenshot/example.png)
+EOF
+cat > docs/features/999-malformed-screenshot/work-protocol.md <<'EOF'
+# Work Protocol
+
+## Agent Work Log
+
+### Release Manager
+- **Date:** 2026-05-16
+EOF
+git add docs/features/999-malformed-screenshot/example.png \
+  docs/features/999-malformed-screenshot/release-notes.md \
+  docs/features/999-malformed-screenshot/work-protocol.md
+git commit -qm "docs: add malformed screenshot metadata"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+set +e
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null 2>&1
+rc=$?
+set -e
+
+if [[ $rc -eq 0 ]]; then
+  echo "ERROR: expected failure for malformed screenshot metadata"
+  exit 1
+fi
+echo "OK: fails when screenshot metadata is malformed"
 
 echo "All tests passed."

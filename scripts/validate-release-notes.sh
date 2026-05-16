@@ -15,7 +15,7 @@ WORK_ITEM_REQUIRED_FILE_PATTERN='^(docs/agents\.md$|docs/spec\.md$|README\.md$|C
 # Release-note screenshots must point at versioned raw GitHub URLs inside this repo's
 # docs work-item folders so the images render correctly in GitHub Releases.
 SCREENSHOT_URL_PATTERN='^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/docs/(features|issues|workflow)/[^/]+/[^/]+\.png$'
-SCREENSHOT_REPO_PATH_CAPTURE_PATTERN='^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/(docs/(features|issues|workflow)/[^/]+/[^/]+\.png)$'
+SCREENSHOT_URL_TO_REPO_PATH_PATTERN='^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/(docs/(features|issues|workflow)/[^/]+/[^/]+\.png)$'
 
 base_ref=""
 head_ref=""
@@ -105,7 +105,7 @@ validate_release_notes_file() {
     fi
 
     local repo_image_path
-    repo_image_path="$(printf '%s\n' "$screenshot_ref" | sed -E "s#${SCREENSHOT_REPO_PATH_CAPTURE_PATTERN}#\\1#")"
+    repo_image_path="$(printf '%s\n' "$screenshot_ref" | sed -E "s#${SCREENSHOT_URL_TO_REPO_PATH_PATTERN}#\\1#")"
     if ! git cat-file -e "${head_ref}:${repo_image_path}" 2>/dev/null; then
       invalid_screenshots+=("${release_notes_path} -> ${repo_image_path} (referenced PNG does not exist)")
       continue
@@ -127,14 +127,8 @@ validate_release_notes_file() {
   while IFS= read -r metadata_line; do
     [[ -z "$metadata_line" ]] && continue
     metadata_count=$((metadata_count + 1))
-    has_focus=false
-    has_target=false
-    [[ "$metadata_line" == *"focus="* ]] && has_focus=true
-    if [[ "$metadata_line" == *"selector="* ]] || [[ "$metadata_line" == *"target-resource-id="* ]]; then
-      has_target=true
-    fi
-
-    if [[ "$has_focus" != true || "$has_target" != true ]]; then
+    if ! printf '%s\n' "$metadata_line" | grep -Eq 'focus="[^"]+"' || \
+      ! printf '%s\n' "$metadata_line" | grep -Eq '(selector|target-resource-id)="[^"]+"'; then
       invalid_screenshot_metadata+=("${release_notes_path} -> ${metadata_line}")
     fi
   done < <(grep -E '^<!-- release-screenshot:' "$release_notes_file" || true)
@@ -156,7 +150,7 @@ for work_item in "${!changed_work_items[@]}"; do
 
   if ! git cat-file -e "${head_ref}:${work_protocol_path}" 2>/dev/null; then
     missing+=("${work_protocol_path}")
-  elif ! git show "${head_ref}:${work_protocol_path}" | grep -Eq '^### Release Manager\b'; then
+  elif ! git show "${head_ref}:${work_protocol_path}" | grep -Eq '^###\s*Release Manager(\s+—.*)?\s*$'; then
     invalid_work_protocols+=("${work_protocol_path} (missing Release Manager entry)")
   fi
 done

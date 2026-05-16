@@ -9,7 +9,7 @@
     <RootNamespace>Oocx.TfPlan2Md</RootNamespace>
     <Version>1.43.1</Version>
     <AssemblyName>tfplan2md</AssemblyName>
-    <RuntimeIdentifiers>linux-x64;linux-arm64;win-x64;win-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>linux-x64;linux-musl-x64;linux-arm64;win-x64;win-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <PublishAot>true</PublishAot>
     <IlcDisableReflection>true</IlcDisableReflection>
     <TrimMode>full</TrimMode>
@@ -52,6 +52,11 @@
     <AdditionalFiles Include="Providers/Shared/Icons/azure-common-icons.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/AzureAD/Icons/azuread-icons.json" EmbedAsJson="true" />
     <AdditionalFiles Include="Providers/AzureDevOps/Icons/azuredevops-icons.json" EmbedAsJson="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="10.0.8" />
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.8" />
   </ItemGroup>
 
   <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile" DependsOnTargets="SetSourceRevisionId">

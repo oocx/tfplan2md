@@ -69,6 +69,22 @@
         "contentHash": "r08aFT7OAxQ1hQ2CZUSjldyMdAQbUjCrXu7bsk4R2U2piFVmyadTUVUtAkxWTvoaPFCIowUUnIiKz256EgygmQ=="
       }
     },
+    "net10.0/linux-musl-x64": {
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.8, )",
+        "resolved": "10.0.8",
+        "contentHash": "RJxitcN5CCyZDcPNXKLsecwKvACzmy8C1z8hGM9+hFcnPhv1jDysJFFIeUHIPWaZ6wDAfYtZcgKEtegvL2Nz8A==",
+        "dependencies": {
+          "runtime.linux-musl-x64.Microsoft.DotNet.ILCompiler": "10.0.8"
+        }
+      },
+      "runtime.linux-musl-x64.Microsoft.DotNet.ILCompiler": {
+        "type": "Transitive",
+        "resolved": "10.0.8",
+        "contentHash": "g25Yh/kPDqfoUraN76tIZpIkKDCiRmzrcjL0UTYIQ5Msn5G+ABznP4QWGmO8rsrfjEdlY1NAmWVfWZUXrvE94A=="
+      }
+    },
     "net10.0/linux-x64": {
       "Microsoft.DotNet.ILCompiler": {
         "type": "Direct",

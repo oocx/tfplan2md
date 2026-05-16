@@ -31,7 +31,7 @@ jobs:
           global-json-file: src/global.json
 
       - name: Restore dependencies
-        run: dotnet restore src/tfplan2md.slnx
+        run: dotnet restore src/tfplan2md.slnx --locked-mode
 
       - name: Restore .NET tools
         run: dotnet tool restore

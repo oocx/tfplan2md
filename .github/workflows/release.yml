@@ -518,6 +518,8 @@ jobs:
     needs: [release, build-binaries]
     permissions:
       contents: write
+    outputs:
+      slsa_subjects: ${{ steps.slsa_subjects.outputs.base64_subjects }}
 
     steps:
       - name: Download all checksum artifacts
@@ -568,6 +570,24 @@ jobs:
           fi
           echo "All expected platforms are present in SHA256SUMS ✓"
 
+      - name: Prepare SLSA provenance subjects
+        id: slsa_subjects
+        run: |
+          # The SLSA generic generator signs a base64-encoded subject list in
+          # "<sha256>  <release-asset-name>" format. Include the archives, their
+          # individual checksum files, and the consolidated SHA256SUMS file.
+          {
+            awk '{ name=$2; sub(/^\*/, "", name); print $1 "  " name }' SHA256SUMS
+            for checksum_file in checksums/*.sha256; do
+              sha256sum "$checksum_file" | awk '{ name=$2; sub(/^checksums\//, "", name); print $1 "  " name }'
+            done
+            sha256sum SHA256SUMS
+          } | sort -u > slsa-subjects.txt
+
+          echo "SLSA provenance subjects:"
+          cat slsa-subjects.txt
+          echo "base64_subjects=$(base64 -w0 slsa-subjects.txt)" >> "$GITHUB_OUTPUT"
+
       - name: Upload consolidated checksums
         if: hashFiles('SHA256SUMS') != ''
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
@@ -582,6 +602,21 @@ jobs:
           name: checksums
           path: SHA256SUMS
           retention-days: 1
+
+  generate-slsa-provenance:
+    name: Generate SLSA Provenance
+    if: needs.release.outputs.version != ''
+    needs: [release, consolidate-checksums]
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: ${{ needs.consolidate-checksums.outputs.slsa_subjects }}
+      upload-assets: true
+      upload-tag-name: v${{ needs.release.outputs.version }}
+      provenance-name: tfplan2md_${{ needs.release.outputs.version }}.intoto.jsonl
 
   update-homebrew-formula:
     name: Update Homebrew Formula

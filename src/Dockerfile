@@ -9,7 +9,7 @@ COPY . .
 RUN apk add --no-cache upx clang build-base zlib-dev linux-headers bash lld
 
 # Restore and build (skip tests - Playwright requires glibc)
-RUN dotnet restore src/tfplan2md.slnx
+RUN dotnet restore src/tfplan2md.slnx --locked-mode
 RUN dotnet build src/tfplan2md.slnx --no-restore -c Release
 
 # Publish NativeAOT for linux-musl-x64 with static musl linking (no dynamic libc dependency)

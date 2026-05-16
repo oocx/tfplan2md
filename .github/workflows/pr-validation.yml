@@ -137,7 +137,7 @@ jobs:
 
       - name: Restore dependencies
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet restore src/tfplan2md.slnx
+        run: dotnet restore src/tfplan2md.slnx --locked-mode
 
       - name: Restore .NET tools
         if: steps.filter.outputs.changed == 'true'

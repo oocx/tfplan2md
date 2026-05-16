@@ -8,6 +8,9 @@ obj/
 *.nuget.cache
 project.lock.json
 
+# Terraform local provider/module cache
+**/.terraform/
+
 # User-specific files
 *.user
 *.suo

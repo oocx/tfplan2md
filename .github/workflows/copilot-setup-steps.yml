@@ -39,9 +39,11 @@ jobs:
 
       - name: Install Azure CLI
         run: |
-          # Azure CLI is pre-installed on GitHub runners, but ensure it's available
+          # Azure CLI is pre-installed on GitHub-hosted runners.
+          # Avoid downloading and executing an installation script in this workflow.
           if ! command -v az &> /dev/null; then
-            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+            echo "Azure CLI is required but was not found on this runner."
+            exit 1
           fi
           
           # Install Azure DevOps extension

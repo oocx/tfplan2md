@@ -15,6 +15,7 @@ WORK_ITEM_REQUIRED_FILE_PATTERN='^(docs/agents\.md$|docs/spec\.md$|README\.md$|C
 # Release-note screenshots must point at versioned raw GitHub URLs inside this repo's
 # docs work-item folders so the images render correctly in GitHub Releases.
 SCREENSHOT_URL_PATTERN='^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/docs/(features|issues|workflow)/[^/]+/[^/]+\.png$'
+SCREENSHOT_REPO_PATH_CAPTURE_PATTERN='^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/(docs/(features|issues|workflow)/[^/]+/[^/]+\.png)$'
 
 base_ref=""
 head_ref=""
@@ -86,7 +87,6 @@ invalid_screenshot_metadata=()
 validate_release_notes_file() {
   local release_notes_path="$1"
   local release_notes_file="${REPO_ROOT}/${release_notes_path}"
-  local temp_image_file=""
   local screenshot_count=0
   local metadata_count=0
 
@@ -105,7 +105,7 @@ validate_release_notes_file() {
     fi
 
     local repo_image_path
-    repo_image_path="$(printf '%s\n' "$screenshot_ref" | sed -E 's#^https://raw\.githubusercontent\.com/oocx/tfplan2md/v[^/]+/(docs/(features|issues|workflow)/[^/]+/[^/]+\.png)$#\1#')"
+    repo_image_path="$(printf '%s\n' "$screenshot_ref" | sed -E "s#${SCREENSHOT_REPO_PATH_CAPTURE_PATTERN}#\\1#")"
     if ! git cat-file -e "${head_ref}:${repo_image_path}" 2>/dev/null; then
       invalid_screenshots+=("${release_notes_path} -> ${repo_image_path} (referenced PNG does not exist)")
       continue
@@ -113,11 +113,7 @@ validate_release_notes_file() {
 
     if command -v identify >/dev/null 2>&1; then
       local dimensions
-      temp_image_file="$(mktemp)"
-      git show "${head_ref}:${repo_image_path}" > "$temp_image_file"
-      dimensions="$(identify -format '%w %h' "$temp_image_file" 2>/dev/null || true)"
-      rm -f "$temp_image_file"
-      temp_image_file=""
+      dimensions="$(git show "${head_ref}:${repo_image_path}" | identify -format '%w %h' - 2>/dev/null || true)"
       if [[ "$dimensions" =~ ^([0-9]+)\ ([0-9]+)$ ]]; then
         local width="${BASH_REMATCH[1]}"
         local height="${BASH_REMATCH[2]}"
@@ -145,10 +141,6 @@ validate_release_notes_file() {
 
   if (( screenshot_count > 0 && metadata_count != screenshot_count )); then
     invalid_screenshot_metadata+=("${release_notes_path} (expected ${screenshot_count} release-screenshot metadata comment(s), found ${metadata_count})")
-  fi
-
-  if [[ -n "$temp_image_file" ]]; then
-    rm -f "$temp_image_file"
   fi
 }
 

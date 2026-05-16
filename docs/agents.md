@@ -497,7 +497,7 @@ For detailed analysis of cloud agents, see [docs/workflow/071-cloud-agents-analy
 ### 10. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
 - **Deliverables:** Pull request, release notes, versioning, deployment plan, and post-release checklist.
-- **Key Behavior:** Write release notes as honest, technical notes for Terraform practitioners (not marketing), include ✨/🐛/📚 icons, include a 🔗 Commits section with user-facing commits, and only include ▶️ Getting started / 📸 Screenshots when applicable (screenshots required for user-visible output changes).
+- **Key Behavior:** Write release notes as honest, technical notes for Terraform practitioners (not marketing), include ✨/🐛/📚 icons, include a 🔗 Commits section with user-facing commits, and only include ▶️ Getting started / 📸 Screenshots when applicable (screenshots required for user-visible output changes). PR validation enforces both `release-notes.md` and `work-protocol.md` for changed work items, requires a `Release Manager` log entry, and requires screenshot targeting metadata for every release-note image.
 - **Definition of Done:** PR is created and merged, release is published, documented, and verified.
 
 ### 10. Retrospective
@@ -634,6 +634,7 @@ The first agent in the workflow creates `work-protocol.md` using this template:
 - **Code Reviewer** must check the Work Protocol to verify that all required agents (per the workflow type) have logged their work before approving. Missing agent entries are a **Blocker** issue.
 - **Code Reviewer** must also verify that global documentation was updated where applicable (see [Global Documentation Checks](#global-documentation-checks)).
 - **Release Manager** must verify that all required agents have logged entries in the Work Protocol before creating a PR or proceeding with the release.
+- **PR Validation** also enforces the release artifact guardrail: changed work items must include `release-notes.md` and `work-protocol.md`, each changed work protocol must contain a `Release Manager` entry, and each release-note screenshot must include valid targeting metadata plus a valid raw GitHub image URL.
 
 ### Global Documentation Checks
 

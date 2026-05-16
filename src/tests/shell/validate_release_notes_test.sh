@@ -42,33 +42,170 @@ if [[ $rc -eq 0 ]]; then
 fi
 echo "OK: fails when changed issue work item has no release notes"
 
-# Case 2: changed docs/features item with release-notes.md should pass
+# Case 2: changed docs/features item without work-protocol.md should fail
 git checkout -q "$BASE_SHA"
-mkdir -p docs/features/999-with-release-notes
-cat > docs/features/999-with-release-notes/specification.md <<'EOF'
+mkdir -p docs/features/999-missing-work-protocol
+cat > docs/features/999-missing-work-protocol/specification.md <<'EOF'
 # Specification
 EOF
-cat > docs/features/999-with-release-notes/release-notes.md <<'EOF'
+cat > docs/features/999-missing-work-protocol/release-notes.md <<'EOF'
 # Release Notes
 EOF
-git add docs/features/999-with-release-notes/specification.md docs/features/999-with-release-notes/release-notes.md
+git add docs/features/999-missing-work-protocol/specification.md docs/features/999-missing-work-protocol/release-notes.md
 git commit -qm "docs: add feature with release notes"
 HEAD_SHA="$(git rev-parse HEAD)"
 
-bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
-echo "OK: passes when changed feature work item includes release notes"
+set +e
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null 2>&1
+rc=$?
+set -e
 
-# Case 3: non feature/issue docs changes should be ignored
+if [[ $rc -eq 0 ]]; then
+  echo "ERROR: expected failure when work-protocol.md is missing"
+  exit 1
+fi
+echo "OK: fails when changed feature work item has no work protocol"
+
+# Case 3: changed docs/features item without Release Manager work-protocol entry should fail
+git checkout -q "$BASE_SHA"
+mkdir -p docs/features/999-missing-release-manager
+cat > docs/features/999-missing-release-manager/specification.md <<'EOF'
+# Specification
+EOF
+cat > docs/features/999-missing-release-manager/release-notes.md <<'EOF'
+# Release Notes
+EOF
+cat > docs/features/999-missing-release-manager/work-protocol.md <<'EOF'
+# Work Protocol
+
+## Agent Work Log
+
+### Developer
+- **Date:** 2026-05-16
+EOF
+git add docs/features/999-missing-release-manager/specification.md \
+  docs/features/999-missing-release-manager/release-notes.md \
+  docs/features/999-missing-release-manager/work-protocol.md
+git commit -qm "docs: add incomplete work protocol"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+set +e
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
+rc=$?
+set -e
+
+if [[ $rc -eq 0 ]]; then
+  echo "ERROR: expected failure when Release Manager entry is missing"
+  exit 1
+fi
+echo "OK: fails when Release Manager entry is missing from work protocol"
+
+# Case 4: changed docs/workflow item with release-notes.md and work-protocol.md should pass
 git checkout -q "$BASE_SHA"
 mkdir -p docs/workflow/999-example
 cat > docs/workflow/999-example/tasks.md <<'EOF'
 ## Tasks
 EOF
-git add docs/workflow/999-example/tasks.md
-git commit -qm "docs: add workflow tasks"
+cat > docs/workflow/999-example/release-notes.md <<'EOF'
+# Release Notes
+EOF
+cat > docs/workflow/999-example/work-protocol.md <<'EOF'
+# Work Protocol
+
+## Agent Work Log
+
+### Release Manager
+- **Date:** 2026-05-16
+EOF
+git add docs/workflow/999-example/tasks.md docs/workflow/999-example/release-notes.md docs/workflow/999-example/work-protocol.md
+git commit -qm "docs: add workflow release artifacts"
 HEAD_SHA="$(git rev-parse HEAD)"
 
 bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
-echo "OK: ignores non feature/issue docs changes"
+echo "OK: passes when changed workflow work item includes release artifacts"
+
+# Case 5: code changes without any work item docs should fail
+git checkout -q "$BASE_SHA"
+mkdir -p scripts
+cat > scripts/example.sh <<'EOF'
+#!/usr/bin/env bash
+echo "example"
+EOF
+chmod +x scripts/example.sh
+git add scripts/example.sh
+git commit -qm "chore: add script without work item docs"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+set +e
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null 2>&1
+rc=$?
+set -e
+
+if [[ $rc -eq 0 ]]; then
+  echo "ERROR: expected failure when work item docs are missing for script change"
+  exit 1
+fi
+echo "OK: fails when script changes lack a work item folder"
+
+# Case 6: screenshot references must use raw URLs plus metadata
+git checkout -q "$BASE_SHA"
+mkdir -p docs/features/999-screenshot-validation
+printf '%s' 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII=' | base64 -d > docs/features/999-screenshot-validation/example.png
+cat > docs/features/999-screenshot-validation/release-notes.md <<'EOF'
+# Release Notes
+
+![Screenshot](./example.png)
+EOF
+cat > docs/features/999-screenshot-validation/work-protocol.md <<'EOF'
+# Work Protocol
+
+## Agent Work Log
+
+### Release Manager
+- **Date:** 2026-05-16
+EOF
+git add docs/features/999-screenshot-validation/example.png \
+  docs/features/999-screenshot-validation/release-notes.md \
+  docs/features/999-screenshot-validation/work-protocol.md
+git commit -qm "docs: add invalid screenshot reference"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+set +e
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null 2>&1
+rc=$?
+set -e
+
+if [[ $rc -eq 0 ]]; then
+  echo "ERROR: expected failure for invalid screenshot reference"
+  exit 1
+fi
+echo "OK: fails when screenshot references are missing raw URLs/metadata"
+
+# Case 7: valid screenshot metadata should pass
+git checkout -q "$BASE_SHA"
+mkdir -p docs/features/999-valid-screenshot
+printf '%s' 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WHZ1xQAAAAASUVORK5CYII=' | base64 -d > docs/features/999-valid-screenshot/example.png
+cat > docs/features/999-valid-screenshot/release-notes.md <<'EOF'
+# Release Notes
+
+<!-- release-screenshot: selector="summary:has-text('azurerm_resource_group.example')"; focus="Shows the changed summary line" -->
+![Screenshot](https://raw.githubusercontent.com/oocx/tfplan2md/v1.0.0/docs/features/999-valid-screenshot/example.png)
+EOF
+cat > docs/features/999-valid-screenshot/work-protocol.md <<'EOF'
+# Work Protocol
+
+## Agent Work Log
+
+### Release Manager
+- **Date:** 2026-05-16
+EOF
+git add docs/features/999-valid-screenshot/example.png \
+  docs/features/999-valid-screenshot/release-notes.md \
+  docs/features/999-valid-screenshot/work-protocol.md
+git commit -qm "docs: add valid screenshot reference"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
+echo "OK: passes when screenshot metadata and raw URL are valid"
 
 echo "All tests passed."

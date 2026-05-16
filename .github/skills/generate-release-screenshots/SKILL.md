@@ -21,6 +21,7 @@ Provide clear, actionable guidance for generating actual PNG screenshot files fo
 - [ ] **Use absolute `raw.githubusercontent.com` URLs in release notes** — relative paths like `./image.png` do NOT work in GitHub Release pages. Use format: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png` where `{VERSION}` is the release tag.
 - [ ] **Choose selectors that capture the visual change**: Match the selector to what the feature/fix actually changes (see Selector Guide below).
 - [ ] **Generate the report with `--details open`** so resource details blocks are expanded in screenshots — unless you specifically want to capture a collapsed resource.
+- [ ] **Add one metadata comment per screenshot in release notes** using `<!-- release-screenshot: selector="..." ; focus="..." -->` or `target-resource-id="..."` so PR validation can confirm the capture intent.
 
 ### Must Not
 - [ ] Add `![Screenshot](path/to/image.png)` syntax to markdown before verifying the PNG file exists.
@@ -29,6 +30,7 @@ Provide clear, actionable guidance for generating actual PNG screenshot files fo
 - [ ] Proceed with release if screenshot generation fails due to timeouts or tooling issues.
 - [ ] Use relative paths (e.g., `./image.png`) in release notes — they break in GitHub Release pages.
 - [ ] Reference filenames that don't exist — always verify the actual generated filename matches the markdown reference.
+- [ ] Omit screenshot targeting metadata from release notes — the release-note guardrail rejects screenshot entries without it.
 
 ## Golden Example
 
@@ -126,6 +128,7 @@ Before proceeding:
 ### 5. Add Markdown References
 Only after verification, use absolute URLs for release notes:
 ```markdown
+<!-- release-screenshot: selector="summary:has-text('resource_type.resource_name')"; focus="Shows the changed summary line" -->
 ![Feature demonstration](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN-feature-slug/feature-name.png)
 ```
 **Never use relative paths** in release notes — they break in GitHub Release pages.
@@ -210,8 +213,11 @@ scripts/generate-release-screenshots.sh --plan ... --output-prefix feature-name
 # 2. Verify it exists
 ls -lh docs/features/NNN/feature-name-crop-light-1x.png
 
-# 3. Then add the markdown reference
-echo '![Feature](docs/features/NNN/feature-name-crop-light-1x.png)' >> release-notes.md
+# 3. Then add the metadata + markdown reference
+cat >> release-notes.md <<'EOF'
+<!-- release-screenshot: selector="summary:has-text('resource_type.resource_name')"; focus="Shows the updated summary line" -->
+![Feature](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN/feature-name-crop-light-1x.png)
+EOF
 ```
 
 ### ❌ Wrong: Using markdown links instead of screenshots
@@ -221,6 +227,7 @@ See the changes in [comprehensive-demo.md (lines 45-67)](comprehensive-demo.md#L
 
 ### ✅ Correct: Using actual PNG screenshots
 ```markdown
+<!-- release-screenshot: target-resource-id="azurerm_network_security_group.example"; focus="Shows the rendered resource details that changed" -->
 ![Network security rules demonstration](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/features/072/nsg-rules.png)
 ```
 
@@ -238,7 +245,7 @@ scripts/generate-release-screenshots.sh --plan ... --output-prefix nsg-rules --o
 # 2. List actual generated files
 ls docs/features/072/*.png
 
-# 3. Use the exact filename in markdown
+# 3. Use the exact filename in markdown with targeting metadata
 # Output: docs/features/072/nsg-rules.png
 ```
 

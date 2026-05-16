@@ -52,11 +52,14 @@ Constraints for release notes:
 > **CRITICAL**: Use absolute `raw.githubusercontent.com` URLs, NOT relative paths.
 > Relative paths (e.g., `./image.png`) break in GitHub Release pages.
 > Use the release tag in the URL: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png`
+> PR validation now also requires one `<!-- release-screenshot: ... -->` metadata comment per screenshot, including either `selector=` or `target-resource-id=` plus `focus=`.
 
 ### Before
+<!-- release-screenshot: selector="summary:has-text('resource_type.resource_name')"; focus="Shows the before state that the change replaces" -->
 ![Before](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN-feature-name/before-screenshot.png)
 
 ### After
+<!-- release-screenshot: target-resource-id="resource_type.resource_name"; focus="Shows the expanded resource details after the fix" -->
 ![After](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN-feature-name/after-screenshot.png)
 
 -->

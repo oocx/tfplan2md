@@ -1,12 +1,15 @@
 # Build stage - use Alpine SDK for musl compatibility
-FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine@sha256:828a5235b7df373cc96b5ca74a4823a19f9e1fea654abf01e1cb1dd9c767b718 AS build
+# Manifest list digest (multi-arch: linux/amd64, linux/arm/v7, linux/arm64); obtained via:
+#   docker buildx imagetools inspect mcr.microsoft.com/dotnet/sdk:10.0-alpine
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine@sha256:5c559aa5d99337e400d39ab4fa1f6979d126c29b20939d53658ed38300571e74 AS build
 WORKDIR /workspace
 
 # Copy all files
 COPY . .
 
 # Install native toolchain prerequisites for NativeAOT (Alpine uses apk)
-# Versions pinned for reproducibility against Alpine 3.23 (base image digest pinned above).
+# Versions pinned for reproducibility against Alpine 3.23. Package versions are identical
+# across architectures on Alpine Linux.
 # To refresh versions: docker run --rm <base-image> sh -c \
 #   "apk info -v upx clang lld build-base zlib-dev linux-headers bash"
 RUN apk add --no-cache \
@@ -22,14 +25,21 @@ RUN apk add --no-cache \
 RUN dotnet restore src/tfplan2md.slnx
 RUN dotnet build src/tfplan2md.slnx --no-restore -c Release
 
-# Publish NativeAOT for linux-musl-x64 with static musl linking (no dynamic libc dependency)
-RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
-    -c Release \
-    -r linux-musl-x64 \
-    --self-contained true \
-    -o /app/publish \
-    -p:StaticExecutable=true \
-    -p:LinkerFlavor=lld
+# Publish NativeAOT with static musl linking (no dynamic libc dependency).
+# TARGETARCH is set automatically by Docker Buildx for multi-platform builds.
+ARG TARGETARCH
+RUN case "${TARGETARCH}" in \
+      amd64) DOTNET_RID=linux-musl-x64 ;; \
+      arm64) DOTNET_RID=linux-musl-arm64 ;; \
+      *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
+      -c Release \
+      -r "${DOTNET_RID}" \
+      --self-contained true \
+      -o /app/publish \
+      -p:StaticExecutable=true \
+      -p:LinkerFlavor=lld
 
 RUN upx --ultra-brute /app/publish/tfplan2md
 

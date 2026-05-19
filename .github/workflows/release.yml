@@ -611,17 +611,15 @@ jobs:
       actions: read
       id-token: write
       contents: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a # v2.1.0
+    # The SLSA generator requires a tag ref (refs/tags/vX.Y.Z) — SHA refs are not supported.
+    # Using @v2.1.0 is the correct approach: the SLSA generator docs mandate tag-based pinning,
+    # and the Scorecard project itself uses the same pattern in its own goreleaser workflow.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
     with:
       base64-subjects: ${{ needs.consolidate-checksums.outputs.slsa_subjects }}
       upload-assets: true
       upload-tag-name: v${{ needs.release.outputs.version }}
       provenance-name: tfplan2md_${{ needs.release.outputs.version }}.intoto.jsonl
-      # compile-generator: true is required when calling the reusable workflow by commit SHA
-      # (as required for SLSA Level 3). Without it, generate-builder.sh fails because it
-      # expects refs/tags/vX.Y.Z to download a pre-built binary, but receives the SHA.
-      # With compile-generator: true, the binary is built from source at the pinned SHA instead.
-      compile-generator: true
       # Prevent transient failures (Sigstore/Fulcio/Rekor unavailability) from blocking releases.
       # Per-binary attestation via actions/attest-build-provenance already provides supply chain security.
       continue-on-error: true

@@ -107,14 +107,19 @@ internal sealed class ReportRenderer
     }
 
     /// <summary>
-    /// Renders the "Relevant Attributes" H2 section. Each entry is rendered as a
-    /// row in a two-column table (Resource, Attribute path). Section is omitted
-    /// when the collection is empty so plans without this Terraform 1.14+ field
-    /// produce no diff against pre-feature snapshots.
-    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// Renders the fallback <c>&lt;details&gt;</c> section for <c>relevant_attributes</c> entries that
+    /// could not be correlated to any replaced or destroyed resource card.
+    /// When all attributes were correlated (the common case), the section is omitted entirely so
+    /// the markdown output remains clean.
+    /// For plans without any inline-annotated resources (e.g., only <c>update</c> changes, or Terraform
+    /// plans from versions before 1.14), all relevant attributes appear here as a fallback, preserving
+    /// pre-feature parity in the output.
+    /// Related feature: docs/features/660-inline-relevant-attributes/specification.md.
     /// </summary>
     /// <param name="writer">Markdown writer.</param>
-    /// <param name="attributes">Relevant attribute models.</param>
+    /// <param name="attributes">
+    /// The uncorrelated subset of relevant attributes (passed as <c>RelevantAttributes</c> on the model).
+    /// </param>
     private static void RenderRelevantAttributes(
         MarkdownWriter writer,
         IReadOnlyList<RelevantAttributeModel> attributes)
@@ -124,19 +129,19 @@ internal sealed class ReportRenderer
             return;
         }
 
-        writer.Heading("Relevant Attributes", 2);
+        writer.Raw("<details>\n");
+        writer.Raw($"<summary>\U0001f517\u00A0Other plan inputs ({attributes.Count}) \u2014 read by this plan but not tied to a specific change</summary>\n");
         writer.BlankLine();
-        writer.Raw("| Resource | Attribute path |\n");
-        writer.Raw("| -------- | -------------- |\n");
+        writer.Paragraph("> These existing values were read to compute the plan. If they change before apply, the plan may be stale.");
+        writer.BlankLine();
 
         foreach (var attr in attributes)
         {
-            writer.TableRow([
-                MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(attr.Resource)),
-                MarkdownWriter.InlineCode(MarkdownHelpers.EscapeMarkdownTableCell(attr.AttributePath))
-            ]);
+            writer.Paragraph($"- `{attr.Resource}.{attr.AttributePath}`");
         }
 
+        writer.BlankLine();
+        writer.Raw("</details>\n");
         writer.BlankLine();
     }
 

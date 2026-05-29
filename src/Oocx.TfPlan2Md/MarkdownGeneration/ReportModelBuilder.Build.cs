@@ -65,6 +65,7 @@ internal partial class ReportModelBuilder
         var planStatus = BuildPlanStatus(plan);
         var drift = BuildResourceDrift(plan, _configurationReferenceIndex);
         var relevantAttributes = BuildRelevantAttributes(plan);
+        var uncorrelatedRelevantAttributes = BuildInlineRelevantAttributeAnnotations(allChanges, relevantAttributes);
         var otherActions = BuildActionInvocations(plan, allChanges);
 
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
@@ -89,7 +90,7 @@ internal partial class ReportModelBuilder
             {
                 PlanStatus = planStatus,
                 Drift = drift,
-                RelevantAttributes = relevantAttributes,
+                RelevantAttributes = uncorrelatedRelevantAttributes,
                 OtherActions = otherActions
             });
     }

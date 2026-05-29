@@ -48,6 +48,7 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
 
         WriteDetailsHeader(writer, detailsTag, summary, policy);
         RenderCodeAnalysisMetadata(writer, change.CodeAnalysisFindings);
+        RenderInlineRelevantAttributeAnnotations(writer, change);
 
         var smallAttributes = change.AttributeChanges.Where(attribute => !attribute.IsLarge).ToArray();
         var largeAttributes = change.AttributeChanges.Where(attribute => attribute.IsLarge).ToArray();

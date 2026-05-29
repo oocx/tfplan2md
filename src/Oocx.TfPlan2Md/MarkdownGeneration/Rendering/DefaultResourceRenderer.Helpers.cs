@@ -220,4 +220,66 @@ internal sealed partial class DefaultResourceRenderer
         return !string.IsNullOrWhiteSpace(change.TagsBadges)
             && attributeName.StartsWith("tags.", StringComparison.Ordinal);
     }
-}
+
+    /// <summary>
+    /// Renders inline forced-replacement callouts and depends-on line for a replaced or destroyed resource.
+    /// Emits nothing when the resource has no correlated relevant attribute annotations.
+    /// Each forced-replacement entry is rendered as a blockquote line:
+    ///   <c>&gt; ⚠️\u00A0**Forced replacement** — `{local}` reads `{upstream}.{path}`{phrase}</c>
+    /// A single depends-on line follows (if any), using <c>🔗\u00A0**Depends on:**</c>
+    /// (or <c>🔗\u00A0**Also depends on:**</c> when forced-replacement entries are also present).
+    /// A trailing blank line is appended when any annotations were rendered.
+    /// Related feature: docs/features/660-inline-relevant-attributes/specification.md.
+    /// </summary>
+    /// <param name="writer">The markdown writer to write output to.</param>
+    /// <param name="change">The resource change model that may carry annotation lists.</param>
+    private static void RenderInlineRelevantAttributeAnnotations(MarkdownWriter writer, ResourceChangeModel change)
+    {
+        var forced = change.ForcedReplacementAnnotations;
+        var dependsOn = change.DependsOnAnnotations;
+
+        if (forced.Count == 0 && dependsOn.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var ann in forced)
+        {
+            // Phrase appended to line: either ", which is **changing in this plan**." or "."
+            var changingPhrase = ann.IsChangingInThisPlan ? ", which is **changing in this plan**." : ".";
+            writer.Paragraph(
+                $"> \u26a0\ufe0f\u00A0**Forced replacement** \u2014 `{ann.LocalAttribute}` reads " +
+                $"`{ann.UpstreamResource}.{ann.UpstreamAttributePath}`{changingPhrase}");
+        }
+
+        if (dependsOn.Count > 0)
+        {
+            // Use "Also depends on:" label when forced-replacement entries are also present
+            var label = forced.Count > 0 ? "Also depends on:" : "Depends on:";
+            var entries = BuildDependsOnEntries(dependsOn);
+            writer.Paragraph($"> \U0001f517\u00A0**{label}** {entries}");
+        }
+
+        writer.BlankLine();
+    }
+
+    private static string BuildDependsOnEntries(IReadOnlyList<Models.DependsOnAnnotation> dependsOn)
+    {
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < dependsOn.Count; i++)
+        {
+            var ann = dependsOn[i];
+            if (i > 0)
+            {
+                sb.Append(", ");
+            }
+
+            sb.Append($"`{ann.UpstreamResource}.{ann.UpstreamAttributePath}`");
+            if (ann.IsChangingInThisPlan)
+            {
+                sb.Append(" \u26a0\ufe0f");
+            }
+        }
+
+        return sb.ToString();
+    }

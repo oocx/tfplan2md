@@ -182,4 +182,24 @@ public class ResourceChangeModel
     /// Related feature: docs/features/122-terraform-1-15-support/adr-003-inline-action-rendering.md.
     /// </summary>
     internal IReadOnlyList<Models.ActionInvocationModel> Actions { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the forced-replacement inline annotations for this resource.
+    /// Populated by <c>ReportModelBuilder.BuildInlineRelevantAttributeAnnotations</c> when
+    /// the resource is being replaced or destroyed and has <c>replace_paths</c> entries that
+    /// trace to upstream <c>relevant_attributes</c> entries via <see cref="ConfigurationReferences"/>.
+    /// Empty for resources without forced-replacement correlations.
+    /// Related feature: docs/features/660-inline-relevant-attributes/specification.md.
+    /// </summary>
+    internal IReadOnlyList<Models.ForcedReplacementAnnotation> ForcedReplacementAnnotations { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the depends-on inline annotations for this resource.
+    /// Populated by <c>ReportModelBuilder.BuildInlineRelevantAttributeAnnotations</c> when
+    /// the resource is being replaced or destroyed and has correlated <c>relevant_attributes</c>
+    /// entries that do not trace to forced-replacement paths.
+    /// Empty for resources without depends-on correlations.
+    /// Related feature: docs/features/660-inline-relevant-attributes/specification.md.
+    /// </summary>
+    internal IReadOnlyList<Models.DependsOnAnnotation> DependsOnAnnotations { get; set; } = [];
 }

@@ -283,3 +283,4 @@ internal sealed partial class DefaultResourceRenderer
 
         return sb.ToString();
     }
+}

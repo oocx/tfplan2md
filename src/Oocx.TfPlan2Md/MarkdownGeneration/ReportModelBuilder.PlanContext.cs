@@ -96,7 +96,7 @@ internal partial class ReportModelBuilder
     /// Returns an empty list when all attributes were correlated, and returns the full list when
     /// no attributes could be correlated (e.g., no replace/delete changes, or no matching references).
     /// </returns>
-    private static IReadOnlyList<RelevantAttributeModel> BuildInlineRelevantAttributeAnnotations(
+    private static List<RelevantAttributeModel> BuildInlineRelevantAttributeAnnotations(
         IReadOnlyList<ResourceChangeModel> allChanges,
         List<RelevantAttributeModel> allRelevantAttributes)
     {

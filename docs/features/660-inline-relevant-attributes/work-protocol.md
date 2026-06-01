@@ -54,3 +54,21 @@
   - `docs/features.md`
   - `docs/features/660-inline-relevant-attributes/work-protocol.md` (this entry)
 - **Problems Encountered:** None.
+
+### Code Reviewer
+- **Date:** 2026-06-01
+- **Summary:** Reviewed the full feature 660 change set after implementation, docs, and release-note assets were in place. Verified the production change against the specification and test plan, then ran repository validation on the PR diff. Result: no review issues found and no security findings. Independent verification also already passed locally with `dotnet build src/tfplan2md.slnx` and `scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --solution src/tfplan2md.slnx` (1354/1354 passed).
+- **Decision:** ✅ **Approved** — no issues found.
+- **Artifacts Produced:**
+  - `docs/features/660-inline-relevant-attributes/work-protocol.md` (this entry)
+- **Problems Encountered:** None.
+
+### Release Manager
+- **Date:** 2026-06-01
+- **Summary:** Created release notes and release-note screenshots for feature 660. Added `release-notes.md` using the repository template, documenting the new inline forced-replacement/dependency annotations and fallback inputs section. Generated two 580×400 PNG screenshots (`feature-660-inline-annotations.png`, `feature-660-fallback-inputs.png`) from the feature-specific UAT plan and referenced them with absolute `raw.githubusercontent.com` URLs plus required `release-screenshot` metadata comments. Release-note validation requirements are satisfied for this work item (`release-notes.md`, `work-protocol.md`, screenshots, metadata).
+- **Artifacts Produced:**
+  - `docs/features/660-inline-relevant-attributes/release-notes.md`
+  - `docs/features/660-inline-relevant-attributes/feature-660-inline-annotations.png`
+  - `docs/features/660-inline-relevant-attributes/feature-660-fallback-inputs.png`
+  - `docs/features/660-inline-relevant-attributes/work-protocol.md` (this entry)
+- **Problems Encountered:** None.

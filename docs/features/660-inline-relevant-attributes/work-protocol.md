@@ -32,3 +32,25 @@
 - **Summary:** Read specification, architecture, and test plan for feature 660. Produced `tasks.md` with 11 prioritized tasks in dependency order. Tasks cover: new model types (`ForcedReplacementAnnotation`, `DependsOnAnnotation`), `ResourceChangeModel` property additions, `BuildInlineRelevantAttributeAnnotations` algorithm in `ReportModelBuilder.PlanContext.cs`, build pipeline wiring, inline renderer helper in `DefaultResourceRenderer.Helpers.cs`, renderer call-site in `DefaultResourceRenderer.cs`, fallback `<details>` section replacing the H2 table in `ReportRenderer.cs`, 19 unit tests, 7 new JSON snapshot fixtures, new `InlineRelevantAttributeSnapshotTests` class, and the existing `relevant-attributes-present.md` snapshot update.
 - **Artifacts Produced:** `docs/features/660-inline-relevant-attributes/tasks.md`
 - **Problems Encountered:** None — specification, architecture, and test plan were all complete and consistent with no open questions.
+
+### Developer
+- **Date:** 2026-06-01
+- **Summary:** Completed the inline relevant-attributes implementation and closed the remaining test gaps for feature 660. In production code, updated `ReportModelBuilder.PlanContext.cs` so relevant-attribute correlation resolves module-prefixed references by progressively trimming suffix segments until a matching upstream resource key is found, and sorted depends-on annotations deterministically for stable rendering/snapshots. Added 19 focused unit tests for forced-replacement correlation, changing-upstream semantics, depends-on routing, in-place update/drift exclusion, managed/data-source matching, case-insensitive matching, module-prefixed references, delete-as-replace behaviour, and fallback cases. Added 7 snapshot fixtures/tests covering forced replacement, combined cards, depends-on-only, fallback-only, all-correlated, and drift scenarios; updated the existing `relevant-attributes-present.md` snapshot to the new fallback-details rendering. Created feature-specific UAT artifacts (`uat-plan.json` + rendered `uat-plan.md`) to exercise the full user-visible flow in a single report. Full verification passes: `dotnet build src/tfplan2md.slnx` and `scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --solution src/tfplan2md.slnx` (1354/1354 passed).
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.PlanContext.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderInlineRelevantAttributeTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/InlineRelevantAttributeSnapshotTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/tf114/relevant-attrs-*.json`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/relevant-attrs-*.md`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/relevant-attributes-present.md`
+  - `docs/features/660-inline-relevant-attributes/uat-plan.json`
+  - `docs/features/660-inline-relevant-attributes/uat-plan.md`
+- **Problems Encountered:** Two implementation issues were found and fixed during validation: the original address-normalisation heuristic did not handle module-prefixed configuration references, and depends-on annotation ordering from a `HashSet` was unstable for snapshot testing.
+
+### Technical Writer
+- **Date:** 2026-06-01
+- **Summary:** Updated user-facing documentation for feature 660 to reflect the new inline rendering model. `docs/features.md` now explains that `relevant_attributes[]` render as inline forced-replacement callouts, inline dependency context, changing-upstream emphasis, and a fallback `🔗 Other plan inputs` details block instead of a standalone bottom-of-report section.
+- **Artifacts Produced:**
+  - `docs/features.md`
+  - `docs/features/660-inline-relevant-attributes/work-protocol.md` (this entry)
+- **Problems Encountered:** None.

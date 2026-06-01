@@ -1,0 +1,70 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.api",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "api",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "app_settings": { "kv_uri": "https://old.example" },
+          "identity": { "tenant_id": "tenant-a" }
+        },
+        "after": {
+          "app_settings": { "kv_uri": "https://new.example" },
+          "identity": { "tenant_id": "tenant-b" }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "replace_paths": [["app_settings"]]
+      }
+    },
+    {
+      "address": "example_resource.kv",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "kv",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": { "vault_uri": "https://old.example" },
+        "after": { "vault_uri": "https://new.example" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "example_resource.api",
+          "expressions": {
+            "app_settings": {
+              "references": ["example_resource.kv.vault_uri"]
+            },
+            "identity": {
+              "references": ["data.example_data.current.tenant_id"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "example_resource.kv",
+      "attribute": ["vault_uri"]
+    },
+    {
+      "resource": "data.example_data.current",
+      "attribute": ["tenant_id"]
+    }
+  ]
+}

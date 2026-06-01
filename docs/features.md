@@ -3160,9 +3160,16 @@ No banner is emitted for ordinary, applyable, complete plans.
 
 When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Each drifted resource is listed using the same resource renderer registry as regular changes, showing the out-of-band changes detected in the live infrastructure.
 
-#### Relevant Attributes Section
+#### Relevant Attributes Annotations
 
-When `relevant_attributes[]` is present, a `Relevant Attributes` H2 section renders a two-column table showing the upstream resource addresses and attribute paths that influenced changes in this plan.
+When `relevant_attributes[]` is present, tfplan2md now renders that plan context inline where it matters most:
+
+- **Forced replacement callout** — replaced or destroyed resources show a `⚠️ Forced replacement` blockquote when a `replace_paths` entry traces back to an upstream relevant attribute.
+- **Dependency context** — replaced or destroyed resources show a `🔗 Depends on:` (or `🔗 Also depends on:`) line listing correlated upstream inputs.
+- **Changing-upstream indicator** — upstream entries that are themselves being replaced or destroyed in the same plan are called out as **changing in this plan**.
+- **Fallback details block** — any relevant attributes that cannot be tied to a specific replaced or destroyed resource are preserved in a collapsible `🔗 Other plan inputs` section near the end of the report.
+
+In-place update resources and drift-only resources do not receive inline relevant-attribute annotations.
 
 ### Deprecation Warnings (Terraform 1.15)
 

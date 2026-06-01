@@ -1,0 +1,42 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.web",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "web",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": { "source_id": "old-id", "name": "web-old" },
+        "after": { "source_id": "new-id", "name": "web-new" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "replace_paths": [["source_id"]]
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "example_resource.web",
+          "expressions": {
+            "source_id": {
+              "references": ["example_resource.source.id"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "example_resource.source",
+      "attribute": ["id"]
+    }
+  ]
+}

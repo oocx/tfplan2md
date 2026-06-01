@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.group",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "group",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "group-old" },
+        "after": { "name": "group-new" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "example_resource.group",
+          "expressions": {
+            "location": {
+              "references": ["example_resource.location.value"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "example_resource.location",
+      "attribute": ["value"]
+    },
+    {
+      "resource": "data.example_data.subscription",
+      "attribute": ["subscription_id"]
+    }
+  ]
+}

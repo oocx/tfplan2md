@@ -189,8 +189,7 @@ internal partial class ReportModelBuilder
         {
             foreach (var reference in refs)
             {
-                var normalizedAddress = NormalizeReferenceToResourceAddress(reference);
-                if (byUpstream.TryGetValue(normalizedAddress, out var raList))
+                if (TryResolveRelevantAttributesForReference(reference, byUpstream, out var raList))
                 {
                     foreach (var ra in raList)
                     {
@@ -241,8 +240,7 @@ internal partial class ReportModelBuilder
 
             foreach (var reference in topAttrRefs)
             {
-                var normalizedAddress = NormalizeReferenceToResourceAddress(reference);
-                if (!byUpstream.TryGetValue(normalizedAddress, out var raList))
+                if (!TryResolveRelevantAttributesForReference(reference, byUpstream, out var raList))
                 {
                     continue;
                 }
@@ -282,73 +280,60 @@ internal partial class ReportModelBuilder
         HashSet<RelevantAttributeModel> forcedRaSet,
         HashSet<string> replacedOrDestroyed)
     {
-        var dependsOnAnnotations = new List<Models.DependsOnAnnotation>();
-        foreach (var ra in correlated.Where(ra => !forcedRaSet.Contains(ra)))
-        {
-            dependsOnAnnotations.Add(new Models.DependsOnAnnotation
+        return correlated
+            .Where(ra => !forcedRaSet.Contains(ra))
+            .OrderBy(ra => ra.Resource, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(ra => ra.AttributePath, StringComparer.OrdinalIgnoreCase)
+            .Select(ra => new Models.DependsOnAnnotation
             {
                 UpstreamResource = ra.Resource,
                 UpstreamAttributePath = ra.AttributePath,
                 IsChangingInThisPlan = replacedOrDestroyed.Contains(ra.Resource)
-            });
-        }
-
-        return dependsOnAnnotations;
+            })
+            .ToList();
     }
 
     /// <summary>
-    /// Normalizes a Terraform configuration reference string to the resource address portion,
-    /// stripping any trailing attribute path suffix.
-    /// <list type="bullet">
-    ///   <item>Managed resources: returns <c>type.name</c> (first two dot-segments).</item>
-    ///   <item>Data sources: returns <c>data.type.name</c> (first three dot-segments).</item>
-    ///   <item>References that are already just a resource address are returned unchanged.</item>
-    /// </list>
-    /// Related feature: docs/features/660-inline-relevant-attributes/specification.md.
+    /// Resolves a configuration reference to the most specific upstream resource key present in
+    /// <paramref name="byUpstream"/>, progressively stripping trailing path segments until a match is found.
+    /// This supports managed resources, data sources, and module-prefixed references without relying on
+    /// a fixed dot-segment heuristic.
+    /// Related feature: docs/features/660-inline-relevant-attributes/architecture.md.
     /// </summary>
-    /// <param name="reference">
-    /// The raw reference string from <c>ConfigurationReferences</c>, such as
-    /// <c>"azurerm_network_interface.web.id"</c>, <c>"azurerm_network_interface.web"</c>,
-    /// or <c>"data.azurerm_client_config.current.tenant_id"</c>.
-    /// </param>
-    /// <returns>
-    /// The resource address: <c>"azurerm_network_interface.web"</c> or
-    /// <c>"data.azurerm_client_config.current"</c>.
-    /// Returns the input unchanged when it has fewer segments than expected.
-    /// </returns>
-    private static string NormalizeReferenceToResourceAddress(string reference)
+    /// <param name="reference">The raw reference string from <c>ConfigurationReferences</c>.</param>
+    /// <param name="byUpstream">Lookup keyed by upstream resource address.</param>
+    /// <param name="relevantAttributes">The resolved relevant attributes when a match is found.</param>
+    /// <returns><c>true</c> when a matching upstream resource key is found; otherwise <c>false</c>.</returns>
+    private static bool TryResolveRelevantAttributesForReference(
+        string reference,
+        Dictionary<string, List<RelevantAttributeModel>> byUpstream,
+        out List<RelevantAttributeModel> relevantAttributes)
     {
-        if (reference.StartsWith("data.", StringComparison.OrdinalIgnoreCase))
+        relevantAttributes = [];
+
+        if (string.IsNullOrWhiteSpace(reference))
         {
-            // Data source format: data.<type>.<name>[.<attribute>...]
-            // Take only the first three dot-segments (data, type, name)
-            var dot1 = reference.IndexOf('.');
-            if (dot1 < 0)
-            {
-                return reference;
-            }
-
-            var dot2 = reference.IndexOf('.', dot1 + 1);
-            if (dot2 < 0)
-            {
-                return reference;
-            }
-
-            var dot3 = reference.IndexOf('.', dot2 + 1);
-            return dot3 < 0 ? reference : reference[..dot3];
+            return false;
         }
-        else
+
+        var candidate = reference;
+        while (!string.IsNullOrWhiteSpace(candidate))
         {
-            // Managed resource format: <type>.<name>[.<attribute>...]
-            // Take only the first two dot-segments (type, name)
-            var dot1 = reference.IndexOf('.');
-            if (dot1 < 0)
+            if (byUpstream.TryGetValue(candidate, out var resolvedRelevantAttributes))
             {
-                return reference;
+                relevantAttributes = resolvedRelevantAttributes;
+                return true;
             }
 
-            var dot2 = reference.IndexOf('.', dot1 + 1);
-            return dot2 < 0 ? reference : reference[..dot2];
+            var lastDot = candidate.LastIndexOf('.');
+            if (lastDot < 0)
+            {
+                break;
+            }
+
+            candidate = candidate[..lastDot];
         }
+
+        return false;
     }
 }

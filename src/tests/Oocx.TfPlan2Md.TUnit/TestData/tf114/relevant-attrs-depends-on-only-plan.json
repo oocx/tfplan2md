@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "example_resource.logs",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "logs",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": { "name": "logs-old", "tenant_id": "tenant-a", "reason": "old" },
+        "after": { "name": "logs-new", "tenant_id": "tenant-b", "reason": "new" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "replace_paths": [["reason"]]
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "example_resource.logs",
+          "expressions": {
+            "tenant_id": {
+              "references": ["data.example_data.subscription.subscription_id"]
+            },
+            "reason": {
+              "references": ["example_resource.unrelated.id"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "data.example_data.subscription",
+      "attribute": ["subscription_id"]
+    }
+  ]
+}

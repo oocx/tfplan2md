@@ -135,7 +135,20 @@ HEAD_SHA="$(git rev-parse HEAD)"
 bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
 echo "OK: src/tests/shell/ changes do not require a work item folder"
 
-# Case 6: src/ changes outside src/tests/shell/ without a work item folder should fail
+# Case 5c: src/Dockerfile changes without a work item folder should pass
+git checkout -q "$BASE_SHA"
+mkdir -p src
+cat > src/Dockerfile <<'EOF'
+FROM alpine:3.20
+EOF
+git add src/Dockerfile
+git commit -qm "build: modify dockerfile without work item docs"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
+echo "OK: src/Dockerfile changes do not require a work item folder"
+
+# Case 6: src/ changes outside src/tests/shell/ and src/Dockerfile without a work item folder should fail
 git checkout -q "$BASE_SHA"
 mkdir -p src/SomeProject
 cat > src/SomeProject/Example.cs <<'EOF'

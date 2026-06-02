@@ -10,7 +10,7 @@ WORK_ITEM_REQUIRED_DIR_PATTERN='^(src/|examples/)'
 
 # Paths under WORK_ITEM_REQUIRED_DIR_PATTERN that are tooling/test-only and therefore
 # do NOT require a work item (shell test helpers, not shipped behavior).
-WORK_ITEM_EXCLUDED_DIR_PATTERN='^src/tests/shell/'
+WORK_ITEM_EXCLUDED_DIR_PATTERN='^(src/tests/shell/|src/Dockerfile$)'
 
 # Individual documentation files that can change workflow expectations globally and
 # should therefore also require a matching work item folder.

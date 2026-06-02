@@ -29,17 +29,27 @@ RUN dotnet build src/tfplan2md.slnx --no-restore -c Release
 # TARGETARCH is set automatically by Docker Buildx for multi-platform builds.
 ARG TARGETARCH
 RUN case "${TARGETARCH}" in \
-      amd64) DOTNET_RID=linux-musl-x64 ;; \
-      arm64) DOTNET_RID=linux-musl-arm64 ;; \
+      amd64) \
+        dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
+          -c Release \
+          -r linux-musl-x64 \
+          --self-contained true \
+          -o /app/publish \
+          -p:StaticExecutable=true \
+          -p:LinkerFlavor=lld ;; \
+      arm64) \
+        # TODO: NativeAOT is temporarily disabled for linux-musl-arm64 because .NET 10 Alpine \
+        # currently crashes in ILCompiler with "Specified cast is not valid" during docker build. \
+        # Periodically retest this path and re-enable AOT once the upstream bug is resolved. \
+        dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
+          -c Release \
+          -r linux-musl-arm64 \
+          --self-contained true \
+          -o /app/publish \
+          -p:PublishAot=false \
+          -p:UseAppHost=true ;; \
       *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
-    esac && \
-    dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
-      -c Release \
-      -r "${DOTNET_RID}" \
-      --self-contained true \
-      -o /app/publish \
-      -p:StaticExecutable=true \
-      -p:LinkerFlavor=lld
+    esac
 
 RUN upx --ultra-brute /app/publish/tfplan2md
 

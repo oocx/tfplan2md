@@ -28,3 +28,9 @@
 - **Summary:** Verified issue 661 fix behavior end-to-end: no non-applyable warning for effective no-change/no-drift plans, actionable non-applyable plans still warn, and drift no-op entries are filtered to avoid noise. Confirmed targeted rendering outputs and full automated test pass on current branch.
 - **Artifacts Produced:** `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
 - **Problems Encountered:** Docker image build check could not run because repository root does not contain a `Dockerfile` (`docker build -t tfplan2md:local .` fails with "no such file or directory").
+
+### UAT Tester
+- **Date:** 2026-06-03
+- **Summary:** Ran real UAT PR creation using `scripts/uat-run.sh` with three focused rendering artifacts for issue 661 outcomes: (1) no false non-applyable warning on effective no-change, (2) warning retained on actionable non-applyable plans, (3) drift-no-op noise suppressed. UAT PRs were created successfully on GitHub and Azure DevOps in create-only mode for maintainer review/approval.
+- **Artifacts Produced:** `.tmp/uat-run/last-run.json`, `docs/issues/661-plan-status-drift-nochanges/uat-report.md`, `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
+- **Problems Encountered:** Repository does not currently contain initialized `uat-repos/*` submodule paths as tracked gitlinks; used `UAT_GITHUB_SUBMODULE_PATH` and `AZDO_SUBMODULE_PATH` overrides pointing to external local clones to complete PR creation.

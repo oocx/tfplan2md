@@ -34,3 +34,9 @@
 - **Summary:** Ran real UAT PR creation using `scripts/uat-run.sh` with three focused rendering artifacts for issue 661 outcomes: (1) no false non-applyable warning on effective no-change, (2) warning retained on actionable non-applyable plans, (3) drift-no-op noise suppressed. UAT PRs were created successfully on GitHub and Azure DevOps in create-only mode for maintainer review/approval.
 - **Artifacts Produced:** `.tmp/uat-run/last-run.json`, `docs/issues/661-plan-status-drift-nochanges/uat-report.md`, `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
 - **Problems Encountered:** Repository does not currently contain initialized `uat-repos/*` submodule paths as tracked gitlinks; used `UAT_GITHUB_SUBMODULE_PATH` and `AZDO_SUBMODULE_PATH` overrides pointing to external local clones to complete PR creation.
+
+### Release Manager
+- **Date:** 2026-06-03
+- **Summary:** Verified all required agent entries in work protocol (Issue Analyst, Developer, Technical Writer, Code Reviewer, UAT Tester). Built ScreenshotGenerator and installed Playwright Chromium. Generated two release screenshots: `status-no-warning.png` (492×38, no false warning on clean plan) and `status-with-warning.png` (492×48, warning correctly shown for actionable plan). Created `release-notes.md` describing both regressions and their fixes, with screenshots and commit reference. Anticipated next version: v1.45.2 (patch bump from 1.45.1).
+- **Artifacts Produced:** `docs/issues/661-plan-status-drift-nochanges/release-notes.md`, `docs/issues/661-plan-status-drift-nochanges/status-no-warning.png`, `docs/issues/661-plan-status-drift-nochanges/status-with-warning.png`, `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
+- **Problems Encountered:** Repository is a shallow/grafted clone; individual fix commits from Developer not accessible by SHA. Referenced the single branch-tip commit `f344afbb` in release notes instead.

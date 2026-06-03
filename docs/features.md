@@ -3151,14 +3151,14 @@ A status banner is emitted immediately after the report title when any of the fo
 | Condition | Banner |
 |-----------|--------|
 | `errored: true` | 🛑 **This plan errored.** Terraform encountered errors and the plan may be incomplete. |
-| `applyable: false` | ⛔ **This plan is not applyable.** |
+| `applyable: false` and (`errored: true` or the plan is actionable) | ⛔ **This plan is not applyable.** |
 | `complete: false` | ⚠️ **This plan is incomplete.** Some changes may be deferred or pending. |
 
-No banner is emitted for ordinary, applyable, complete plans.
+No banner is emitted for ordinary, applyable, complete plans, or for effectively no-change/no-drift baselines where `applyable: false` would otherwise be a misleading warning.
 
 #### 🌀 Drift Detected Section
 
-When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Each drifted resource is listed using the same resource renderer registry as regular changes, showing the out-of-band changes detected in the live infrastructure.
+When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining drifted resources are listed with the same renderer registry as regular changes.
 
 #### Relevant Attributes Annotations
 

@@ -16,3 +16,9 @@
 - **Summary:** Implemented a surgical fix to suppress the non-applyable banner for no-change/no-drift baselines (while preserving it for errored/actionable plans), and applied display filtering semantics to drift so no-op/suppressed drift entries are hidden. Added regression tests and snapshot baselines for both behaviors.
 - **Artifacts Produced:** `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/HeaderRenderer.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.PlanContext.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Terraform114SnapshotTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/tf114/status-not-applyable-actionable-plan.json`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/tf114/drift-no-op-entries-plan.json`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/status-not-applyable.md`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/status-not-applyable-actionable.md`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/drift-no-op-entries.md`, `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
 - **Problems Encountered:** The snapshot regeneration script temporarily removed unrelated relevant-attributes snapshots; restored unchanged baselines before final verification.
+
+### Technical Writer
+- **Date:** 2026-06-03
+- **Summary:** Reviewed the implementation in commit `4be0be5d` and confirmed the documented behavior now matches the fix: suppress non-applyable warning on effective no-change/no-drift baselines, and hide no-op/suppressed drift entries via display filtering.
+- **Artifacts Produced:** `README.md`, `docs/features.md`, `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
+- **Problems Encountered:** `analysis.md` referenced by prior log entries is not present in the work-item folder in this branch.

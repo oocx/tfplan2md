@@ -106,15 +106,25 @@ public class Terraform114SnapshotTests
     public void Snapshot_DriftEmptyBaseline_MatchesBaseline() =>
         AssertSnapshot("drift-empty-baseline-plan.json", "drift-empty-baseline.md");
 
+    /// <summary>AC-5 negative: drift entries that are effectively no-op are filtered out.</summary>
+    [Test]
+    public void Snapshot_DriftNoOpEntries_AreHidden() =>
+        AssertSnapshot("drift-no-op-entries-plan.json", "drift-no-op-entries.md");
+
     /// <summary>AC-6: errored plan emits the error status banner.</summary>
     [Test]
     public void Snapshot_StatusErrored_MatchesBaseline() =>
         AssertSnapshot("status-errored-plan.json", "status-errored.md");
 
-    /// <summary>AC-6: non-applyable plan emits the not-applyable banner.</summary>
+    /// <summary>AC-6: non-applyable no-change plan does not emit misleading warning banner.</summary>
     [Test]
     public void Snapshot_StatusNotApplyable_MatchesBaseline() =>
         AssertSnapshot("status-not-applyable-plan.json", "status-not-applyable.md");
+
+    /// <summary>AC-6: actionable non-applyable plan still emits the warning banner.</summary>
+    [Test]
+    public void Snapshot_StatusNotApplyableActionable_MatchesBaseline() =>
+        AssertSnapshot("status-not-applyable-actionable-plan.json", "status-not-applyable-actionable.md");
 
     /// <summary>AC-6: incomplete plan emits the incomplete banner.</summary>
     [Test]

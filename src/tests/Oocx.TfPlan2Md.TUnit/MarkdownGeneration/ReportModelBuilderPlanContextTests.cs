@@ -30,6 +30,24 @@ public class ReportModelBuilderPlanContextTests
                 null));
     }
 
+    private static ResourceChange MakeNoOpChange(string address)
+    {
+        return new ResourceChange(
+            address,
+            null,
+            "managed",
+            "example_resource",
+            address.Split('.')[1],
+            "registry.terraform.io/example/example",
+            new Change(
+                ["no-op"],
+                JsonDocument.Parse("{\"name\":\"same\"}").RootElement,
+                JsonDocument.Parse("{\"name\":\"same\"}").RootElement,
+                null,
+                null,
+                null));
+    }
+
     private static TerraformPlan MakePlan(
         IReadOnlyList<ResourceChange>? resourceDrift = null,
         IReadOnlyList<RelevantAttribute>? relevantAttributes = null,
@@ -82,6 +100,16 @@ public class ReportModelBuilderPlanContextTests
         model.Drift.Should().HaveCount(1);
         model.Drift[0].Address.Should().Be("example_resource.drifted");
         model.Drift[0].Action.Should().Be("update");
+    }
+
+    [Test]
+    public void Build_ResourceDriftNoOp_IsFilteredOut()
+    {
+        var plan = MakePlan(resourceDrift: new[] { MakeNoOpChange("example_resource.drifted") });
+
+        var model = new ReportModelBuilder().Build(plan);
+
+        model.Drift.Should().BeEmpty();
     }
 
     [Test]

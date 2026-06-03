@@ -55,7 +55,11 @@ internal partial class ReportModelBuilder
 
         // Simulate a plan with just drift entries to reuse the resource change stage
         var driftPlan = plan with { ResourceChanges = plan.ResourceDrift };
-        return resourceChangeStage.Build(driftPlan, configurationReferenceIndex).ToList();
+        var builtDrift = resourceChangeStage.Build(driftPlan, configurationReferenceIndex).ToList();
+
+        // Reuse the same display filtering semantics used for normal resource changes so
+        // no-op and fully suppressed drift entries do not render as false positives.
+        return (_displayFilteringStage ?? CreateDisplayFilteringStage()).Build(builtDrift).DisplayChanges.ToList();
     }
 
     /// <summary>

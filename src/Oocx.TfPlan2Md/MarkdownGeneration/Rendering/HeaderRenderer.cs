@@ -41,7 +41,7 @@ internal sealed class HeaderRenderer
         writer.Heading(MarkdownHelpers.EscapeMarkdownHeading(title), 1);
         writer.BlankLine();
 
-        RenderPlanStatusBanner(writer, model.PlanStatus);
+        RenderPlanStatusBanner(writer, model);
 
         if (!model.HideMetadata)
         {
@@ -62,21 +62,23 @@ internal sealed class HeaderRenderer
     /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
     /// </summary>
     /// <param name="writer">Markdown writer target.</param>
-    /// <param name="status">Plan status model (may be null).</param>
-    private static void RenderPlanStatusBanner(MarkdownWriter writer, Models.PlanStatusModel? status)
+    /// <param name="model">Report model (contains plan status and derived summary context).</param>
+    private static void RenderPlanStatusBanner(MarkdownWriter writer, ReportModel model)
     {
+        var status = model.PlanStatus;
         if (status is null)
         {
             return;
         }
 
+        var isNoChangesBaseline = model.Summary.Total == 0 && model.Drift.Count == 0;
         var lines = new List<string>(3);
         if (status.Errored == true)
         {
             lines.Add("> 🛑\u00A0**Plan errored** — Terraform encountered errors while computing this plan.");
         }
 
-        if (status.Applyable == false)
+        if (status.Applyable == false && (status.Errored == true || !isNoChangesBaseline))
         {
             lines.Add("> ⛔\u00A0**Plan is not applyable** — Terraform refused to apply this plan.");
         }

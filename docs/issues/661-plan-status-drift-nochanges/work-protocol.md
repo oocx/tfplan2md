@@ -22,3 +22,9 @@
 - **Summary:** Reviewed the implementation in commit `4be0be5d` and confirmed the documented behavior now matches the fix: suppress non-applyable warning on effective no-change/no-drift baselines, and hide no-op/suppressed drift entries via display filtering.
 - **Artifacts Produced:** `README.md`, `docs/features.md`, `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
 - **Problems Encountered:** `analysis.md` referenced by prior log entries is not present in the work-item folder in this branch.
+
+### Code Reviewer
+- **Date:** 2026-06-03
+- **Summary:** Verified issue 661 fix behavior end-to-end: no non-applyable warning for effective no-change/no-drift plans, actionable non-applyable plans still warn, and drift no-op entries are filtered to avoid noise. Confirmed targeted rendering outputs and full automated test pass on current branch.
+- **Artifacts Produced:** `docs/issues/661-plan-status-drift-nochanges/work-protocol.md`
+- **Problems Encountered:** Docker image build check could not run because repository root does not contain a `Dockerfile` (`docker build -t tfplan2md:local .` fails with "no such file or directory").

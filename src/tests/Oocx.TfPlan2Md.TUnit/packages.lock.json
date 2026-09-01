@@ -180,7 +180,7 @@
       "tfplan2md-terraform-show": {
         "type": "Project",
         "dependencies": {
-          "tfplan2md": "[1.43.1, )"
+          "tfplan2md": "[1.45.2, )"
         }
       }
     }

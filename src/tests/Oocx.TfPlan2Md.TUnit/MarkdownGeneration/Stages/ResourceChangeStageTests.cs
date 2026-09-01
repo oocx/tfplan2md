@@ -104,7 +104,7 @@ public class ResourceChangeStageTests
                 "azuredevops_group_membership",
                 "example",
                 "registry.terraform.io/microsoft/azuredevops",
-                new Change(["create"], after: document.RootElement.Clone()))]);
+                new Change(["create"], null, document.RootElement.Clone()))]);
 
         var attributes = stage.Build(plan).Single().AttributeChanges;
 

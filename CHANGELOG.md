@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.45.3"></a>
+## [1.45.3](https://github.com/oocx/tfplan2md/compare/v1.45.2...v1.45.3) (2026-09-01)
+
+### 🐛 Bug Fixes
+
+* **azuredevops:** resolve mapped large membership descriptors ([81fc7c8](https://github.com/oocx/tfplan2md/commit/81fc7c8b0502eb9fc7e6c611409c6b13a6c72b72))
+* **deps:** refresh NativeAOT lock versions ([6a515d3](https://github.com/oocx/tfplan2md/commit/6a515d33b33b3b230cef4eb001dd5e53c1a9927c))
+* **tests:** use supported change constructor ([a26163a](https://github.com/oocx/tfplan2md/commit/a26163a07a6bf21d31b14349299b942e3460937f))
+
 <a name="1.45.2"></a>
 ## [1.45.2](https://github.com/oocx/tfplan2md/compare/v1.45.1...v1.45.2) (2026-06-05)
 

@@ -327,7 +327,8 @@ internal partial class ReportModelBuilder
             _showUnchangedValues,
             _viewModelFactoryRegistry,
             _principalMapper,
-            _iconProviderRegistry);
+            _iconProviderRegistry,
+            _valueFormatterRegistry);
     }
 
     /// <summary>

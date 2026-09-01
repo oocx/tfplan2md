@@ -1621,7 +1621,7 @@ tfplan2md now supports mapping Azure DevOps user IDs, group descriptors, and pro
 
 ### Features
 
-- **Three entity types**: Map Azure DevOps users, groups, and projects to display names
+- **Three entity types**: Map Azure DevOps users or identity descriptors, groups, and projects to display names
 - **Automatic resolution**: Entities are automatically resolved in group memberships, team rosters, and project references
 - **Unified mapping file**: Add `azdoUsers`, `azdoGroups`, and `azdoProjects` sections to your existing principals.json
 - **Consistent display format**: Azure DevOps entities display as `DisplayName (ID)`, matching Azure AD principal format
@@ -1642,7 +1642,8 @@ Add three new optional sections to your principal mapping JSON file:
   },
   "azdoUsers": {
     "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith",
-    "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f": "Alice Johnson"
+    "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f": "Alice Johnson",
+    "svc.<descriptor>": "Project Collection Build Service"
   },
   "azdoGroups": {
     "vssgp.Uy0xLTktMTU1MTM...": "Platform Team",
@@ -1655,7 +1656,7 @@ Add three new optional sections to your principal mapping JSON file:
 }
 ```
 
-All sections are optional—include only what you need.
+All sections are optional—include only what you need. `azdoUsers` accepts the user GUIDs returned by Azure DevOps as well as the descriptors emitted in membership attributes, including `svc.*` service identities.
 
 ### Rendered Output
 

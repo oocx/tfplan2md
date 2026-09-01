@@ -28,7 +28,7 @@ When these entities appear in Terraform plans (e.g., `azuredevops_group_membersh
 ### In Scope
 
 - Extend `PrincipalMappingFile` class to include three new sections:
-  - `azdoUsers`: Map Azure DevOps user GUIDs to display names
+  - `azdoUsers`: Map Azure DevOps user GUIDs or descriptors to display names
   - `azdoGroups`: Map Azure DevOps group descriptors to display names  
   - `azdoProjects`: Map Azure DevOps project GUIDs to display names
 

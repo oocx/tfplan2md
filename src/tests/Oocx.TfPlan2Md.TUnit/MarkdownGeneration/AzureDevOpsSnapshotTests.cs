@@ -1,4 +1,5 @@
 using System.IO;
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
@@ -44,6 +45,23 @@ public class AzureDevOpsSnapshotTests
             "azuredevops-group-members-plan.json",
             "azuredevops-group-members.md",
             mappingFile: "TestData/azdo-mapping.json");
+    }
+
+    /// <summary>
+    /// Verifies long mapped group and member descriptors remain inline and render their display names.
+    /// Related issue: https://github.com/oocx/tfplan2md/issues/667.
+    /// </summary>
+    [Test]
+    public void RenderAzureDevOpsPlan_MappedLongMembershipDescriptors_RendersFormattedInlineValues()
+    {
+        var markdown = RenderAzureDevOpsPlan(
+            "azuredevops-long-principal-mapping-plan.json",
+            "TestData/azdo-long-principal-mapping.json");
+
+        markdown.Should().Contain("👥\u00A0Readers", "the long group descriptor is resolved before large-value rendering");
+        markdown.Should().Contain("👤\u00A0Build Service", "the flattened member descriptor is resolved before large-value rendering");
+        markdown.Should().NotContain("Large values: group", "mapped descriptors belong in the attribute table");
+        markdown.Should().NotContain("Large values: members[0]", "mapped member descriptors belong in the attribute table");
     }
 
     /// <summary>

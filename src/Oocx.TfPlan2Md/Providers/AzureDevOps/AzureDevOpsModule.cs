@@ -112,7 +112,7 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
                 new MatchPattern(
                     "(^azuredevops$|.*/azuredevops$)",
                     null,
-                    "^members?$|^administrators?$|^user$",
+                    "^members?(?:\\[\\d+\\])?$|^administrators?(?:\\[\\d+\\])?$|^user$",
                     null),
                 userFormatter);
         }

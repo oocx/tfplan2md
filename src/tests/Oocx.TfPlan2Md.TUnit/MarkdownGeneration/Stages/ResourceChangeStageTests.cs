@@ -1,5 +1,7 @@
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
@@ -8,6 +10,7 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers.AzureDevOps;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration.Stages;
@@ -80,10 +83,40 @@ public class ResourceChangeStageTests
     }
 
     /// <summary>
+    /// Verifies mapped Azure DevOps descriptors remain in the attribute table even when their raw values exceed the large-value threshold.
+    /// Related issue: https://github.com/oocx/tfplan2md/issues/667.
+    /// </summary>
+    [Test]
+    public void ResourceChangeStage_Build_MappedLongAzureDevOpsDescriptors_AreNotLarge()
+    {
+        const string groupDescriptor = "vssgp.Uy0xLTktMTU1MTM3NDI0NS0xMjA0NDAwOTY5LTI0MDI5ODY0MTMtMjE3OTQwODYxNi0zLTM4Mzg1ODYwMTUtMzIyMTk1OTc5OC0xMjM0NTY3ODkw";
+        const string memberDescriptor = "aad.Uy0xLTktMTU1MTM3NDI0NS0xMjA0NDAwOTY5LTI0MDI5ODY0MTMtMjE3OTQwODYxNi0zLTM4Mzg1ODYwMTUtMzIyMTk1OTc5OC0xMjM0NTY3ODkw";
+        var formatterRegistry = CreateAzureDevOpsFormatterRegistry(groupDescriptor, memberDescriptor);
+        var stage = CreateStage(formatterRegistry);
+        using var document = JsonDocument.Parse($$"""{"group":"{{groupDescriptor}}","members":["{{memberDescriptor}}"]}""");
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            [new ResourceChange(
+                "azuredevops_group_membership.example",
+                null,
+                "managed",
+                "azuredevops_group_membership",
+                "example",
+                "registry.terraform.io/microsoft/azuredevops",
+                new Change(["create"], after: document.RootElement.Clone()))]);
+
+        var attributes = stage.Build(plan).Single().AttributeChanges;
+
+        attributes.Should().ContainSingle(attribute => attribute.Name == "group" && !attribute.IsLarge);
+        attributes.Should().ContainSingle(attribute => attribute.Name == "members[0]" && !attribute.IsLarge);
+    }
+
+    /// <summary>
     /// Creates a stage instance with default test dependencies.
     /// </summary>
     /// <returns>A configured resource-change stage.</returns>
-    private static ResourceChangeStage CreateStage()
+    private static ResourceChangeStage CreateStage(ValueFormatterRegistry? valueFormatterRegistry = null)
     {
         return new ResourceChangeStage(
             new ResourceSummaryBuilder(),
@@ -91,6 +124,21 @@ public class ResourceChangeStageTests
             showUnchangedValues: false,
             new ResourceViewModelFactoryRegistry(),
             new NullPrincipalMapper(),
-            iconProviderRegistry: null);
+            iconProviderRegistry: null,
+            valueFormatterRegistry: valueFormatterRegistry);
+    }
+
+    private static ValueFormatterRegistry CreateAzureDevOpsFormatterRegistry(string groupDescriptor, string memberDescriptor)
+    {
+        var module = new AzureDevOpsModule(
+            azdoUserMapper: new AzdoUserMapper(
+                new Dictionary<string, string> { [memberDescriptor] = "Build Service" }.ToFrozenDictionary(),
+                diagnostics: null),
+            azdoGroupMapper: new AzdoGroupMapper(
+                new Dictionary<string, string> { [groupDescriptor] = "Readers" }.ToFrozenDictionary(),
+                diagnostics: null));
+        var registry = new ValueFormatterRegistry();
+        module.RegisterValueFormatters(registry);
+        return registry;
     }
 }

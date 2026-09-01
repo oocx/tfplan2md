@@ -391,7 +391,7 @@ The new sections use an array-of-objects format; existing principal-only files r
 ```
 
 **Azure DevOps sections** (optional):
-- `azdoUsers`: Map Azure DevOps user GUIDs to display names
+- `azdoUsers`: Map Azure DevOps user GUIDs or descriptors (including service identities) to display names
 - `azdoGroups`: Map Azure DevOps group descriptors to display names (supports long descriptors)
 - `azdoProjects`: Map Azure DevOps project GUIDs to display names
 - `azdoRepositories`: Map Azure DevOps repository GUIDs to display names
@@ -421,7 +421,7 @@ az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o jso
 az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
 ```
 
-**Azure DevOps sections** must be created manually as the Azure DevOps CLI does not provide direct export commands for this format. Collect user GUIDs, group descriptors, project GUIDs, and repository GUIDs from your Azure DevOps organization and add them to the `azdoUsers`, `azdoGroups`, `azdoProjects`, and `azdoRepositories` sections in the JSON file.
+**Azure DevOps sections** must be created manually as the Azure DevOps CLI does not provide direct export commands for this format. Collect user GUIDs or descriptors (including `svc.*` service identities), group descriptors, project GUIDs, and repository GUIDs from your Azure DevOps organization and add them to the `azdoUsers`, `azdoGroups`, `azdoProjects`, and `azdoRepositories` sections in the JSON file.
 
 Use `scripts/validate-azure-cli-commands.sh` to validate the Azure CLI commands in your environment.
 

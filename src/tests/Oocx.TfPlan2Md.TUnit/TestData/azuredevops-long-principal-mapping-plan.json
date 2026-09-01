@@ -1,0 +1,27 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_group_membership.readers",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_group_membership",
+      "name": "readers",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group": "vssgp.Uy0xLTktMTU1MTM3NDI0NS0xMjA0NDAwOTY5LTI0MDI5ODY0MTMtMjE3OTQwODYxNi0zLTM4Mzg1ODYwMTUtMzIyMTk1OTc5OC0xMjM0NTY3ODkw",
+          "members": [
+            "aad.Uy0xLTktMTU1MTM3NDI0NS0xMjA0NDAwOTY5LTI0MDI5ODY0MTMtMjE3OTQwODYxNi0zLTM4Mzg1ODYwMTUtMzIyMTk1OTc5OC0xMjM0NTY3ODkw"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

@@ -101,6 +101,11 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     private readonly IconProviderRegistry? _iconProviderRegistry;
 
     /// <summary>
+    /// Optional registry of value formatters used when classifying large values.
+    /// </summary>
+    private readonly ValueFormatterRegistry? _valueFormatterRegistry;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ResourceChangeStage"/> class.
     /// </summary>
     /// <param name="summaryBuilder">Strategy used to build summaries.</param>
@@ -109,13 +114,15 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     /// <param name="viewModelFactoryRegistry">Registry of provider-specific view model factories.</param>
     /// <param name="principalMapper">Mapper for Azure principal display names.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
     internal ResourceChangeStage(
         IResourceSummaryBuilder summaryBuilder,
         bool showSensitive,
         bool showUnchangedValues,
         IResourceViewModelFactoryRegistry viewModelFactoryRegistry,
         IPrincipalMapper principalMapper,
-        IconProviderRegistry? iconProviderRegistry)
+        IconProviderRegistry? iconProviderRegistry,
+        ValueFormatterRegistry? valueFormatterRegistry = null)
     {
         _summaryBuilder = summaryBuilder;
         _showSensitive = showSensitive;
@@ -123,6 +130,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         _viewModelFactoryRegistry = viewModelFactoryRegistry;
         _principalMapper = principalMapper;
         _iconProviderRegistry = iconProviderRegistry;
+        _valueFormatterRegistry = valueFormatterRegistry;
     }
 
     /// <inheritdoc />
@@ -164,7 +172,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         var normalizedAddress = NormalizeResourceAddressForReferenceLookup(resourceChange.Address);
         var configurationReferences = BuildConfigurationReferencesForResource(normalizedAddress, configurationReferencesByAddress);
         var hasWholeResourceUnknownAfterApply = AfterUnknownHelper.IsWholeResourceUnknownAfterApply(resourceChange.Change.AfterUnknown);
-        var attributeChanges = BuildAttributeChanges(resourceChange.Change, resourceChange.ProviderName, configurationReferences);
+        var attributeChanges = BuildAttributeChanges(resourceChange.Change, resourceChange.ProviderName, resourceChange.Type, configurationReferences);
         var importId = string.IsNullOrWhiteSpace(resourceChange.Change.Importing?.Id) ? null : resourceChange.Change.Importing?.Id;
         var movedFromAddress = string.IsNullOrWhiteSpace(resourceChange.PreviousAddress) ? null : resourceChange.PreviousAddress;
         // Terraform can emit importing.id together with a no-op action before apply for pending
@@ -231,11 +239,13 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     /// </summary>
     /// <param name="change">The Terraform change payload.</param>
     /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="resourceType">The Terraform resource type used by provider formatter matching.</param>
     /// <param name="configurationReferences">Configuration references grouped by top-level attribute.</param>
     /// <returns>The attribute changes prepared for rendering.</returns>
     private List<AttributeChangeModel> BuildAttributeChanges(
         Change change,
         string providerName,
+        string resourceType,
         IReadOnlyDictionary<string, IReadOnlyList<string>> configurationReferences)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
@@ -270,8 +280,8 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
                 continue;
             }
 
-            var isLarge = MarkdownHelpers.IsLargeValue(beforeDisplay, providerName)
-                || MarkdownHelpers.IsLargeValue(afterDisplay, providerName);
+            var isLarge = IsLargeUnresolvedValue(beforeDisplay, providerName, resourceType, key)
+                || IsLargeUnresolvedValue(afterDisplay, providerName, resourceType, key);
 
             changes.Add(new AttributeChangeModel
             {
@@ -284,6 +294,27 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         }
 
         return changes;
+    }
+
+    /// <summary>
+    /// Determines whether a value needs the dedicated large-value renderer.
+    /// A provider formatter is consulted before deciding whether a large raw identifier needs a
+    /// dedicated block. A mapped identifier has a concise display value, regardless of raw length.
+    /// </summary>
+    private bool IsLargeUnresolvedValue(string? value, string providerName, string resourceType, string attributeName)
+    {
+        if (!MarkdownHelpers.IsLargeValue(value, providerName))
+        {
+            return false;
+        }
+
+        if (_valueFormatterRegistry is null || string.IsNullOrWhiteSpace(value))
+        {
+            return true;
+        }
+
+        var context = new ServiceResolutionContext(providerName, resourceType, attributeName, value);
+        return string.IsNullOrWhiteSpace(_valueFormatterRegistry.TryFormat(context));
     }
 
 }

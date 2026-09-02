@@ -1,0 +1,71 @@
+name: Retrospective reminder on PR merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  retrospective-reminder:
+    name: Post retrospective reminder
+    runs-on: ubuntu-latest
+    # Only run for merged PRs on feature or fix branches
+    if: |
+      github.event.pull_request.merged == true &&
+      (startsWith(github.event.pull_request.head.ref, 'feature/') ||
+       startsWith(github.event.pull_request.head.ref, 'fix/'))
+
+    steps:
+      - name: Extract work item info
+        id: workitem
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+
+          # Extract prefix and slug from branch name (e.g. feature/123-my-feature)
+          if [[ "$BRANCH" =~ ^feature/([0-9]+-[^/]+)$ ]]; then
+            SLUG="${BASH_REMATCH[1]}"
+            WORK_ITEM_PATH="docs/features/${SLUG}"
+            WORK_TYPE="feature"
+          elif [[ "$BRANCH" =~ ^fix/([0-9]+-[^/]+)$ ]]; then
+            SLUG="${BASH_REMATCH[1]}"
+            WORK_ITEM_PATH="docs/issues/${SLUG}"
+            WORK_TYPE="bug fix"
+          else
+            WORK_ITEM_PATH="(unknown - check branch name convention)"
+            WORK_TYPE="change"
+          fi
+
+          echo "work_item_path=${WORK_ITEM_PATH}" >> "$GITHUB_OUTPUT"
+          echo "work_type=${WORK_TYPE}" >> "$GITHUB_OUTPUT"
+
+      - name: Post retrospective reminder comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workItemPath = '${{ steps.workitem.outputs.work_item_path }}';
+            const workType = '${{ steps.workitem.outputs.work_type }}';
+            const branch = '${{ github.event.pull_request.head.ref }}';
+
+            const body = [
+              '## 📝 Retrospective reminder',
+              '',
+              `This ${workType} PR has been merged. Don't forget to run the **Retrospective** agent to capture learnings and improvement opportunities.`,
+              '',
+              '**Work item folder:** `' + workItemPath + '/`',
+              '',
+              '**How to run:**',
+              '- **VS Code:** Start a chat with `@retrospective` and provide the work item path above',
+              '- **GitHub (automated):** Create a new issue describing the retrospective task and label it with `copilot`',
+              '',
+              '_This comment is posted automatically by the retrospective reminder workflow._',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });

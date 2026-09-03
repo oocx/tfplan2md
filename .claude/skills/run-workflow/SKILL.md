@@ -13,10 +13,19 @@ gate rules, and the `agent-runtime` skill for how roles operate.
 
 ```bash
 scripts/workflow-next.sh          # what runs next, and with which model
-# ... run that stage ...
-scripts/wp-append.sh --role "<Role>" --summary "..." --artifacts "..." --problems "..."
-# repeat
+# ... run that stage; the role appends its own work-protocol entry ...
+scripts/workflow-next.sh          # repeat
 ```
+
+**You do not call `wp-append.sh --role`.** The role that ran the stage appends its own
+entry before returning, and that append is what advances the stage. A second append
+from the driver would advance past whichever role is now current, silently skipping it.
+`wp-append.sh` refuses a `--role` that does not match the current stage, so a duplicate
+call fails loudly rather than corrupting the run — but the rule is that completion has
+exactly one owner.
+
+The driver does use `wp-append.sh` for `--gate` and `--rework`, which are its own
+decisions rather than a role's.
 
 `workflow-next.sh` derives everything from the branch name and `state.json`. It costs
 almost nothing and needs no memory of previous turns, so a session that compacted or

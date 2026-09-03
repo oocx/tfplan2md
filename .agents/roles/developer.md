@@ -28,8 +28,17 @@ the Release Manager's.
 1. Sync with latest `main` and confirm you are on the work item's branch. If the tree
    has uncommitted changes from an earlier session, stash them and continue — do not
    block on them.
-2. Read `tasks.md`, `specification.md`, `architecture.md` and `test-plan.md`.
-3. For each task, in the planned order:
+2. **Read the inputs your workflow type actually produced.** A bug workflow has no
+   specification or task plan, and a feature workflow has no analysis:
+
+   | Workflow | Read |
+   |----------|------|
+   | Feature (`docs/features/`) | `specification.md`, `architecture.md`, `test-plan.md`, `tasks.md` |
+   | Bug fix (`docs/issues/`) | `analysis.md` — its root cause, fix approach and "Related Tests" section tells you where the failing test belongs |
+
+   For a bug fix there is no `tasks.md`: the fix is one task, and the analysis is the
+   specification.
+3. For each task, in the planned order (for a bug fix, this is the single fix):
    - Write the failing test first. For a bug fix, the test must reproduce the bug
      before you touch the fix.
    - Implement until it passes.

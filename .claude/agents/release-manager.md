@@ -32,7 +32,13 @@ stop and fix the branch settings rather than working around them.
 
 ## Pre-flight checks
 
-1. **Code review approved** — `code-review.md` exists with no unresolved Blocker.
+1. **Code review approved** — for feature and bug-fix workflows, `code-review.md`
+   exists with no unresolved Blocker.
+
+   Workflow and website work items have no Code Reviewer stage: their sequence is the
+   entry role followed by you. For those, the review is the Maintainer's on the pull
+   request itself, so do not look for `code-review.md` — verify instead that the PR
+   description states what changed and how it was validated.
 2. **Work protocol complete** — every role required for this workflow type has an entry:
 
    ```bash

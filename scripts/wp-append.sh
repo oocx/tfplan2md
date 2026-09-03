@@ -65,10 +65,40 @@ fi
 if [ -n "$GATE" ]; then
     [ -n "$DECISION" ] || die "--gate requires --decision"
     case "$GATE" in spec|arch|uat) ;; *) die "unknown gate: $GATE" ;; esac
+
+    # A gate is only cleared by an explicit approval. Anything else must not
+    # let the run continue: storing a decision verbatim would mean recording
+    # "rejected" reads as permission to proceed.
+    case "$(printf '%s' "$DECISION" | tr '[:upper:]' '[:lower:]')" in
+        approved|approve|passed|pass|yes|ok)
+            VALUE="approved" ;;
+        rejected|reject|failed|fail|no)
+            VALUE="rework" ;;
+        *)
+            # The architecture gate is answered with a choice, not a yes/no.
+            [ "$GATE" = "arch" ] || die "gate '$GATE' takes approved or rejected, not '$DECISION'"
+            VALUE="chosen: $DECISION" ;;
+    esac
+
     tmp="$(mktemp)"
-    jq --arg g "$GATE" --arg d "$DECISION" '.gates[$g] = $d' "$(state_file)" > "$tmp"
-    mv "$tmp" "$(state_file)"
-    echo "Gate '$GATE' recorded as: $DECISION"
+    if [ "$VALUE" = "rework" ]; then
+        # Route back to the role that produced the rejected artifact and count
+        # the attempt. The gate reopens when that role completes again.
+        # spec -> requirements-engineer, arch -> architect. The uat gate has no
+        # after_stage, and a UAT failure is always the Developer's to fix.
+        REWORK_TO="$(jq -r --arg g "$GATE" '.gates[$g].after_stage // "developer"' "$WORKFLOW_JSON")"
+        jq --arg g "$GATE" --arg t "$REWORK_TO" \
+           '.gates[$g] = "rework"
+            | .stage = $t
+            | .attempts[$t] = ((.attempts[$t] // 0) + 1)
+            | .status = "running"' "$(state_file)" > "$tmp"
+        mv "$tmp" "$(state_file)"
+        echo "Gate '$GATE' rejected — back to $REWORK_TO, and the gate stays closed."
+    else
+        jq --arg g "$GATE" --arg v "$VALUE" '.gates[$g] = $v' "$(state_file)" > "$tmp"
+        mv "$tmp" "$(state_file)"
+        echo "Gate '$GATE' recorded as: $VALUE"
+    fi
     exit 0
 fi
 
@@ -91,6 +121,18 @@ fi
 [ -n "$ROLE" ] || die "nothing to do — pass --role, --question, --gate or --rework (see --help)"
 [ -n "$SUMMARY" ] || die "--role requires --summary"
 [ -f "$WP" ] || die "no work-protocol.md in $DIR — the first role in a workflow creates it"
+
+# Exactly one actor completes a stage: the role itself. Advancing on a --role
+# that is not the current stage would skip whichever role actually is current,
+# so refuse rather than advance blindly.
+CURRENT_STAGE="$(state_get '.stage')"
+EXPECTED_ROLE="$(role_name "$CURRENT_STAGE")"
+if [ "$(printf '%s' "$ROLE" | tr '[:upper:]' '[:lower:]')" \
+     != "$(printf '%s' "$EXPECTED_ROLE" | tr '[:upper:]' '[:lower:]')" ]; then
+    die "current stage is '$CURRENT_STAGE' ($EXPECTED_ROLE), but --role said '$ROLE'.
+       Only the role owning the current stage completes it. If this stage really
+       is finished, the owning role should append its own entry."
+fi
 
 {
     printf '\n### %s\n\n' "$ROLE"
@@ -120,7 +162,7 @@ GATE_AFTER="$(jq -r --arg s "$STAGE" \
 if [ -n "$GATE_AFTER" ]; then
     ALWAYS="$(jq -r --arg g "$GATE_AFTER" '.gates[$g].always' "$WORKFLOW_JSON")"
     CURRENT="$(state_get ".gates.$GATE_AFTER // \"n/a\"")"
-    if [ "$ALWAYS" = "true" ] || [ "$CURRENT" = "contested" ]; then
+    if [ "$ALWAYS" = "true" ] || [ "$CURRENT" = "contested" ] || [ "$CURRENT" = "rework" ]; then
         tmp="$(mktemp)"
         jq --arg g "$GATE_AFTER" '.gates[$g] = "pending"' "$(state_file)" > "$tmp"
         mv "$tmp" "$(state_file)"

@@ -72,6 +72,32 @@ while :; do
     break
 done
 
+# --- open a before-stage gate ----------------------------------------------
+# UAT is declared with before_stage rather than after_stage, so nothing on the
+# completion path opens it. Open it here, once, when the stage it guards is
+# about to run and it has not already been decided.
+GATE_BEFORE="$(jq -r --arg s "$STAGE" \
+    '.gates | to_entries[] | select(.value.before_stage == $s) | .key' "$WORKFLOW_JSON")"
+if [ -n "$GATE_BEFORE" ]; then
+    CURRENT="$(state_get ".gates.$GATE_BEFORE // \"n/a\"")"
+    case "$CURRENT" in
+        approved|not-required) ;;                      # already settled
+        *)
+            tmp_state="$(mktemp)"
+            jq --arg g "$GATE_BEFORE" '.gates[$g] = "pending"' "$(state_file)" > "$tmp_state"
+            mv "$tmp_state" "$(state_file)"
+            prompt="$(jq -r --arg g "$GATE_BEFORE" '.gates[$g].prompt' "$WORKFLOW_JSON")"
+            echo "BLOCKED at gate: $GATE_BEFORE"
+            echo
+            echo "$prompt"
+            echo
+            echo "Record the decision with:"
+            echo "  scripts/wp-append.sh --gate $GATE_BEFORE --decision <approved|rejected>"
+            exit 2
+            ;;
+    esac
+fi
+
 # --- describe the stage ----------------------------------------------------
 NAME="$(role_name "$STAGE")"
 DECLARED_TIER="$(role_tier "$STAGE")"

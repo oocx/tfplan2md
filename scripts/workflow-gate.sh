@@ -6,6 +6,7 @@
 #
 # Usage:
 #   scripts/workflow-gate.sh work-protocol   required roles have logged entries
+#   scripts/workflow-gate.sh gates           every required gate is decided
 #   scripts/workflow-gate.sh uat             does the diff warrant UAT?
 #   scripts/workflow-gate.sh status          all gates and open questions
 #   scripts/workflow-gate.sh all             every check (used before release)
@@ -71,6 +72,26 @@ check_uat() {
     return 1
 }
 
+check_gates() {
+    echo "Gates:"
+    local unresolved=0
+    while IFS=$'\t' read -r name value; do
+        case "$value" in
+            pending|rework|required)
+                printf '  BLOCK %-6s %s\n' "$name" "$value"
+                unresolved=$((unresolved + 1)) ;;
+            *)
+                printf '  ok    %-6s %s\n' "$name" "$value" ;;
+        esac
+    done < <(state_get '.gates | to_entries[] | "\(.key)\t\(.value)"')
+
+    if [ "$unresolved" -gt 0 ]; then
+        echo
+        echo "  FAIL: $unresolved gate(s) still awaiting a decision."
+        fail=1
+    fi
+}
+
 check_status() {
     echo "State: $REL_DIR/state.json"
     printf '  stage : %s\n' "$(state_get '.stage')"
@@ -97,8 +118,9 @@ case "$CHECK" in
     work-protocol) check_work_protocol ;;
     uat)           check_uat; exit $? ;;
     status)        check_status ;;
-    all)           check_status; echo; check_work_protocol; echo; check_uat || true ;;
-    *)             die "unknown check: $CHECK (expected work-protocol, uat, status or all)" ;;
+    gates)         check_gates ;;
+    all)           check_status; echo; check_gates; echo; check_work_protocol; echo; check_uat || true ;;
+    *)             die "unknown check: $CHECK (expected work-protocol, gates, uat, status or all)" ;;
 esac
 
 exit "$fail"

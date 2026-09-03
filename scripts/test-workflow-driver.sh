@@ -71,6 +71,11 @@ new_repo() {
 }
 
 stage_of() { jq -r '.stage' "$(find "$1/docs" -name state.json | head -1)"; }
+set_gate() {
+    local f; f="$(find "$1/docs" -name state.json | head -1)"
+    local t; t="$(mktemp)"
+    jq --arg g "$2" --arg v "$3" '.gates[$g] = $v' "$f" > "$t" && mv "$t" "$f"
+}
 gate_of()  { jq -r --arg g "$2" '.gates[$g]' "$(find "$1/docs" -name state.json | head -1)"; }
 attempts_of() { jq -r --arg s "$2" '.attempts[$s] // 0' "$(find "$1/docs" -name state.json | head -1)"; }
 
@@ -116,16 +121,33 @@ assert_eq "the refused append did not advance the stage" "architect" "$(stage_of
 # --- gate decisions are validated -------------------------------------------
 assert_exit "an unrecognised decision on a yes/no gate is refused" 1 \
     env -C "$R" scripts/wp-append.sh --gate spec --decision "maybe later"
+# A gate can only be decided while it is open. Pre-approving a gate that is
+# still "n/a" would remove a mandatory human decision from the run.
 R2="$(new_repo feature 901-arch architect)"
+assert_exit "a decision on a gate that is not open is refused" 1 \
+    env -C "$R2" scripts/wp-append.sh --gate arch --decision "Option B"
+set_gate "$R2" arch contested
+(cd "$R2" && scripts/wp-append.sh --role Architect --summary s) >/dev/null 2>&1
+assert_eq "a contested architecture opens the gate" "pending" "$(gate_of "$R2" arch)"
 (cd "$R2" && scripts/wp-append.sh --gate arch --decision "Option B: streaming") >/dev/null 2>&1
 assert_eq "the architecture gate accepts a choice" "chosen: Option B: streaming" "$(gate_of "$R2" arch)"
 
+R2b="$(new_repo feature 910-archauto architect)"
+set_gate "$R2b" arch auto
+(cd "$R2b" && scripts/wp-append.sh --role Architect --summary s) >/dev/null 2>&1
+assert_eq "an uncontested architecture does not open the gate" "auto" "$(gate_of "$R2b" arch)"
+
 # --- UAT gate opens before its stage (Blocker) ------------------------------
+# The Maintainer is asked to approve the rendered output in the UAT PRs, so the
+# gate must be decided AFTER the UAT Tester has created them, not before.
 UAT_PATH="src/Oocx.TfPlan2Md/MarkdownGeneration/Renderer.cs"
 R3="$(new_repo feature 902-uat uat-tester "$UAT_PATH")"
-assert_exit "UAT-triggering diff opens the UAT gate and blocks" 2 \
+assert_exit "a UAT-triggering diff dispatches the UAT Tester" 0 \
     env -C "$R3" scripts/workflow-next.sh
-assert_eq "the UAT gate is recorded as pending" "pending" "$(gate_of "$R3" uat)"
+assert_eq "UAT is flagged required, not yet decidable" "required" "$(gate_of "$R3" uat)"
+(cd "$R3" && scripts/wp-append.sh --role "UAT Tester" --summary s) >/dev/null 2>&1
+assert_eq "the gate opens once the PRs exist" "pending" "$(gate_of "$R3" uat)"
+assert_exit "the run blocks on the open UAT gate" 2 env -C "$R3" scripts/workflow-next.sh
 (cd "$R3" && scripts/wp-append.sh --gate uat --decision failed) >/dev/null 2>&1
 assert_eq "a UAT failure routes to the Developer" "developer" "$(stage_of "$R3")"
 
@@ -171,6 +193,20 @@ assert_exit "the run continues after a question" 0 env -C "$R9" scripts/workflow
 R10="$(new_repo workflow 909-gate release-manager)"
 assert_exit "release is refused while a required role has no entry" 1 \
     env -C "$R10" scripts/workflow-gate.sh work-protocol
+
+# The Release Manager runs the check before doing its work, so requiring its own
+# entry would make every release fail on itself.
+if grep -q 'release-manager' <(jq -r '.types[].gate_blocking_stages[]' "$R10/.agents/workflow.json"); then
+    bad "the release check does not require the Release Manager's own entry" "release-manager is gate-blocking"
+else
+    ok "the release check does not require the Release Manager's own entry"
+fi
+
+# An undecided gate must fail the pre-release check, not merely be printed.
+R11="$(new_repo feature 911-openg release-manager)"
+set_gate "$R11" spec pending
+assert_exit "an undecided gate fails the pre-release check" 1 \
+    env -C "$R11" scripts/workflow-gate.sh gates
 
 echo
 echo "$pass passed, $fail failed"

@@ -4,37 +4,49 @@
 
 ## Summary
 
-Reviewed the committed origin/main...HEAD diff for workflow item 125. The branch is not release-ready: the workflow has several state-machine defects that can skip roles or bypass rejected gates, and tasks.md explicitly shows phases 4–7 unfinished. Uncommitted phase-4 files currently in the working tree were outside the specified diff and were not credited as implementation.
+The branch is not release-ready. Static review found multiple state-machine and role-ordering defects that prevent code review, UAT, website work, and release completion; the migration is also explicitly unfinished.
 
 ## Verification Results
 
-The read-only sandbox prevented test execution. The work protocol records only three manual happy-path checks, with no commands, outputs, test plan, automated driver tests, coverage, or lint results. GitHub CI status could not be retrieved because network access failed. Static checks found git diff --check clean, compliant workflow: commit types, and no CHANGELOG.md or snapshot changes. Rendering validation was not applicable.
+The read-only sandbox prevented test execution. work-protocol.md records 31 workflow-driver assertions passing after the phase-5 fixes and 9 failures against the prior scripts, but provides no raw output. HEAD is not present on a remote branch, GitHub was unreachable, and no CI result or coverage report exists. Static checks found git diff --check clean, compliant workflow: commits, and no CHANGELOG.md or snapshot changes.
 
 ## What I Tried To Break
 
-Checked first-run and rework stage advancement, accepted and rejected gate decisions, required-UAT handling and cold resume, feature/fix/workflow/website stage compatibility, referenced scripts and skills at HEAD, CI adapter-drift wiring, commit hygiene, snapshots, and dirty-worktree scope. These probes exposed role skipping, rejection bypass, an unopened UAT gate, missing fix inputs, and release paths requiring artifacts they never schedule.
+Checked stage advancement, review approval/rework, UAT ordering, premature gate decisions, release preflight and post-merge state, website initialization, architecture-gate signaling, adapter drift enforcement, report generation, incomplete tasks, commit hygiene, snapshots, and CI integration. These probes exposed several paths that deadlock or bypass required human gates.
 
 ## Issues Found
 
 ### Blockers
 
-- **Stage completion is performed twice and can skip the next role** — `.agents/skills/run-workflow/SKILL.md:17`
-  The driver loop tells its caller to invoke wp-append.sh after a role finishes, while agent-runtime and every role definition require the spawned role to append its own entry before returning. Because wp-append.sh advances whatever stage is currently recorded without validating the supplied role, the caller's second append advances past the next role. Assign completion to exactly one actor and reject a --role value that does not match the current stage.
-- **A rejected gate is treated as permission to continue** — `scripts/wp-append.sh:69`
-  The gate command stores any non-empty decision verbatim, including rejected. workflow-next.sh blocks only when the value equals pending, so recording a rejection immediately unblocks the next stage. Validate gate decisions and route rejection to a blocked/rework state; the release gate must also fail unless required gates are explicitly approved.
-- **The declared UAT gate is never opened** — `scripts/workflow-next.sh:61`
-  workflow.json declares UAT as a before_stage gate, but wp-append.sh only processes after_stage gates. When UAT is required, workflow-next.sh proceeds directly to uat-tester without setting gates.uat to pending. The state therefore cannot persist the wait for Maintainer approval, and a cold resume can start UAT again instead of reporting the open gate.
-- **Bug workflows send the Developer to nonexistent feature artifacts** — `.agents/roles/developer.md:31`
-  The fix sequence supplies analysis.md and then invokes Developer, but the Developer role unconditionally reads tasks.md, specification.md, architecture.md, and test-plan.md and never reads analysis.md. Those files are not produced by the fix workflow, so the role cannot follow the diagnosed bug or its proposed failing test. Add workflow-type-specific inputs.
-- **Workflow and website releases require a review they never schedule** — `.agents/roles/release-manager.md:33`
-  Release Manager always requires code-review.md, while the workflow and website sequences contain only their entry role followed by Release Manager. Both workflows therefore reach a pre-flight requirement that no scheduled role can produce. Either schedule Code Reviewer for these workflow types or make the requirement conditional and document the alternative review gate.
-- **The committed branch is an incomplete, non-runnable implementation of the design** — `scripts/workflow-next.sh:84`
-  tasks.md marks the Codex reviewer not started, skills partial, and demolition and dry run not started. At committed HEAD, workflow-next.sh points to scripts/codex-review.sh even though that file does not exist, and canonical .agents/skills contains only agent-runtime and run-workflow despite mandatory references such as run-dotnet-tests. Uncommitted local files do not satisfy the reviewed diff.
+- **The migration is explicitly incomplete** — `docs/workflow/125-harness-neutral-agent-workflow/tasks.md:12`
+  Tasks 6–8 remain partial or not started. Required canonical skills are still absent, the old Copilot instruction/agent corpus remains alongside the new implementation, validation/CI paths have not been migrated, and no end-to-end dry run exists. This contradicts the design decisions to drop Copilot and maintain one canonical implementation.
+- **An approved Codex review never completes its workflow stage** — `scripts/codex-review.sh:155`
+  The wrapper writes code-review.md and exits but never appends the Code Reviewer work-protocol entry or advances state. Because run-workflow assigns completion exclusively to the role, APPROVED leaves .stage at code-reviewer and reruns forever; REWORK reroutes without the required reviewer audit entry.
+- **The UAT gate opens before the artifacts it asks the Maintainer to review exist** — `.agents/workflow.json:85`
+  workflow-next blocks before uat-tester, while the gate prompt asks the Maintainer to review both UAT PRs. Those PRs are only created by the UAT Tester after the gate. Valid approval is therefore impossible, and the UAT Tester subsequently waits for another approval inside its own stage.
+- **Release preflight requires the Release Manager's own future log entry** — `.agents/workflow.json:29`
+  release-manager is included in every gate_blocking_stages list. The Release Manager runs workflow-gate.sh work-protocol before doing its work, but appends its entry only after release, so preflight necessarily fails on the current role.
+- **Release notes are checked before their owning role has any step to create them** — `.agents/roles/release-manager.md:51`
+  release-notes.md is owned by the Release Manager, no earlier role may create it, and the Release Manager's first step is to run preflight. Requiring the file during that preflight without first creating it blocks every new work item.
+- **The release stage merges and deletes the branch before recording completion** — `.agents/roles/release-manager.md:63`
+  The role merges/deletes the branch and waits for main CI before appending its protocol entry. That entry and state advancement cannot be included in the already-merged work, and feature/fix workflows cannot then execute the Retrospective stage that follows Release Manager.
+- **Website workflows cannot initialize the state required by the driver** — `.agents/roles/web-designer.md:31`
+  workflow.json expects docs/workflow/<website-slug>/state.json, while AGENTS.md declares no website work-item folder and Web Designer only creates the branch. workflow-next and wp-append therefore cannot locate state or work-protocol files for website work.
+- **Gate decisions can be recorded when no gate is pending** — `scripts/wp-append.sh:65`
+  wp-append validates the decision text but not the gate's current state. A caller can pre-approve UAT while it is n/a; workflow-next later sees approved and skips opening the mandatory human gate. The same flaw permits out-of-sequence specification and architecture decisions.
+- **The advertised all-gates release check does not enforce gate states** — `scripts/workflow-gate.sh:100`
+  The all check only prints state, checks protocol headings, and reports whether paths trigger UAT. It never fails for pending or rework gate values and explicitly swallows check_uat's nonzero result, so it can return success with unresolved required approvals.
+- **The promised CI adapter-drift check is not wired into CI** — `scripts/sync-agent-config.sh:17`
+  The design requires generated .claude content to be protected by a CI drift check, but no workflow invokes sync-agent-config.sh --check or validate-agents.py. The script advertises CI enforcement that does not exist, allowing canonical and generated instructions to diverge unnoticed.
 
 ### Majors
 
-- **The new workflow state machine has no recorded automated verification** — `docs/workflow/125-harness-neutral-agent-workflow/work-protocol.md:60`
-  No test plan or workflow-driver tests were added. The work protocol records only three happy-path assertions and provides no reproducible output; it does not cover rejected gates, duplicate completion, required UAT, malformed state, missing artifacts, or each workflow type. Add shell-level state-machine coverage and wire the agent/adapter validation into PR CI before relying on this driver.
+- **The architecture gate relies on an undocumented sentinel value** — `.agents/roles/architect.md:39`
+  wp-append opens the architecture gate only when gates.arch equals exactly "contested", but the Architect role tells the agent to record the option count without specifying allowed values. Recording 2 or another natural representation silently bypasses the mandatory architecture-choice gate.
+- **Workflow tests and agent validation are not executed by PR validation** — `.github/workflows/pr-validation.yml:120`
+  The new driver test and rewritten agent validator are standalone scripts only. PR validation runs other shell tests but invokes neither, leaving the state machine and generated-agent invariants without regression protection. This also leaves part of the previous review's CI recommendation unresolved.
+- **Generated review reports cannot contain the required specification-compliance matrix** — `.agents/codex-review-schema.json:6`
+  The Code Reviewer role requires a Specification Compliance section mapping each criterion to implementation and tests. The JSON schema has no field for that evidence, and codex-review.sh never renders the section, so every wrapper-generated report omits a mandatory part of the review.
 
 ## Decision
 

@@ -1,6 +1,5 @@
 {
   "_comment": "Stage sequences and gate rules. Read by scripts/workflow-next.sh, workflow-gate.sh and wp-append.sh. Role display names are not duplicated here — they come from the `name:` frontmatter of .agents/roles/<stage>.md.",
-
   "types": {
     "feature": {
       "folder": "docs/features",
@@ -17,7 +16,9 @@
         "release-manager",
         "retrospective"
       ],
-      "conditional_stages": ["uat-tester"],
+      "conditional_stages": [
+        "uat-tester"
+      ],
       "gate_blocking_stages": [
         "requirements-engineer",
         "architect",
@@ -25,11 +26,9 @@
         "task-planner",
         "developer",
         "technical-writer",
-        "code-reviewer",
-        "release-manager"
+        "code-reviewer"
       ]
     },
-
     "fix": {
       "folder": "docs/issues",
       "branch_prefix": "fix",
@@ -42,33 +41,41 @@
         "release-manager",
         "retrospective"
       ],
-      "conditional_stages": ["uat-tester"],
+      "conditional_stages": [
+        "uat-tester"
+      ],
       "gate_blocking_stages": [
         "issue-analyst",
         "developer",
         "technical-writer",
-        "code-reviewer",
-        "release-manager"
+        "code-reviewer"
       ]
     },
-
     "workflow": {
       "folder": "docs/workflow",
       "branch_prefix": "workflow",
-      "stages": ["workflow-engineer", "release-manager"],
+      "stages": [
+        "workflow-engineer",
+        "release-manager"
+      ],
       "conditional_stages": [],
-      "gate_blocking_stages": ["workflow-engineer", "release-manager"]
+      "gate_blocking_stages": [
+        "workflow-engineer"
+      ]
     },
-
     "website": {
-      "folder": "docs/workflow",
+      "folder": "docs/website",
       "branch_prefix": "website",
-      "stages": ["web-designer", "release-manager"],
+      "stages": [
+        "web-designer",
+        "release-manager"
+      ],
       "conditional_stages": [],
-      "gate_blocking_stages": ["web-designer", "release-manager"]
+      "gate_blocking_stages": [
+        "web-designer"
+      ]
     }
   },
-
   "gates": {
     "spec": {
       "after_stage": "requirements-engineer",
@@ -82,15 +89,13 @@
       "prompt": "Architecture choice. Two or more options carry material trade-offs; pick one."
     },
     "uat": {
-      "before_stage": "uat-tester",
+      "after_stage": "uat-tester",
       "always": false,
       "condition": "diff touches user-visible output",
-      "prompt": "UAT approval. Review the rendered output in both PRs and reply PASS or FAIL."
+      "prompt": "UAT approval. Review the rendered output in both PRs the UAT Tester created, and reply approved or rejected."
     }
   },
-
   "uat_trigger_paths": "^(src/Oocx\\.TfPlan2Md/(MarkdownGeneration|RenderTargets)/|examples/|website/)",
-
   "rework_targets": {
     "code-reviewer": "developer",
     "uat-tester": "developer",

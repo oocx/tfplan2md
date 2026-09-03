@@ -72,30 +72,21 @@ while :; do
     break
 done
 
-# --- open a before-stage gate ----------------------------------------------
+# --- flag a gate that is decided after this stage ---------------------------
 # UAT is declared with before_stage rather than after_stage, so nothing on the
 # completion path opens it. Open it here, once, when the stage it guards is
 # about to run and it has not already been decided.
-GATE_BEFORE="$(jq -r --arg s "$STAGE" \
-    '.gates | to_entries[] | select(.value.before_stage == $s) | .key' "$WORKFLOW_JSON")"
-if [ -n "$GATE_BEFORE" ]; then
-    CURRENT="$(state_get ".gates.$GATE_BEFORE // \"n/a\"")"
-    case "$CURRENT" in
-        approved|not-required) ;;                      # already settled
-        *)
-            tmp_state="$(mktemp)"
-            jq --arg g "$GATE_BEFORE" '.gates[$g] = "pending"' "$(state_file)" > "$tmp_state"
-            mv "$tmp_state" "$(state_file)"
-            prompt="$(jq -r --arg g "$GATE_BEFORE" '.gates[$g].prompt' "$WORKFLOW_JSON")"
-            echo "BLOCKED at gate: $GATE_BEFORE"
-            echo
-            echo "$prompt"
-            echo
-            echo "Record the decision with:"
-            echo "  scripts/wp-append.sh --gate $GATE_BEFORE --decision <approved|rejected>"
-            exit 2
-            ;;
-    esac
+# The UAT gate is decided after the UAT Tester has created the PRs the
+# Maintainer is asked to look at — asking for approval of artifacts that do not
+# exist yet is not a gate anyone can answer. Mark it required here so the
+# completion path knows to open it.
+if [ "$STAGE" = "uat-tester" ]; then
+    CURRENT="$(state_get '.gates.uat // "n/a"')"
+    if [ "$CURRENT" != "approved" ]; then
+        tmp_state="$(mktemp)"
+        jq '.gates.uat = "required"' "$(state_file)" > "$tmp_state"
+        mv "$tmp_state" "$(state_file)"
+    fi
 fi
 
 # --- describe the stage ----------------------------------------------------

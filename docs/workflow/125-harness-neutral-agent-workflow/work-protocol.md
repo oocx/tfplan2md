@@ -31,3 +31,22 @@
     `agent-doctor.sh`; scripts must always invoke `ast-grep` by full name.
   - The npm packages named `code2prompt` and `tokei` are unrelated to the Rust tools of
     the same name; both are cargo-only. `tokei` was dropped from the design as a result.
+
+### Workflow Engineer (phase 2)
+
+- **Date:** 2026-09-03
+- **Summary:** Merged the 26 Copilot agent files into 13 harness-neutral roles under
+  `.agents/roles/` (9,820 → 887 lines, 91% reduction). Extracted the plumbing repeated
+  across every agent — commit amending, fixup prohibition, response style, "one question
+  at a time", artifact ownership — into the `agent-runtime` skill. Rewrote
+  `scripts/validate-agents.py` to validate roles instead of Copilot model names. Wrote
+  `docs/workflow.md` defining stages, gates, state and rework loops.
+- **Artifacts Produced:** `.agents/roles/*.md` (13), `.agents/skills/agent-runtime/SKILL.md`,
+  `scripts/validate-agents.py`, `docs/workflow.md`, regenerated `.claude/`
+- **Problems Encountered:**
+  - The Quality Engineer agent instructed "follow xUnit and AwesomeAssertions patterns",
+    contradicting `docs/spec.md`, which states TUnit is the only test framework. The new
+    role says TUnit; the stale instruction had been live for an unknown period.
+  - `validate-agents.py`'s new link checker caught a forward reference to
+    `docs/workflow.md` before it existed — the file was written as a result rather than
+    the link being removed.

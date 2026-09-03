@@ -8,6 +8,14 @@
 # Exit 0 when everything required is present, 1 otherwise.
 set -euo pipefail
 
+# rustup installs into ~/.cargo/bin, which is added to PATH by the shell profile.
+# Non-login shells — including the ones agents run commands in — often do not
+# source it, so the tools appear missing when they are installed. Look there.
+if [ -d "$HOME/.cargo/bin" ] && [[ ":$PATH:" != *":$HOME/.cargo/bin:"* ]]; then
+    PATH="$HOME/.cargo/bin:$PATH"
+    CARGO_BIN_ADDED=1
+fi
+
 missing=0
 warned=0
 
@@ -61,6 +69,14 @@ if command -v sg >/dev/null 2>&1 && ! sg --version 2>&1 | grep -qi 'ast-grep'; t
     printf '  \033[33mnote\033[0m  `sg` on this machine is %s, not ast-grep.\n' \
         "$(command -v sg)"
     echo '        Always invoke ast-grep by its full name.'
+fi
+
+if [ "${CARGO_BIN_ADDED:-0}" = "1" ]; then
+    echo
+    printf '  \033[33mnote\033[0m  ~/.cargo/bin is not on PATH in non-login shells.\n'
+    echo '        Tools were found only because this script added it. Add this to'
+    echo '        your shell profile so agent sessions see them too:'
+    echo '            export PATH="$HOME/.cargo/bin:$PATH"'
 fi
 
 echo

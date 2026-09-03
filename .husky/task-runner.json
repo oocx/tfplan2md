@@ -27,7 +27,7 @@
       "command": "bash",
       "args": [
         "-c",
-        "if ! grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\(.+\\))?!?: .{1,}$' \"$1\"; then echo 'ERROR: Commit message does not follow Conventional Commits format.' && echo 'Expected: <type>[optional scope]: <description>' && echo 'Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert' && echo '' && echo 'Your message:' && cat \"$1\" && exit 1; fi",
+        "if ! grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|workflow)(\\(.+\\))?!?: .{1,}$' \"$1\"; then echo 'ERROR: Commit message does not follow Conventional Commits format.' && echo 'Expected: <type>[optional scope]: <description>' && echo 'Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, workflow' && echo '' && echo 'Your message:' && cat \"$1\" && exit 1; fi",
         "--",
         "${args}"
       ],
@@ -36,7 +36,7 @@
         "args": [
           "-NoProfile",
           "-Command",
-          "$msg = Get-Content $args[0] -Raw; if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\(.+\\))?!?: .{1,}') { Write-Error 'Commit message does not follow Conventional Commits format.'; Write-Host 'Expected: <type>[optional scope]: <description>'; Write-Host 'Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert'; exit 1 }",
+          "$msg = Get-Content $args[0] -Raw; if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|workflow)(\\(.+\\))?!?: .{1,}') { Write-Error 'Commit message does not follow Conventional Commits format.'; Write-Host 'Expected: <type>[optional scope]: <description>'; Write-Host 'Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, workflow'; exit 1 }",
           "${args}"
         ]
       }

@@ -1,0 +1,26 @@
+{
+  "_comment": "Single source of truth for model tiers. Role files declare `tier:`, never a model name. scripts/sync-agent-config.sh resolves tier -> claude model; scripts/codex-review.sh resolves tier -> codex model.",
+  "tiers": {
+    "deep": {
+      "claude": "opus",
+      "codex": "sol",
+      "rationale": "Errors here are the most expensive to unwind — they propagate through every later stage."
+    },
+    "standard": {
+      "claude": "sonnet",
+      "codex": "terra",
+      "rationale": "Work constrained by an approved spec and architecture; mistakes surface in review or CI."
+    },
+    "cheap": {
+      "claude": "haiku",
+      "codex": "luna",
+      "rationale": "Transcription and mechanical work against a fixed input."
+    }
+  },
+  "escalation": {
+    "_comment": "On rework attempt N >= 2 a role runs one tier deeper, so cheap models get first crack and expensive ones only see hard cases.",
+    "cheap": "standard",
+    "standard": "deep",
+    "deep": "deep"
+  }
+}

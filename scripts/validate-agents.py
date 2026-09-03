@@ -1,163 +1,166 @@
 #!/usr/bin/env python3
-import os
+"""Validate canonical role definitions under .agents/roles/.
+
+Checks that each role file is well-formed, declares a known tier, stays within
+the line budget, has the required sections, and does not link to files that do
+not exist. Also verifies the generated .claude/ adapter is in sync.
+
+Usage:
+    scripts/validate-agents.py
+"""
+
+from __future__ import annotations
+
+import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
-# Configuration
-AGENTS_DIR = Path(".github/agents")
-MODEL_REF_FILE = Path("docs/ai-model-reference.md")
+REPO = Path(__file__).resolve().parent.parent
+ROLES = REPO / ".agents" / "roles"
+TIERS = REPO / ".agents" / "tiers.json"
 
-# Regex patterns
-FRONTMATTER_PATTERN = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
-NAME_PATTERN = re.compile(r"^name:\s*(.*)$", re.MULTILINE)
-MODEL_PATTERN = re.compile(r"^model:\s*(.*)$", re.MULTILINE)
-TOOLS_PATTERN = re.compile(r"^tools:\s*\[(.*)\]$", re.MULTILINE)
-HANDOFF_AGENT_PATTERN = re.compile(r"agent:\s*\"(.*?)\"", re.MULTILINE)
+# A role that outgrows this is doing more than one job, or is repeating something
+# that belongs in AGENTS.md or the agent-runtime skill.
+LINE_BUDGET = 160
+DESCRIPTION_BUDGET = 100
 
-# Sections to check (regex patterns)
-REQUIRED_SECTIONS = [
-    r"## Your Goal",
-    r"## Boundaries",
-    r"✅\s*(?:\*\*)?Always Do",
-    r"⚠️\s*(?:\*\*)?Ask First",
-    r"🚫\s*(?:\*\*)?Never Do"
-]
+REQUIRED_SECTIONS = ["## Goal", "## Boundaries", "## Definition of Done"]
 
-def get_valid_models():
-    if not MODEL_REF_FILE.exists():
-        print(f"Warning: {MODEL_REF_FILE} not found. Skipping model validation.")
+# Markdown links to repo files, e.g. [text](../../docs/spec.md) — anchors and
+# URLs are ignored.
+LINK = re.compile(r"\[[^\]]+\]\((?!https?:|#)([^)#]+)(?:#[^)]*)?\)")
+
+errors: list[str] = []
+warnings: list[str] = []
+
+
+def error(path: Path, msg: str) -> None:
+    errors.append(f"{path.relative_to(REPO)}: {msg}")
+
+
+def warn(path: Path, msg: str) -> None:
+    warnings.append(f"{path.relative_to(REPO)}: {msg}")
+
+
+def parse_frontmatter(text: str, path: Path) -> dict[str, str] | None:
+    if not text.startswith("---\n"):
+        error(path, "missing YAML frontmatter")
         return None
-    
-    content = MODEL_REF_FILE.read_text()
-    # Extract models from tables. Look for columns that look like Copilot Model IDs.
-    # They are usually in the second column of the benchmark tables.
-    models = set()
-    
-    # Match table rows: | Name | ID | Score | ... |
-    # We want the ID column.
-    table_rows = re.findall(r"\|\s*[^|]+\s*\|\s*([^|]+)\s*\|\s*[\d.]+\s*\|", content)
-    for row in table_rows:
-        model_id = row.strip()
-        if model_id and model_id != "Copilot Model ID":
-            models.add(model_id)
-            
-    # Also check the "Available Models" tables which might not have scores
-    available_rows = re.findall(r"\|\s*([^|]+)\s*\|\s*(?:GA|Public Preview)\s*\|", content)
-    for row in available_rows:
-        model_id = row.strip()
-        if model_id and model_id != "Model":
-            models.add(model_id)
-            
-    return models
-
-def validate_agents():
-    valid_models = get_valid_models()
-    agent_files = list(AGENTS_DIR.glob("*.agent.md"))
-    
-    # First pass: collect all agent names
-    agent_names = set()
-    agent_data = {}
-    
-    for agent_file in agent_files:
-        content = agent_file.read_text()
-        match = FRONTMATTER_PATTERN.search(content)
-        if not match:
-            print(f"Error: {agent_file.name} has no frontmatter.")
+    end = text.find("\n---\n", 3)
+    if end == -1:
+        error(path, "unterminated YAML frontmatter")
+        return None
+    meta: dict[str, str] = {}
+    for line in text[4:end].splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
             continue
-            
-        frontmatter = match.group(1)
-        name_match = NAME_PATTERN.search(frontmatter)
-        if not name_match:
-            print(f"Error: {agent_file.name} has no name in frontmatter.")
+        if ":" not in line:
+            error(path, f"frontmatter line is not `key: value`: {line!r}")
             continue
-            
-        name = name_match.group(1).strip()
-        agent_names.add(name)
-        agent_data[agent_file.name] = {
-            "name": name,
-            "content": content,
-            "frontmatter": frontmatter
-        }
+        key, value = line.split(":", 1)
+        meta[key.strip()] = value.strip().strip("\"'")
+    return meta
 
-    errors = 0
-    
-    # Second pass: validate each agent
-    for filename, data in agent_data.items():
-        print(f"Validating {filename}...")
-        file_errors = 0
-        
-        # 1. Validate Model
-        # Coding agents (*-coding-agent.agent.md) run on GitHub.com where the model:
-        # property is not supported and causes "400 The requested model is not supported"
-        # errors. They must not have a model: field. VS Code agents (without -coding-agent
-        # suffix) run locally and should specify a model for LLM selection.
-        is_coding_agent = filename.endswith("-coding-agent.agent.md")
-        model_match = MODEL_PATTERN.search(data["frontmatter"])
-        if model_match:
-            model = model_match.group(1).strip()
-            if is_coding_agent:
-                print(f"  - Coding agents must not have model in frontmatter (causes 400 error on GitHub.com): '{model}'")
-                file_errors += 1
-            elif valid_models and model not in valid_models:
-                print(f"  - Invalid model: '{model}' (not found in {MODEL_REF_FILE.name})")
-                file_errors += 1
-        elif not is_coding_agent:
-            print(f"  - Missing model in frontmatter")
-            file_errors += 1
-            
-        # 2. Validate Handoffs
-        handoff_agents = HANDOFF_AGENT_PATTERN.findall(data["frontmatter"])
-        for target in handoff_agents:
-            if target not in agent_names:
-                print(f"  - Invalid handoff target: '{target}' (agent not found)")
-                file_errors += 1
-                
-        # 3. Validate Sections
-        for section_pattern in REQUIRED_SECTIONS:
-            if not re.search(section_pattern, data["content"]):
-                # Clean up pattern for display
-                display_name = section_pattern.replace(r"\s*(?:\*\*)?", " ").replace(r"\\", "")
-                print(f"  - Missing required section: '{display_name}'")
-                file_errors += 1
-                
-        # 4. Validate Tools (basic format check)
-        # Coding agents on GitHub.com can omit tools entirely, which enables all tools.
-        # Tools validation is only required for VS Code agents.
-        tools_match = TOOLS_PATTERN.search(data["frontmatter"])
-        if not tools_match:
-            if not is_coding_agent:
-                print(f"  - Missing or invalid tools format in frontmatter")
-                file_errors += 1
-        else:
-            tools_str = tools_match.group(1)
-            # Check for snake_case tools which are often a sign of error
-            if "_" in tools_str:
-                # Some tools might legitimately have underscores, but most VS Code ones use camelCase or slashes
-                # Let's just warn for now or check against a known list if we had one.
-                # Actually, the instructions say "Never use snake_case names like read_file".
-                snake_case_tools = re.findall(r"['\"](\w+_\w+)['\"]", tools_str)
-                for tool in snake_case_tools:
-                    print(f"  - Potential invalid tool name (snake_case): '{tool}'")
-                    file_errors += 1
 
-        if file_errors > 0:
-            errors += file_errors
-            print(f"  Result: {file_errors} errors found.\n")
-        else:
-            print(f"  Result: OK\n")
+def validate_role(path: Path, valid_tiers: set[str], names: dict[str, Path]) -> None:
+    text = path.read_text(encoding="utf-8")
+    meta = parse_frontmatter(text, path)
+    if meta is None:
+        return
 
-    return errors
+    for key in ("name", "description", "tier"):
+        if key not in meta:
+            error(path, f"frontmatter is missing `{key}`")
+
+    if "model" in meta:
+        error(
+            path,
+            "declares `model` — roles declare `tier`; the mapping lives in .agents/tiers.json",
+        )
+    for obsolete in ("target", "tools", "handoffs"):
+        if obsolete in meta:
+            error(path, f"declares `{obsolete}`, which no longer exists in this workflow")
+
+    tier = meta.get("tier")
+    if tier and tier not in valid_tiers:
+        error(path, f"unknown tier {tier!r} (expected one of {', '.join(sorted(valid_tiers))})")
+
+    desc = meta.get("description", "")
+    if len(desc) > DESCRIPTION_BUDGET:
+        error(path, f"description is {len(desc)} chars, budget is {DESCRIPTION_BUDGET}")
+
+    name = meta.get("name")
+    if name:
+        if name in names:
+            error(path, f"duplicate role name {name!r} (also in {names[name].name})")
+        names[name] = path
+
+    lines = text.count("\n") + 1
+    if lines > LINE_BUDGET:
+        error(path, f"{lines} lines, budget is {LINE_BUDGET}")
+    elif lines > LINE_BUDGET * 0.9:
+        warn(path, f"{lines} lines, approaching the {LINE_BUDGET}-line budget")
+
+    for section in REQUIRED_SECTIONS:
+        if section not in text:
+            error(path, f"missing required section `{section}`")
+
+    # Every role must point at the shared conventions, or it will silently drift
+    # back into repeating them.
+    if "AGENTS.md" not in text:
+        error(path, "does not reference AGENTS.md")
+
+    for target in LINK.findall(text):
+        resolved = (path.parent / target).resolve()
+        if not resolved.exists():
+            error(path, f"broken link: {target}")
+
+
+def check_adapter_in_sync() -> None:
+    result = subprocess.run(
+        [str(REPO / "scripts" / "sync-agent-config.sh"), "--check"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        errors.append(
+            ".claude/ is out of sync with .agents/ — run scripts/sync-agent-config.sh\n"
+            + "\n".join(f"    {line}" for line in result.stdout.strip().splitlines())
+        )
+
+
+def main() -> int:
+    if not ROLES.is_dir():
+        print(f"error: {ROLES} does not exist", file=sys.stderr)
+        return 1
+
+    valid_tiers = set(json.loads(TIERS.read_text(encoding="utf-8"))["tiers"])
+    role_files = sorted(ROLES.glob("*.md"))
+    if not role_files:
+        print(f"error: no role files in {ROLES}", file=sys.stderr)
+        return 1
+
+    names: dict[str, Path] = {}
+    for role in role_files:
+        validate_role(role, valid_tiers, names)
+
+    check_adapter_in_sync()
+
+    for w in warnings:
+        print(f"warn:  {w}")
+    for e in errors:
+        print(f"ERROR: {e}")
+
+    total = sum(f.read_text(encoding="utf-8").count("\n") + 1 for f in role_files)
+    print(
+        f"\n{len(role_files)} role(s), {total} lines total, "
+        f"{len(errors)} error(s), {len(warnings)} warning(s)"
+    )
+    return 1 if errors else 0
+
 
 if __name__ == "__main__":
-    if not AGENTS_DIR.exists():
-        print(f"Error: {AGENTS_DIR} directory not found.")
-        sys.exit(1)
-        
-    total_errors = validate_agents()
-    if total_errors > 0:
-        print(f"Total errors found: {total_errors}")
-        sys.exit(1)
-    else:
-        print("All agents validated successfully.")
-        sys.exit(0)
+    sys.exit(main())

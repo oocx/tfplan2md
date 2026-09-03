@@ -69,3 +69,28 @@
   - `workflow-next.sh --json` reported the declared tier while printing an escalated
     model, which reads as a contradiction to anything consuming the JSON. It now reports
     both `declared_tier` and the effective `tier`.
+
+### Workflow Engineer (phase 4)
+
+- **Date:** 2026-09-03
+- **Summary:** Wired the Code Reviewer role to Codex and verified it against the real
+  CLI on a live diff. The review took 4m34s and 199,652 tokens, and returned
+  `VERDICT: REWORK` with 6 Blockers and 1 Major — all of them real defects in the
+  phase 1-3 work.
+- **Artifacts Produced:** `scripts/codex-review.sh`, `.agents/codex-review-schema.json`,
+  corrected `.agents/tiers.json`, fixed `scripts/agent-doctor.sh`, `code-review.md`
+- **Problems Encountered:** Four assumptions about the Codex CLI were wrong and only
+  surfaced by running it:
+  - `codex exec review` rejects `--color`, which belongs to `codex exec`.
+  - `codex exec review` refuses a custom prompt alongside `--base`, so the role file
+    could not be used with that subcommand. Switched to plain `codex exec`, which also
+    accepts `--sandbox read-only` — the reviewer now physically cannot edit the code it
+    reviews, making the role boundary a guarantee rather than an instruction.
+  - Bare model names `sol` / `terra` / `luna` are rejected: "not supported when using
+    Codex with a ChatGPT account". The real slugs are `gpt-5.6-sol`, `gpt-5.6-terra`,
+    `gpt-5.6-luna`.
+  - OpenAI strict structured output requires every property to appear in `required`;
+    optional fields must be typed nullable instead.
+  `scripts/agent-doctor.sh` also reported the Rust tools missing when they were
+  installed, because `~/.cargo/bin` is absent from non-login shell PATH. It now looks
+  there and warns.

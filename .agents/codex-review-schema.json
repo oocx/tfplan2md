@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Code review result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "summary", "verification", "probed", "findings"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["APPROVED", "REWORK"],
+      "description": "REWORK if any finding has severity Blocker, or if the change cannot be judged correct from the diff and the available evidence."
+    },
+    "summary": {
+      "type": "string",
+      "description": "What was reviewed and the overall assessment, in a few sentences."
+    },
+    "verification": {
+      "type": ["string", "null"],
+      "description": "What evidence of correctness exists - the Developer's recorded test results, CI status, coverage. State plainly where evidence is absent."
+    },
+    "probed": {
+      "type": ["string", "null"],
+      "description": "The failure modes actively probed, and what happened. A clean review must still name what was checked."
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "title", "detail", "file", "line"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["Blocker", "Major", "Minor", "Suggestion"]
+          },
+          "title": { "type": "string" },
+          "detail": { "type": "string" },
+          "file": { "type": ["string", "null"] },
+          "line": { "type": ["integer", "null"] }
+        }
+      }
+    }
+  }
+}

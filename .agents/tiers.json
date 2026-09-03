@@ -3,17 +3,17 @@
   "tiers": {
     "deep": {
       "claude": "opus",
-      "codex": "sol",
+      "codex": "gpt-5.6-sol",
       "rationale": "Errors here are the most expensive to unwind — they propagate through every later stage."
     },
     "standard": {
       "claude": "sonnet",
-      "codex": "terra",
+      "codex": "gpt-5.6-terra",
       "rationale": "Work constrained by an approved spec and architecture; mistakes surface in review or CI."
     },
     "cheap": {
       "claude": "haiku",
-      "codex": "luna",
+      "codex": "gpt-5.6-luna",
       "rationale": "Transcription and mechanical work against a fixed input."
     }
   },
@@ -22,5 +22,6 @@
     "cheap": "standard",
     "standard": "deep",
     "deep": "deep"
-  }
+  },
+  "_codex_note": "Codex model slugs are the full ids from `codex` model metadata (see ~/.codex/models_cache.json). Bare 'sol'/'terra'/'luna' are rejected by the API."
 }

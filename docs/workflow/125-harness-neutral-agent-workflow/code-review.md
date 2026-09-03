@@ -31,7 +31,7 @@ Checked stage advancement, review approval/rework, UAT ordering, premature gate 
 - **The release stage merges and deletes the branch before recording completion** — `.agents/roles/release-manager.md:63`
   The role merges/deletes the branch and waits for main CI before appending its protocol entry. That entry and state advancement cannot be included in the already-merged work, and feature/fix workflows cannot then execute the Retrospective stage that follows Release Manager.
 - **Website workflows cannot initialize the state required by the driver** — `.agents/roles/web-designer.md:31`
-  workflow.json expects docs/workflow/<website-slug>/state.json, while AGENTS.md declares no website work-item folder and Web Designer only creates the branch. workflow-next and wp-append therefore cannot locate state or work-protocol files for website work.
+  workflow.json expects docs/workflow/`<website-slug>`/state.json, while AGENTS.md declares no website work-item folder and Web Designer only creates the branch. workflow-next and wp-append therefore cannot locate state or work-protocol files for website work.
 - **Gate decisions can be recorded when no gate is pending** — `scripts/wp-append.sh:65`
   wp-append validates the decision text but not the gate's current state. A caller can pre-approve UAT while it is n/a; workflow-next later sees approved and skips opening the mandatory human gate. The same flaw permits out-of-sequence specification and architecture decisions.
 - **The advertised all-gates release check does not enforce gate states** — `scripts/workflow-gate.sh:100`

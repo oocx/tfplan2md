@@ -109,6 +109,11 @@ if [ "$VERDICT" = "APPROVED" ] && [ "$BLOCKERS" -gt 0 ]; then
     VERDICT="REWORK"
 fi
 
+# Reviewer prose is free text and regularly contains things like <slug> or
+# <T>, which markdownlint reads as inline HTML and rejects. PR Validation runs
+# markdownlint over docs/, so an unescaped report fails the build.
+md_escape() { sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'; }
+
 # --- render the report ------------------------------------------------------
 {
     echo "# Code Review: $(basename "$DIR")"
@@ -117,7 +122,7 @@ fi
     echo
     echo "## Summary"
     echo
-    jq -r '.summary' "$RESULT"
+    jq -r '.summary' "$RESULT" | md_escape
     for section in verification spec_compliance probed; do
         value="$(jq -r --arg s "$section" '.[$s] // empty' "$RESULT")"
         [ -n "$value" ] || continue
@@ -127,7 +132,7 @@ fi
             probed)           echo; echo "## What I Tried To Break" ;;
         esac
         echo
-        echo "$value"
+        echo "$value" | md_escape
     done
     echo
     echo "## Issues Found"
@@ -146,7 +151,7 @@ fi
                 | "- **\(.title)**"
                   + (if .file then " — `\(.file)\(if .line then ":\(.line)" else "" end)`" else "" end)
                   + "\n  \(.detail)"
-            ' "$RESULT"
+            ' "$RESULT" | md_escape
         done
     fi
     echo

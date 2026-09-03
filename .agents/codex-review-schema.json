@@ -3,11 +3,21 @@
   "title": "Code review result",
   "type": "object",
   "additionalProperties": false,
-  "required": ["verdict", "summary", "verification", "probed", "findings"],
+  "required": [
+    "verdict",
+    "summary",
+    "verification",
+    "spec_compliance",
+    "probed",
+    "findings"
+  ],
   "properties": {
     "verdict": {
       "type": "string",
-      "enum": ["APPROVED", "REWORK"],
+      "enum": [
+        "APPROVED",
+        "REWORK"
+      ],
       "description": "REWORK if any finding has severity Blocker, or if the change cannot be judged correct from the diff and the available evidence."
     },
     "summary": {
@@ -15,11 +25,17 @@
       "description": "What was reviewed and the overall assessment, in a few sentences."
     },
     "verification": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "What evidence of correctness exists - the Developer's recorded test results, CI status, coverage. State plainly where evidence is absent."
     },
     "probed": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "The failure modes actively probed, and what happened. A clean review must still name what was checked."
     },
     "findings": {
@@ -27,18 +43,50 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["severity", "title", "detail", "file", "line"],
+        "required": [
+          "severity",
+          "title",
+          "detail",
+          "file",
+          "line"
+        ],
         "properties": {
           "severity": {
             "type": "string",
-            "enum": ["Blocker", "Major", "Minor", "Suggestion"]
+            "enum": [
+              "Blocker",
+              "Major",
+              "Minor",
+              "Suggestion"
+            ]
           },
-          "title": { "type": "string" },
-          "detail": { "type": "string" },
-          "file": { "type": ["string", "null"] },
-          "line": { "type": ["integer", "null"] }
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "file": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
         }
       }
+    },
+    "spec_compliance": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Each acceptance criterion mapped to the code that implements it and the test that proves it. Name criteria with code but no test, and criteria with neither."
     }
   }
 }

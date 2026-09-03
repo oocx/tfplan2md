@@ -119,3 +119,31 @@
   - Cross-family review found five defects that had survived my own manual testing of
     the same code. Manual happy-path checking was not sufficient evidence, which is
     exactly what the review said.
+
+### Workflow Engineer (phase 5, round 2)
+
+- **Date:** 2026-09-04
+- **Summary:** Second Codex review returned REWORK with 10 Blockers and 3 Major. None of
+  the first round's five defects reappeared — removing the surface bugs exposed deeper
+  ones. Fixed nine of them; the remainder are phases 6-8 by definition. The most serious
+  was created by my own round-one fix: making stage completion single-owner meant an
+  APPROVED review never completed its stage, so the workflow would re-run the reviewer
+  forever.
+- **Artifacts Produced:** fixed `scripts/codex-review.sh`, `scripts/wp-append.sh`,
+  `scripts/workflow-gate.sh`, `scripts/workflow-next.sh`, `.agents/workflow.json`,
+  `.agents/codex-review-schema.json`, `.agents/roles/{architect,release-manager,web-designer}.md`,
+  `AGENTS.md`, `docs/workflow.md`, `scripts/test-workflow-driver.sh` (38 assertions)
+- **Problems Encountered:**
+  - The UAT gate opened *before* the UAT Tester created the PRs it asked the Maintainer
+    to review — a gate nobody could answer. Moved to after the stage.
+  - `release-manager` was in every `gate_blocking_stages` list, so its own pre-flight
+    check required a work-protocol entry it only writes afterwards: every release
+    failed on itself.
+  - Gate decisions were accepted on gates that were not open, so a caller could
+    pre-approve UAT while it was `n/a` and the mandatory stop silently vanished.
+  - `workflow-gate.sh all` printed gate state without failing on it and swallowed the
+    UAT result, so it could report success with an unresolved approval outstanding.
+  - Four driver tests failed after these changes because they encoded the old, wrong
+    gate ordering. Updating tests to match corrected behaviour is right; it is worth
+    recording that the suite was rewritten rather than the behaviour bent to fit it.
+  - Two review rounds cost 4m34s / 199,652 tokens and 4m14s / 106,184 tokens.

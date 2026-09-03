@@ -28,7 +28,10 @@ multiple pages, or introducing a dependency, framework or build tool.
 
 ## Steps
 
-1. Branch `website/<slug>` from latest `main`. If the request was a question, answer it
+1. **Reserve a work item number** (`next-issue-number` skill), branch
+   `website/NNN-<slug>` from latest `main`, and create `docs/website/NNN-<slug>/` with
+   `work-protocol.md` and `state.json` — you are the first role in a website workflow,
+   and the driver locates both by branch name. If the request was a question, answer it
    before changing anything.
 2. Make the requested change and nothing beyond it, plus whatever is strictly needed to
    keep the site correct.

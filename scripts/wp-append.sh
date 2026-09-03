@@ -66,6 +66,15 @@ if [ -n "$GATE" ]; then
     [ -n "$DECISION" ] || die "--gate requires --decision"
     case "$GATE" in spec|arch|uat) ;; *) die "unknown gate: $GATE" ;; esac
 
+    # Only an open gate can be decided. Without this, a caller can pre-approve a
+    # gate while it is still "n/a" and workflow-next will later see "approved"
+    # and never stop there — silently removing a mandatory human decision.
+    GATE_STATE="$(state_get ".gates.$GATE // \"n/a\"")"
+    case "$GATE_STATE" in
+        pending) ;;
+        *) die "gate '$GATE' is '$GATE_STATE', not pending — there is no open decision to record." ;;
+    esac
+
     # A gate is only cleared by an explicit approval. Anything else must not
     # let the run continue: storing a decision verbatim would mean recording
     # "rejected" reads as permission to proceed.
@@ -84,9 +93,13 @@ if [ -n "$GATE" ]; then
     if [ "$VALUE" = "rework" ]; then
         # Route back to the role that produced the rejected artifact and count
         # the attempt. The gate reopens when that role completes again.
-        # spec -> requirements-engineer, arch -> architect. The uat gate has no
-        # after_stage, and a UAT failure is always the Developer's to fix.
-        REWORK_TO="$(jq -r --arg g "$GATE" '.gates[$g].after_stage // "developer"' "$WORKFLOW_JSON")"
+        # A rejection goes back to whoever can act on it. That is usually the
+        # role whose artifact was rejected (spec -> Requirements Engineer,
+        # arch -> Architect), but a UAT failure is a defect in the code, not in
+        # the UAT run, so rework_targets redirects it to the Developer.
+        REWORK_TO="$(jq -r --arg g "$GATE" \
+            '(.gates[$g].after_stage // "developer") as $owner
+             | .rework_targets[$owner] // $owner' "$WORKFLOW_JSON")"
         jq --arg g "$GATE" --arg t "$REWORK_TO" \
            '.gates[$g] = "rework"
             | .stage = $t
@@ -162,7 +175,8 @@ GATE_AFTER="$(jq -r --arg s "$STAGE" \
 if [ -n "$GATE_AFTER" ]; then
     ALWAYS="$(jq -r --arg g "$GATE_AFTER" '.gates[$g].always' "$WORKFLOW_JSON")"
     CURRENT="$(state_get ".gates.$GATE_AFTER // \"n/a\"")"
-    if [ "$ALWAYS" = "true" ] || [ "$CURRENT" = "contested" ] || [ "$CURRENT" = "rework" ]; then
+    if [ "$ALWAYS" = "true" ] || [ "$CURRENT" = "contested" ] \
+       || [ "$CURRENT" = "rework" ] || [ "$CURRENT" = "required" ]; then
         tmp="$(mktemp)"
         jq --arg g "$GATE_AFTER" '.gates[$g] = "pending"' "$(state_file)" > "$tmp"
         mv "$tmp" "$(state_file)"

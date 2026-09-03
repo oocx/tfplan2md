@@ -19,7 +19,7 @@ Work happens in **work items**, one folder and one branch each:
 | Feature | `feature/NNN-<slug>` | `docs/features/NNN-<slug>/` |
 | Bug fix | `fix/NNN-<slug>` | `docs/issues/NNN-<slug>/` |
 | Workflow | `workflow/NNN-<slug>` | `docs/workflow/NNN-<slug>/` |
-| Website | `website/<slug>` | — |
+| Website | `website/NNN-<slug>` | `docs/website/NNN-<slug>/` |
 
 `NNN` is global and monotonic across all three types — never reuse a number for a
 different type. On a collision at merge time, first PR to merge keeps the number;

@@ -50,22 +50,28 @@ stop and fix the branch settings rather than working around them.
 3. **Commit types respect the version guardrail.** A PR touching only `.github/`,
    `.agents/`, `scripts/`, `docs/` or `website/` must not use `feat:` or `fix:` —
    Versionize would cut a release for a change that does not alter the published image.
-4. **Release notes exist** — `release-notes.md` in the work item folder, with screenshot
-   targeting metadata for every image. PR Validation enforces this.
+4. **Release notes** — you own `release-notes.md`, so **write it before running this
+   check**, not after. Every image needs screenshot targeting metadata; PR Validation
+   enforces both its presence and that metadata.
 
 ## Steps
 
-1. Run the pre-flight checks. Any failure stops the release.
-2. Post the exact PR title and body (template in AGENTS.md), then create the PR with
+1. **Write `release-notes.md` first.** It is your artifact and the pre-flight check
+   looks for it, so producing it after the check would fail on your own omission.
+2. Run the pre-flight checks. Any failure stops the release. The check does not
+   require your own work-protocol entry — you have not finished yet.
+3. Post the exact PR title and body (template in AGENTS.md), then create the PR with
    the `create-pr-github` skill.
-3. Wait for PR Validation to pass.
-4. **Verify the merge did not corrupt documentation.** After rebasing, confirm files
+4. Wait for PR Validation to pass.
+5. **Append your work-protocol entry and commit it now, before merging.** The entry
+   describes work the merge should contain; recorded afterwards it would land on a
+   deleted branch and never reach `main`.
+6. **Verify the merge did not corrupt documentation.** After rebasing, confirm files
    like `docs/architecture.md` and `docs/spec.md` were not reverted, even when the CLI
    reports success. Merge tooling has silently dropped content here before.
-5. Merge with `scripts/pr-github.sh create-and-merge` (rebase, delete branch).
-6. Wait for CI on `main`, detect the tag Versionize created, and verify the release
+7. Merge with `scripts/pr-github.sh create-and-merge` (rebase, delete branch).
+8. Wait for CI on `main`, detect the tag Versionize created, and verify the release
    artifacts after the release workflow completes.
-7. Append your work-protocol entry.
 
 ## Release notes
 
@@ -76,4 +82,5 @@ required when user-visible output changed (`generate-release-screenshots` skill)
 
 ## Definition of Done
 
-PR merged, release published, artifacts verified, work-protocol entry appended.
+Release notes written, PR merged, release published, artifacts verified, and the
+work-protocol entry committed **before** the merge that carries it.

@@ -22,8 +22,8 @@ from `state.json`, resolved by `scripts/workflow-next.sh`.
 | 5 | Developer | code, tests, `uat-plan.json`, `uat-plan.md` |
 | 6 | Technical Writer | updated global documentation |
 | 7 | Code Reviewer | `code-review.md` + verdict |
-| — | **GATE: UAT** | only when user-visible output changed |
-| 8 | UAT Tester | `uat-report.md` |
+| 8 | UAT Tester | UAT PRs in GitHub and Azure DevOps, `uat-report.md` |
+| — | **GATE: UAT** | only when user-visible output changed — decided after the PRs exist |
 | 9 | Release Manager | PR, `release-notes.md`, the release |
 | 10 | Retrospective | `retrospective.md` |
 
@@ -36,7 +36,7 @@ UAT Tester (if applicable) → Release Manager → Retrospective.
 
 Workflow Engineer → Release Manager. UAT does not apply.
 
-### Website — `website/<slug>`
+### Website — `website/NNN-<slug>` → `docs/website/NNN-<slug>/`
 
 Web Designer → Release Manager.
 
@@ -48,7 +48,7 @@ Three, and only three. Everything else runs unattended.
 |------|-------|-----------|
 | Specification | Every feature | Always the Maintainer |
 | Architecture | Two or more viable options with material trade-offs | Maintainer; otherwise the Architect decides and records the ADR |
-| UAT | The diff touches user-visible output | Maintainer's explicit pass/fail |
+| UAT | The diff touches user-visible output | Maintainer's explicit pass/fail, **after** the UAT Tester has created the PRs |
 
 The UAT gate is a path rule, not a judgement:
 
@@ -115,11 +115,13 @@ Required roles by workflow type:
 
 | Workflow | Required entries |
 |----------|-----------------|
-| Feature | Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer, Technical Writer, Code Reviewer, Release Manager |
-| Bug fix | Issue Analyst, Developer, Technical Writer, Code Reviewer, Release Manager |
-| Workflow | Workflow Engineer, Release Manager |
+| Feature | Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer, Technical Writer, Code Reviewer |
+| Bug fix | Issue Analyst, Developer, Technical Writer, Code Reviewer |
+| Workflow | Workflow Engineer |
 
 UAT Tester and Retrospective are required when they apply, and are not gate-blocking.
+Neither is the Release Manager: it runs the completeness check *before* doing its work,
+so it cannot require its own entry.
 
 ## Work item numbering
 

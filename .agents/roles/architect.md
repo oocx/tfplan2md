@@ -36,8 +36,18 @@ provider knowledge into core is wrong regardless of how convenient it is. See
 1. Read `specification.md` and the existing code the change touches. Use `ast-grep` for
    structural questions rather than reading files whole.
 2. Identify the viable approaches. Write down what each costs.
-3. **Count the genuinely competing options** and record it in
-   `state.json` → `gates.arch`:
+3. **Record whether the choice is contested** in `state.json` → `gates.arch`, using
+   exactly one of these two values — the driver matches them literally, and any other
+   wording silently skips the gate:
+
+   - `contested` — two or more options with material trade-offs; the run stops for the
+     Maintainer to choose.
+   - `auto` — one clearly superior option; you decide and the run continues.
+
+   ```bash
+   jq '.gates.arch = "contested"' state.json > tmp && mv tmp state.json
+   ```
+
    - One clearly superior option → decide it yourself, write the ADR, continue. Do not
      stop the run to confirm an obvious call.
    - Two or more with material trade-offs → this is a gate. Present the options with

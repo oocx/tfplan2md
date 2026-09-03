@@ -118,12 +118,13 @@ fi
     echo "## Summary"
     echo
     jq -r '.summary' "$RESULT"
-    for section in verification probed; do
+    for section in verification spec_compliance probed; do
         value="$(jq -r --arg s "$section" '.[$s] // empty' "$RESULT")"
         [ -n "$value" ] || continue
         case "$section" in
-            verification) echo; echo "## Verification Results" ;;
-            probed)       echo; echo "## What I Tried To Break" ;;
+            verification)     echo; echo "## Verification Results" ;;
+            spec_compliance)  echo; echo "## Specification Compliance" ;;
+            probed)           echo; echo "## What I Tried To Break" ;;
         esac
         echo
         echo "$value"
@@ -155,7 +156,28 @@ fi
 } > "$REPORT"
 
 echo "Wrote ${REPORT#"$REPO_ROOT"/}"
-jq -r '"Findings: " + ([.findings[] | .severity] | group_by(.) | map("\(length) \(.[0])") | join(", ") // "none")' "$RESULT"
+SEVERITIES="$(jq -r '"Findings: " + ([.findings[] | .severity] | group_by(.) | map("\(length) \(.[0])") | join(", ") // "none")' "$RESULT")"
+echo "$SEVERITIES"
 echo "VERDICT: $VERDICT"
+
+# The reviewer is a subprocess and cannot append its own work-protocol entry,
+# but completion still has exactly one owner — so the wrapper does it on the
+# role's behalf. Without this the stage never advances: an APPROVED review
+# would leave .stage at code-reviewer and be re-run forever.
+if [ "$(state_get '.stage')" = "code-reviewer" ]; then
+    "$REPO_ROOT/scripts/wp-append.sh" \
+        --role "Code Reviewer" \
+        --summary "Reviewed against $BASE in codex ($MODEL). Verdict: $VERDICT. $SEVERITIES" \
+        --artifacts "${REPORT#"$REPO_ROOT"/}" \
+        --problems "None" >/dev/null
+
+    if [ "$VERDICT" = "REWORK" ]; then
+        # The entry advanced the stage; route it back to the Developer.
+        "$REPO_ROOT/scripts/wp-append.sh" --rework code-reviewer \
+            --reason "code review returned REWORK" >/dev/null
+    fi
+else
+    echo "note: stage is '$(state_get '.stage')', not code-reviewer — state not advanced." >&2
+fi
 
 [ "$VERDICT" = "APPROVED" ] && exit 0 || exit 1

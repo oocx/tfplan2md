@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+# Exercise the workflow state machine in a throwaway repository.
+#
+# The driver decides whether roles are skipped and whether gates can be
+# bypassed, so it needs coverage that does not depend on anyone remembering to
+# check by hand. Every case here corresponds to a defect that a code review
+# found in the driver, or to a rule the design depends on.
+#
+# Usage: scripts/test-workflow-driver.sh
+set -uo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SANDBOX="$(mktemp -d)"
+trap 'rm -rf "$SANDBOX"' EXIT
+
+pass=0
+fail=0
+
+ok()   { printf '  \033[32mPASS\033[0m %s\n' "$1"; pass=$((pass + 1)); }
+bad()  { printf '  \033[31mFAIL\033[0m %s\n     %s\n' "$1" "${2:-}"; fail=$((fail + 1)); }
+
+# assert_eq <description> <expected> <actual>
+assert_eq() {
+    if [ "$2" = "$3" ]; then ok "$1"; else bad "$1" "expected '$2', got '$3'"; fi
+}
+
+# assert_exit <description> <expected-code> <command...>
+assert_exit() {
+    local desc=$1 want=$2; shift 2
+    "$@" >/dev/null 2>&1
+    local got=$?
+    if [ "$got" -eq "$want" ]; then ok "$desc"; else bad "$desc" "expected exit $want, got $got"; fi
+}
+
+# Build a fresh repo with the workflow tooling and one work item.
+# new_repo <type> <slug> <stage> [file-to-touch]
+new_repo() {
+    local type=$1 slug=$2 stage=$3 touch_file=${4:-README.md}
+    local dir="$SANDBOX/$RANDOM$RANDOM"
+    mkdir -p "$dir"
+    cp -r "$REPO_ROOT/.agents" "$dir/"
+    mkdir -p "$dir/scripts"
+    cp "$REPO_ROOT"/scripts/{workflow-lib.sh,workflow-next.sh,workflow-gate.sh,wp-append.sh} "$dir/scripts/"
+
+    git -C "$dir" init -q
+    git -C "$dir" config user.email t@t.t
+    git -C "$dir" config user.name t
+    git -C "$dir" checkout -q -b main
+    echo base > "$dir/README.md"
+    git -C "$dir" add -A >/dev/null
+    git -C "$dir" commit -qm "base"
+
+    local folder
+    folder="$(jq -r --arg t "$type" '.types[$t].folder' "$dir/.agents/workflow.json")"
+    local prefix
+    prefix="$(jq -r --arg t "$type" '.types[$t].branch_prefix' "$dir/.agents/workflow.json")"
+    git -C "$dir" checkout -q -b "$prefix/$slug"
+
+    mkdir -p "$dir/$folder/$slug"
+    printf '# Work Protocol\n\n## Agent Work Log\n' > "$dir/$folder/$slug/work-protocol.md"
+    jq -n --arg t "$type" --arg s "$slug" --arg st "$stage" \
+        '{type:$t, slug:$s, stage:$st, status:"running",
+          gates:{spec:"n/a", arch:"n/a", uat:"n/a"},
+          attempts:{}, open_questions:[]}' > "$dir/$folder/$slug/state.json"
+
+    mkdir -p "$(dirname "$dir/$touch_file")"
+    echo change >> "$dir/$touch_file"
+    git -C "$dir" add -A >/dev/null
+    git -C "$dir" commit -qm "work"
+    echo "$dir"
+}
+
+stage_of() { jq -r '.stage' "$(find "$1/docs" -name state.json | head -1)"; }
+gate_of()  { jq -r --arg g "$2" '.gates[$g]' "$(find "$1/docs" -name state.json | head -1)"; }
+attempts_of() { jq -r --arg s "$2" '.attempts[$s] // 0' "$(find "$1/docs" -name state.json | head -1)"; }
+
+echo "Workflow driver"
+echo
+
+# --- stage advancement ------------------------------------------------------
+R="$(new_repo feature 900-test requirements-engineer)"
+assert_eq "feature starts at requirements-engineer" "requirements-engineer" "$(stage_of "$R")"
+
+(cd "$R" && scripts/wp-append.sh --role "Requirements Engineer" --summary s) >/dev/null 2>&1
+assert_eq "completing a stage advances to the next" "architect" "$(stage_of "$R")"
+assert_eq "a gate declared always:true opens on completion" "pending" "$(gate_of "$R" spec)"
+assert_exit "workflow-next blocks while a gate is pending" 2 \
+    env -C "$R" scripts/workflow-next.sh
+
+# --- a rejected gate must not unblock the run (Blocker) ---------------------
+(cd "$R" && scripts/wp-append.sh --gate spec --decision rejected) >/dev/null 2>&1
+assert_eq "rejection routes back to the gate's owning role" "requirements-engineer" "$(stage_of "$R")"
+assert_eq "rejection counts an attempt" "1" "$(attempts_of "$R" requirements-engineer)"
+# The original defect was not the stored label but the consequence: a stored
+# "rejected" was simply not "pending", so the run walked straight past the gate
+# into the stage the gate exists to guard.
+if [ "$(stage_of "$R")" = "architect" ]; then
+    bad "a rejection does not let the run enter the guarded stage" "stage advanced to architect anyway"
+else
+    ok "a rejection does not let the run enter the guarded stage"
+fi
+assert_exit "the run proceeds to redo the rejected stage" 0 \
+    env -C "$R" scripts/workflow-next.sh
+
+(cd "$R" && scripts/wp-append.sh --role "Requirements Engineer" --summary s2) >/dev/null 2>&1
+assert_eq "the gate reopens after the rework" "pending" "$(gate_of "$R" spec)"
+(cd "$R" && scripts/wp-append.sh --gate spec --decision approved) >/dev/null 2>&1
+assert_eq "approval clears the gate" "approved" "$(gate_of "$R" spec)"
+assert_exit "the run continues once approved" 0 env -C "$R" scripts/workflow-next.sh
+
+# --- only the current stage's role may complete it (Blocker) ---------------
+assert_exit "a --role that is not the current stage is refused" 1 \
+    env -C "$R" scripts/wp-append.sh --role "Developer" --summary wrong
+assert_eq "the refused append did not advance the stage" "architect" "$(stage_of "$R")"
+
+# --- gate decisions are validated -------------------------------------------
+assert_exit "an unrecognised decision on a yes/no gate is refused" 1 \
+    env -C "$R" scripts/wp-append.sh --gate spec --decision "maybe later"
+R2="$(new_repo feature 901-arch architect)"
+(cd "$R2" && scripts/wp-append.sh --gate arch --decision "Option B: streaming") >/dev/null 2>&1
+assert_eq "the architecture gate accepts a choice" "chosen: Option B: streaming" "$(gate_of "$R2" arch)"
+
+# --- UAT gate opens before its stage (Blocker) ------------------------------
+UAT_PATH="src/Oocx.TfPlan2Md/MarkdownGeneration/Renderer.cs"
+R3="$(new_repo feature 902-uat uat-tester "$UAT_PATH")"
+assert_exit "UAT-triggering diff opens the UAT gate and blocks" 2 \
+    env -C "$R3" scripts/workflow-next.sh
+assert_eq "the UAT gate is recorded as pending" "pending" "$(gate_of "$R3" uat)"
+(cd "$R3" && scripts/wp-append.sh --gate uat --decision failed) >/dev/null 2>&1
+assert_eq "a UAT failure routes to the Developer" "developer" "$(stage_of "$R3")"
+
+R4="$(new_repo feature 903-nouat uat-tester "docs/notes.md")"
+(cd "$R4" && scripts/workflow-next.sh) >/dev/null 2>&1
+assert_eq "a non-user-visible diff skips UAT" "release-manager" "$(stage_of "$R4")"
+assert_eq "the skip is recorded" "not-required" "$(gate_of "$R4" uat)"
+
+# --- model escalation -------------------------------------------------------
+R5="$(new_repo feature 904-esc developer)"
+assert_eq "developer starts at its declared tier" "sonnet" \
+    "$( (cd "$R5" && scripts/workflow-next.sh --json) | jq -r '.model')"
+(cd "$R5" && scripts/wp-append.sh --rework code-reviewer --reason r) >/dev/null 2>&1
+assert_eq "developer escalates one tier after rework" "opus" \
+    "$( (cd "$R5" && scripts/workflow-next.sh --json) | jq -r '.model')"
+
+# --- the reviewer runs in codex --------------------------------------------
+R6="$(new_repo feature 905-review code-reviewer)"
+assert_eq "the code-reviewer stage targets codex" "codex" \
+    "$( (cd "$R6" && scripts/workflow-next.sh --json) | jq -r '.harness')"
+assert_eq "the reviewer uses the deep codex model" "gpt-5.6-sol" \
+    "$( (cd "$R6" && scripts/workflow-next.sh --json) | jq -r '.model')"
+
+# --- other workflow types ---------------------------------------------------
+R7="$(new_repo workflow 906-wf workflow-engineer)"
+(cd "$R7" && scripts/wp-append.sh --role "Workflow Engineer" --summary s) >/dev/null 2>&1
+assert_eq "a workflow item goes straight to release" "release-manager" "$(stage_of "$R7")"
+assert_eq "no spec gate opens for a workflow item" "n/a" "$(gate_of "$R7" spec)"
+
+R8="$(new_repo fix 907-bug issue-analyst)"
+(cd "$R8" && scripts/wp-append.sh --role "Issue Analyst" --summary s) >/dev/null 2>&1
+assert_eq "a bug fix goes from analysis to the developer" "developer" "$(stage_of "$R8")"
+
+# --- questions never block --------------------------------------------------
+R9="$(new_repo feature 908-q developer)"
+assert_exit "a question requires the assumption in force" 1 \
+    env -C "$R9" scripts/wp-append.sh --question "why?"
+(cd "$R9" && scripts/wp-append.sh --question "why?" --assumed "because") >/dev/null 2>&1
+assert_eq "a recorded question does not change the stage" "developer" "$(stage_of "$R9")"
+assert_exit "the run continues after a question" 0 env -C "$R9" scripts/workflow-next.sh
+
+# --- work-protocol completeness --------------------------------------------
+R10="$(new_repo workflow 909-gate release-manager)"
+assert_exit "release is refused while a required role has no entry" 1 \
+    env -C "$R10" scripts/workflow-gate.sh work-protocol
+
+echo
+echo "$pass passed, $fail failed"
+[ "$fail" -eq 0 ]

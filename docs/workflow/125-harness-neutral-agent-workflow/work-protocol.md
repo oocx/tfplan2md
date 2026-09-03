@@ -94,3 +94,28 @@
   `scripts/agent-doctor.sh` also reported the Rust tools missing when they were
   installed, because `~/.cargo/bin` is absent from non-login shell PATH. It now looks
   there and warns.
+
+### Workflow Engineer (phase 5)
+
+- **Date:** 2026-09-03
+- **Summary:** Fixed the 6 Blockers and 1 Major from the Codex review. Five were real
+  defects in the phase 1-3 driver: stage completion had two owners and could skip a
+  role; a rejected gate read as permission to continue; the UAT gate was declared
+  `before_stage` but nothing ever opened it; the Developer role read feature artifacts
+  that a bug workflow never produces; and the Release Manager required a code review
+  that workflow and website sequences never schedule. The sixth was a correct
+  observation that HEAD was mid-migration, which phase 4 resolved. Added
+  `scripts/test-workflow-driver.sh` — 31 assertions against a throwaway repo — which
+  addresses the Major finding and makes the fixes verifiable.
+- **Artifacts Produced:** `scripts/test-workflow-driver.sh`, fixed `scripts/wp-append.sh`,
+  `scripts/workflow-next.sh`, `.agents/roles/developer.md`, `.agents/roles/release-manager.md`,
+  `.agents/skills/run-workflow/SKILL.md`
+- **Problems Encountered:**
+  - The first version of the suite included an assertion that passed against the
+    pre-fix code, so it was proving nothing. Replaced with one that checks the
+    consequence — that a rejection does not let the run enter the guarded stage —
+    rather than the stored label. Verified by running the suite against the pre-fix
+    scripts: 9 failures before, 0 after.
+  - Cross-family review found five defects that had survived my own manual testing of
+    the same code. Manual happy-path checking was not sufficient evidence, which is
+    exactly what the review said.

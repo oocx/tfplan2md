@@ -177,6 +177,12 @@ R7="$(new_repo workflow 906-wf workflow-engineer)"
 assert_eq "a workflow item goes straight to release" "release-manager" "$(stage_of "$R7")"
 assert_eq "no spec gate opens for a workflow item" "n/a" "$(gate_of "$R7" spec)"
 
+# A workflow item that incidentally touches a user-visible path must not be
+# reported as needing UAT: its stage list has no uat-tester to act on it.
+R7b="$(new_repo workflow 912-wfweb workflow-engineer "website/src/_data/x.js")"
+assert_exit "a workflow item is never a UAT candidate" 1 \
+    env -C "$R7b" scripts/workflow-gate.sh uat
+
 R8="$(new_repo fix 907-bug issue-analyst)"
 (cd "$R8" && scripts/wp-append.sh --role "Issue Analyst" --summary s) >/dev/null 2>&1
 assert_eq "a bug fix goes from analysis to the developer" "developer" "$(stage_of "$R8")"

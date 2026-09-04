@@ -59,6 +59,19 @@ check_work_protocol() {
 
 check_uat() {
     echo "UAT trigger:"
+
+    # The path rule alone is not enough. A workflow or website work item has no
+    # uat-tester stage, so reporting "REQUIRED" for one is misleading — there is
+    # no stage that could act on it. Internal tooling that incidentally touches a
+    # user-visible path does not become a UAT candidate.
+    local has_stage
+    has_stage="$(jq -r --arg t "$TYPE" \
+        '.types[$t].stages | index("uat-tester") != null' "$WORKFLOW_JSON")"
+    if [ "$has_stage" != "true" ]; then
+        echo "  not applicable — the '$TYPE' workflow has no UAT stage"
+        return 1
+    fi
+
     if uat_required; then
         echo "  REQUIRED — the diff touches user-visible output:"
         local pattern base

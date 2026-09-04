@@ -1,7 +1,7 @@
 {
   "type": "workflow",
   "slug": "125-harness-neutral-agent-workflow",
-  "stage": "workflow-engineer",
+  "stage": "release-manager",
   "status": "running",
   "gates": {
     "spec": "n/a",
@@ -10,12 +10,6 @@
   },
   "attempts": {},
   "open_questions": [
-    {
-      "q": "Do the Codex models Sol / Terra / Luna descend in capability?",
-      "assumed": "Yes. Sol maps to the deep tier and is therefore the Code Reviewer model.",
-      "raised_by": "workflow-engineer",
-      "raised_at": "2026-09-03"
-    },
     {
       "q": "Should Issue Analyst move to the deep tier, by the same reasoning that moved Requirements Engineer?",
       "assumed": "No — left at standard pending an explicit decision.",

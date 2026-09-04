@@ -183,6 +183,12 @@ R7b="$(new_repo workflow 912-wfweb workflow-engineer "website/src/_data/x.js")"
 assert_exit "a workflow item is never a UAT candidate" 1 \
     env -C "$R7b" scripts/workflow-gate.sh uat
 
+# Both first stages run deep: a wrong requirement and a misdiagnosed root cause
+# propagate through every later stage alike.
+R8b="$(new_repo fix 914-tier issue-analyst)"
+assert_eq "a bug workflow opens at the deep tier" "opus" \
+    "$( (cd "$R8b" && scripts/workflow-next.sh --json) | jq -r '.model')"
+
 R8="$(new_repo fix 907-bug issue-analyst)"
 (cd "$R8" && scripts/wp-append.sh --role "Issue Analyst" --summary s) >/dev/null 2>&1
 assert_eq "a bug fix goes from analysis to the developer" "developer" "$(stage_of "$R8")"

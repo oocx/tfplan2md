@@ -9,12 +9,5 @@
     "uat": "not-required"
   },
   "attempts": {},
-  "open_questions": [
-    {
-      "q": "Should Issue Analyst move to the deep tier, by the same reasoning that moved Requirements Engineer?",
-      "assumed": "No — left at standard pending an explicit decision.",
-      "raised_by": "workflow-engineer",
-      "raised_at": "2026-09-03"
-    }
-  ]
+  "open_questions": []
 }

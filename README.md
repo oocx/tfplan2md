@@ -814,8 +814,8 @@ distinct role with its own boundaries and deliverables. The workflow is document
 
 Models are assigned by what an error at that stage costs to unwind, not by preference:
 
-- **Claude Opus** - requirements, architecture, and the workflow itself, where a
-  mistake propagates through every later stage
+- **Claude Opus** - requirements, bug analysis, architecture, and the workflow
+  itself, where a mistake propagates through every later stage
 - **Claude Sonnet** - implementation, test planning, release and UAT, where the work is
   constrained by an approved specification and mistakes surface in review or CI
 - **Claude Haiku** - task planning, documentation, and the search and test runs that

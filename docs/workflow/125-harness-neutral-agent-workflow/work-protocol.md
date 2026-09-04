@@ -183,3 +183,13 @@
 - **Summary:** Completed phases 1-8 of the harness-neutral workflow migration: canonical .agents/ layout, 13 roles, the auto-mode driver, the Codex reviewer, skills migration, and removal of the Copilot corpus.
 - **Artifacts Produced:** AGENTS.md, .agents/ (13 roles, 28 skills, 4 commands, tiers.json, workflow.json), 8 workflow scripts, docs/workflow.md, generated .claude/
 - **Problems Encountered:** Recorded per phase above. The dry run itself surfaced one: workflow-gate.sh reported UAT as REQUIRED for a workflow-type item with no UAT stage, because the path rule was not type-aware. Fixed, with a regression test.
+
+### Workflow Engineer (round 8)
+
+- **Date:** 2026-09-04
+- **Summary:** Moved Issue Analyst from standard to deep tier at the Maintainer's
+  direction, closing the last open question. Both first stages now run deep: a wrong
+  requirement and a misdiagnosed root cause propagate through every later stage alike.
+- **Artifacts Produced:** `.agents/roles/issue-analyst.md`, `design.md`, `README.md`,
+  `scripts/test-workflow-driver.sh` (43 assertions), regenerated `.claude/`
+- **Problems Encountered:** None. `state.json` now carries no open questions.

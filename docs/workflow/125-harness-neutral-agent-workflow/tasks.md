@@ -18,4 +18,4 @@ Phases 1–5 are additive and reversible. Phase 6 is the point of no return.
 | # | Question | Assumption in force |
 |---|----------|--------------------|
 | 1 | ~~Do Sol / Terra / Luna descend in capability?~~ | **Closed:** confirmed by the Maintainer. Real slugs are `gpt-5.6-sol` / `-terra` / `-luna`; bare names are rejected by the API. |
-| 2 | Should Issue Analyst move to deep tier? | Left at standard. It is the first stage of the bug workflow and its errors propagate the way a bad requirement does, so the reasoning behind task 7 applies to it unchanged. |
+| 2 | ~~Should Issue Analyst move to deep tier?~~ | **Closed:** yes, moved. It is the first stage of the bug workflow and its errors propagate the way a bad requirement does. |

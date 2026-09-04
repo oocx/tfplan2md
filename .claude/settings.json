@@ -1,0 +1,16 @@
+{
+  "$comment": "Canonical Claude Code settings. Generated into .claude/settings.json by scripts/sync-agent-config.sh — edit this file, not the generated one.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./scripts/hooks/session-start.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

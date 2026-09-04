@@ -147,3 +147,32 @@
     gate ordering. Updating tests to match corrected behaviour is right; it is worth
     recording that the suite was rewritten rather than the behaviour bent to fit it.
   - Two review rounds cost 4m34s / 199,652 tokens and 4m14s / 106,184 tokens.
+
+### Workflow Engineer (phase 7)
+
+- **Date:** 2026-09-04
+- **Summary:** Removed the Copilot corpus: 26 agent files, 19 prompt files, 3 hook
+  configs, the Copilot instructions and setup workflow, the model reference, the
+  chat-analysis tooling, and the three git wrappers that RTK's hook replaces.
+  `docs/agents.md` is replaced by `docs/workflow.md`, carrying a rewritten mermaid
+  diagram that shows the new roles, driver and three gates. Agent validation, adapter
+  drift and the driver tests now run in PR validation.
+- **Artifacts Produced:** deleted 60+ files; updated `.github/workflows/pr-validation.yml`,
+  `.github/ISSUE_TEMPLATE/workflow_improvement.yml`, `CONTRIBUTING.md`, `README.md`,
+  `website/src/_data/aiWorkflowPage.js`; added `.agents/claude-settings.json`,
+  `.markdownlint-cli2.jsonc`
+- **Problems Encountered:**
+  - `git rm` aborts entirely when one pathspec misses, so an earlier batch silently
+    deleted nothing; `analyze-chat.py` and `analyze-run.sh` survived until re-checked.
+  - `src/tests/shell/analyze_chat_test.sh` tested a script being deleted, and CI ran it.
+    Both removed. `validate_work_protocol_test.sh` tested the deleted hook; its rule now
+    lives in `workflow-gate.sh`, which the driver suite covers.
+  - `src/tests/shell/uat_validate_test.sh` was not executable and had been failing on
+    `main` as well; CI never invoked it, so nobody noticed. Fixed the bit; it passes.
+  - The README's "Development Team" section still claimed GitHub Copilot wrote 100% of
+    the project and linked to the deleted model reference. Rewritten to describe the
+    actual roles and tiers. It is public-facing copy and worth the Maintainer's review.
+  - A 20 MB VS Code chat export sits untracked in the C# source tree at
+    `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/MarkdownHelpers/developer.chat.json`.
+    Left in place deliberately: it was never committed, so deleting it would be
+    irreversible rather than recoverable from history.

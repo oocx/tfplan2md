@@ -18,12 +18,13 @@ git checkout -b feat/your-feature-name
 ```
 
 Use these branch prefixes:
+
 - `feat/` — New features
 - `fix/` — Bug fixes
 - `docs/` — Documentation changes
 - `refactor/` — Code refactoring
 - `chore/` — Maintenance tasks
-- `workflow/` — Agent/workflow changes (`.github/agents/`, workflow documentation)
+- `workflow/` — Agent/workflow changes (`.agents/`, workflow documentation)
 - `website/` — Website changes (`website/` directory)
 
 ## Testing Requirements
@@ -80,6 +81,7 @@ See [docs/architecture-rules.md](docs/architecture-rules.md) for complete layer 
 ### Markdown Quality Requirements
 
 All generated markdown must:
+
 - Pass markdownlint validation (MD012 and other rules)
 - Parse correctly with Markdig
 - Render correctly on GitHub and Azure DevOps
@@ -117,7 +119,7 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/) t
 | `build` | Build system or dependency changes | None |
 | `ci` | CI configuration changes | None |
 | `chore` | Other maintenance tasks | None |
-| `workflow` | Agent/workflow changes (`.github/agents/`, `docs/agents.md`) | None |
+| `workflow` | Agent/workflow changes (`.agents/`, `docs/workflow.md`) | None |
 | `revert` | Reverting a previous commit | Depends |
 
 ### Breaking Changes
@@ -146,6 +148,7 @@ Breaking changes trigger a **major** version bump (x.0.0).
 - ❌ Low cohesion: One commit that fixes a bug AND refactors tests AND updates documentation
 
 **Why:** Focused commits make it easier to:
+
 - Understand what changed and why
 - Review changes effectively
 - Revert specific changes if needed
@@ -177,11 +180,13 @@ git commit -m "feat(api)!: rename TerraformPlan to PlanResult"
 1. **Create a feature branch** from `main`
 2. **Make your changes** following the coding guidelines
 3. **Ensure all checks pass**:
+
    ```bash
    dotnet format --verify-no-changes
    dotnet build
    dotnet test
    ```
+
 4. **Push your branch** and create a Pull Request
 5. **Wait for review** — PR validation will run automatically
 6. **Merge using "Rebase and merge"** — This project requires a linear history
@@ -227,6 +232,7 @@ Suppressions are allowed only when refactoring would harm readability or maintai
 4. Obtain maintainer approval in the PR review
 
 Example:
+
 ```csharp
 // Complex state machine requires 18 branches for RFC compliance
 // Approved by maintainer in PR #346
@@ -308,6 +314,7 @@ Terraform provider-specific code (azurerm, azapi, azuredevops) is organized into
 **Location:** `src/Oocx.TfPlan2Md/Providers/`
 
 Each provider is self-contained:
+
 - **Templates** (`.sbn` files): Provider-specific Scriban templates
 - **Models**: Resource view models and factories for complex resources
 - **Helpers**: Provider-specific Scriban helper functions
@@ -329,6 +336,7 @@ Each provider is self-contained:
 ### Architecture Documentation
 
 For comprehensive architecture details, see:
+
 - [docs/architecture.md](docs/architecture.md) - Full arc42 architecture documentation
 - [docs/spec.md](docs/spec.md) - Project specification and technical details
 - [src/Oocx.TfPlan2Md/Providers/README.md](src/Oocx.TfPlan2Md/Providers/README.md) - Provider development guide
@@ -368,6 +376,7 @@ This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git h
 - **commit-msg**: Validates commit message follows Conventional Commits format
 
 If your commit is rejected:
+
 1. **Format issues**: Run `dotnet format` to fix formatting
 2. **Build errors**: Fix the build errors before committing
 3. **Commit message**: Ensure your message follows the format `type: description`
@@ -379,6 +388,7 @@ The AzAPI provider includes curated mappings between Azure resource types and th
 ### When to Update Mappings
 
 Update the mappings when:
+
 - A user reports a broken or missing documentation link
 - Microsoft launches a new Azure service or resource type
 - Microsoft restructures documentation URLs (rare but possible)
@@ -387,21 +397,25 @@ Update the mappings when:
 ### Update Process
 
 **Prerequisites:**
+
 - Python 3.7 or later
 - Internet connection (script scrapes Microsoft Learn)
 
 **Steps:**
 
 1. **Run the discovery script:**
+
    ```bash
    python3 scripts/update-azure-api-mappings.py
    ```
+
    This generates updated mappings by scraping the Azure SDK Specs Inventory page and saves them to `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`.
 
 2. **Spot-check the output:**
    - Review the generated JSON file
    - Check the `totalMappings` count in metadata (should be 90+)
    - Verify a few sample URLs manually:
+
      ```bash
      # Example: Check a few URLs
      cat src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json | \
@@ -409,19 +423,23 @@ Update the mappings when:
      ```
 
 3. **Validate URLs (optional):**
+
    ```bash
    # Warning: This is slow (makes HTTP requests for each URL)
    python3 scripts/update-azure-api-mappings.py --validate
    ```
+
    Only use `--validate` when you need to verify URL correctness. It's not recommended for routine updates.
 
 4. **Test the changes:**
+
    ```bash
    dotnet build
    dotnet test
    ```
 
 5. **Commit the updated mappings:**
+
    ```bash
    git add src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json
    git commit -m "chore: update Azure API documentation mappings"
@@ -460,6 +478,7 @@ The mappings are stored in JSON format:
 ```
 
 **Key points:**
+
 - Resource types are **version-agnostic** (no `@YYYY-MM-DD` suffix)
 - Nested resources have individual mappings (e.g., `Microsoft.Storage/storageAccounts/blobServices`)
 - URLs point to Microsoft Learn REST API documentation
@@ -478,6 +497,7 @@ The Azure AD provider resolves Microsoft Graph application-permission GUIDs (e.g
 ### When to Update Mappings
 
 Update the mappings when:
+
 - A user reports a well-known Microsoft Graph app permission GUID that renders as a raw GUID instead of its friendly name
 - Microsoft adds new Graph application permissions
 - Regular maintenance (maintainer's discretion)
@@ -485,23 +505,28 @@ Update the mappings when:
 ### Update Process
 
 **Prerequisites:**
+
 - Python 3.7 or later (standard library only)
 - Internet connection (script fetches the upstream markdown from GitHub)
 
 **Steps:**
 
 1. **Run the regeneration script:**
+
    ```bash
    python3 scripts/update-msgraph-app-roles.py
    ```
+
    This downloads the upstream permissions reference markdown, extracts every well-known Microsoft Graph application permission GUID, and writes the sorted `{guid: name}` mapping to `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`. The script prints an added/removed/total summary on each run and is idempotent.
 
 2. **Preview without writing:**
+
    ```bash
    python3 scripts/update-msgraph-app-roles.py --dry-run
    ```
 
 3. **Use a custom source or output path** (e.g., for offline regeneration from a local checkout of the docs repo):
+
    ```bash
    python3 scripts/update-msgraph-app-roles.py \
      --source /path/to/permissions-reference.md \
@@ -509,12 +534,14 @@ Update the mappings when:
    ```
 
 4. **Test the changes:**
+
    ```bash
    dotnet build
    dotnet test
    ```
 
 5. **Commit the updated mappings:**
+
    ```bash
    git add src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json
    git commit -m "chore: update Microsoft Graph app role mappings"
@@ -562,6 +589,7 @@ Releases are automated via GitHub Actions:
 ### Release Notes
 
 The Release Manager agent creates user-focused release notes in blog-post style:
+
 - **Location**: `docs/features/NNN-<feature-slug>/release-notes.md`
 - **Style**: Written for end-users, not developers
 - **Content**: Features and improvements users can see, excluding internal commits

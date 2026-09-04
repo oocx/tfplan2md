@@ -61,7 +61,7 @@ module.exports = {
     }
   ],
   ctas: [
-    { href: "https://github.com/oocx/tfplan2md/blob/main/docs/agents.md", label: "📖 Read Full Documentation (agents.md)", variant: "primary", external: true },
+    { href: "https://github.com/oocx/tfplan2md/blob/main/docs/workflow.md", label: "📖 Read Full Documentation (workflow.md)", variant: "primary", external: true },
     { href: "contributing.html", label: "🤝 Contributing Guide", variant: "secondary" }
   ]
 };

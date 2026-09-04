@@ -2,7 +2,7 @@
   "type": "workflow",
   "slug": "125-harness-neutral-agent-workflow",
   "stage": "release-manager",
-  "status": "running",
+  "status": "done",
   "gates": {
     "spec": "n/a",
     "arch": "n/a",

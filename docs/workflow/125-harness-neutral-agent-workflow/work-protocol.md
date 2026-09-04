@@ -295,3 +295,10 @@
     `pre-pr-checklist` skill after the stale base, so the "move every skill to
     `.agents/`" commit did not know about it and `.github/skills/` survived. Moved, and
     its references to `docs/agents.md` repointed to `docs/workflow.md`.
+
+### Release Manager
+
+- **Date:** 2026-09-04
+- **Summary:** Rebuilt the branch on origin/main (19 commits), ran the pre-PR checklist, and opened PR #670. Pushed to origin; not merged — merge is the maintainer's call. All local verification green: validate-agents.py (13 roles, 0 errors), sync-agent-config.sh --check, test-workflow-driver.sh 61/61, render-workflow-diagram.py --check, shell tests, git diff --check. dotnet format/build/test could not run locally: dotnet restore fails with NU1403 on Microsoft.DotNet.ILCompiler and Microsoft.NET.ILLink.Tasks 10.0.11, reproduced on a clean origin/main worktree, so pre-existing and unrelated to this branch (no C# changed).
+- **Artifacts Produced:** https://github.com/oocx/tfplan2md/pull/670
+- **Problems Encountered:** dotnet restore is broken on origin/main (NU1403). Not caused here and not fixed here — it needs its own fix/ work item. If CI shares the failure, it fails for a reason unrelated to this change.

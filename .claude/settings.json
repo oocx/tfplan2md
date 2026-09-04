@@ -12,5 +12,55 @@
         ]
       }
     ]
+  },
+  "permissions": {
+    "$comment": "Deliberately narrow. An unattended run makes these calls dozens of times per stage, and prompting for each one is what makes 'runs unattended between three gates' false. Nothing here pushes, merges, deletes or publishes: those stay interactive on purpose, because they are the irreversible ones.",
+    "allow": [
+      "Bash(scripts/workflow-next.sh:*)",
+      "Bash(scripts/workflow-gate.sh:*)",
+      "Bash(scripts/wp-append.sh:*)",
+      "Bash(scripts/validate-agents.py:*)",
+      "Bash(scripts/sync-agent-config.sh:*)",
+      "Bash(scripts/test-workflow-driver.sh:*)",
+      "Bash(scripts/agent-doctor.sh:*)",
+      "Bash(scripts/next-issue-number.sh:*)",
+      "Bash(scripts/test-with-timeout.sh:*)",
+      "Bash(scripts/markdownlint.sh:*)",
+      "Bash(scripts/generate-demo-artifacts.sh:*)",
+      "Bash(scripts/coverage-summary.sh:*)",
+      "Bash(scripts/check-workflow-status.sh:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git ls-remote:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git switch:*)",
+      "Bash(git stash:*)",
+      "Bash(jq:*)",
+      "Bash(rg:*)",
+      "Bash(ast-grep:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)"
+    ],
+    "ask": [
+      "Bash(scripts/codex-review.sh:*)",
+      "Bash(scripts/uat-run.sh:*)",
+      "Bash(scripts/pr-github.sh:*)",
+      "Bash(scripts/pr-azdo.sh:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)"
+    ]
   }
 }

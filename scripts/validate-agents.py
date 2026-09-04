@@ -119,6 +119,64 @@ def validate_role(path: Path, valid_tiers: set[str], names: dict[str, Path]) -> 
             error(path, f"broken link: {target}")
 
 
+def validate_workflow_json(known_stages: set[str]) -> None:
+    """Cross-check .agents/workflow.json against the roles that actually exist.
+
+    A typo in a stage name, a rework target or a gate's after_stage passes every
+    other check here and then kills a run mid-flight with `no role file for
+    stage 'x'` — after the earlier stages have already done their work.
+    """
+    wf_path = REPO / ".agents" / "workflow.json"
+    if not wf_path.is_file():
+        errors.append(".agents/workflow.json is missing")
+        return
+    wf = json.loads(wf_path.read_text(encoding="utf-8"))
+
+    all_stages: set[str] = set()
+    for type_name, cfg in wf.get("types", {}).items():
+        stages = cfg.get("stages", [])
+        if not stages:
+            errors.append(f"workflow.json: type {type_name!r} has no stages")
+        all_stages.update(stages)
+        for stage in stages:
+            if stage not in known_stages:
+                errors.append(f"workflow.json: type {type_name!r} names stage {stage!r}, which has no role file")
+        if len(stages) != len(set(stages)):
+            errors.append(f"workflow.json: type {type_name!r} lists a stage twice")
+        for key in ("conditional_stages", "gate_blocking_stages"):
+            for stage in cfg.get(key, []):
+                if stage not in stages:
+                    errors.append(f"workflow.json: {type_name}.{key} names {stage!r}, which is not in that type's stages")
+        folder = cfg.get("folder")
+        if not folder:
+            errors.append(f"workflow.json: type {type_name!r} has no folder")
+
+    for key, value in wf.get("rework_targets", {}).items():
+        for stage, what in ((key, "key"), (value, "target")):
+            if stage not in known_stages:
+                errors.append(f"workflow.json: rework_targets {what} {stage!r} has no role file")
+
+    for gate, cfg in wf.get("gates", {}).items():
+        for field in ("after_stage", "before_stage"):
+            stage = cfg.get(field)
+            if stage is not None and stage not in known_stages:
+                errors.append(f"workflow.json: gate {gate!r} {field} is {stage!r}, which has no role file")
+        if "prompt" not in cfg:
+            errors.append(f"workflow.json: gate {gate!r} has no prompt")
+
+    # The driver resolves a work item from its branch name, and the release
+    # deletes the branch. A stage sequenced after release-manager is stranded.
+    for type_name, cfg in wf.get("types", {}).items():
+        stages = cfg.get("stages", [])
+        if "release-manager" in stages and stages[-1] != "release-manager":
+            after = stages[stages.index("release-manager") + 1:]
+            errors.append(
+                f"workflow.json: type {type_name!r} sequences {', '.join(after)} after "
+                "release-manager, but the release deletes the branch the driver "
+                "resolves the work item from"
+            )
+
+
 def check_adapter_in_sync() -> None:
     result = subprocess.run(
         [str(REPO / "scripts" / "sync-agent-config.sh"), "--check"],
@@ -147,6 +205,7 @@ def main() -> int:
     for role in role_files:
         validate_role(role, valid_tiers, names)
 
+    validate_workflow_json({f.stem for f in role_files})
     check_adapter_in_sync()
 
     for w in warnings:

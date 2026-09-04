@@ -1,13 +1,13 @@
 ---
 name: next-issue-number
-description: Determine the next available issue number across all change types (feature, fix, workflow) by checking both local docs and remote branches, then reserve it by pushing an empty branch.
+description: Determine the next available issue number across all change types (feature, fix, workflow, website) by checking both local docs and remote branches, then reserve it by pushing an empty branch.
 ---
 
 # Skill Instructions
 
 ## Purpose
 
-Ensure unique issue numbering across all change types (feature, fix, workflow) by:
+Ensure unique issue numbering across all change types (feature, fix, workflow, website) by:
 
 1. Finding the highest number used in local docs folders (docs/features/, docs/issues/, docs/workflow/)
 2. Finding the highest number used in remote branches on GitHub (feature/NNN-*, fix/NNN-*, workflow/NNN-*)

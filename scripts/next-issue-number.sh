@@ -19,8 +19,8 @@ set -euo pipefail
 find_local_max() {
     local max=0
     
-    # Check docs/features/, docs/issues/, docs/workflow/
-    for dir in docs/features docs/issues docs/workflow; do
+    # Check every numbered work-item folder. The number is global across types.
+    for dir in docs/features docs/issues docs/workflow docs/website; do
         if [ -d "$dir" ]; then
             for folder in "$dir"/[0-9]*-*/; do
                 if [ -e "$folder" ]; then
@@ -46,14 +46,14 @@ find_remote_max() {
     local max=0
     
     # Try to fetch remote branches
-    if ! git ls-remote origin 'refs/heads/feature/*' 'refs/heads/fix/*' 'refs/heads/workflow/*' >/dev/null 2>&1; then
+    if ! git ls-remote origin 'refs/heads/feature/*' 'refs/heads/fix/*' 'refs/heads/workflow/*' 'refs/heads/website/*' >/dev/null 2>&1; then
         >&2 echo "Warning: Could not fetch from GitHub. Using local data only."
         echo "$max"
         return
     fi
     
     # Get all remote branches and extract numbers
-    git ls-remote origin 'refs/heads/feature/*' 'refs/heads/fix/*' 'refs/heads/workflow/*' 2>/dev/null | while read -r hash ref; do
+    git ls-remote origin 'refs/heads/feature/*' 'refs/heads/fix/*' 'refs/heads/workflow/*' 'refs/heads/website/*' 2>/dev/null | while read -r hash ref; do
         # Extract branch name from ref (e.g., refs/heads/feature/033-my-feature)
         branch=$(echo "$ref" | sed 's|refs/heads/||')
         # Extract number from branch name

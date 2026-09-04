@@ -34,7 +34,7 @@ token count did not affect cost. Three consequences:
 
 ### Roles
 
-`.agents/roles/*.md` — 13 harness-neutral definitions, ≤130 lines each. A role file
+`.agents/roles/*.md` — 13 harness-neutral definitions, ≤160 lines each (enforced by `scripts/validate-agents.py`). A role file
 declares `name`, `description` and `tier`; it never names a model. It states only what
 is specific to that role, deferring shared rules to `AGENTS.md`.
 

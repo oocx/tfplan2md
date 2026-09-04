@@ -39,7 +39,7 @@ jobs:
           fi
 
           # If anything outside these paths changed, this is not an internal-only PR.
-          non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|scripts/|docs/|website/|website\.old/|uat-repos/|TestData/|artifacts/|assets/)' || true)
+          non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|\.agents/|\.claude/|AGENTS\.md$|CLAUDE\.md$|scripts/|docs/|website/|website\.old/|uat-repos/|TestData/|artifacts/|assets/)' || true)
           if [ -n "$non_internal" ]; then
             echo "Non-internal files changed; internal commit guardrail not applicable."
             exit 0

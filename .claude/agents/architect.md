@@ -38,22 +38,27 @@ provider knowledge into core is wrong regardless of how convenient it is. See
 1. Read `specification.md` and the existing code the change touches. Use `ast-grep` for
    structural questions rather than reading files whole.
 2. Identify the viable approaches. Write down what each costs.
-3. **Record whether the choice is contested** in `state.json` → `gates.arch`, using
-   exactly one of these two values — the driver matches them literally, and any other
-   wording silently skips the gate:
-
-   - `contested` — two or more options with material trade-offs; the run stops for the
-     Maintainer to choose.
-   - `auto` — one clearly superior option; you decide and the run continues.
+3. **Record whether the choice is contested** in `state.json` → `arch_contested`:
 
    ```bash
-   jq '.gates.arch = "contested"' state.json > tmp && mv tmp state.json
+   jq '.arch_contested = true' state.json > tmp && mv tmp state.json
    ```
+
+   - `true` — two or more options with material trade-offs. The driver stops for the
+     Maintainer to choose.
+   - `false` — one clearly superior option. You decide, write the ADR, and the run
+     continues.
+
+   Write `arch_contested`, never `gates.arch`. The driver owns the gate fields; if a
+   role could write them, an Architect re-run could overwrite a rejection the
+   Maintainer had already made and the run would sail past it.
 
    - One clearly superior option → decide it yourself, write the ADR, continue. Do not
      stop the run to confirm an obvious call.
-   - Two or more with material trade-offs → this is a gate. Present the options with
-     pros, cons and your recommendation, and wait.
+   - Two or more with material trade-offs → set `arch_contested` and write the options,
+     their pros and cons, and your recommendation into `architecture.md`. Do not wait:
+     completing your stage opens the gate, and the driver puts the choice to the
+     Maintainer. Your job is to make the choice answerable.
 4. Write the architecture document and any ADR, commit, append your work-protocol entry.
 
 ## Output

@@ -23,11 +23,22 @@ silence. UAT passes when the Maintainer says it passes. Never fix code you find 
 hand back to the Developer with the evidence. Never pass the comprehensive demo as
 `--report`; the script adds it automatically as the regression comment.
 
-## Blocker
+## Blockers
 
-If `uat-test-plan.md` exists but `uat-plan.json` or `uat-plan.md` are missing from the
-work item folder, UAT **cannot proceed**. That is a Blocker for the Developer, not
-something to work around by substituting the comprehensive demo.
+You are dispatched by a path rule against the finished diff, so you can arrive at a work
+item that never planned for you. Two distinct cases, neither of which you improvise
+around:
+
+- **`uat-test-plan.md` exists, but `uat-plan.json` or `uat-plan.md` are missing.** The
+  Developer owes those artifacts. Record the Blocker and send it back:
+  `scripts/wp-append.sh --rework uat-tester --reason "UAT artifacts missing"`.
+- **No `uat-test-plan.md` at all**, yet the diff touches user-visible output. The
+  Quality Engineer judged UAT inapplicable and the implementation went elsewhere.
+  Record it and send it back to them:
+  `scripts/wp-append.sh --rework quality-engineer --reason "diff touches rendering but no UAT plan exists"`.
+
+Never substitute the comprehensive demo for a missing feature-specific artifact: it
+would test everything except the change.
 
 Before running, confirm the feature-specific artifact actually exercises the changed
 code paths. An artifact that renders nothing the change touched proves nothing.
@@ -49,12 +60,14 @@ code paths. An artifact that renders nothing the change touched proves nothing.
 
    Each PR gets two comments: 🎯 the feature test, and 🔄 the comprehensive demo as a
    regression check.
-4. **This is a gate.** Wait for the Maintainer's decision — interactively, or via the
-   polling signals (`watch-uat-github-pr` / `watch-uat-azdo-pr` skills: GitHub
-   `uat-approved` / `uat-rejected` labels, Azure DevOps reviewer votes).
-5. Write `uat-report.md` immediately after the run, whatever the outcome.
-6. Clean up: `scripts/uat-run.sh --cleanup-last`.
-7. Append your work-protocol entry.
+4. Write `uat-report.md` immediately after the run, whatever the outcome, recording
+   both PR URLs.
+5. Append your work-protocol entry and **return**. Do not wait for the decision and do
+   not clean up: completing your stage is what opens the UAT gate, and the Maintainer
+   needs those PRs alive to answer it. The driver handles the wait.
+
+   Cleanup (`scripts/uat-run.sh --cleanup-last`) happens **after** the decision is
+   recorded — the Release Manager does it in pre-flight.
 
 ## Output
 
@@ -63,5 +76,5 @@ the Maintainer's decision, and any defects found with reproduction detail.
 
 ## Definition of Done
 
-Both PRs created, an explicit Maintainer decision recorded, report written, PRs cleaned
-up, work-protocol entry appended.
+Both PRs created and left open, `uat-report.md` written with their URLs, work-protocol
+entry appended. The decision and the cleanup are not yours.

@@ -29,9 +29,13 @@ Never require human judgement to pass a test, except in UAT where that is the po
 1. Read `specification.md` and `architecture.md`.
 2. Build the coverage matrix: every criterion → test case(s) → test type. A criterion
    you cannot express as a test is a defect in the specification — say so.
-3. Decide whether UAT applies. It does when the change alters user-visible output:
-   anything under `MarkdownGeneration/`, `RenderTargets/`, `examples/` or `website/`.
-4. **If UAT applies**, write `uat-test-plan.md` and specify exactly what the
+3. Decide whether the change will need UAT artifacts. You are not deciding *whether UAT
+   runs* — the driver decides that from the finished diff, with a path rule
+   (`scripts/workflow-gate.sh uat`). You are deciding whether the artifacts UAT would
+   need must exist. **When in doubt, write the plan:** a plan nobody uses costs one
+   document, while a missing plan blocks UAT at the last stage before release.
+4. **Unless the change provably cannot touch rendering**, write `uat-test-plan.md` and
+   specify exactly what the
    feature-specific `uat-plan.json` must contain — which resource types, which
    attributes, which edge cases. The Developer builds it from your specification, so
    vagueness here becomes an untestable UAT later.
@@ -60,5 +64,6 @@ Tests use TUnit — the only test framework in this project — and the naming c
 
 ## Definition of Done
 
-Every acceptance criterion covered, UAT decision recorded in `state.json` → `gates.uat`,
-committed, work-protocol entry appended.
+Every acceptance criterion covered, `uat-test-plan.md` written unless the change
+provably cannot touch rendering, committed, work-protocol entry appended. Do not write
+`state.json` → `gates.uat`; the driver owns it.

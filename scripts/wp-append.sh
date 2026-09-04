@@ -20,6 +20,10 @@ set -euo pipefail
 
 require_jq
 
+# Attempts before the run stops for a human. See the rework branch below.
+MAX_ATTEMPTS=3
+
+INIT_TYPE="" INIT_SLUG=""
 ROLE="" SUMMARY="" ARTIFACTS="" PROBLEMS="None"
 QUESTION="" ASSUMED=""
 GATE="" DECISION=""
@@ -27,6 +31,7 @@ REWORK="" REASON=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --init)      INIT_TYPE="$2"; INIT_SLUG="${3:-}"; shift 3 ;;
         --role)      ROLE="$2"; shift 2 ;;
         --summary)   SUMMARY="$2"; shift 2 ;;
         --artifacts) ARTIFACTS="$2"; shift 2 ;;
@@ -41,6 +46,35 @@ while [ $# -gt 0 ]; do
         *) die "unknown argument: $1" ;;
     esac
 done
+
+# --- create a work item -----------------------------------------------------
+if [ -n "$INIT_TYPE" ]; then
+    [ -n "$INIT_SLUG" ] || die "--init needs a type and a slug"
+    folder="$(jq -r --arg t "$INIT_TYPE" '.types[$t].folder // empty' "$WORKFLOW_JSON")"
+    [ -n "$folder" ] || die "unknown workflow type '$INIT_TYPE'"
+    first="$(jq -r --arg t "$INIT_TYPE" '.types[$t].stages[0]' "$WORKFLOW_JSON")"
+    target="$REPO_ROOT/$folder/$INIT_SLUG"
+    mkdir -p "$target"
+    [ -f "$target/state.json" ] && die "$folder/$INIT_SLUG/state.json already exists"
+
+    jq -n --arg t "$INIT_TYPE" --arg s "$INIT_SLUG" --arg st "$first" \
+        '{type:$t, slug:$s, stage:$st, status:"running",
+          gates:{spec:"n/a", arch:"n/a", uat:"n/a"},
+          attempts:{}, open_questions:[]}' > "$target/state.json"
+
+    if [ ! -f "$target/work-protocol.md" ]; then
+        {
+            printf '# Work Protocol: %s\n\n' "$INIT_SLUG"
+            printf '**Work Item:** `%s/%s/`\n' "$folder" "$INIT_SLUG"
+            printf '**Workflow Type:** %s\n' "$INIT_TYPE"
+            printf '**Created:** %s\n\n' "$(date +%Y-%m-%d)"
+            printf '## Agent Work Log\n\n'
+            printf '<!-- Each role appends its entry below on completion. -->\n'
+        } > "$target/work-protocol.md"
+    fi
+    echo "Created $folder/$INIT_SLUG/ (state.json, work-protocol.md); first stage: $first"
+    exit 0
+fi
 
 DIR="$(work_item_dir)"
 WP="$DIR/work-protocol.md"
@@ -117,7 +151,14 @@ fi
 
 # --- send a stage back for rework ------------------------------------------
 if [ -n "$REWORK" ]; then
-    TARGET="$(jq -r --arg s "$REWORK" '.rework_targets[$s] // "developer"' "$WORKFLOW_JSON")"
+    # Default to sending work back to the stage that failed. The explicit
+    # rework_targets entries cover the cases where that is wrong — a code review
+    # or UAT failure is the Developer's to fix, not the reviewer's.
+    VALID_STAGE="$(jq -r --arg t "$TYPE" --arg s "$REWORK" \
+        '.types[$t].stages | index($s) != null' "$WORKFLOW_JSON")"
+    [ "$VALID_STAGE" = "true" ] \
+        || die "'$REWORK' is not a stage of the $TYPE workflow. Valid: $(jq -r --arg t "$TYPE" '.types[$t].stages | join(", ")' "$WORKFLOW_JSON")"
+    TARGET="$(jq -r --arg s "$REWORK" '.rework_targets[$s] // $s' "$WORKFLOW_JSON")"
     tmp="$(mktemp)"
     jq --arg t "$TARGET" \
        '.stage = $t | .attempts[$t] = ((.attempts[$t] // 0) + 1) | .status = "running"' \
@@ -127,6 +168,22 @@ if [ -n "$REWORK" ]; then
     echo "Rework: $REWORK -> $TARGET (attempt $((ATTEMPTS + 1)))"
     [ -n "$REASON" ] && echo "  reason: $REASON"
     [ "$ATTEMPTS" -ge 1 ] && echo "  note: $TARGET now runs one tier deeper (see .agents/tiers.json)"
+
+    # Escalating forever is not a strategy. Repeated failure at one stage is
+    # usually a specification problem wearing an implementation costume, and the
+    # tier ladder tops out after one step anyway — attempt 7 is indistinguishable
+    # from attempt 2. Enforce the cap here rather than in prose, because
+    # codex-review.sh drives this path in-process and never reads the docs.
+    if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+        tmp="$(mktemp)"
+        jq '.status = "blocked"' "$(state_file)" > "$tmp"
+        mv "$tmp" "$(state_file)"
+        echo
+        echo "BLOCKED: $TARGET has now failed $ATTEMPTS times."
+        echo "Stop and involve the Maintainer. Repeated failure at one stage is usually a"
+        echo "specification problem, not an implementation one."
+        exit 3
+    fi
     exit 0
 fi
 
@@ -168,6 +225,7 @@ fi
 
 # Advance to the next stage in this workflow type.
 STAGE="$(state_get '.stage')"
+
 NEXT="$(jq -r --arg t "$TYPE" --arg s "$STAGE" \
     '.types[$t].stages as $st | ($st | index($s)) as $i
      | if $i == null then "unknown" else ($st[$i + 1] // "done") end' "$WORKFLOW_JSON")"
@@ -186,6 +244,15 @@ GATE_AFTER="$(jq -r --arg s "$STAGE" \
 if [ -n "$GATE_AFTER" ]; then
     ALWAYS="$(jq -r --arg g "$GATE_AFTER" '.gates[$g].always' "$WORKFLOW_JSON")"
     CURRENT="$(state_get ".gates.$GATE_AFTER // \"n/a\"")"
+
+    # The Architect signals a contested choice in its own field. The driver owns
+    # .gates.* exclusively: a role that could write the control field could
+    # overwrite a rejection with "auto" and walk past a decision the Maintainer
+    # already refused.
+    CONTESTED="$(state_get '.arch_contested // false')"
+    if [ "$GATE_AFTER" = "arch" ] && [ "$CONTESTED" = "true" ]; then
+        CURRENT="contested"
+    fi
     if [ "$ALWAYS" = "true" ] || [ "$CURRENT" = "contested" ] \
        || [ "$CURRENT" = "rework" ] || [ "$CURRENT" = "required" ]; then
         tmp="$(mktemp)"

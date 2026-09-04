@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Use this template to propose improvements to the agent workflow, agent definitions, or development process.
-        
+
         **Tip:** Provide enough detail so agents can implement the improvement autonomously, ideally without additional questions.
 
   - type: textarea
@@ -17,11 +17,11 @@ body:
       description: What problem or limitation exists in the current workflow?
       placeholder: |
         Example:
-        "The Quality Engineer agent creates test plans in the wrong folder because 
+        "The Quality Engineer agent creates test plans in the wrong folder because
         instructions reference an incorrect path pattern."
-        
+
         Or:
-        "We lack a way to validate agent definitions before committing, leading to 
+        "We lack a way to validate agent definitions before committing, leading to
         broken handoffs and invalid tool references."
     validations:
       required: true
@@ -33,9 +33,9 @@ body:
       description: Describe the specific change you're proposing
       placeholder: |
         Example:
-        "Update `.agents/roles/quality-engineer.md` to reference the correct 
+        "Update `.agents/roles/quality-engineer.md` to reference the correct
         path: `docs/features/NNN-<feature-slug>/test-plan.md`"
-        
+
         Or:
         "Create a validation script that checks:
         - All handoff agent names exist
@@ -51,11 +51,11 @@ body:
       description: What is the benefit or impact of this improvement?
       placeholder: |
         Example:
-        "Prevents wasted time recreating test plans in the correct location. Improves 
+        "Prevents wasted time recreating test plans in the correct location. Improves
         agent reliability and reduces manual corrections."
-        
+
         Or:
-        "Catches configuration errors at commit time rather than runtime, preventing 
+        "Catches configuration errors at commit time rather than runtime, preventing
         broken workflows and failed handoffs."
     validations:
       required: true
@@ -70,7 +70,7 @@ body:
         - [ ] Test plan artifact location documented in docs/workflow.md
         - [ ] Existing test plans remain in current locations (no migration needed)
         - [ ] PR includes conventional commit format
-        
+
         Or:
         - [ ] validate-agents.py script exists and is executable
         - [ ] Script checks handoffs, tools, and models

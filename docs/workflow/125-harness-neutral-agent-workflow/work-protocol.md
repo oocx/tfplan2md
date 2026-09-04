@@ -176,3 +176,10 @@
     `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/MarkdownHelpers/developer.chat.json`.
     Left in place deliberately: it was never committed, so deleting it would be
     irreversible rather than recoverable from history.
+
+### Workflow Engineer
+
+- **Date:** 2026-09-04
+- **Summary:** Completed phases 1-8 of the harness-neutral workflow migration: canonical .agents/ layout, 13 roles, the auto-mode driver, the Codex reviewer, skills migration, and removal of the Copilot corpus.
+- **Artifacts Produced:** AGENTS.md, .agents/ (13 roles, 28 skills, 4 commands, tiers.json, workflow.json), 8 workflow scripts, docs/workflow.md, generated .claude/
+- **Problems Encountered:** Recorded per phase above. The dry run itself surfaced one: workflow-gate.sh reported UAT as REQUIRED for a workflow-type item with no UAT stage, because the path rule was not type-aware. Fixed, with a regression test.

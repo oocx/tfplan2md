@@ -11,11 +11,11 @@ Phases 1–5 are additive and reversible. Phase 6 is the point of no return.
 | 5 | Review rework | ✅ Done (2 rounds) | Fix the 6 Blockers and 1 Major from the Codex review: double stage advance, rejected-gate bypass, unopened UAT gate, bug-workflow Developer inputs, review requirement on workflow/website releases, driver test coverage |
 | 6 | Skills | ✅ Done | 23 skills moved to `.agents/skills/`, 6 deleted, 4 new (`agent-runtime`, `run-workflow`, `authoring-roles`, `context-pack`, `retrospective-evidence`); `SKLL.md` renamed; Copilot-isms and retired git wrappers purged |
 | 7 | Demolition | ✅ Done | Copilot corpus removed; `docs/agents.md` replaced by `docs/workflow.md` with a rewritten diagram; CI paths updated and agent validation wired in |
-| 8 | Dry run | ⬜ Not started | Drive one real work item end to end in auto mode; record where it stopped |
+| 8 | Dry run | ✅ Done | This work item driven with the real tooling: `workflow-next` → `wp-append` → advanced to `release-manager`, gates clear. Surfaced and fixed a type-awareness bug in the UAT check |
 
 ## Open questions
 
 | # | Question | Assumption in force |
 |---|----------|--------------------|
-| 1 | ~~Do Sol / Terra / Luna descend in capability?~~ | **Answered:** yes. Real slugs are `gpt-5.6-sol` / `-terra` / `-luna`; bare names are rejected by the API. |
+| 1 | ~~Do Sol / Terra / Luna descend in capability?~~ | **Closed:** confirmed by the Maintainer. Real slugs are `gpt-5.6-sol` / `-terra` / `-luna`; bare names are rejected by the API. |
 | 2 | Should Issue Analyst move to deep tier? | Left at standard. It is the first stage of the bug workflow and its errors propagate the way a bad requirement does, so the reasoning behind task 7 applies to it unchanged. |

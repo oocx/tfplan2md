@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import html
+import json
 import re
 import shutil
 import subprocess
@@ -119,10 +120,26 @@ def render_with_mermaid(mmd: str, workdir: Path) -> str:
         cmd = ["mmdc"]
     else:
         cmd = ["npx", "--yes", "-p", f"@mermaid-js/mermaid-cli@{MERMAID_VERSION}", "mmdc"]
-    result = subprocess.run(
-        cmd + ["-i", str(src), "-o", str(out), "-t", "dark"],
-        capture_output=True, text=True,
-    )
+    args = cmd + ["-i", str(src), "-o", str(out), "-t", "dark"]
+
+    def run(extra: list[str]) -> subprocess.CompletedProcess:
+        return subprocess.run(args + extra, capture_output=True, text=True)
+
+    result = run([])
+
+    # GitHub's runners disable unprivileged user namespaces, so Chrome's sandbox
+    # cannot start and the render dies before mermaid sees the diagram. Retry
+    # without it rather than disabling it everywhere: on a developer machine the
+    # sandbox works and is worth keeping. The input is this repository's own
+    # diagram source, and the flag does not affect the rendered bytes.
+    if result.returncode != 0 and "No usable sandbox" in (result.stderr + result.stdout):
+        cfg = workdir / "puppeteer.json"
+        cfg.write_text(
+            json.dumps({"args": ["--no-sandbox", "--disable-setuid-sandbox"]}),
+            encoding="utf-8",
+        )
+        result = run(["-p", str(cfg)])
+
     if result.returncode != 0 or not out.exists():
         die(f"mermaid render failed:\n{result.stdout}\n{result.stderr}")
     return out.read_text(encoding="utf-8")

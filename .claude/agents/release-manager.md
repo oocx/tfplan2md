@@ -35,6 +35,11 @@ stop and fix the branch settings rather than working around them.
 1. **Code review approved** — for feature and bug-fix workflows, `code-review.md`
    exists with no unresolved Blocker.
 
+   The reviewer runs in a read-only sandbox and cannot execute tests. It judges
+   correctness and audits evidence; **PR Validation is the authority on whether the
+   tests and coverage actually pass**. Both are required — an approving review over red
+   CI is not a release warrant.
+
    Workflow and website work items have no Code Reviewer stage: their sequence is the
    entry role followed by you. For those, the review is the Maintainer's on the pull
    request itself, so do not look for `code-review.md` — verify instead that the PR
@@ -50,7 +55,9 @@ stop and fix the branch settings rather than working around them.
 3. **Commit types respect the version guardrail.** A PR touching only `.github/`,
    `.agents/`, `scripts/`, `docs/` or `website/` must not use `feat:` or `fix:` —
    Versionize would cut a release for a change that does not alter the published image.
-4. **Release notes** — you own `release-notes.md`, so **write it before running this
+4. **UAT cleanup** — if `state.gates.uat` is `approved`, the UAT PRs have served their
+   purpose and are still open. Retire them with `scripts/uat-run.sh --cleanup-last`.
+5. **Release notes** — you own `release-notes.md`, so **write it before running this
    check**, not after. Every image needs screenshot targeting metadata; PR Validation
    enforces both its presence and that metadata.
 

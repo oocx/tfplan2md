@@ -27,7 +27,10 @@ exactly one owner.
 The driver does use `wp-append.sh` for `--gate` and `--rework`, which are its own
 decisions rather than a role's.
 
-`workflow-next.sh` derives everything from the branch name and `state.json`. It costs
+`workflow-next.sh` derives everything from the branch name and `state.json`. Note that
+it is not purely a query: it advances past a skipped UAT stage and records that UAT is
+required, so calling it is part of driving the run rather than inspecting it. Use
+`scripts/workflow-gate.sh status` when you only want to look. It costs
 almost nothing and needs no memory of previous turns, so a session that compacted or
 died resumes by calling it again.
 
@@ -51,6 +54,17 @@ role file.
 scripts/codex-review.sh <work-item-dir>
 ```
 
+Its exit code decides what happens next, and it advances the stage itself:
+
+| Exit | Meaning | What you do |
+|------|---------|-------------|
+| 0 | APPROVED | Continue the loop |
+| 1 | REWORK | Continue the loop — it has already routed back to the Developer |
+| 2 | codex unavailable or failed twice | Spawn the `Code Reviewer` subagent instead, and pass `--problems "reviewer: claude-fallback"` on its work-protocol entry so the retrospective can see the review was single-family |
+
+Exit 2 is **not** a rework signal. Treating it as one sends the Developer back for a
+review that never happened.
+
 ## Starting a new work item
 
 The entry role creates the branch, the folder, `work-protocol.md` and `state.json`:
@@ -60,7 +74,7 @@ The entry role creates the branch, the folder, `work-protocol.md` and `state.jso
 | New feature | Requirements Engineer | `feature/NNN-<slug>` |
 | Bug | Issue Analyst | `fix/NNN-<slug>` |
 | Workflow change | Workflow Engineer | `workflow/NNN-<slug>` |
-| Website change | Web Designer | `website/<slug>` |
+| Website change | Web Designer | `website/NNN-<slug>` |
 
 Reserve `NNN` with the `next-issue-number` skill. Do not ask which role to start with —
 determine it from the request and delegate; the entry role asks the clarifying

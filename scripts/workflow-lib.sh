@@ -41,6 +41,8 @@ work_item_dir() {
     branch="$(current_branch)"
     type="$(workflow_type_from_branch)"
     folder="$(jq -r --arg t "$type" '.types[$t].folder' "$WORKFLOW_JSON")"
+    [ -n "$folder" ] && [ "$folder" != "null" ] \
+        || die "workflow type '$type' has no folder in $WORKFLOW_JSON"
     slug="${branch#*/}"
     dir="$REPO_ROOT/$folder/$slug"
 
@@ -66,12 +68,18 @@ state_get() {
     jq -r "$1" "$f"
 }
 
-# Apply a jq expression to state.json in place.
+# Apply a jq expression to state.json in place, under a lock.
+#
+# Every mutation is a read-modify-write. Without the lock, a role recording a
+# question while another completes a stage silently loses one of the two.
 state_set() {
     local f tmp
     f="$(state_file)"
     tmp="$(mktemp)"
-    jq "$1" "$f" > "$tmp" && mv "$tmp" "$f"
+    (
+        flock 9
+        jq "$1" "$f" > "$tmp" && mv "$tmp" "$f"
+    ) 9>"$f.lock"
 }
 
 # Display name from a role file's frontmatter, e.g. role_name developer -> Developer

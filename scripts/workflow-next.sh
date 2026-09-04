@@ -28,6 +28,18 @@ if [ "$STATUS" = "done" ]; then
     exit 0
 fi
 
+# --- has the run been stopped for a human? ---------------------------------
+if [ "$STATUS" = "blocked" ]; then
+    echo "BLOCKED: this run has stopped for the Maintainer."
+    echo
+    state_get '.attempts | to_entries[] | select(.value >= 3) | "  \(.key) has failed \(.value) times."'
+    echo
+    echo "Repeated failure at one stage is usually a specification problem. Decide what"
+    echo "changes before continuing, then clear the block:"
+    echo "  jq '.status = \"running\"' <state.json> | sponge <state.json>"
+    exit 2
+fi
+
 # --- is a gate open? -------------------------------------------------------
 # A gate blocks the run until state records a decision. Gate state lives in
 # .gates.<name>: "pending" blocks; anything else does not.
@@ -98,7 +110,7 @@ ATTEMPTS="$(state_get ".attempts[\"$STAGE\"] // 0")"
 if [ "$STAGE" = "code-reviewer" ]; then
     HARNESS="codex"
     MODEL="$(resolve_model "$STAGE" codex)"
-    RUN="scripts/codex-review.sh $REL_DIR"
+    RUN="scripts/codex-review.sh $REL_DIR  (exit 0=approved, 1=rework, 2=fall back to a Claude reviewer)"
 else
     HARNESS="claude"
     MODEL="$(resolve_model "$STAGE" claude)"

@@ -18,7 +18,7 @@
     }
   },
   "escalation": {
-    "_comment": "On rework attempt N >= 2 a role runs one tier deeper, so cheap models get first crack and expensive ones only see hard cases.",
+    "_comment": "On rework attempt N >= 2 a role runs one tier deeper, so cheap models get first crack and expensive ones only see hard cases. Escalation is sticky and does not decay: a role reworked once stays escalated for the rest of the work item. That is deliberate — a work item that needed rework once has shown itself to be the hard kind. The ladder tops out after one step, so there is no runaway; scripts/wp-append.sh stops the run after three attempts instead.",
     "cheap": "standard",
     "standard": "deep",
     "deep": "deep"

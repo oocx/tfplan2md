@@ -37,9 +37,17 @@ bug fix — that is `analysis.md` and belongs to the Issue Analyst.
 2. **Create `work-protocol.md`** — you are the first role in a feature workflow, so you
    own its creation — and `state.json`.
 
-3. **Understand before writing.** Listen to the whole request first. Ask one question
-   at a time; this stage *is* a gate, so blocking here is correct. Summarise your
-   understanding and get agreement before drafting.
+3. **Understand before writing.** You usually run as a subagent, with no channel to the
+   Maintainer — so do not wait for answers. Where the request is ambiguous, record the
+   question and the reading you are writing the spec against, and continue:
+
+   ```bash
+   scripts/wp-append.sh --question "Does X include Y?" --assumed "Yes, matching Z"
+   ```
+
+   Completing your stage opens the specification gate, and the driver puts those
+   questions to the Maintainer alongside the spec. That is the review — you produce a
+   spec worth reviewing, you do not conduct the review.
 
 4. **Check for conflicts** against [docs/features.md](../../docs/features.md) and
    [docs/spec.md](../../docs/spec.md). A feature that contradicts an existing one is a
@@ -65,9 +73,11 @@ bug fix — that is `analysis.md` and belongs to the Issue Analyst.
 
 ## Gate
 
-Specification approval is a hard gate. Stop and get explicit approval before the
-Architect starts. This is the one gate that fires on every feature.
+Completing this stage opens the specification gate, which fires on every feature. The
+driver holds the run there until the Maintainer approves; a rejection comes back to you
+with the gate still closed. You do not wait for it yourself.
 
 ## Definition of Done
 
-Specification approved by the Maintainer, committed, work-protocol entry appended.
+Specification written and committed, open questions recorded with the assumption in
+force, work-protocol entry appended. Approval is the gate's business, not yours.

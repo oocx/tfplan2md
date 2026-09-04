@@ -110,19 +110,27 @@ back instead.
 |----------|-------|
 | `src/`, `src/tests/` | Developer |
 | `docs/`, `README.md` (global docs) | Technical Writer |
+| `docs/workflow.md`, `AGENTS.md` | Workflow Engineer |
 | `specification.md` | Requirements Engineer |
 | `analysis.md` | Issue Analyst |
 | `architecture.md`, `docs/adr-*.md` | Architect |
 | `test-plan.md`, `uat-test-plan.md` | Quality Engineer |
 | `tasks.md` | Task Planner |
 | `code-review.md` | Code Reviewer |
+| `uat-plan.json`, `uat-plan.md` | Developer (to the Quality Engineer's specification) |
+| `uat-report.md` | UAT Tester |
 | UAT PRs and their comments | UAT Tester |
 | `release-notes.md`, the PR, the release | Release Manager |
 | `retrospective.md` | Retrospective |
 | `.agents/`, `AGENTS.md`, `scripts/` workflow tooling | Workflow Engineer |
 | `website/src/` | Web Designer |
 
-`work-protocol.md` and `state.json` are append-only for every role.
+`work-protocol.md` is append-only, and only through `scripts/wp-append.sh`.
+
+`state.json` belongs to the driver. Roles never write `stage`, `status` or `gates.*`
+directly — a role that could write a gate field could clear a rejection the Maintainer
+had already made. The one field a role sets is `arch_contested`, and only the Architect
+sets it.
 
 ## Reporting
 

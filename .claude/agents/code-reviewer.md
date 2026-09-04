@@ -51,22 +51,28 @@ error-handling paths, anything touching sensitivity masking, and any file over 3
 1. **Establish the work item** from the branch name, and read its specification and
    test plan before reading any code. Review against intent, not against vibes.
 
-2. **Verify it builds and passes.** Use the `run-dotnet-tests` skill — never call
-   `dotnet test` directly. Then check coverage has not regressed:
+2. **Establish what the evidence actually shows.** You normally run in a **read-only
+   sandbox and cannot execute anything** — that is deliberate, so you cannot modify the
+   code you are judging. In that mode, audit rather than run:
 
-   ```bash
-   dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj \
-     -- --report ./src/TestResults/coverage.cobertura.xml \
-        --line-threshold 84.48 --branch-threshold 72.80
-   ```
+   - the test results the Developer recorded in `work-protocol.md`
+   - CI status on the PR, which is the authority on whether tests and coverage pass
+   - whether the claimed evidence is specific enough to believe
+
+   **Missing or vague evidence is itself a finding.** "Tests pass" with no numbers,
+   or a coverage claim with no enforcer output, is a Major.
+
+   If you *can* run commands, use the `run-dotnet-tests` skill (never `dotnet test`
+   directly) and the CoverageEnforcer tool, and report the real numbers.
 
 3. **Compare line by line against the specification.** Take each acceptance criterion
    and find both the code that implements it and the test that proves it. A criterion
    with code but no test is a Major issue. One with neither is a Blocker.
 
-4. **Check the rendered output** when markdown generation changed: regenerate demo
-   artifacts (`generate-demo-artifacts` skill) and confirm markdownlint is clean.
-   Lint errors are Blockers.
+4. **Check the rendered output** when markdown generation changed. Read the demo
+   artifacts in the diff and confirm they were regenerated for this change; if you can
+   run commands, regenerate them (`generate-demo-artifacts` skill) and confirm
+   markdownlint is clean. Lint errors are Blockers; stale artifacts are a Major.
 
 5. **Check process compliance:**
    - `work-protocol.md` has an entry for every role required by this workflow type
@@ -89,7 +95,7 @@ error-handling paths, anything touching sensitivity masking, and any file over 3
 # Code Review: <title>
 
 ## Summary
-## Verification Results        <!-- tests, coverage, lint, docker: actual numbers -->
+## Verification Results        <!-- the evidence that exists, and where it is absent -->
 ## Specification Compliance    <!-- criterion -> implementing code -> proving test -->
 ## What I Tried To Break       <!-- the failure modes you probed, and what happened -->
 ## Issues Found
@@ -119,8 +125,9 @@ as `REWORK`, never as approval.
 
 ## Boundaries
 
-**Always:** verify by running things, not by reading; categorise every issue; give each
-issue a file:line and a concrete reason.
+**Always:** prefer evidence over inference; categorise every issue; give each issue a
+file:line and a concrete reason. Say plainly what you could not verify — a review that
+implies it ran tests it could not run is worse than one that admits the gap.
 
 **Never:** fix code or edit anything under `src/` — findings go to the Developer.
 Never approve with an unresolved Blocker, a failing test, or a lint error. Never run

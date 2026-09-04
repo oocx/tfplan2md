@@ -76,6 +76,11 @@ set_gate() {
     local t; t="$(mktemp)"
     jq --arg g "$2" --arg v "$3" '.gates[$g] = $v' "$f" > "$t" && mv "$t" "$f"
 }
+set_contested() {
+    local f; f="$(find "$1/docs" -name state.json | head -1)"
+    local t; t="$(mktemp)"
+    jq --argjson v "$2" '.arch_contested = $v' "$f" > "$t" && mv "$t" "$f"
+}
 gate_of()  { jq -r --arg g "$2" '.gates[$g]' "$(find "$1/docs" -name state.json | head -1)"; }
 attempts_of() { jq -r --arg s "$2" '.attempts[$s] // 0' "$(find "$1/docs" -name state.json | head -1)"; }
 
@@ -126,16 +131,16 @@ assert_exit "an unrecognised decision on a yes/no gate is refused" 1 \
 R2="$(new_repo feature 901-arch architect)"
 assert_exit "a decision on a gate that is not open is refused" 1 \
     env -C "$R2" scripts/wp-append.sh --gate arch --decision "Option B"
-set_gate "$R2" arch contested
+set_contested "$R2" true
 (cd "$R2" && scripts/wp-append.sh --role Architect --summary s) >/dev/null 2>&1
 assert_eq "a contested architecture opens the gate" "pending" "$(gate_of "$R2" arch)"
 (cd "$R2" && scripts/wp-append.sh --gate arch --decision "Option B: streaming") >/dev/null 2>&1
 assert_eq "the architecture gate accepts a choice" "chosen: Option B: streaming" "$(gate_of "$R2" arch)"
 
 R2b="$(new_repo feature 910-archauto architect)"
-set_gate "$R2b" arch auto
+set_contested "$R2b" false
 (cd "$R2b" && scripts/wp-append.sh --role Architect --summary s) >/dev/null 2>&1
-assert_eq "an uncontested architecture does not open the gate" "auto" "$(gate_of "$R2b" arch)"
+assert_eq "an uncontested architecture does not open the gate" "n/a" "$(gate_of "$R2b" arch)"
 
 # --- UAT gate opens before its stage (Blocker) ------------------------------
 # The Maintainer is asked to approve the rendered output in the UAT PRs, so the
@@ -153,7 +158,7 @@ assert_eq "a UAT failure routes to the Developer" "developer" "$(stage_of "$R3")
 
 R4="$(new_repo feature 903-nouat uat-tester "docs/notes.md")"
 (cd "$R4" && scripts/workflow-next.sh) >/dev/null 2>&1
-assert_eq "a non-user-visible diff skips UAT" "release-manager" "$(stage_of "$R4")"
+assert_eq "a non-user-visible diff skips UAT" "retrospective" "$(stage_of "$R4")"
 assert_eq "the skip is recorded" "not-required" "$(gate_of "$R4" uat)"
 
 # --- model escalation -------------------------------------------------------
@@ -200,6 +205,52 @@ assert_exit "a question requires the assumption in force" 1 \
 (cd "$R9" && scripts/wp-append.sh --question "why?" --assumed "because") >/dev/null 2>&1
 assert_eq "a recorded question does not change the stage" "developer" "$(stage_of "$R9")"
 assert_exit "the run continues after a question" 0 env -C "$R9" scripts/workflow-next.sh
+
+# --- the retrospective must run before the branch is deleted ---------------
+# The driver resolves the work item from the branch name, and the release merges
+# with --delete-branch. Anything sequenced after that is stranded forever.
+for wt in feature fix; do
+    LAST="$(jq -r --arg t "$wt" '.types[$t].stages[-1]' .agents/workflow.json)"
+    assert_eq "$wt ends at the release, not after it" "release-manager" "$LAST"
+    IDX_R="$(jq -r --arg t "$wt" '.types[$t].stages | index("retrospective")' .agents/workflow.json)"
+    IDX_M="$(jq -r --arg t "$wt" '.types[$t].stages | index("release-manager")' .agents/workflow.json)"
+    if [ "$IDX_R" -lt "$IDX_M" ]; then
+        ok "$wt runs the retrospective before the merge"
+    else
+        bad "$wt runs the retrospective before the merge" "retrospective is at $IDX_R, release at $IDX_M"
+    fi
+done
+
+# --- the attempt cap must be enforced, not merely documented ---------------
+R13="$(new_repo feature 915-cap developer)"
+(cd "$R13" && scripts/wp-append.sh --rework code-reviewer --reason a) >/dev/null 2>&1
+(cd "$R13" && scripts/wp-append.sh --rework code-reviewer --reason b) >/dev/null 2>&1
+assert_exit "the third rework blocks the run" 3 \
+    env -C "$R13" scripts/wp-append.sh --rework code-reviewer --reason c
+assert_eq "the run is marked blocked" "blocked" \
+    "$(jq -r '.status' "$(find "$R13/docs" -name state.json | head -1)")"
+assert_exit "a blocked run will not dispatch" 2 env -C "$R13" scripts/workflow-next.sh
+
+# --- rework routing ---------------------------------------------------------
+R14="$(new_repo feature 916-route developer)"
+assert_exit "an unknown rework target is refused" 1 \
+    env -C "$R14" scripts/wp-append.sh --rework not-a-real-stage
+(cd "$R14" && scripts/wp-append.sh --rework requirements-engineer --reason "spec gap") >/dev/null 2>&1
+assert_eq "an unmapped stage reworks to itself, not the Developer" "requirements-engineer" \
+    "$(stage_of "$R14")"
+
+# --- a rejection cannot be erased by the role re-running -------------------
+R15="$(new_repo feature 917-sticky architect)"
+set_contested "$R15" true
+(cd "$R15" && scripts/wp-append.sh --role Architect --summary s) >/dev/null 2>&1
+(cd "$R15" && scripts/wp-append.sh --gate arch --decision rejected) >/dev/null 2>&1
+assert_eq "rejection sends the architecture back to the Architect" "architect" "$(stage_of "$R15")"
+# The Architect re-runs and now judges it uncontested. That must not clear the
+# Maintainer's rejection.
+set_contested "$R15" false
+(cd "$R15" && scripts/wp-append.sh --role Architect --summary s2) >/dev/null 2>&1
+assert_eq "a rejected gate reopens even when the role now says uncontested" "pending" \
+    "$(gate_of "$R15" arch)"
 
 # --- repeated entries must not produce duplicate markdown headings ---------
 # A role logs again on every rework. Bare repeats trip markdownlint MD024,

@@ -13,8 +13,8 @@
         "technical-writer",
         "code-reviewer",
         "uat-tester",
-        "release-manager",
-        "retrospective"
+        "retrospective",
+        "release-manager"
       ],
       "conditional_stages": [
         "uat-tester"
@@ -38,8 +38,8 @@
         "technical-writer",
         "code-reviewer",
         "uat-tester",
-        "release-manager",
-        "retrospective"
+        "retrospective",
+        "release-manager"
       ],
       "conditional_stages": [
         "uat-tester"
@@ -85,7 +85,7 @@
     "arch": {
       "after_stage": "architect",
       "always": false,
-      "condition": "state.gates.arch == 'contested'",
+      "condition": "state.arch_contested == true",
       "prompt": "Architecture choice. Two or more options carry material trade-offs; pick one."
     },
     "uat": {

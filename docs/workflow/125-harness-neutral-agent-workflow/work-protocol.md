@@ -193,3 +193,48 @@
 - **Artifacts Produced:** `.agents/roles/issue-analyst.md`, `design.md`, `README.md`,
   `scripts/test-workflow-driver.sh` (43 assertions), regenerated `.claude/`
 - **Problems Encountered:** None. `state.json` now carries no open questions.
+
+### Workflow Engineer (round 9)
+
+- **Date:** 2026-09-04
+- **Summary:** Applied a Workflow Engineer review of this branch (cold context,
+  subagent). It found 4 Blockers, 8 Majors and 10 Minors; all four Blockers and all
+  eight Majors were real, and are fixed. Two were defects I had introduced while fixing
+  earlier review findings.
+- **Artifacts Produced:** `.agents/workflow.json`, `.agents/claude-settings.json`,
+  `.agents/tiers.json`, six role files, `agent-runtime` and `run-workflow` skills,
+  `scripts/{wp-append,workflow-next,workflow-lib,next-issue-number,validate-agents}`,
+  `.github/workflows/pr-validation.yml`, `docs/workflow.md`, `AGENTS.md`,
+  `scripts/test-workflow-driver.sh` (54 assertions)
+- **Problems Encountered:**
+  - **The Retrospective could never run.** The driver resolves a work item from its
+    branch name and the release merges with `--delete-branch`, so every feature and bug
+    fix would have merged with `status: "running"` and no retrospective, forever. Moved
+    it before the release; `validate-agents.py` now rejects any stage sequenced after
+    `release-manager`.
+  - **The permission allowlist the design promised was never written.** I deleted the
+    git wrappers on the grounds that "a Claude permission allowlist replaces what they
+    bought" and then did not write one. Without it the run prompts for approval dozens
+    of times per stage, which makes the central claim of the design — unattended between
+    three gates — false.
+  - **UAT cleanup deleted the PRs before the gate opened**, so the Maintainer was asked
+    to review artifacts that no longer existed. Cleanup moved to the Release Manager.
+  - **The three-attempt cap existed only in prose**, and the main rework loop runs
+    inside `codex-review.sh`, which never reads prose. Enforced in `wp-append.sh`.
+  - My first attempt at making a rejected architecture gate sticky did not work, and its
+    test correctly failed: the role overwrites the field before `wp-append.sh` sees it,
+    so the evidence was already gone. The real fix was to stop roles writing the control
+    field at all — the Architect now sets `arch_contested` and the driver owns `gates.*`.
+  - Three roles instructed a subagent to "wait for the Maintainer", which it cannot do
+    and which contradicts the gate design. A feature run had six stopping points for
+    three gates.
+  - The Code Reviewer role told the reviewer to run tests, regenerate artifacts and
+    report "actual numbers" — all impossible in the read-only sandbox it actually runs
+    in. Same drift as the tier table: I fixed the prompt and left the role file.
+  - The version-bump guardrail in PR validation did not cover `.agents/`, so a `feat:`
+    on a pure agent-configuration PR would have cut a release of an unchanged binary.
+  - `next-issue-number.sh` never scanned `docs/website`, which this change made a
+    numbered work-item type — the next feature would have collided with it.
+  - The only `state.json` example in the corpus used an invalid stage id, and four entry
+    roles are told to create the file with no other schema to copy. Added
+    `wp-append.sh --init` so none of them hand-writes it.

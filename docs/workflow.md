@@ -64,13 +64,13 @@ flowchart TB
     CR -.->|"REWORK"| DEV
 
     UAT --> G3
-    G3 -->|"approved"| RM
+    G3 -->|"approved"| RETRO
     G3 -.->|"failed"| DEV
-    CR -->|"no user-visible change<br/>UAT skipped"| RM
+    CR -->|"no user-visible change<br/>UAT skipped"| RETRO
 
     WEN --> RM
     WDS --> RM
-    RM --> RETRO
+    RETRO --> RM
     RETRO -.->|"improvements"| WEN
 
     DEV -.-> WP
@@ -107,13 +107,13 @@ flowchart TB
 | 7 | Code Reviewer | `code-review.md` + verdict |
 | 8 | UAT Tester | UAT PRs in GitHub and Azure DevOps, `uat-report.md` |
 | — | **GATE: UAT** | only when user-visible output changed — decided after the PRs exist |
-| 9 | Release Manager | PR, `release-notes.md`, the release |
-| 10 | Retrospective | `retrospective.md` |
+| 9 | Retrospective | `retrospective.md` |
+| 10 | Release Manager | PR, `release-notes.md`, the release |
 
 ### Bug fix — `fix/NNN-<slug>` → `docs/issues/NNN-<slug>/`
 
 Issue Analyst (`analysis.md`) → Developer → Technical Writer → Code Reviewer →
-UAT Tester (if applicable) → Release Manager → Retrospective.
+UAT Tester (if applicable) → Retrospective → Release Manager.
 
 ### Workflow improvement — `workflow/NNN-<slug>` → `docs/workflow/NNN-<slug>/`
 
@@ -161,13 +161,27 @@ Each work item carries `state.json`:
 {
   "type": "feature",
   "slug": "NNN-example",
-  "stage": "review",
+  "stage": "code-reviewer",
   "status": "running",
-  "gates": { "spec": "approved", "arch": "auto", "uat": "required" },
-  "attempts": { "review": 2 },
-  "open_questions": [ { "q": "...", "assumed": "...", "raised_by": "..." } ]
+  "gates": { "spec": "approved", "arch": "n/a", "uat": "n/a" },
+  "attempts": { "developer": 1 },
+  "open_questions": [ { "q": "...", "assumed": "...", "raised_by": "developer" } ]
 }
 ```
+
+`stage` and the keys of `attempts` are **stage ids** — the basename of a file in
+`.agents/roles/`, so `code-reviewer`, never `review`. Do not hand-write this file;
+the entry role creates it with:
+
+```bash
+scripts/wp-append.sh --init <type> <slug>
+```
+
+The Retrospective runs **before** the Release Manager, not after. The driver locates a
+work item by its branch name, and the release merges with `--delete-branch` — anything
+sequenced after that has no branch to resolve, and would strand the run with
+`status: "running"` forever. Running it before also means the retrospective ships in
+the same PR as the work it examines.
 
 `stage` is the role that runs next. `attempts` counts rework loops and drives model
 escalation — a role at attempt 2 or later runs one tier deeper. `status` is `running`,
@@ -201,6 +215,7 @@ Required roles by workflow type:
 | Feature | Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer, Technical Writer, Code Reviewer |
 | Bug fix | Issue Analyst, Developer, Technical Writer, Code Reviewer |
 | Workflow | Workflow Engineer |
+| Website | Web Designer |
 
 UAT Tester and Retrospective are required when they apply, and are not gate-blocking.
 Neither is the Release Manager: it runs the completeness check *before* doing its work,

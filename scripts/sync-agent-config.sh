@@ -76,10 +76,9 @@ def render_role(path: Path, tiers: dict[str, dict[str, str]]) -> str:
     if "model" in meta:
         fail(f"{path}: role files declare `tier`, not `model` — the mapping lives in .agents/tiers.json")
 
-    # The Code Reviewer runs in Codex via scripts/codex-review.sh. Claude still
-    # needs an agent definition for it: the fallback path when codex is absent
-    # or fails, which per the design runs one tier deeper is not needed here —
-    # deep is already the ceiling.
+    # The Code Reviewer normally runs in Codex via scripts/codex-review.sh, but it
+    # still needs a Claude agent definition for the fallback path taken when codex
+    # is absent or fails twice.
     model = tiers[tier]["claude"]
 
     lines = [

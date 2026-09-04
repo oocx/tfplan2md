@@ -21,7 +21,7 @@ Work happens in **work items**, one folder and one branch each:
 | Workflow | `workflow/NNN-<slug>` | `docs/workflow/NNN-<slug>/` |
 | Website | `website/NNN-<slug>` | `docs/website/NNN-<slug>/` |
 
-`NNN` is global and monotonic across all three types — never reuse a number for a
+`NNN` is global and monotonic across all four types — never reuse a number for a
 different type. On a collision at merge time, first PR to merge keeps the number;
 the later one renumbers, including intra-doc links.
 

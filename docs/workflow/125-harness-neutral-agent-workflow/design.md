@@ -28,7 +28,7 @@ token count did not affect cost. Three consequences:
 | 4 | Canonical `.agents/`, generated `.claude/` | Harness-neutral source, one adapter, CI drift check. Keeps a future port cheap. |
 | 5 | Auto mode with three gates | Spec approval (always), architecture choice (when options genuinely compete), UAT (when user-visible output changed). |
 | 6 | `ast-grep` + `rtk` + `codex` required on dev machines | Different token axes; none required in CI. |
-| 7 | Requirements Engineer at deep tier | Requirement errors propagate through every later stage, so they cost the most to unwind. |
+| 7 | Requirements Engineer and Issue Analyst at deep tier | Both are first stages. A wrong requirement or a misdiagnosed root cause propagates through every later stage, so they cost the most to unwind. |
 
 ## Architecture
 
@@ -48,8 +48,8 @@ script resolves it to a Claude model and `codex-review.sh` resolves it to a Code
 
 | Tier | Claude | Codex | Roles |
 |------|--------|-------|-------|
-| deep | opus | sol | requirements-engineer, architect, code-reviewer, workflow-engineer |
-| standard | sonnet | terra | issue-analyst, quality-engineer, developer, release-manager, retrospective, web-designer, uat-tester |
+| deep | opus | sol | requirements-engineer, issue-analyst, architect, code-reviewer, workflow-engineer |
+| standard | sonnet | terra | quality-engineer, developer, release-manager, retrospective, web-designer, uat-tester |
 | cheap | haiku | luna | task-planner, technical-writer, search and test-run subagents |
 
 A role escalates one tier on rework attempt 2, so cheap models get first crack and

@@ -87,3 +87,60 @@
 
 **Problems Encountered:**
 - None; the scope was clear from the Developer's work log. All required updates were localized to the two workflow tables.
+
+### Issue Analyst — 2026-03-18
+
+**Summary:** Re-investigated the work item specifically for the currently reported GitHub code-scanning findings. Direct access to the repository's code scanning alerts was blocked by GitHub API permissions (HTTP 403), so the investigation used local code inspection to identify the most likely active CodeQL findings and the minimal code changes required. The strongest candidates are two command-injection patterns in Docker-based test fixtures and one path-traversal/path-injection pattern in SARIF wildcard expansion.
+
+**Artifacts Produced:**
+- `docs/issues/fix-security-issues/analysis.md` — Rewritten with a focused code-scanning analysis, impacted files, root causes, and minimal fix/test plan
+
+**Problems Encountered:**
+- GitHub code scanning alerts could not be queried directly in this environment (`403 Resource not accessible by integration`), so findings are based on code evidence rather than the authoritative GitHub alert list
+
+### Developer — 2026-03-18
+
+**Summary:** Applied the minimal code and test changes needed to address the likely code-scanning findings identified in the refreshed analysis. Docker-backed test fixtures now build `ProcessStartInfo` instances with tokenized `ArgumentList` entries instead of flattened command strings, and SARIF wildcard expansion now rejects parent-traversal roots before directory enumeration. Added targeted regression tests for both areas and validated the branch with the TUnit suite.
+
+**Artifacts Produced:**
+- `src/Oocx.TfPlan2Md/CodeAnalysis/WildcardExpander.cs` — Hardened wildcard root resolution by canonicalizing enumeration roots and rejecting `..` traversal segments before filesystem enumeration
+- `src/tests/Oocx.TfPlan2Md.TUnit/CodeAnalysis/WildcardExpanderTests.cs` — Added regression coverage proving traversal-style recursive patterns are rejected
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixture.cs` — Switched Docker process startup to a shared tokenized `ProcessStartInfo` helper
+- `src/tests/Oocx.TfPlan2Md.TUnit/Docker/DockerFixtureSecurityTests.cs` — Added focused assertions for safe Docker argument tokenization
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixture.cs` — Switched markdownlint Docker startup to tokenized argument construction
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintFixtureTests.cs` — Added focused assertions for safe markdownlint argument tokenization
+
+**Problems Encountered:**
+- The initial targeted test invocation timed out because the test platform ended up executing the full TUnit project; rerunning with a longer timeout completed successfully with all tests passing
+
+### Code Reviewer — 2026-03-18
+
+**Summary:** Reviewed commit `0cabfecd` for correctness, minimality, security, and regression coverage. The fixes are appropriately scoped: Docker-based test fixtures now use tokenized `ProcessStartInfo.ArgumentList`, wildcard expansion rejects parent-traversal roots before enumeration, and the added regression tests cover the hardened paths. Full TUnit verification passed (`1240` tests), comprehensive demo generation plus markdownlint passed, and a direct CLI adversarial run confirmed traversal-style SARIF globs fail closed. The only remaining note is a non-blocking UX suggestion to surface rejected traversal patterns as a standard CLI validation error instead of `Unexpected error`.
+
+**Artifacts Produced:**
+- `docs/issues/fix-security-issues/code-review.md` — Approval report with verification evidence and one low-priority follow-up suggestion
+
+**Decision:** ✅ Approved
+
+**Problems Encountered:**
+- `docker build -t tfplan2md:local -f src/Dockerfile .` failed in this environment because Alpine package index fetches returned TLS errors during an unchanged `apk add` layer; this did not indicate a regression in the reviewed security fix
+
+### Release Manager — 2026-03-18
+
+**Summary:** Verified release/merge readiness for the current code-scanning fix branch through commit `d380fdd8`. Required Bug Fix workflow agent entries are present in `work-protocol.md`, the current branch is clean, `HEAD..origin/main` is empty, and the reviewed branch commits include one user-facing `fix:` commit plus documentation/process follow-up commits. From a release-management perspective, the work is ready for PR handoff.
+
+**Artifacts Produced:**
+- `docs/issues/fix-security-issues/work-protocol.md` — Added release verification outcome and readiness decision
+
+**Problems Encountered:**
+- No release blocker found. The previously noted Docker build failure remains environment-specific Alpine TLS fetch instability in an unchanged `src/Dockerfile` layer and is not attributed to this fix.
+
+### Retrospective — 2026-03-18
+
+**Summary:** Recorded the required retrospective for the completed code-scanning fix workflow. The report stays intentionally minimal and evidence-based because no chat export was available; it relies on the work protocol, issue artifacts, and git history.
+
+**Artifacts Produced:**
+- `docs/issues/fix-security-issues/retrospective.md` — Minimal retrospective covering workflow rating, work-protocol analysis, key metrics, and process improvement opportunities
+
+**Problems Encountered:**
+- Chat-export/request-level metrics were unavailable in this delegated run, so request counts, model usage, and file-edit kept/undone statistics are explicitly marked unavailable in the report

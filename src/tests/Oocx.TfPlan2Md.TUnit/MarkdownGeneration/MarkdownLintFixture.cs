@@ -58,12 +58,7 @@ public class MarkdownLintFixture
     {
         try
         {
-            var psi = new ProcessStartInfo("docker", "version")
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false
-            };
+            var psi = CreateDockerProcessStartInfo(["version"]);
 
             using var process = Process.Start(psi);
             if (process == null)
@@ -86,12 +81,7 @@ public class MarkdownLintFixture
     /// <returns>True if the image was successfully pulled or already exists.</returns>
     private async Task<bool> PullImageAsync()
     {
-        var psi = new ProcessStartInfo("docker", $"pull {MarkdownLintImage}")
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false
-        };
+        var psi = CreateDockerProcessStartInfo(["pull", MarkdownLintImage]);
 
         using var process = Process.Start(psi);
         if (process == null)
@@ -114,15 +104,9 @@ public class MarkdownLintFixture
     /// </remarks>
     public async Task<MarkdownLintResult> LintAsync(string markdown)
     {
-        var arguments = $"run --rm -i {MarkdownLintImage} --stdin";
-
-        var psi = new ProcessStartInfo("docker", arguments)
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            RedirectStandardInput = true,
-            UseShellExecute = false
-        };
+        var psi = CreateDockerProcessStartInfo(
+            ["run", "--rm", "-i", MarkdownLintImage, "--stdin"],
+            redirectStandardInput: true);
 
         using var process = Process.Start(psi);
         if (process == null)
@@ -140,6 +124,33 @@ public class MarkdownLintFixture
         var violations = ParseViolations(stdout);
 
         return new MarkdownLintResult(process.ExitCode, stdout, stderr, violations);
+    }
+
+    /// <summary>
+    /// Creates a Docker <see cref="ProcessStartInfo"/> using tokenized arguments.
+    /// </summary>
+    /// <param name="arguments">The Docker arguments to pass as discrete tokens.</param>
+    /// <param name="redirectStandardInput">True when the Docker process should accept stdin.</param>
+    /// <returns>A configured <see cref="ProcessStartInfo"/> instance.</returns>
+    internal static ProcessStartInfo CreateDockerProcessStartInfo(
+        IEnumerable<string> arguments,
+        bool redirectStandardInput = false)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "docker",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            RedirectStandardInput = redirectStandardInput,
+            UseShellExecute = false
+        };
+
+        foreach (var argument in arguments)
+        {
+            psi.ArgumentList.Add(argument);
+        }
+
+        return psi;
     }
 
     /// <summary>

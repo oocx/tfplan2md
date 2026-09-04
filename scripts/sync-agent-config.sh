@@ -107,15 +107,23 @@ def sync_roles(tiers: dict[str, dict[str, str]], out: Path) -> int:
     return count
 
 
+# Two skills vendor npm dependencies. Those are gitignored build artefacts, not
+# instructions, and copying them puts tens of thousands of files into the
+# adapter and into every agent's search path.
+IGNORED = shutil.ignore_patterns(
+    "node_modules", "__pycache__", ".git", "*.pyc", "package-lock.json"
+)
+
+
 def sync_tree(name: str, out: Path) -> int:
-    """Copy a canonical subdirectory verbatim into the adapter."""
+    """Copy a canonical subdirectory into the adapter, minus build artefacts."""
     src = CANON / name
     if not src.is_dir():
         return 0
     dest = out / name
     if dest.exists():
         shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+    shutil.copytree(src, dest, ignore=IGNORED)
     return sum(1 for _ in dest.rglob("*") if _.is_file())
 
 

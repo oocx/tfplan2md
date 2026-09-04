@@ -80,7 +80,7 @@ jobs:
             echo "website_changed=false" >> $GITHUB_OUTPUT
           fi
 
-          AGENTS_CHANGED=$(echo "$CHANGED_FILES" | grep -E '^(\.agents/|\.claude/|AGENTS\.md$|CLAUDE\.md$|scripts/(sync-agent-config|validate-agents|workflow-|wp-append|codex-review|test-workflow-driver))' || true)
+          AGENTS_CHANGED=$(echo "$CHANGED_FILES" | grep -E '^(\.agents/|\.claude/|AGENTS\.md$|CLAUDE\.md$|docs/workflow\.md$|scripts/(sync-agent-config|validate-agents|workflow-|wp-append|codex-review|test-workflow-driver|render-workflow-diagram))' || true)
           if [ -n "$AGENTS_CHANGED" ]; then
             echo "agents_changed=true" >> $GITHUB_OUTPUT
           else
@@ -141,6 +141,10 @@ jobs:
       - name: Shell test (workflow driver)
         if: steps.filter.outputs.agents_changed == 'true'
         run: scripts/test-workflow-driver.sh
+
+      - name: Check the website workflow diagram is current
+        if: steps.filter.outputs.agents_changed == 'true'
+        run: scripts/render-workflow-diagram.py --check
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'

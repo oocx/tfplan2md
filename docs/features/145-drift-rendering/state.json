@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "145-drift-rendering",
-  "stage": "quality-engineer",
+  "stage": "task-planner",
   "status": "running",
   "arch_contested": false,
   "gates": {

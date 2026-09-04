@@ -28,3 +28,10 @@
 - **Summary:** Designed provider-neutral drift mode selection and aggregation after existing normalization and display filtering; selected a dedicated DriftGroupModel over renderer-side or raw-JSON grouping.
 - **Artifacts Produced:** architecture.md; state.json; work-protocol.md
 - **Problems Encountered:** None
+
+### Quality Engineer
+
+- **Date:** 2026-09-05
+- **Summary:** Defined automated coverage for drift modes, normalized-value grouping, deterministic collapsed rendering, and preserved filtering; specified a UAT fixture and review procedure.
+- **Artifacts Produced:** test-plan.md; uat-test-plan.md
+- **Problems Encountered:** None

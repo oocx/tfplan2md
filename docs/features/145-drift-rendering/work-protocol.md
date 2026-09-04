@@ -35,3 +35,10 @@
 - **Summary:** Defined automated coverage for drift modes, normalized-value grouping, deterministic collapsed rendering, and preserved filtering; specified a UAT fixture and review procedure.
 - **Artifacts Produced:** test-plan.md; uat-test-plan.md
 - **Problems Encountered:** None
+
+### Task Planner
+
+- **Date:** 2026-09-05
+- **Summary:** Decomposed configurable drift rendering into CLI plumbing, deterministic grouping, mode-aware selection/filter preservation, grouped rendering, and regression snapshot tasks with test traceability.
+- **Artifacts Produced:** tasks.md; work-protocol.md
+- **Problems Encountered:** None

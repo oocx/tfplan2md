@@ -147,8 +147,19 @@ if [ "$(printf '%s' "$ROLE" | tr '[:upper:]' '[:lower:]')" \
        is finished, the owning role should append its own entry."
 fi
 
+# A role logs more than once whenever it is reworked. Bare repeated headings
+# trip markdownlint MD024, which PR validation runs over docs/ — so every
+# rework loop would fail the build. Number the repeats. workflow-gate.sh's
+# matcher already tolerates a parenthesised suffix.
+OCCURRENCE=$(grep -ciE "^#{2,4}[[:space:]]+${ROLE}([[:space:]]*\(.*\))?[[:space:]]*$" "$WP" || true)
+if [ "$OCCURRENCE" -gt 0 ]; then
+    HEADING="$ROLE (round $((OCCURRENCE + 1)))"
+else
+    HEADING="$ROLE"
+fi
+
 {
-    printf '\n### %s\n\n' "$ROLE"
+    printf '\n### %s\n\n' "$HEADING"
     printf -- '- **Date:** %s\n' "$TODAY"
     printf -- '- **Summary:** %s\n' "$SUMMARY"
     printf -- '- **Artifacts Produced:** %s\n' "${ARTIFACTS:-None}"
@@ -184,5 +195,5 @@ if [ -n "$GATE_AFTER" ]; then
     fi
 fi
 
-echo "Appended $ROLE entry to ${WP#"$REPO_ROOT"/}"
+echo "Appended \"$HEADING\" entry to ${WP#"$REPO_ROOT"/}"
 [ "$NEXT" = "done" ] && echo "Work item complete." || echo "Next stage: $NEXT"

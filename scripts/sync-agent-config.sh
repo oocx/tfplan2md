@@ -98,6 +98,11 @@ def sync_roles(tiers: dict[str, dict[str, str]], out: Path) -> int:
     if not src.is_dir():
         return 0
     dest = out / "agents"
+    # Replace the tree rather than overwriting into it. Without this, deleting or
+    # renaming a canonical role leaves the old generated agent in place and live,
+    # and --check then fails in a way regeneration cannot repair.
+    if dest.exists():
+        shutil.rmtree(dest)
     dest.mkdir(parents=True, exist_ok=True)
     count = 0
     for role in sorted(src.glob("*.md")):

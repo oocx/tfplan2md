@@ -92,7 +92,8 @@ done
 # Maintainer is asked to look at — asking for approval of artifacts that do not
 # exist yet is not a gate anyone can answer. Mark it required here so the
 # completion path knows to open it.
-if [ "$STAGE" = "uat-tester" ]; then
+UAT_AFTER="$(jq -r --arg t "$TYPE" '.types[$t].uat_gate_after // "null"' "$WORKFLOW_JSON")"
+if [ "$STAGE" = "$UAT_AFTER" ]; then
     CURRENT="$(state_get '.gates.uat // "n/a"')"
     if [ "$CURRENT" != "approved" ]; then
         tmp_state="$(mktemp)"

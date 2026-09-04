@@ -141,6 +141,20 @@ if [ -n "$GATE" ]; then
             | .status = "running"' "$(state_file)" > "$tmp"
         mv "$tmp" "$(state_file)"
         echo "Gate '$GATE' rejected — back to $REWORK_TO, and the gate stays closed."
+
+        # The same cap as the rework branch. A gate rejected over and over is
+        # the clearest possible signal that the disagreement is not going to be
+        # resolved by another attempt at the same stage.
+        GATE_ATTEMPTS="$(state_get ".attempts[\"$REWORK_TO\"]")"
+        if [ "$GATE_ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+            tmp="$(mktemp)"
+            jq '.status = "blocked"' "$(state_file)" > "$tmp"
+            mv "$tmp" "$(state_file)"
+            echo
+            echo "BLOCKED: $REWORK_TO has now been rejected $GATE_ATTEMPTS times."
+            echo "Stop and involve the Maintainer."
+            exit 3
+        fi
     else
         jq --arg g "$GATE" --arg v "$VALUE" '.gates[$g] = $v' "$(state_file)" > "$tmp"
         mv "$tmp" "$(state_file)"
@@ -241,6 +255,18 @@ mv "$tmp" "$(state_file)"
 # Open the gate that follows this stage, if there is one.
 GATE_AFTER="$(jq -r --arg s "$STAGE" \
     '.gates | to_entries[] | select(.value.after_stage == $s) | .key' "$WORKFLOW_JSON")"
+
+# The UAT gate hangs off a different stage per type: the UAT Tester for a
+# feature or fix, the Web Designer for a website change.
+UAT_AFTER="$(jq -r --arg t "$TYPE" '.types[$t].uat_gate_after // "null"' "$WORKFLOW_JSON")"
+UAT_DUE=0
+if [ -z "$GATE_AFTER" ] && [ "$UAT_AFTER" = "$STAGE" ] && uat_required; then
+    GATE_AFTER="uat"
+    # The path rule has fired, so the gate is due now. Do not depend on
+    # workflow-next having run first to mark it "required" — a driver that
+    # completes a stage without re-querying would skip a mandatory approval.
+    UAT_DUE=1
+fi
 if [ -n "$GATE_AFTER" ]; then
     ALWAYS="$(jq -r --arg g "$GATE_AFTER" '.gates[$g].always' "$WORKFLOW_JSON")"
     CURRENT="$(state_get ".gates.$GATE_AFTER // \"n/a\"")"
@@ -253,7 +279,7 @@ if [ -n "$GATE_AFTER" ]; then
     if [ "$GATE_AFTER" = "arch" ] && [ "$CONTESTED" = "true" ]; then
         CURRENT="contested"
     fi
-    if [ "$ALWAYS" = "true" ] || [ "$CURRENT" = "contested" ] \
+    if [ "$ALWAYS" = "true" ] || [ "$UAT_DUE" = "1" ] || [ "$CURRENT" = "contested" ] \
        || [ "$CURRENT" = "rework" ] || [ "$CURRENT" = "required" ]; then
         tmp="$(mktemp)"
         jq --arg g "$GATE_AFTER" '.gates[$g] = "pending"' "$(state_file)" > "$tmp"

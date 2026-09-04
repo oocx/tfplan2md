@@ -102,10 +102,10 @@ ensure_github_credential_helper() {
         log_error "GH_UAT_TOKEN is not set in the coding agent environment."
         log_error ""
         log_error "Remediation:"
-        log_error "  1. Go to Repository Settings > Environments > copilot"
+        log_error "  1. Create a token with repo scope"
         log_error "  2. Add secret: GH_UAT_TOKEN = <GitHub PAT with 'repo' scope on oocx/tfplan2md-uat>"
-        log_error "  3. Verify copilot-setup-steps.yml ran successfully in the Actions tab"
-        log_error "  4. Re-run the GitHub Copilot agent session"
+        log_error "  3. Export it in your shell before running UAT"
+        log_error "  4. Re-run the UAT command"
         return 1
     fi
 
@@ -131,7 +131,7 @@ ensure_github_credential_helper() {
         log_error "Remediation:"
         log_error "  - Verify GH_UAT_TOKEN has 'repo' scope on oocx/tfplan2md-uat"
         log_error "  - Verify the token has not expired"
-        log_error "  - Check: Repository Settings > Environments > copilot > GH_UAT_TOKEN"
+        log_error "  - Check that GH_UAT_TOKEN is exported in this shell"
         return 1
     fi
 
@@ -333,10 +333,10 @@ ensure_azdo_credential_helper() {
             log_error "Neither AZURE_DEVOPS_EXT_PAT nor AZDO_UAT_TOKEN is set."
             log_error ""
             log_error "Remediation:"
-            log_error "  1. Go to Repository Settings > Environments > copilot"
+            log_error "  1. Create a token with repo scope"
             log_error "  2. Add secret: AZDO_UAT_TOKEN = <Azure DevOps PAT with 'Code (Read & Write)' scope>"
-            log_error "  3. Verify copilot-setup-steps.yml ran successfully in the Actions tab"
-            log_error "  4. Re-run the GitHub Copilot agent session"
+            log_error "  3. Export it in your shell before running UAT"
+            log_error "  4. Re-run the UAT command"
             return 1
         fi
 

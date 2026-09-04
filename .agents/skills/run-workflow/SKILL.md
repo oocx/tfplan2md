@@ -95,13 +95,18 @@ skip and moves on.
 
 ## Rework
 
-When the reviewer returns `VERDICT: REWORK`, UAT fails, or a build fails:
+**The code reviewer routes its own rework.** `codex-review.sh` calls `--rework` itself
+before exiting 1, so do not call it again — a second call counts the same rejection
+twice and can block the run after two failed reviews instead of three.
+
+For a UAT failure, use the gate; for a build failure, call rework yourself:
 
 ```bash
-scripts/wp-append.sh --rework code-reviewer --reason "<what failed>"
+scripts/wp-append.sh --gate uat --decision rejected      # UAT failed
+scripts/wp-append.sh --rework release-manager --reason "PR validation failed"
 ```
 
-This routes back to the Developer and increments `attempts`, which escalates the model
+Both route back to the Developer and increment `attempts`, which escalates the model
 one tier. Escalating forever is not a strategy: **after three attempts at the same
 stage, stop and involve the Maintainer.** Repeated failure at one stage is usually a
 specification problem wearing an implementation costume.

@@ -121,7 +121,8 @@ Workflow Engineer → Release Manager. UAT does not apply.
 
 ### Website — `website/NNN-<slug>` → `docs/website/NNN-<slug>/`
 
-Web Designer → Release Manager.
+Web Designer → **GATE: UAT** → Release Manager. A website change is user-visible by
+definition, so the gate fires whenever the diff touches `website/`.
 
 ## Gates
 
@@ -131,7 +132,7 @@ Three, and only three. Everything else runs unattended.
 |------|-------|-----------|
 | Specification | Every feature | Always the Maintainer |
 | Architecture | Two or more viable options with material trade-offs | Maintainer; otherwise the Architect decides and records the ADR |
-| UAT | The diff touches user-visible output | Maintainer's explicit pass/fail, **after** the UAT Tester has created the PRs |
+| UAT | The diff touches user-visible output, **and** the work type has a UAT gate | Maintainer's explicit pass/fail, after the artifacts exist — the UAT PRs for a feature or fix, the deployed preview for a website change |
 
 The UAT gate is a path rule, not a judgement:
 
@@ -140,9 +141,15 @@ git diff --name-only origin/main...HEAD | grep -qE \
   '^(src/Oocx\.TfPlan2Md/(MarkdownGeneration|RenderTargets)/|examples/|website/)'
 ```
 
-A change to parsing, CLI wiring, tests, documentation or the workflow itself never
-triggers UAT. A change to rendering, render targets, bundled examples or the website
-always does.
+A change to parsing, CLI wiring, tests or documentation never triggers UAT. A change to
+rendering, render targets, bundled examples or the website does — for feature, fix and
+website work items.
+
+Whether a type has the gate at all is declared in `.agents/workflow.json` as
+`uat_gate_after`, naming the stage after which it opens: the UAT Tester for a feature or
+fix, the Web Designer for a website change, and nothing for a workflow item, whose
+changes are internal tooling. Inferring this from the stage list instead would exempt
+website work — the one type whose entire purpose is user-visible change.
 
 ### Away from a gate, nothing blocks
 

@@ -1,8 +1,8 @@
 # Architecture Documentation (arc42)
 
-**Project:** [Project Name]  
-**Version:** 1.0  
-**Date:** [YYYY-MM-DD]  
+**Project:** [Project Name]
+**Version:** 1.0
+**Date:** [YYYY-MM-DD]
 **Status:** Draft / In Review / Approved
 
 ---
@@ -88,12 +88,12 @@ This document follows the [arc42 template](https://arc42.org/) for architecture 
 ```mermaid
 C4Context
     title System Context Diagram
-    
+
     Person(user, "User", "End user of the system")
     System(system, "System Name", "Brief description")
     System_Ext(ext1, "External System 1", "Description")
     System_Ext(ext2, "External System 2", "Description")
-    
+
     Rel(user, system, "Uses")
     Rel(system, ext1, "Reads/Writes data")
     Rel(system, ext2, "Sends notifications")
@@ -151,14 +151,14 @@ C4Context
 ```mermaid
 C4Container
     title Container Diagram
-    
+
     Person(user, "User")
-    
+
     Container(web, "Web Application", ".NET, ASP.NET Core", "Handles HTTP requests")
     Container(api, "API", ".NET, ASP.NET Core", "Business logic and data access")
     ContainerDb(db, "Database", "PostgreSQL", "Stores data")
     Container(cache, "Cache", "Redis", "Caching layer")
-    
+
     Rel(user, web, "Uses", "HTTPS")
     Rel(web, api, "Calls", "HTTP/REST")
     Rel(api, db, "Reads/Writes", "SQL")
@@ -201,7 +201,7 @@ sequenceDiagram
     participant Web
     participant Auth
     participant DB
-    
+
     User->>Web: Submit credentials
     Web->>Auth: Validate credentials
     Auth->>DB: Query user
@@ -245,7 +245,7 @@ graph TB
         DB[(Database Cluster)]
         CACHE[(Redis Cluster)]
     end
-    
+
     LB --> W1
     LB --> W2
     W1 --> A1

@@ -32,7 +32,7 @@ The codebase already follows several DI-friendly patterns:
 ### Related Decisions
 
 - [ADR-003](adr-003-modern-csharp-patterns.md): Modern C# patterns (primary constructors, records)
-- [Feature 047](features/047-provider-code-separation/): Provider code separation with explicit provider registration
+- [Feature 048](features/047-provider-code-separation/): Provider code separation with explicit provider registration
 - [Feature 061](features/061-extensible-provider-registry/): Extensible provider registry with pattern-based matching
 
 ## Options Considered

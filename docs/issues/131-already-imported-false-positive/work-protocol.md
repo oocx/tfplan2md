@@ -1,0 +1,68 @@
+# Work Protocol: False Positive "Already Imported" Warning for Pending Import Blocks
+
+**Work Item:** `docs/issues/131-already-imported-false-positive/`
+**Branch:** `copilot/fix-tfplan2md-import-blocks`
+**Workflow Type:** Bug Fix
+**Created:** 2026-05-12
+
+## Agent Work Log
+
+### Issue Analyst
+- **Date:** 2026-05-12
+- **Summary:** Investigated the current import-warning bug on the existing `copilot/*` branch, confirmed the old `read`-action root cause no longer matches the code, and identified the likely remaining problem as an over-broad `no-op => already imported` heuristic in the staged report pipeline.
+- **Artifacts Produced:** `docs/issues/131-already-imported-false-positive/analysis.md`, `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** `scripts/next-issue-number.sh` returned `123` but emitted `integer expression expected`; repository history also contains an older closed issue (`docs/issues/064-already-imported-false-positive/`) for a previous version of this bug, so a fresh issue artifact was created to avoid reusing stale analysis.
+
+### Developer
+- **Date:** 2026-05-12
+- **Summary:** Added a regression-first fix that stops treating `importing.id + no-op` as proof that an import was already applied, while keeping `no-op` moved resources marked as already moved. Split the staged model into import-specific and move-specific already-applied flags so summary rendering and the refactoring table can classify each operation independently.
+- **Artifacts Produced:** `src/Oocx.TfPlan2Md/MarkdownGeneration/ResourceChangeModel.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ReportAssemblyStage.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ResourceSummaryHtmlBuilder.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderRefactoringOperationTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ResourceSummaryHtmlBuilderRefactoringTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Stages/ReportAssemblyStageTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderStageDelegationTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/refactoring-comprehensive.md`
+- **Problems Encountered:** The first full test run failed only on the existing `refactoring-comprehensive.md` snapshot because the rendered output intentionally changed from `⚠️ Already imported` to `✅ Ready`; regenerated and reviewed the snapshot baseline with the required snapshot update workflow.
+
+### Technical Writer
+- **Date:** 2026-05-12
+- **Summary:** Updated the directly related documentation to match the implemented fix. The issue analysis now records the shipped behavior change, and the Terraform import/moved-block docs now distinguish pending imports from already-applied moves so they no longer claim that `no-op` imports should render `⚠️ Already imported`.
+- **Artifacts Produced:** `docs/issues/131-already-imported-false-positive/analysis.md`, `docs/issues/131-already-imported-false-positive/work-protocol.md`, `docs/features/038-terraform-import-moved-blocks/specification.md`, `docs/features/038-terraform-import-moved-blocks/architecture.md`, `docs/features/038-terraform-import-moved-blocks/tasks.md`, `docs/features/038-terraform-import-moved-blocks/test-plan.md`, `docs/features/038-terraform-import-moved-blocks/uat-test-plan.md`, `docs/features/038-terraform-import-moved-blocks/release-notes.md`
+- **Problems Encountered:** None. I reviewed `README.md`, `docs/features.md`, `docs/architecture.md`, `docs/testing-strategy.md`, and `docs/agents.md`; they do not describe this import-status edge case directly, so no global-document edits were needed.
+- **Next Agent:** Code Reviewer
+
+### Code Reviewer
+- **Date:** 2026-05-12
+- **Summary:** Reviewed the pending-import false-positive fix and verified the core behavior is corrected: pending imports now stay `✅ Ready` while moved no-op resources still show `already moved`. Requested follow-up changes because the branch is missing the required `SNAPSHOT_UPDATE_OK` commit token for the intentional snapshot update, the `<summary>` annotations still use markdown emphasis instead of required HTML `<i>` tags, and the updated UAT plan contradicts itself about no-op import status.
+- **Artifacts Produced:** `docs/issues/131-already-imported-false-positive/code-review.md`, `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** Docker/container verification could not be completed in this environment because `docker build -f src/Dockerfile .` failed with a `403 Forbidden` response while resolving the pinned MCR base-image digest.
+- **Next Agent:** Developer
+
+### Developer (Rework)
+- **Date:** 2026-05-12
+- **Summary:** Completed the remaining blocker-only rework by recording this completion entry and adding a commit message with the required `SNAPSHOT_UPDATE_OK` rationale for the intentional snapshot baseline update (`⚠️ Already imported` → `✅ Ready` for pending `importing.id + no-op` resources).
+- **Artifacts Produced:** `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** None.
+
+### Code Reviewer (Re-review)
+- **Date:** 2026-05-12
+- **Summary:** Re-verified blocker-only rework commit `d79df89a`. Confirmed `SNAPSHOT_UPDATE_OK` is present in commit message, the Developer rework log entry exists, and regression checks still pass (full suite and targeted refactoring tests). Updated the code review report to approved status.
+- **Artifacts Produced:** `docs/issues/131-already-imported-false-positive/code-review.md`, `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** Docker build failed in this environment due Alpine registry TLS/package index fetch issues during `apk add`, so container verification remains environment-dependent.
+- **Next Agent:** UAT Tester
+
+### UAT Tester
+- **Date:** 2026-05-12
+- **Summary:** Started focused UAT for the pending-import false-positive fix using feature `038` guidance, but UAT execution is blocked before `scripts/uat-run.sh` because the required feature UAT artifact file is missing.
+- **Artifacts Produced:** `docs/features/038-terraform-import-moved-blocks/uat-report.md`, `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** `docs/features/038-terraform-import-moved-blocks/uat-test-plan.md` exists, but required `docs/features/038-terraform-import-moved-blocks/uat-plan.md` is missing. Existing `artifacts/refactoring-demo.md` also still shows outdated pending-import warning text, so it cannot be used as the focused fix artifact.
+- **Next Agent:** Developer
+
+### UAT Tester (Re-run)
+- **Date:** 2026-05-12
+- **Summary:** Re-ran focused UAT after unblock commit `76d18d4e` and verified the pending-import false-positive is fixed: imports render as `✅ Ready` and no false “already imported” warning appears.
+- **Artifacts Produced:** `docs/features/038-terraform-import-moved-blocks/uat-report.md`, `docs/features/038-terraform-import-moved-blocks/work-protocol.md`, `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** None.
+- **Next Agent:** Release Manager
+
+### Release Manager
+- **Date:** 2026-05-12
+- **Summary:** Completed release-stage verification for the bug-fix workflow: confirmed code review approval, confirmed focused UAT re-run pass with recorded GitHub/Azure DevOps links, verified clean working tree, prepared bug-fix release notes, and generated release screenshot evidence for the visual output change.
+- **Artifacts Produced:** `docs/issues/131-already-imported-false-positive/release-notes.md`, `docs/issues/131-already-imported-false-positive/issue-123-import-ready.png`, `docs/issues/131-already-imported-false-positive/work-protocol.md`
+- **Problems Encountered:** GitHub MCP pull request lookup did not return an open PR for branch `copilot/fix-tfplan2md-import-blocks` in this environment, so PR validation/check-run verification must be confirmed from the active Copilot PR context by Maintainer.
+- **Next Agent:** Retrospective

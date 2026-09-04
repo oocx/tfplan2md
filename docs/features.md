@@ -16,7 +16,7 @@ tfplan2md can append diagnostic information to reports to help troubleshoot issu
 
 - **Command-line flag**: Single `--debug` flag enables all diagnostics
 - **Output location**: Debug information is appended to the markdown report in a collapsible `<details>` block (collapsed by default)
-- **Collapsible format**: Debug section is wrapped in a `<details>` block to reduce visual clutter while keeping information accessible (Feature 086)
+- **Collapsible format**: Debug section is wrapped in a `<details>` block to reduce visual clutter while keeping information accessible (Feature 087)
 - **Principal mapping diagnostics**:
   - Load status (success/failure) and file path
   - Count of principals by type (users, groups, service principals)
@@ -68,7 +68,7 @@ The debug information is collapsed by default to reduce visual clutter in PR rev
 
 ## Output Display Enhancements
 
-**Status:** ✅ Implemented (Feature 086)
+**Status:** ✅ Implemented (Feature 087)
 
 tfplan2md includes display enhancements that improve readability and user experience in markdown reports, particularly for PR reviews:
 
@@ -853,7 +853,7 @@ Attributes where both the before and after values are null (and the attribute is
 
 ## Known-After-Apply Rendering
 
-**Status:** ✅ Implemented (Feature 102)
+**Status:** ✅ Implemented (Feature 127)
 
 When Terraform cannot determine an attribute's final value until apply time (for example, because it depends on a resource that doesn't exist yet), plans encode this as `after_unknown: true`. Previously, tfplan2md silently dropped these attributes from reports. Now they are surfaced correctly.
 
@@ -942,7 +942,7 @@ tfplan2md plan.json --render-target bitbucket
 
 ## Bitbucket Render Target
 
-**Status:** ✅ Implemented (Feature 119)
+**Status:** ✅ Implemented (Feature 127)
 
 tfplan2md supports a dedicated Bitbucket render target for environments where Bitbucket pull request comments do not reliably render HTML-enhanced markdown.
 
@@ -1615,7 +1615,7 @@ The legacy flat format (all principals in one dictionary) is also supported for 
 ## Azure DevOps Principal Mapping
 
 **Status:** ✅ Implemented  
-**Related specification:** [docs/features/085-azdo-principal-mapping/specification.md](features/085-azdo-principal-mapping/specification.md)
+**Related specification:** [docs/features/086-azdo-principal-mapping/specification.md](features/086-azdo-principal-mapping/specification.md)
 
 tfplan2md now supports mapping Azure DevOps user IDs, group descriptors, and project IDs to human-readable display names using the same principal mapping JSON file as Azure AD entities. This enhancement makes Terraform plans for Azure DevOps resources significantly more readable by replacing cryptic GUIDs and descriptors with recognizable names.
 
@@ -1720,7 +1720,7 @@ tfplan2md --debug --principal-mapping principals.json plan.json
 ## Azure DevOps Repository Mapping and Branch/Repo Icons
 
 **Status:** ✅ Implemented  
-**Related specification:** [docs/features/096-azdo-repo-mapping-and-icons/specification.md](features/096-azdo-repo-mapping-and-icons/specification.md)
+**Related specification:** [docs/features/098-azdo-repo-mapping-and-icons/specification.md](features/098-azdo-repo-mapping-and-icons/specification.md)
 
 This feature extends the principal mapping system to support Azure DevOps repositories and adds semantic icons for repositories and branches/refs, making Terraform plans for Azure DevOps resources more readable and scannable.
 
@@ -2045,7 +2045,7 @@ For containerized environments, the Docker image remains the recommended distrib
 
 ### Homebrew Installation
 
-**Status:** ✅ Implemented (Feature 089)
+**Status:** ✅ Implemented (Feature 091)
 
 tfplan2md is available via Homebrew for macOS and Linux users, providing a convenient package manager experience with automatic updates.
 
@@ -2493,7 +2493,7 @@ These improvements are applied automatically during rendering and require no con
 
 **Status:** ✅ Implemented
 
-Rendering was simplified progressively across multiple features, culminating in the full removal of Scriban (Feature 107). All rendering logic is now implemented in pure C# with static typing and compile-time safety.
+Rendering was simplified progressively across multiple features, culminating in the full removal of Scriban (Feature 113). All rendering logic is now implemented in pure C# with static typing and compile-time safety.
 
 **Key Changes:**
 
@@ -2513,7 +2513,7 @@ Rendering was simplified progressively across multiple features, culminating in 
 - Zero third-party NuGet runtime dependencies for rendering
 - Single-file changes for formatting features
 
-See [docs/features/026-template-rendering-simplification/](features/026-template-rendering-simplification/) and [docs/features/107-remove-scriban/](features/107-remove-scriban/) for technical details.
+See [docs/features/026-template-rendering-simplification/](features/026-template-rendering-simplification/) and [docs/features/113-remove-scriban/](features/113-remove-scriban/) for technical details.
 
 ## Provider Code Separation
 
@@ -2849,7 +2849,7 @@ This creates a powerful workflow where security and quality issues are immediate
 - **Performance**: No impact on rendering performance; decision is made once per resource during rendering
 - **Validation**: Invalid mode values are rejected with a clear error message
 
-See [docs/features/092-details-display-mode/](features/092-details-display-mode/) for specification, architecture, and implementation details.
+See [docs/features/094-details-display-mode/](features/094-details-display-mode/) for specification, architecture, and implementation details.
 
 ## Terraform Outputs Support
 
@@ -2895,11 +2895,11 @@ Output values automatically benefit from existing display name mappings — for 
 - **Sensitivity precedence**: `after_sensitive` > `before_sensitive` > configuration `sensitive` flag
 - **Value formatting**: Reuses the existing `ValueFormatterRegistry` pipeline
 
-See [docs/features/097-terraform-outputs/](features/097-terraform-outputs/) for specification, architecture, and implementation details.
+See [docs/features/100-terraform-outputs/](features/100-terraform-outputs/) for specification, architecture, and implementation details.
 
 ## Case-Insensitive Azure Resource ID Filter
 
-**Status:** ✅ Implemented (Feature 103)
+**Status:** ✅ Implemented (Feature 113)
 
 The Azure Resource Manager (ARM) API occasionally returns resource IDs with inconsistent capitalisation on successive reads — for example, `/subscriptions/ABC123/resourceGroups/my-rg` versus `/subscriptions/abc123/resourceGroups/my-rg`. Terraform detects these as changes, and tfplan2md faithfully reports them. These casing-only differences have no real infrastructure impact but can create noise for reviewers.
 
@@ -2932,9 +2932,9 @@ With `--ignore-azure-id-case-changes`, only the `display_name` row is shown — 
 - The resource entry itself still appears in the report even if all its attribute change rows are suppressed.
 - Plan summary counts (resources to add, change, destroy) are not affected.
 
-See [docs/features/103-azure-id-case-insensitive-filter/](features/103-azure-id-case-insensitive-filter/) for specification, architecture, and implementation details.
+See [docs/features/107-azure-id-case-insensitive-filter/](features/107-azure-id-case-insensitive-filter/) for specification, architecture, and implementation details.
 
-## azapi Output Values (Feature 106)
+## azapi Output Values (Feature 127)
 
 **Status:** ✅ Implemented
 
@@ -2957,9 +2957,9 @@ Output values benefit from the same rendering quality as body attributes:
 - Large-value collapsible handling
 - Before/after comparison tables for update/replace actions
 
-See [docs/features/106-azapi-output-values/](features/106-azapi-output-values/) for specification, architecture, and implementation details.
+See [docs/features/111-azapi-output-values/](features/111-azapi-output-values/) for specification, architecture, and implementation details.
 
-## Remove Scriban and Use Pure C# Rendering (Feature 107)
+## Remove Scriban and Use Pure C# Rendering (Feature 113)
 
 **Status:** ✅ Implemented
 
@@ -2984,9 +2984,9 @@ tfplan2md no longer uses Scriban templates. Markdown rendering now runs through 
 - NativeAOT trimming no longer requires Scriban preservation entries.
 - The project no longer carries third-party templating runtime overhead.
 
-See [docs/features/107-remove-scriban/](features/107-remove-scriban/) for full specification, architecture, tasks, and test plan.
+See [docs/features/113-remove-scriban/](features/113-remove-scriban/) for full specification, architecture, tasks, and test plan.
 
-## Azure DevOps Pipeline Variable: `tfplan2md_haschanges` (Feature 109)
+## Azure DevOps Pipeline Variable: `tfplan2md_haschanges` (Feature 124)
 
 **Status:** ✅ Implemented
 
@@ -3042,9 +3042,9 @@ steps:
 - The value reflects changes **after filtering** — for example, if `--ignore-azure-id-case-changes` suppresses all detected changes, `tfplan2md_haschanges` is set to `false`.
 - Plan summary counts (resources to add, change, destroy) displayed in the report are **not** affected by this variable.
 
-See [docs/features/109-azdo-has-changes-variable/](features/109-azdo-has-changes-variable/) for specification, architecture, and implementation details.
+See [docs/features/116-azdo-has-changes-variable/](features/116-azdo-has-changes-variable/) for specification, architecture, and implementation details.
 
-## Code Simplification (Feature 111)
+## Code Simplification (Feature 127)
 
 **Status:** ✅ Implemented
 
@@ -3064,9 +3064,9 @@ Internal refactoring to eliminate duplicate code, dead code, and unused paramete
 
 No changes to CLI options, output format, report content, or behaviour. All existing tests continue to pass without modification.
 
-See [docs/features/111-code-simplification/](features/111-code-simplification/) for specification, architecture, and implementation details.
+See [docs/features/119-code-simplification/](features/119-code-simplification/) for specification, architecture, and implementation details.
 
-## Azure DevOps User Entitlement Summary Fields (Feature 115)
+## Azure DevOps User Entitlement Summary Fields (Feature 123)
 
 **Status:** ✅ Implemented
 
@@ -3082,9 +3082,9 @@ See [docs/features/111-code-simplification/](features/111-code-simplification/) 
 - Fields are shown only when non-empty — absent or null values are silently omitted, keeping the summary clean.
 - When all three fields are empty the summary falls back to the resource address only (no regression from the previous provider-level fallback).
 
-See [docs/features/115-azuredevops-user-entitlement-summary/specification.md](features/115-azuredevops-user-entitlement-summary/specification.md) for the full specification.
+See [docs/features/123-azuredevops-user-entitlement-summary/specification.md](features/123-azuredevops-user-entitlement-summary/specification.md) for the full specification.
 
-## Azure AD App Role Assignment Enhancement (Feature 116)
+## Azure AD App Role Assignment Enhancement (Feature 124)
 
 **Status:** ✅ Implemented
 
@@ -3111,9 +3111,9 @@ Adds enhanced rendering for three Azure AD resource types:
 ➕ azuread_service_principal_delegated_permission_grant example — 💻 My App → 📋 User.Read, openid → 🎯 Microsoft Graph
 ```
 
-See [docs/features/116-azuread-app-role-assignment/specification.md](features/116-azuread-app-role-assignment/specification.md) for the full specification.
+See [docs/features/124-azuread-app-role-assignment/specification.md](features/124-azuread-app-role-assignment/specification.md) for the full specification.
 
-## Terraform 1.14 / 1.15 Plan-JSON Support (Feature 122)
+## Terraform 1.14 / 1.15 Plan-JSON Support (Feature 130)
 
 **Status:** ✅ Implemented
 
@@ -3195,7 +3195,7 @@ Variables and outputs marked `deprecated` in `configuration.root_module` now pro
 
 Plans from Terraform 1.13 and all earlier supported versions that lack any of the new fields render identically to previous versions of tfplan2md. All new fields are optional in the parsed model; missing fields are treated as absent and produce no output.
 
-See [docs/features/122-terraform-1-15-support/](features/122-terraform-1-15-support/) for the full specification, ADRs, and implementation details.
+See [docs/features/130-terraform-1-15-support/](features/130-terraform-1-15-support/) for the full specification, ADRs, and implementation details.
 
 ## Future Considerations
 

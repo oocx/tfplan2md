@@ -10,7 +10,7 @@ tfplan2md renders Markdown via Scriban templates (ADR-001). The template context
 
 The project’s architectural intent is “security by default”: sensitive values must be masked unless the user explicitly opts in with `--show-sensitive` (see [docs/architecture.md](architecture.md) § 8.1 Security).
 
-Issue 098 (see [docs/issues/098-sensitive-info-exposure/analysis.md](issues/098-sensitive-info-exposure/analysis.md)) demonstrates that this intent can be violated when:
+Issue 102 (see [docs/issues/102-sensitive-info-exposure/analysis.md](issues/102-sensitive-info-exposure/analysis.md)) demonstrates that this intent can be violated when:
 
 - a built-in provider template (e.g., AzApi) renders raw JSON paths without consistent sensitivity checks
 - a custom template prints values from `before_json` / `after_json` directly
@@ -110,5 +110,5 @@ Masking the JSON object graph before templates run ensures:
 
 - Scriban templating: [docs/adr-001-scriban-templating.md](adr-001-scriban-templating.md)
 - Architecture security intent: [docs/architecture.md](architecture.md)
-- Issue 098 analysis: [docs/issues/098-sensitive-info-exposure/analysis.md](issues/098-sensitive-info-exposure/analysis.md)
-- Issue 098 architecture notes: [docs/issues/098-sensitive-info-exposure/architecture.md](issues/098-sensitive-info-exposure/architecture.md)
+- Issue 102 analysis: [docs/issues/102-sensitive-info-exposure/analysis.md](issues/102-sensitive-info-exposure/analysis.md)
+- Issue 102 architecture notes: [docs/issues/102-sensitive-info-exposure/architecture.md](issues/102-sensitive-info-exposure/architecture.md)

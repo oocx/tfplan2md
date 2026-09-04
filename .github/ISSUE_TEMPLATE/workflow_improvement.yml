@@ -33,14 +33,14 @@ body:
       description: Describe the specific change you're proposing
       placeholder: |
         Example:
-        "Update `.github/agents/quality-engineer.agent.md` to reference the correct 
+        "Update `.agents/roles/quality-engineer.md` to reference the correct 
         path: `docs/features/NNN-<feature-slug>/test-plan.md`"
         
         Or:
         "Create a validation script that checks:
         - All handoff agent names exist
         - All tool IDs are valid VS Code tool names
-        - Model names match available models in docs/ai-model-reference.md"
+        - Roles declare a tier from .agents/tiers.json, never a model name"
     validations:
       required: true
 
@@ -67,7 +67,7 @@ body:
       description: How will we know this improvement is complete and correct?
       placeholder: |
         - [ ] Quality Engineer agent uses correct path in instructions
-        - [ ] Test plan artifact location documented in docs/agents.md
+        - [ ] Test plan artifact location documented in docs/workflow.md
         - [ ] Existing test plans remain in current locations (no migration needed)
         - [ ] PR includes conventional commit format
         

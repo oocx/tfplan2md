@@ -802,23 +802,28 @@ Mathias Raacke develops software professionally since 2000 and uses .net and c# 
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-mathiasraacke-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mathiasraacke/) [![GitHub](https://img.shields.io/badge/GitHub-oocx-181717?logo=github&logoColor=white)](https://github.com/oocx) [![YouTube](https://img.shields.io/badge/YouTube-Channel-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/channel/UCksGVtTPuok5ub267_mgVPA) [![Bluesky](https://img.shields.io/badge/Bluesky-oocx-1185FE?logo=bluesky&logoColor=white)](https://bsky.app/profile/oocx.bsky.social) [![Microsoft Certified](https://img.shields.io/badge/Microsoft-Certified-00A4EF?logo=microsoft&logoColor=white)](https://learn.microsoft.com/en-us/users/mathiasraacke/transcript/drl3qhq482qr91p)
 
-### GitHub Copilot - AI Development Partner
+### AI Development Partners
 
-<img src="assets/github-copilot.png" alt="GitHub Copilot" width="150" height="150" align="right" style="border-radius: 50%; object-fit: cover; margin-left: 20px; background: #d0d0d0" />
+<img src="assets/github-copilot.png" alt="AI development partner" width="150" height="150" align="right" style="border-radius: 50%; object-fit: cover; margin-left: 20px; background: #d0d0d0" />
 
-I'm GitHub Copilot, the AI pair programmer that helped write 100% of this project's code, tests, and documentation. I work as an intelligent coding assistant, providing context-aware suggestions, generating implementations from specifications, and helping maintain code quality throughout the development lifecycle.
+Effectively all of this project's code, tests and documentation were written by AI
+agents working through a structured, role-based workflow: requirements, architecture,
+test planning, implementation, documentation, review, UAT and release each run as a
+distinct role with its own boundaries and deliverables. The workflow is documented in
+[docs/workflow.md](docs/workflow.md) and defined in [`.agents/`](.agents/).
 
-For this project, we use a multi-model approach to leverage different AI strengths:
+Models are assigned by what an error at that stage costs to unwind, not by preference:
 
-- **Claude Sonnet 4.5** - Primary model for requirements engineering, code review, and technical writing
-- **GPT-5.2-Codex** - Latest Codex model for C# code generation, .NET patterns, and development tasks
-- **Claude Opus 4.5** - Reserved for difficult problems and edge cases where other models struggled
-- **GPT-5.2** - General-purpose reasoning, architectural decisions, and complex problem-solving
-- **Gemini 3 Flash** - Fast iteration for task planning, release management, and UAT testing
+- **Claude Opus** - requirements, architecture, and the workflow itself, where a
+  mistake propagates through every later stage
+- **Claude Sonnet** - implementation, test planning, release and UAT, where the work is
+  constrained by an approved specification and mistakes surface in review or CI
+- **Claude Haiku** - task planning, documentation, and the search and test runs that
+  only need a pass or a path back
+- **GPT-5.6 (Codex)** - code review, deliberately in a different model family from the
+  author, so the review tests the code instead of ratifying the reasoning that produced it
 
-This hybrid approach combines the best capabilities of each model, selecting the right tool for each type of work while maintaining high code quality and development velocity.
-
-[![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Powered by AI](https://img.shields.io/badge/Powered%20by-Multi--Model%20AI-purple)](docs/ai-model-reference.md)
+[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?logo=anthropic&logoColor=white)](https://claude.com/claude-code) [![Reviewed by Codex](https://img.shields.io/badge/Reviewed%20by-Codex-000000?logo=openai&logoColor=white)](https://developers.openai.com/codex/cli)
 
 ## License
 

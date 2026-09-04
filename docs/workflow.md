@@ -7,6 +7,89 @@ rules; this file covers stages, gates and artifacts. Role definitions live in
 The workflow runs unattended between gates. Roles do not decide the sequence — it comes
 from `state.json`, resolved by `scripts/workflow-next.sh`.
 
+## Workflow diagram
+
+This diagram is the source for the website's `ai-workflow.svg`. Regenerate it with the
+`update-workflow-diagram` skill after changing it.
+
+```mermaid
+%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
+flowchart TB
+    classDef role fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+    classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:6,ry:6;
+    classDef meta fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+    classDef gate fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
+    classDef external fill:#ec4899,stroke:#f472b6,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+
+    HUMAN(["👤 <b>Maintainer</b>"])
+    DRIVER["🔁 <b>Driver</b><br/>workflow-next.sh + state.json"]
+
+    RE["<b>Requirements Engineer</b>"]
+    IAR["<b>Issue Analyst</b>"]
+    WEN["<b>Workflow Engineer</b>"]
+    WDS["<b>Web Designer</b>"]
+
+    G1{{"🚦 <b>GATE</b><br/>Specification approval"}}
+    AR["<b>Architect</b>"]
+    G2{{"🚦 <b>GATE</b><br/>Architecture choice<br/><i>only when options compete</i>"}}
+
+    QE["<b>Quality Engineer</b>"]
+    TPL["<b>Task Planner</b>"]
+    DEV["<b>Developer</b>"]
+    TW["<b>Technical Writer</b>"]
+    CR["<b>Code Reviewer</b><br/>runs in Codex"]
+    UAT["<b>UAT Tester</b>"]
+    G3{{"🚦 <b>GATE</b><br/>UAT approval<br/><i>only when output changes</i>"}}
+    RM["<b>Release Manager</b>"]
+    RETRO["<b>Retrospective</b>"]
+
+    WP["📓 work-protocol.md<br/>+ state.json"]
+
+    HUMAN -->|"request"| DRIVER
+    DRIVER -->|"feature"| RE
+    DRIVER -->|"bug"| IAR
+    DRIVER -->|"workflow"| WEN
+    DRIVER -->|"website"| WDS
+
+    RE --> G1
+    G1 -->|"approved"| AR
+    G1 -.->|"rejected"| RE
+    AR --> G2
+    G2 -->|"decided"| QE
+    G2 -.->|"uncontested: auto"| QE
+
+    QE --> TPL --> DEV --> TW --> CR
+    IAR --> DEV
+    CR -->|"APPROVED"| UAT
+    CR -.->|"REWORK"| DEV
+
+    UAT --> G3
+    G3 -->|"approved"| RM
+    G3 -.->|"failed"| DEV
+    CR -->|"no user-visible change<br/>UAT skipped"| RM
+
+    WEN --> RM
+    WDS --> RM
+    RM --> RETRO
+    RETRO -.->|"improvements"| WEN
+
+    DEV -.-> WP
+    CR -.-> WP
+    RM -.-> WP
+    WP -.->|"resumes the run"| DRIVER
+
+    G1 -.-> HUMAN
+    G2 -.-> HUMAN
+    G3 -.-> HUMAN
+
+    class RE,IAR,AR,QE,TPL,DEV,TW,UAT,RM,RETRO role;
+    class WEN,WDS meta;
+    class CR external;
+    class G1,G2,G3 gate;
+    class WP artifact;
+    class DRIVER meta;
+```
+
 ## Stages
 
 ### Feature — `feature/NNN-<slug>` → `docs/features/NNN-<slug>/`

@@ -33,7 +33,7 @@ another role's artifacts.
    | [README.md](../../README.md) | installation, usage, CLI options, quick start changed |
    | [docs/architecture.md](../../docs/architecture.md) | new components or patterns |
    | [docs/testing-strategy.md](../../docs/testing-strategy.md) | new test patterns or frameworks |
-   | [docs/agents.md](../../docs/agents.md) | the workflow or a role changed |
+   | [docs/workflow.md](../../docs/workflow.md) | the workflow or a role changed |
 
    The Code Reviewer checks this table. Leaving one un-updated where it applies is a
    review finding, so state explicitly which ones you considered and why any were

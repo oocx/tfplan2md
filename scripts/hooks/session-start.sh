@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# session-start.sh - GitHub Copilot session start hook.
+# session-start.sh - SessionStart hook.
 #
-# Runs automatically when a new Copilot agent session begins. Calculates the
+# Runs automatically when a new agent session begins. Calculates the
 # next available work-item issue number and stores it in .next-issue-number
 # so agents can read the pre-calculated value without running the script.
 #
-# Input (stdin): JSON with fields: timestamp, cwd, source, initialPrompt
+# Input (stdin): session JSON from the harness; not used.
 # Output:        Ignored by the hook runner; result is written to .next-issue-number
 
 set -euo pipefail

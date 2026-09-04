@@ -68,6 +68,7 @@ jobs:
           if [ -z "$CHANGED_FILES" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "website_changed=false" >> $GITHUB_OUTPUT
+            echo "agents_changed=true" >> $GITHUB_OUTPUT
             echo "No changed files detected; running validation"
             exit 0
           fi
@@ -79,11 +80,18 @@ jobs:
             echo "website_changed=false" >> $GITHUB_OUTPUT
           fi
 
-          NON_IGNORED=$(echo "$CHANGED_FILES" | grep -Ev '^(docs/|website/|website\.old/|\.github/|scripts/|src/tests/shell/)' || true)
+          AGENTS_CHANGED=$(echo "$CHANGED_FILES" | grep -E '^(\.agents/|\.claude/|AGENTS\.md$|CLAUDE\.md$|scripts/(sync-agent-config|validate-agents|workflow-|wp-append|codex-review|test-workflow-driver))' || true)
+          if [ -n "$AGENTS_CHANGED" ]; then
+            echo "agents_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "agents_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          NON_IGNORED=$(echo "$CHANGED_FILES" | grep -Ev '^(docs/|website/|website\.old/|\.github/|\.agents/|\.claude/|AGENTS\.md$|CLAUDE\.md$|scripts/|src/tests/shell/)' || true)
 
           if [ -z "$NON_IGNORED" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Only docs/website/.github/scripts/shell-tests changed; skipping non-website validation"
+            echo "Only docs/website/.github/.agents/scripts/shell-tests changed; skipping non-website validation"
           else
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Non-ignored files changed; running validation"
@@ -118,13 +126,21 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: src/tests/shell/test_with_timeout_test.sh
 
-      - name: Shell test (analyze chat)
-        if: steps.filter.outputs.changed == 'true'
-        run: src/tests/shell/analyze_chat_test.sh
-
       - name: Shell test (validate release notes)
         if: steps.filter.outputs.changed == 'true'
         run: src/tests/shell/validate_release_notes_test.sh
+
+      - name: Validate agent role definitions
+        if: steps.filter.outputs.agents_changed == 'true'
+        run: scripts/validate-agents.py
+
+      - name: Check generated .claude/ is in sync with .agents/
+        if: steps.filter.outputs.agents_changed == 'true'
+        run: scripts/sync-agent-config.sh --check
+
+      - name: Shell test (workflow driver)
+        if: steps.filter.outputs.agents_changed == 'true'
+        run: scripts/test-workflow-driver.sh
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'

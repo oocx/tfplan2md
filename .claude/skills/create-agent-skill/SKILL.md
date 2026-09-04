@@ -28,7 +28,7 @@ Standardize the creation of new Agent Skills to ensure they are consistent, disc
 - Include a `description` in the frontmatter (max 1024 chars).
 - Create `scripts/` and `templates/` subdirectories only if needed.
 - Use the provided template for `SKILL.md`.
-- Update `docs/agents.md` to register the new skill in the "Available Skills" table.
+- Update `docs/workflow.md` to register the new skill in the "Available Skills" table.
 
 ### Must Not
 
@@ -86,7 +86,7 @@ Then, edit the file to replace the placeholders (`{{skill-name}}`, `{{descriptio
 
 ### 4. Update Documentation
 
-Add the new skill to the "Available Skills" table in `docs/agents.md`.
+Add the new skill to the "Available Skills" table in `docs/workflow.md`.
 
 ### 5. Verify
 

@@ -1,17 +1,19 @@
 # Project specification
 
 ## Project Overview
+
 `tfplan2md` is a CLI tool that converts Terraform plan JSON files into human-readable markdown reports. It is built using modern .NET 10 and C# 13 features, emphasizing clean architecture, testability, and maintainability.
 
 The goal of this tool is to help DevOps and infrastructure teams easily review Terraform plans by generating concise markdown summaries of proposed changes. The summaries must be customizable via template files, and provide a default template out of the box.
 
 ## Project Organization
+
 - Use namespaces to organize the code. The root namespace is `Oocx.TfPlan2Md`
 - Use a single project for the CLI tool; use separate projects for tests
 - Organize files by feature (e.g., `Parsing`, `MarkdownGeneration`, `CLI`), not by type (e.g., `Models`, `Services`)
 - Place all documentation in the /docs folder, except for the README.md at the root
 - Key architecture decisions must be documented in separate files per decision. Place those files in /docs/adr-nnn-title.
-- Documentation subfolders under `/docs/features`, `/docs/issues`, and `/docs/workflow` use a global numeric prefix: `NNN-<topic-slug>`.
+- Documentation subfolders under `/docs/features`, `/docs/issues`, `/docs/workflow` and `/docs/website` use a global numeric prefix: `NNN-<topic-slug>`.
   - **Parallel work rule:** If two branches chose the same next `NNN`, the first PR to merge keeps it; later PRs must renumber before merge.
 - The testing strategy is described in /docs/testing-strategy.md
 - Features of tfplan2md (from a user perspective) are described in /docs/features.md
@@ -36,9 +38,11 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
   - Use `InternalsVisibleTo` attribute to expose `internal` members to test projects
   - Do NOT make members `public` solely for testing purposes
   - Add this to the main project's `.csproj` or `AssemblyInfo.cs`:
+
     ```csharp
     [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.TUnit")]
     ```
+
   - **Note**: TUnit is the primary and only test framework used in this project
 
 - **Why this matters:**
@@ -60,12 +64,14 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 ## CI/CD and Versioning
 
 ### Versioning Strategy
+
 - Use [Semantic Versioning](https://semver.org/) (SemVer)
 - Automate versioning with [Versionize](https://github.com/versionize/versionize) based on [Conventional Commits](https://www.conventionalcommits.org/)
 - Version tags use `v` prefix (e.g., `v1.0.0`)
 - Docker images are tagged with full version. Stable releases also include minor version, major version, and `latest` tags.
 
 ### Commit Message Format
+
 - Follow [Conventional Commits](https://www.conventionalcommits.org/) specification
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
 - Breaking changes: Use `BREAKING CHANGE:` footer or `!` after type
@@ -84,11 +90,12 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 
 **Release Gating:** The CI workflow only creates a new version tag when the published Docker image would change. This includes changes to runtime code (`src/` excluding test directories), example files (`examples/`), and Docker build configuration. Test-only changes (under `src/tests/`, `src/tools/`, test results) and workflow/internal-tooling changes (`.github/`, `scripts/`, `docs/`, `website/`) intentionally do not trigger releases.
 
-**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `scripts/`, `docs/`, `website/`) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`. Use `workflow:`, `docs:`, `chore:`, or `ci:` instead. **Why:** Versionize treats `feat:` as a minor bump and `fix:` as a patch bump. Incorrect commit types cause unintended version increments (e.g., a minor bump instead of a patch, or a release for changes that don't affect the published Docker image). The Release Manager agent must verify commit types before merging.
+**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `.agents/`, `scripts/`, `docs/`, `website/`) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`. Use `workflow:`, `docs:`, `chore:`, or `ci:` instead. **Why:** Versionize treats `feat:` as a minor bump and `fix:` as a patch bump. Incorrect commit types cause unintended version increments (e.g., a minor bump instead of a patch, or a release for changes that don't affect the published Docker image). The Release Manager role must verify commit types before merging.
 
 **Release Notes:** The release workflow generates cumulative release notes that include all changes since the last GitHub release. This ensures Docker deployments contain complete change history even when intermediate versions are not released.
 
 ### Code Quality
+
 - **Analyzers**: Microsoft.CodeAnalysis.NetAnalyzers with `TreatWarningsAsErrors`
 - **Code Metrics**: Automated enforcement of cyclomatic complexity (≤15), maintainability index (≥20), line length (≤160), and file length (~300 lines)
 - **Code Style**: Enforced via `.editorconfig` and `dotnet format`
@@ -98,11 +105,17 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 - **Suppression Policy**: Quality metric violations require explicit `SuppressMessage` attributes with justification and maintainer approval (see [docs/commenting-guidelines.md](commenting-guidelines.md))
 
 ### Branch Strategy
+
 - `main` branch is always in a releasable state
-- Feature branches created from `main` for new features or fixes
+- Work branches are created from `main` and named `<type>/NNN-<slug>`, where `<type>` is
+  `feature`, `fix`, `workflow` or `website` and `NNN` is the global work-item number.
+  Each branch has a matching documentation folder — see
+  [AGENTS.md](../AGENTS.md#how-work-is-organised), which is the source of truth for
+  both conventions.
 - Pull requests require passing validation checks before merge
 
 **Branch Protection Limitation (Private Repos):**
+
 - GitHub branch protection rules (requiring status checks) require GitHub Pro for private repositories
 - Until the repository is made public, PRs CAN be merged before the "PR Validation" workflow completes
 - **CRITICAL**: Agents and maintainers must manually verify "PR Validation" shows ✅ success before merging

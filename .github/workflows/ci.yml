@@ -6,6 +6,10 @@ on:
     paths-ignore:
       - 'docs/**'
       - '.github/**'
+      - '.agents/**'
+      - '.claude/**'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
       - 'scripts/**'
       - 'website/**'
       - 'website.old/**'

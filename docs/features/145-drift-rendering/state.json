@@ -1,10 +1,11 @@
 {
   "type": "feature",
   "slug": "145-drift-rendering",
-  "stage": "architect",
+  "stage": "quality-engineer",
   "status": "running",
+  "arch_contested": false,
   "gates": {
-    "spec": "pending",
+    "spec": "approved",
     "arch": "n/a",
     "uat": "n/a"
   },

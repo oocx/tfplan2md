@@ -21,3 +21,10 @@
 - **Summary:** Revised the specification after gate feedback: grouping now requires matching normalized value transitions, relevant mode excludes no-op changes, and a concrete grouped-drift preview was added.
 - **Artifacts Produced:** specification.md; state.json; work-protocol.md
 - **Problems Encountered:** None
+
+### Architect
+
+- **Date:** 2026-09-05
+- **Summary:** Designed provider-neutral drift mode selection and aggregation after existing normalization and display filtering; selected a dedicated DriftGroupModel over renderer-side or raw-JSON grouping.
+- **Artifacts Produced:** architecture.md; state.json; work-protocol.md
+- **Problems Encountered:** None

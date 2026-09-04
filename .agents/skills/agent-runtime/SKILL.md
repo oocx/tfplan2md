@@ -32,9 +32,12 @@ a model name.
 
 | Tier | Claude | Codex |
 |------|--------|-------|
-| deep | opus | sol |
-| standard | sonnet | terra |
-| cheap | haiku | luna |
+| deep | opus | `gpt-5.6-sol` |
+| standard | sonnet | `gpt-5.6-terra` |
+| cheap | haiku | `gpt-5.6-luna` |
+
+Codex needs the full model slug. Bare `sol` / `terra` / `luna` are rejected by the API
+("not supported when using Codex with a ChatGPT account").
 
 **Escalation:** on rework attempt 2 or later, run the role one tier deeper. Cheap
 models get first crack; expensive ones only see the cases that failed once.

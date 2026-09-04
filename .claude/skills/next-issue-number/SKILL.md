@@ -19,7 +19,7 @@ This prevents duplicate issue numbers when multiple agents work concurrently or 
 
 ## Session Start Hook
 
-A `sessionStart` hook (`.github/hooks/session-start.json`) automatically runs `scripts/next-issue-number.sh` when a new agent session begins and writes the result to `.next-issue-number`. This means the next issue number is pre-calculated for you at session start.
+A `SessionStart` hook (declared in `.agents/claude-settings.json`) automatically runs `scripts/next-issue-number.sh` when a new agent session begins and writes the result to `.next-issue-number`. This means the next issue number is pre-calculated for you at session start.
 
 **Read the pre-calculated value first** (fast, no network call required):
 

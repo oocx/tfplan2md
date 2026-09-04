@@ -238,3 +238,35 @@
   - The only `state.json` example in the corpus used an invalid stage id, and four entry
     roles are told to create the file with no other schema to copy. Added
     `wp-append.sh --init` so none of them hand-writes it.
+
+### Workflow Engineer (round 10)
+
+- **Date:** 2026-09-04
+- **Summary:** Third Codex review: 3 Blockers, 5 Majors, 1 Minor, and none of the
+  previous two rounds' findings recurred. All fixed except the two that resolve on push
+  (CI evidence, and HEAD not being on a remote).
+- **Artifacts Produced:** `.agents/workflow.json`, `scripts/{workflow-gate,wp-append,workflow-next,sync-agent-config,render-workflow-diagram}`,
+  `scripts/uat-{github,azdo,helpers}.sh`, `.agents/skills/{run-uat,run-workflow}/SKILL.md`,
+  `docs/workflow.md`, `scripts/test-workflow-driver.sh` (61 assertions)
+- **Problems Encountered:**
+  - **A regression I introduced in phase 8.** Making the UAT check workflow-type aware —
+    to stop a workflow item claiming UAT — inferred "has a UAT gate" from "schedules the
+    uat-tester stage". That exempted **website** work items, the one type whose entire
+    purpose is user-visible change. Website changes could reach release with no
+    Maintainer decision. The gate is now declared per type as `uat_gate_after`.
+  - **The same fix-one-copy pattern, twice more.** The `run-uat` skill still ordered
+    cleanup before the gate after the UAT Tester role was corrected, and
+    `run-workflow` kept an instruction to call `--rework` after the exit-code table
+    already said `codex-review.sh` does it — which would have counted every rejection
+    twice and blocked the run after two failed reviews instead of three.
+  - The three-attempt cap was enforced in the `--rework` branch but not in the
+    gate-rejection branch, so a repeatedly rejected specification could loop forever.
+  - `sync_roles` overwrote into the generated directory instead of replacing it, so
+    deleting a canonical role left a live stale agent that regeneration could not remove.
+  - Pinning mermaid-cli to 11.12.0 to stop unpinned drift broke the render: that version
+    wants a puppeteer Chrome that is not cached here, while the unpinned resolution had
+    been silently using 11.17.0. Pinned to the version that actually works, with the
+    remedy noted in the script.
+  - The branch failed `git diff --check`. The trailing whitespace was pre-existing in
+    skill helper scripts and only showed as added lines because this change relocated
+    them; stripped in the canonical copies.

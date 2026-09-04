@@ -16,7 +16,7 @@ python3 .agents/skills/detect-diagram-crossings/detect_all.py website/ai-workflo
 ## Detection Methods
 
 1. **Parametric Line Intersection**: Mathematical detection of segment crossings
-2. **Node-Path Proximity Analysis**: Detects paths passing through node bodies  
+2. **Node-Path Proximity Analysis**: Detects paths passing through node bodies
 3. **Visual Screenshot Analysis**: Catches rendering artifacts and visual overlaps
 
 ## Output

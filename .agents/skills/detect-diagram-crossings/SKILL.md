@@ -182,7 +182,7 @@ For each segment, systematically check against all nodes:
   - Does X fall within [node.x-min, node.x-max]?
   - Does [Y1, Y2] overlap with [node.y-min, node.y-max]?
   - If BOTH yes → **CROSSING DETECTED**
-  
+
 - **Horizontal segment at y=Y, x from X1 to X2**:
   - Does Y fall within [node.y-min, node.y-max]?
   - Does [X1, X2] overlap with [node.x-min, node.x-max]?
@@ -361,17 +361,17 @@ Both scripts exit with:
 
 ### Issue: False Positives at Endpoints
 
-**Symptom**: Detections at valid node-to-node connections  
+**Symptom**: Detections at valid node-to-node connections
 **Fix**: Increase endpoint tolerance from 0.01 to 0.05
 
 ### Issue: Missed Visual Crossings
 
-**Symptom**: Math says no crossings but visually there are  
+**Symptom**: Math says no crossings but visually there are
 **Fix**: Check stroke width, arrow markers, and rendering artifacts
 
 ### Issue: Paths Too Close to Nodes
 
-**Symptom**: Proximity warnings but no crossings  
+**Symptom**: Proximity warnings but no crossings
 **Fix**: Add routing margins, use wider node spacing
 
 ## Best Practices
@@ -393,7 +393,7 @@ Method 1: Parametric Line Intersection
 - Crossings detected: 0
 - Status: ✅ PASS
 
-Method 2: Node-Path Proximity  
+Method 2: Node-Path Proximity
 - Nodes analyzed: 25
 - Proximity issues: 0
 - Status: ✅ PASS

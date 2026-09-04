@@ -27,7 +27,8 @@
         "developer",
         "technical-writer",
         "code-reviewer"
-      ]
+      ],
+      "uat_gate_after": "uat-tester"
     },
     "fix": {
       "folder": "docs/issues",
@@ -49,7 +50,8 @@
         "developer",
         "technical-writer",
         "code-reviewer"
-      ]
+      ],
+      "uat_gate_after": "uat-tester"
     },
     "workflow": {
       "folder": "docs/workflow",
@@ -61,7 +63,8 @@
       "conditional_stages": [],
       "gate_blocking_stages": [
         "workflow-engineer"
-      ]
+      ],
+      "uat_gate_after": null
     },
     "website": {
       "folder": "docs/website",
@@ -73,7 +76,8 @@
       "conditional_stages": [],
       "gate_blocking_stages": [
         "web-designer"
-      ]
+      ],
+      "uat_gate_after": "web-designer"
     }
   },
   "gates": {
@@ -89,10 +93,10 @@
       "prompt": "Architecture choice. Two or more options carry material trade-offs; pick one."
     },
     "uat": {
-      "after_stage": "uat-tester",
       "always": false,
       "condition": "diff touches user-visible output",
-      "prompt": "UAT approval. Review the rendered output in both PRs the UAT Tester created, and reply approved or rejected."
+      "prompt": "UAT approval. Review the user-visible output — the UAT PRs for a feature or fix, the deployed preview for a website change — and reply approved or rejected.",
+      "after_stage_per_type": true
     }
   },
   "uat_trigger_paths": "^(src/Oocx\\.TfPlan2Md/(MarkdownGeneration|RenderTargets)/|examples/|website/)",

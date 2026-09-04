@@ -17,7 +17,11 @@ Execute end-to-end User Acceptance Testing by posting a feature-specific artifac
 - Provide at least one `--report`/`--instructions` pair (feature-specific report and test instructions).
 - The comprehensive demo is appended automatically — do NOT add it as a `--report`.
 - Artifacts must be up-to-date (generated from current branch code). Run `scripts/generate-demo-artifacts.sh` if needed.
-- Clean up (close/abandon) the UAT PR after testing.
+- Leave the UAT PRs **open** when you finish creating them. Completing the UAT Tester's
+  stage is what opens the Maintainer's approval gate, and the gate asks them to look at
+  those PRs — closing them first makes the gate unanswerable.
+- Cleanup happens **after** the decision is recorded, and belongs to the Release
+  Manager, not the UAT Tester.
 - Report platform-specific rendering issues clearly.
 
 ### Must Not
@@ -59,7 +63,7 @@ scripts/uat-run.sh \
   --report artifacts/<feature>.md \
   --instructions "..." \
   --create-only
-# Then later clean up:
+# After the Maintainer records the gate decision, the Release Manager cleans up:
 scripts/uat-run.sh --cleanup-last
 ```
 
@@ -74,7 +78,7 @@ scripts/uat-run.sh --cleanup-last
    ```
    ## Test Instructions
    <instructions you provided>
-   
+
    ## Report
    <artifact content>
    ```

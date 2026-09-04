@@ -29,6 +29,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 SOURCE_DOC = REPO / "docs" / "workflow.md"
 TARGET_SVG = REPO / "website" / "src" / "media-root" / "ai-workflow.svg"
+MERMAID_VERSION = "11.17.0"
 
 # classDef name in the mermaid source -> CSS class in the blueprint SVG.
 NODE_CLASS = {
@@ -109,10 +110,15 @@ def render_with_mermaid(mmd: str, workdir: Path) -> str:
     src = workdir / "workflow.mmd"
     out = workdir / "raw.svg"
     src.write_text(mmd, encoding="utf-8")
+    # Pinned: this script parses mermaid's SVG markup, so an upstream release can
+    # change the output and break --check with no change in this repository.
+    # Bumping the pin can require a matching puppeteer Chrome — if the render
+    # fails with "Could not find Chrome", run:
+    #     npx puppeteer browsers install chrome-headless-shell
     if shutil.which("mmdc"):
         cmd = ["mmdc"]
     else:
-        cmd = ["npx", "--yes", "-p", "@mermaid-js/mermaid-cli", "mmdc"]
+        cmd = ["npx", "--yes", "-p", f"@mermaid-js/mermaid-cli@{MERMAID_VERSION}", "mmdc"]
     result = subprocess.run(
         cmd + ["-i", str(src), "-o", str(out), "-t", "dark"],
         capture_output=True, text=True,

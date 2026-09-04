@@ -2,7 +2,7 @@
 
 /**
  * SVG Workflow Validator - CLI Tool
- * 
+ *
  * Usage: node svg-validator.js <path-to-svg-file>
  * Example: node svg-validator.js workflow.svg
  */
@@ -53,7 +53,7 @@ function getPathPoints(pathString) {
   commands.forEach(cmd => {
     const type = cmd[0];
     const coords = cmd.slice(1).trim().split(/[\s,]+/).map(Number);
-    
+
     switch(type.toUpperCase()) {
       case 'M':
         currentX = type === 'M' ? coords[0] : currentX + coords[0];
@@ -75,7 +75,7 @@ function getPathPoints(pathString) {
         break;
     }
   });
-  
+
   return points;
 }
 
@@ -94,9 +94,9 @@ function getPathSegments(pathString) {
 }
 
 function doRectsOverlap(rect1, rect2) {
-  return !(rect1.right <= rect2.x || 
-           rect2.right <= rect1.x || 
-           rect1.bottom <= rect2.y || 
+  return !(rect1.right <= rect2.x ||
+           rect2.right <= rect1.x ||
+           rect1.bottom <= rect2.y ||
            rect2.bottom <= rect1.y);
 }
 
@@ -115,13 +115,13 @@ function doSegmentsIntersect(seg1, seg2) {
 
 function doesSegmentIntersectRect(segment, rect, tolerance = 2) {
   const { x1, y1, x2, y2 } = segment;
-  
+
   // Check if segment endpoints are inside rect (with small tolerance for touching)
-  const isP1Inside = x1 > rect.x + tolerance && x1 < rect.right - tolerance && 
+  const isP1Inside = x1 > rect.x + tolerance && x1 < rect.right - tolerance &&
                      y1 > rect.y + tolerance && y1 < rect.bottom - tolerance;
-  const isP2Inside = x2 > rect.x + tolerance && x2 < rect.right - tolerance && 
+  const isP2Inside = x2 > rect.x + tolerance && x2 < rect.right - tolerance &&
                      y2 > rect.y + tolerance && y2 < rect.bottom - tolerance;
-  
+
   if (isP1Inside || isP2Inside) return true;
 
   // Check intersection with rect edges
@@ -135,11 +135,11 @@ function doesSegmentIntersectRect(segment, rect, tolerance = 2) {
   if (rectSegments.some(rectSeg => doSegmentsIntersect(segment, rectSeg))) {
     return true;
   }
-  
+
   // Special case: check if orthogonal segment passes through the interior of the rect
   const isHorizontal = Math.abs(y2 - y1) < 1;
   const isVertical = Math.abs(x2 - x1) < 1;
-  
+
   if (isHorizontal) {
     const y = (y1 + y2) / 2;
     const minX = Math.min(x1, x2);
@@ -149,7 +149,7 @@ function doesSegmentIntersectRect(segment, rect, tolerance = 2) {
       return true;
     }
   }
-  
+
   if (isVertical) {
     const x = (x1 + x2) / 2;
     const minY = Math.min(y1, y2);
@@ -159,25 +159,25 @@ function doesSegmentIntersectRect(segment, rect, tolerance = 2) {
       return true;
     }
   }
-  
+
   return false;
 }
 
 // Check if a segment runs along (parallel to) a node edge - this is a visual issue
 function doesSegmentRunAlongNodeEdge(segment, rect, proximityThreshold = 8) {
   const { x1, y1, x2, y2 } = segment;
-  
+
   // Calculate segment length
   const segmentLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
   const minOverlapLength = 15; // Minimum overlap to consider it "running along"
-  
+
   // Check if segment is horizontal (runs along top or bottom edge)
   const isHorizontal = Math.abs(y2 - y1) < 2;
   if (isHorizontal) {
     const segY = (y1 + y2) / 2;
     const segMinX = Math.min(x1, x2);
     const segMaxX = Math.max(x1, x2);
-    
+
     // Check if near top edge and overlaps horizontally
     if (Math.abs(segY - rect.y) < proximityThreshold) {
       const overlapStart = Math.max(segMinX, rect.x);
@@ -185,7 +185,7 @@ function doesSegmentRunAlongNodeEdge(segment, rect, proximityThreshold = 8) {
       const overlapLength = overlapEnd - overlapStart;
       if (overlapLength > minOverlapLength) return true;
     }
-    
+
     // Check if near bottom edge and overlaps horizontally
     if (Math.abs(segY - rect.bottom) < proximityThreshold) {
       const overlapStart = Math.max(segMinX, rect.x);
@@ -194,14 +194,14 @@ function doesSegmentRunAlongNodeEdge(segment, rect, proximityThreshold = 8) {
       if (overlapLength > minOverlapLength) return true;
     }
   }
-  
+
   // Check if segment is vertical (runs along left or right edge)
   const isVertical = Math.abs(x2 - x1) < 2;
   if (isVertical) {
     const segX = (x1 + x2) / 2;
     const segMinY = Math.min(y1, y2);
     const segMaxY = Math.max(y1, y2);
-    
+
     // Check if near left edge and overlaps vertically
     if (Math.abs(segX - rect.x) < proximityThreshold) {
       const overlapStart = Math.max(segMinY, rect.y);
@@ -209,7 +209,7 @@ function doesSegmentRunAlongNodeEdge(segment, rect, proximityThreshold = 8) {
       const overlapLength = overlapEnd - overlapStart;
       if (overlapLength > minOverlapLength) return true;
     }
-    
+
     // Check if near right edge and overlaps vertically
     if (Math.abs(segX - rect.right) < proximityThreshold) {
       const overlapStart = Math.max(segMinY, rect.y);
@@ -218,7 +218,7 @@ function doesSegmentRunAlongNodeEdge(segment, rect, proximityThreshold = 8) {
       if (overlapLength > minOverlapLength) return true;
     }
   }
-  
+
   return false;
 }
 
@@ -292,7 +292,7 @@ for (let i = 0; i < pathSegments.length; i++) {
   for (let j = i + 1; j < pathSegments.length; j++) {
     const path1 = pathSegments[i];
     const path2 = pathSegments[j];
-    
+
     for (let seg1 of path1.segments) {
       for (let seg2 of path2.segments) {
         if (doSegmentsIntersect(seg1, seg2)) {
@@ -317,10 +317,10 @@ pathSegments.forEach((path, pathIdx) => {
     path.segments.forEach((segment, segIdx) => {
       const isFirstSegment = segIdx === 0;
       const isLastSegment = segIdx === segmentCount - 1;
-      
+
       let isCollision = false;
       let collisionType = '';
-      
+
       if (isFirstSegment || isLastSegment) {
         // For connection segments: only flag if running along a node edge
         if (doesSegmentRunAlongNodeEdge(segment, node.bounds)) {
@@ -334,7 +334,7 @@ pathSegments.forEach((path, pathIdx) => {
           collisionType = 'crosses';
         }
       }
-      
+
       if (isCollision) {
         issues.pathNodeCollisions.push({
           path: `Path ${pathIdx + 1}`,
@@ -410,7 +410,7 @@ const connectionMap = new Map(); // "nodeLabel:edge" -> array of {pathIdx, point
 
 pathSegments.forEach((path, pathIdx) => {
   if (path.segments.length === 0) return;
-  
+
   // Check start point
   const startSeg = path.segments[0];
   const startInfo = findNodeForPoint(startSeg.x1, startSeg.y1, nodes);
@@ -419,7 +419,7 @@ pathSegments.forEach((path, pathIdx) => {
     if (!connectionMap.has(key)) connectionMap.set(key, []);
     connectionMap.get(key).push({ pathIdx: pathIdx + 1, point: { x: startSeg.x1, y: startSeg.y1 }, isStart: true });
   }
-  
+
   // Check end point
   const endSeg = path.segments[path.segments.length - 1];
   const endInfo = findNodeForPoint(endSeg.x2, endSeg.y2, nodes);
@@ -437,14 +437,14 @@ connectionMap.forEach((connections, key) => {
     const [nodeLabel, edge] = key.split(':');
     const node = nodes.find(n => n.label === nodeLabel);
     if (!node) return;
-    
+
     const center = getEdgeCenter(node, edge);
     const tolerance = 15; // Allow some tolerance from exact center
-    
+
     const dx = Math.abs(conn.point.x - center.x);
     const dy = Math.abs(conn.point.y - center.y);
     const isOffCenter = (edge === 'top' || edge === 'bottom') ? dx > tolerance : dy > tolerance;
-    
+
     if (isOffCenter) {
       issues.offCenterConnections.push({
         path: `Path ${conn.pathIdx}`,
@@ -466,11 +466,11 @@ function isNearCorner(point, bounds, cornerThreshold = 15) {
   const nearRight = Math.abs(point.x - bounds.right) <= cornerThreshold;
   const nearTop = Math.abs(point.y - bounds.y) <= cornerThreshold;
   const nearBottom = Math.abs(point.y - bounds.bottom) <= cornerThreshold;
-  
+
   // Near corner if close to both an X edge and a Y edge
   const isCorner = (nearLeft || nearRight) && (nearTop || nearBottom);
   if (!isCorner) return null;
-  
+
   const corner = `${nearTop ? 'top' : 'bottom'}-${nearLeft ? 'left' : 'right'}`;
   return corner;
 }
@@ -479,7 +479,7 @@ connectionMap.forEach((connections, key) => {
   const [nodeLabel, edge] = key.split(':');
   const node = nodes.find(n => n.label === nodeLabel);
   if (!node) return;
-  
+
   connections.forEach(conn => {
     const corner = isNearCorner(conn.point, node.bounds);
     if (corner) {
@@ -500,13 +500,13 @@ connectionMap.forEach((connections, key) => {
 // ============================================================================
 pathSegments.forEach((path, pathIdx) => {
   if (path.segments.length < 2) return;
-  
+
   const lastSeg = path.segments[path.segments.length - 1];
   const endPoint = { x: lastSeg.x2, y: lastSeg.y2 };
   const endNodeInfo = findNodeForPoint(endPoint.x, endPoint.y, nodes);
-  
+
   if (!endNodeInfo) return;
-  
+
   // Check all segments except the last one
   for (let i = 0; i < path.segments.length - 1; i++) {
     const seg = path.segments[i];
@@ -527,24 +527,24 @@ pathSegments.forEach((path, pathIdx) => {
 // ============================================================================
 connectionMap.forEach((connections, key) => {
   if (connections.length < 2) return;
-  
+
   const [nodeLabel, edge] = key.split(':');
   const node = nodes.find(n => n.label === nodeLabel);
   if (!node) return;
-  
+
   // Sort connections by position along the edge
   const sorted = [...connections].sort((a, b) => {
     if (edge === 'top' || edge === 'bottom') return a.point.x - b.point.x;
     return a.point.y - b.point.y;
   });
-  
+
   // Check if any two are too close (causing arrow overlap)
   const minSpacing = 30; // Minimum pixels between connection points
   for (let i = 0; i < sorted.length - 1; i++) {
-    const dist = (edge === 'top' || edge === 'bottom') 
+    const dist = (edge === 'top' || edge === 'bottom')
       ? Math.abs(sorted[i + 1].point.x - sorted[i].point.x)
       : Math.abs(sorted[i + 1].point.y - sorted[i].point.y);
-    
+
     if (dist < minSpacing) {
       issues.overlappingArrows.push({
         paths: `Path ${sorted[i].pathIdx} and Path ${sorted[i + 1].pathIdx}`,
@@ -559,35 +559,35 @@ connectionMap.forEach((connections, key) => {
 });
 
 // ============================================================================
-// NEW RULE: Awkward arrow entry - detect T-junction patterns where a path 
+// NEW RULE: Awkward arrow entry - detect T-junction patterns where a path
 // arrives perpendicular to the final arrow direction, creating a visual "T"
 // Example: horizontal path into a top-edge arrow (should go up a bit first)
 // ============================================================================
 pathSegments.forEach((path, pathIdx) => {
   if (path.segments.length < 2) return;
-  
+
   const lastSeg = path.segments[path.segments.length - 1];
   const prevSeg = path.segments[path.segments.length - 2];
   const endPoint = { x: lastSeg.x2, y: lastSeg.y2 };
   const endNodeInfo = findNodeForPoint(endPoint.x, endPoint.y, nodes);
-  
+
   if (!endNodeInfo) return;
-  
+
   // Get the length of the final segment
   const lastLen = Math.sqrt((lastSeg.x2 - lastSeg.x1) ** 2 + (lastSeg.y2 - lastSeg.y1) ** 2);
-  
+
   // Only flag very short final segments (< 20px) where prev segment is perpendicular
   if (lastLen >= 20) return;
-  
+
   // Check if previous segment is perpendicular to the edge
   const prevDx = Math.abs(prevSeg.x2 - prevSeg.x1);
   const prevDy = Math.abs(prevSeg.y2 - prevSeg.y1);
   const prevIsHorizontal = prevDx > prevDy;
   const prevIsVertical = prevDy > prevDx;
-  
+
   const edgeIsHorizontal = endNodeInfo.edge === 'top' || endNodeInfo.edge === 'bottom';
   const edgeIsVertical = endNodeInfo.edge === 'left' || endNodeInfo.edge === 'right';
-  
+
   // Awkward if prev segment is same orientation as edge (perpendicular to arrow direction)
   if ((prevIsHorizontal && edgeIsHorizontal) || (prevIsVertical && edgeIsVertical)) {
     issues.badApproachDirection.push({
@@ -606,12 +606,12 @@ pathSegments.forEach((path, pathIdx) => {
 function couldBeDirectConnection(path, nodeList) {
   // Only flag paths with more than 2 segments - 2-segment orthogonal paths are standard
   if (path.segments.length <= 2) return null;
-  
+
   const firstSeg = path.segments[0];
   const lastSeg = path.segments[path.segments.length - 1];
   const start = { x: firstSeg.x1, y: firstSeg.y1 };
   const end = { x: lastSeg.x2, y: lastSeg.y2 };
-  
+
   // Check if a simple 2-segment orthogonal path would work (no crossings)
   // Option A: go horizontal first, then vertical
   const midA = { x: end.x, y: start.y };
@@ -619,14 +619,14 @@ function couldBeDirectConnection(path, nodeList) {
     { x1: start.x, y1: start.y, x2: midA.x, y2: midA.y },
     { x1: midA.x, y1: midA.y, x2: end.x, y2: end.y }
   ];
-  
+
   // Option B: go vertical first, then horizontal
   const midB = { x: start.x, y: end.y };
   const pathB = [
     { x1: start.x, y1: start.y, x2: midB.x, y2: midB.y },
     { x1: midB.x, y1: midB.y, x2: end.x, y2: end.y }
   ];
-  
+
   function pathCrossesAnyNode(segments) {
     for (let segIdx = 0; segIdx < segments.length; segIdx++) {
       const seg = segments[segIdx];
@@ -634,7 +634,7 @@ function couldBeDirectConnection(path, nodeList) {
         // Skip intersection check for nodes that the path connects to
         const startInfo = findNodeForPoint(start.x, start.y, [node]);
         const endInfo = findNodeForPoint(end.x, end.y, [node]);
-        
+
         if (startInfo || endInfo) {
           // For connected nodes, still check edge-running (it's visually problematic)
           // unless it's a very short segment immediately leaving/entering the node
@@ -643,7 +643,7 @@ function couldBeDirectConnection(path, nodeList) {
           }
           continue; // Skip intersection check for connected nodes
         }
-        
+
         // Check both intersection and edge-running for non-connected nodes
         if (doesSegmentIntersectRect(seg, node.bounds)) {
           return true;
@@ -655,23 +655,23 @@ function couldBeDirectConnection(path, nodeList) {
     }
     return false;
   }
-  
+
   const aWorks = !pathCrossesAnyNode(pathA);
   const bWorks = !pathCrossesAnyNode(pathB);
-  
+
   if (!aWorks && !bWorks) return null; // No simple 2-segment path works
-  
+
   const currentLength = path.segments.reduce((sum, seg) => {
     return sum + Math.sqrt((seg.x2 - seg.x1) ** 2 + (seg.y2 - seg.y1) ** 2);
   }, 0);
-  
+
   const lengthA = Math.abs(end.x - start.x) + Math.abs(end.y - start.y);
   const lengthB = lengthA; // Same for orthogonal paths
-  
+
   // Only report if the simpler path would be significantly shorter (>20% savings)
   const bestLength = aWorks && bWorks ? lengthA : (aWorks ? lengthA : lengthB);
   if (bestLength >= currentLength * 0.8) return null;
-  
+
   return {
     segmentCount: path.segments.length,
     currentLength: Math.round(currentLength),
@@ -704,21 +704,21 @@ pathSegments.forEach((path, pathIdx) => {
 function generateOrthogonalRoutes(start, end) {
   // Generate the two standard orthogonal 2-segment routes
   const routes = [];
-  
+
   // Route 1: Horizontal first, then vertical
   routes.push({
     name: 'horizontal-first',
     waypoints: [start, { x: end.x, y: start.y }, end],
     length: Math.abs(end.x - start.x) + Math.abs(end.y - start.y)
   });
-  
+
   // Route 2: Vertical first, then horizontal
   routes.push({
     name: 'vertical-first',
     waypoints: [start, { x: start.x, y: end.y }, end],
     length: Math.abs(end.x - start.x) + Math.abs(end.y - start.y)
   });
-  
+
   return routes;
 }
 
@@ -728,7 +728,7 @@ function routeCrossesNodes(waypoints, nodeList, startNode, endNode) {
     for (const node of nodeList) {
       // Skip intersection check for start and end nodes
       const isConnectedNode = node.label === startNode || node.label === endNode;
-      
+
       if (isConnectedNode) {
         // For connected nodes, still check edge-running (it's visually problematic)
         if (doesSegmentRunAlongNodeEdge(seg, node.bounds)) {
@@ -736,7 +736,7 @@ function routeCrossesNodes(waypoints, nodeList, startNode, endNode) {
         }
         continue; // Skip intersection check for connected nodes
       }
-      
+
       // Check both intersection and edge-running for non-connected nodes
       if (doesSegmentIntersectRect(seg, node.bounds)) {
         return true;
@@ -758,28 +758,28 @@ function getCurrentRouteLength(path) {
 pathSegments.forEach((path, pathIdx) => {
   // Only check paths with 3+ segments
   if (path.segments.length < 3) return;
-  
+
   const firstSeg = path.segments[0];
   const lastSeg = path.segments[path.segments.length - 1];
   const start = { x: firstSeg.x1, y: firstSeg.y1 };
   const end = { x: lastSeg.x2, y: lastSeg.y2 };
-  
+
   // Find which nodes this path connects
   const startNodeInfo = findNodeForPoint(start.x, start.y, nodes);
   const endNodeInfo = findNodeForPoint(end.x, end.y, nodes);
   const startNodeLabel = startNodeInfo ? startNodeInfo.node.label : null;
   const endNodeLabel = endNodeInfo ? endNodeInfo.node.label : null;
-  
+
   const currentLength = getCurrentRouteLength(path);
   const alternatives = generateOrthogonalRoutes(start, end);
-  
+
   // Find valid (non-crossing) alternatives that are shorter
   const validShorterAlternatives = alternatives.filter(alt => {
     // Must be at least 15% shorter to be worth flagging
     if (alt.length >= currentLength * 0.85) return false;
     return !routeCrossesNodes(alt.waypoints, nodes, startNodeLabel, endNodeLabel);
   });
-  
+
   if (validShorterAlternatives.length > 0) {
     const best = validShorterAlternatives.reduce((a, b) => a.length < b.length ? a : b);
     issues.suboptimalRoutes.push({
@@ -795,8 +795,8 @@ pathSegments.forEach((path, pathIdx) => {
 });
 
 // Print results
-const totalIssues = issues.overlappingNodes.length + 
-                    issues.intersectingPaths.length + 
+const totalIssues = issues.overlappingNodes.length +
+                    issues.intersectingPaths.length +
                     issues.pathNodeCollisions.length +
                     issues.sharedStartPoints.length +
                     issues.offCenterConnections.length +

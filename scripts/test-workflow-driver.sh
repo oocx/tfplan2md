@@ -270,6 +270,46 @@ assert_eq "the original heading is untouched" "1" \
 assert_eq "the completeness matcher accepts a numbered heading" "1" \
     "$( (cd "$R12" && scripts/workflow-gate.sh work-protocol 2>&1) | grep -c '^  ok    Requirements Engineer$')"
 
+# --- website work must not bypass the UAT gate -----------------------------
+# Inferring "has a UAT gate" from "schedules uat-tester" exempted the one type
+# whose entire purpose is user-visible change.
+R16="$(new_repo website 918-site web-designer "website/src/pages/index.njk")"
+assert_exit "a website change is a UAT candidate" 0 \
+    env -C "$R16" scripts/workflow-gate.sh uat
+(cd "$R16" && scripts/wp-append.sh --role "Web Designer" --summary s) >/dev/null 2>&1
+assert_eq "completing the Web Designer opens the UAT gate" "pending" "$(gate_of "$R16" uat)"
+assert_exit "the website run blocks on that gate" 2 env -C "$R16" scripts/workflow-next.sh
+
+R17="$(new_repo workflow 919-wfonly workflow-engineer "website/src/pages/x.njk")"
+assert_exit "a workflow item is still never a UAT candidate" 1 \
+    env -C "$R17" scripts/workflow-gate.sh uat
+
+# --- a repeatedly rejected gate must stop the run --------------------------
+R18="$(new_repo feature 920-gcap requirements-engineer)"
+for i in 1 2; do
+    (cd "$R18" && scripts/wp-append.sh --role "Requirements Engineer" --summary "s$i") >/dev/null 2>&1
+    (cd "$R18" && scripts/wp-append.sh --gate spec --decision rejected) >/dev/null 2>&1
+done
+(cd "$R18" && scripts/wp-append.sh --role "Requirements Engineer" --summary s3) >/dev/null 2>&1
+assert_exit "the third gate rejection blocks the run" 3 \
+    env -C "$R18" scripts/wp-append.sh --gate spec --decision rejected
+assert_eq "the run is marked blocked" "blocked" \
+    "$(jq -r '.status' "$(find "$R18/docs" -name state.json | head -1)")"
+
+# --- regeneration must remove a deleted role -------------------------------
+R19="$(new_repo feature 921-stale developer)"
+cp "$R19/.agents/roles/developer.md" "$R19/.agents/roles/obsolete-role.md"
+sed -i 's/^name: Developer/name: Obsolete Role/' "$R19/.agents/roles/obsolete-role.md"
+cp "$REPO_ROOT/scripts/sync-agent-config.sh" "$R19/scripts/"
+(cd "$R19" && scripts/sync-agent-config.sh) >/dev/null 2>&1
+rm "$R19/.agents/roles/obsolete-role.md"
+(cd "$R19" && scripts/sync-agent-config.sh) >/dev/null 2>&1
+if [ -f "$R19/.claude/agents/obsolete-role.md" ]; then
+    bad "regeneration removes a deleted role" "stale generated agent survived"
+else
+    ok "regeneration removes a deleted role"
+fi
+
 # --- work-protocol completeness --------------------------------------------
 R10="$(new_repo workflow 909-gate release-manager)"
 assert_exit "release is refused while a required role has no entry" 1 \

@@ -81,7 +81,7 @@ scripts/generate-screenshot.sh \
 
 # This generates 12 variants:
 # - Thumbnail and lightbox crops
-# - Light and dark themes  
+# - Light and dark themes
 # - 1x and 2x DPI versions
 ```
 

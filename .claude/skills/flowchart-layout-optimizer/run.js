@@ -23,13 +23,13 @@ const LAYOUT_CONFIG = {
 function getNodeDimensions(nodeEl) {
     const rect = nodeEl.querySelector('rect');
     if (rect) {
-        return { 
-            width: parseFloat(d3.select(rect).attr('width')) || 180, 
+        return {
+            width: parseFloat(d3.select(rect).attr('width')) || 180,
             height: parseFloat(d3.select(rect).attr('height')) || 40
         };
     }
     // Fallback if no inner rect is found
-    return { width: 180, height: 40 }; 
+    return { width: 180, height: 40 };
 }
 
 /**
@@ -72,7 +72,7 @@ async function optimizeLayout(svgFilePath, nodeSelector, edgeSelector) {
         // Use the text content as the key for mapping the flow
         const textEl = el.querySelector('text:first-of-type');
         let title = textEl ? textEl.textContent.trim().replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '') : `NODE_${index}`;
-        
+
         // Ensure unique ID, if multiple text elements exist, or it's a generic title
         let id = title;
         let count = 1;
@@ -85,7 +85,7 @@ async function optimizeLayout(svgFilePath, nodeSelector, edgeSelector) {
         nodesMap.set(id, { gEl: el, id: id, title: title });
         d3.select(el).attr('data-dagre-id', id); // Add temporary ID for later lookup
     });
-    
+
     // 2.2. Extract Edges (Paths)
     document.querySelectorAll(edgeSelector).forEach(el => {
         edgesArray.push(el);
@@ -130,10 +130,10 @@ async function optimizeLayout(svgFilePath, nodeSelector, edgeSelector) {
 
         for (const targetTitle of FLOW_MAP[sourceTitle]) {
             const targetInfo = nodesMap.get(targetTitle.replace(/_rework_\d+/g, '')); // Target is always the base node
-            
+
             if (targetInfo) {
                 // Ensure we use the original path element from the edgesArray
-                const originalPathEl = edgesArray[edgeIndex++]; 
+                const originalPathEl = edgesArray[edgeIndex++];
                 if (originalPathEl) {
                     const edgeId = `${sourceInfo.id}_to_${targetInfo.id}_${edgeIndex}`;
                     g.setEdge(sourceInfo.id, targetInfo.id, { id: edgeId });
@@ -169,19 +169,19 @@ async function optimizeLayout(svgFilePath, nodeSelector, edgeSelector) {
     // 5.2. Update Edge Paths
     // We need to re-find the path elements using the temporary ID we set
     const edgesToUpdate = document.querySelectorAll(`path[data-dagre-id]`);
-    
+
     edgesToUpdate.forEach(el => {
         const edgeId = d3.select(el).attr('data-dagre-id');
         const edge = g.edge(dagre.util.splitEdgeId(edgeId));
-        
+
         if (edge && edge.points) {
             // Dagre points define the optimal polyline path that avoids nodes and crossings
             const pathData = pointsToSvgPath(edge.points);
             d3.select(el).attr('d', pathData);
-            
+
             // Clean up the temporary ID
             d3.select(el).attr('data-dagre-id', null);
-            
+
             // Optional: The agent would also need to update markers (arrowheads)
             // if their position depends on the end point of the path.
         }
@@ -192,10 +192,10 @@ async function optimizeLayout(svgFilePath, nodeSelector, edgeSelector) {
     document.querySelectorAll(nodeSelector).forEach(el => {
         d3.select(el).attr('data-dagre-id', null);
     });
-    
+
     const newSvgContent = dom.window.document.documentElement.outerHTML;
     fs.writeFileSync(svgFilePath, newSvgContent, 'utf8');
-    
+
     console.log(`Successfully optimized and updated layout in: ${svgFilePath}`);
 }
 

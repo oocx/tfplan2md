@@ -88,7 +88,7 @@ If the exact example doesn't exist in artifacts:
    # Modify existing demo or create new scenario
    terraform plan -out=plan.tfplan
    terraform show -json plan.tfplan > plan.json
-   
+
    # Generate markdown
    docker run -v $(pwd):/data oocx/tfplan2md:latest plan.json > output.md
    ```

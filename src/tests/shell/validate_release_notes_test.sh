@@ -92,6 +92,22 @@ HEAD_SHA="$(git rev-parse HEAD)"
 bash "$SCRIPT_PATH" --base-ref "$BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
 echo "OK: passes when changed workflow work item includes release artifacts"
 
+# Case 3b: renumbering an existing work item should pass without retrofitting artifacts
+git checkout -q "$BASE_SHA"
+mkdir -p docs/features/001-old
+cat > docs/features/001-old/specification.md <<'EOF'
+# Existing specification
+EOF
+git add docs/features/001-old/specification.md
+git commit -qm "docs: add existing work item"
+RENAME_BASE_SHA="$(git rev-parse HEAD)"
+git mv docs/features/001-old docs/features/002-renumbered
+git commit -qm "docs: renumber work item"
+HEAD_SHA="$(git rev-parse HEAD)"
+
+bash "$SCRIPT_PATH" --base-ref "$RENAME_BASE_SHA" --head-ref "$HEAD_SHA" >/dev/null
+echo "OK: passes when an existing work item is renumbered"
+
 # Case 4: .github/ changes without a work item folder should pass
 git checkout -q "$BASE_SHA"
 mkdir -p .github/skills/example-skill

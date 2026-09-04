@@ -609,7 +609,7 @@ The "Terraform Resource" column appears conditionally:
 
 ## Debug Section
 
-**Feature introduced:** v1.18.0 (Feature 086: Output Display Enhancements)
+**Feature introduced:** v1.18.0 (Feature 087: Output Display Enhancements)
 
 When the `--debug` flag is enabled, diagnostic information is appended to the report in a collapsible `<details>` block to reduce visual clutter while keeping debug information accessible.
 
@@ -655,7 +655,7 @@ The space between the 🐛 emoji and "Debug Information" text is a non-breaking 
 
 ## No-Changes Summary
 
-**Feature introduced:** v1.18.0 (Feature 086: Output Display Enhancements)
+**Feature introduced:** v1.18.0 (Feature 087: Output Display Enhancements)
 
 When a Terraform plan contains zero resource changes (no add, change, replace, or destroy actions), the Summary section displays a simple "No changes" message instead of an empty summary table.
 

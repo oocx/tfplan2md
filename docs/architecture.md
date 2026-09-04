@@ -952,7 +952,7 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 | `ResourceMapper` | Map SARIF findings to Terraform resource changes |
 | `WildcardExpander` | Expand glob patterns for SARIF file discovery |
 | `CodeAnalysisInput` | Input record (model, warnings, minimum level, fail-on level) |
-| `CodeAnalysisWarningModel` | Warning entry extended (Feature 122) with optional `Source` enum (`Sarif` / `PlanDeprecation`), `SubjectKind`, and `SubjectName` to carry both SARIF parse warnings and plan deprecation warnings through the same pipeline |
+| `CodeAnalysisWarningModel` | Warning entry extended (Feature 130) with optional `Source` enum (`Sarif` / `PlanDeprecation`), `SubjectKind`, and `SubjectName` to carry both SARIF parse warnings and plan deprecation warnings through the same pipeline |
 
 **Data Flow:**
 
@@ -1352,7 +1352,7 @@ The `WrapInlineDiffCode` helper in `CodeFormatting.cs` applies this specialized 
 
 ### 8.4 Rendering Architecture
 
-All markdown generation uses a pure C# rendering pipeline (Feature 107, ADR-010). There are no template files or third-party template engine dependencies.
+All markdown generation uses a pure C# rendering pipeline (Feature 113, ADR-010). There are no template files or third-party template engine dependencies.
 
 #### Rendering Pipeline
 

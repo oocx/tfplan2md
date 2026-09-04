@@ -610,7 +610,7 @@ Automated validation of generated markdown against the [Report Style Guide](repo
 
 **Test Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/StyleGuideComplianceTests.cs`
 
-**Related Issue:** [Issue 086](issues/086-style-guide-compliance-fixes/issue-analysis.md) - Style Guide Compliance Fixes
+**Related Issue:** [Issue 092](issues/088-style-guide-compliance-fixes/issue-analysis.md) - Style Guide Compliance Fixes
 
 **Running Compliance Tests:**
 ```bash

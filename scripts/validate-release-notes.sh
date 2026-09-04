@@ -61,6 +61,7 @@ if [[ -z "$changed_files" ]]; then
 fi
 
 declare -A changed_work_items=()
+declare -A renamed_work_items=()
 work_item_required=false
 
 while IFS= read -r file; do
@@ -72,6 +73,21 @@ while IFS= read -r file; do
     work_item_required=true
   fi
 done <<< "$changed_files"
+
+# A pure work-item directory rename changes every artifact path, but does not create a
+# new release. Do not make historic artifacts retroactively satisfy current release
+# metadata requirements merely because their parent directory was renumbered.
+while IFS=$'\t' read -r status old_file new_file; do
+  [[ "$status" =~ ^R ]] || continue
+  [[ "$old_file" =~ ^docs/(features|issues|workflow)/([^/]+)/ ]] || continue
+  old_work_item="docs/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+  [[ "$new_file" =~ ^docs/(features|issues|workflow)/([^/]+)/ ]] || continue
+  new_work_item="docs/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+  if [[ "$old_work_item" != "$new_work_item" ]]; then
+    renamed_work_items["$old_work_item"]=1
+    renamed_work_items["$new_work_item"]=1
+  fi
+done < <(git diff --name-status --find-renames "$merge_base".."$head_ref")
 
 if [[ "$work_item_required" == true && ${#changed_work_items[@]} -eq 0 ]]; then
   echo "❌ ERROR: This change requires a work item folder under docs/features/, docs/issues/, or docs/workflow/." >&2
@@ -142,6 +158,7 @@ validate_release_notes_file() {
 }
 
 for work_item in "${!changed_work_items[@]}"; do
+  [[ -n "${renamed_work_items[$work_item]:-}" ]] && continue
   release_notes_path="${work_item}/release-notes.md"
   work_protocol_path="${work_item}/work-protocol.md"
 

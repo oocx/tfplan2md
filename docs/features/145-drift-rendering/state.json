@@ -1,0 +1,28 @@
+{
+  "type": "feature",
+  "slug": "145-drift-rendering",
+  "stage": "architect",
+  "status": "running",
+  "gates": {
+    "spec": "pending",
+    "arch": "n/a",
+    "uat": "n/a"
+  },
+  "attempts": {
+    "requirements-engineer": 1
+  },
+  "open_questions": [
+    {
+      "q": "When matching drift entries have different before-and-after values, should they still be grouped?",
+      "assumed": "Yes; group by resource type and attribute path, show one representative value transition, matching the issue's proposed grouped entry.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-09-05"
+    },
+    {
+      "q": "Does 'relevant' include Terraform no-op resource_changes entries?",
+      "assumed": "No; it means a resource with a displayable planned change, matching the report's existing change filtering.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-09-05"
+    }
+  ]
+}

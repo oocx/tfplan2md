@@ -82,7 +82,21 @@ One command. It extracts the mermaid block from `docs/workflow.md`, renders it w
 scripts/render-workflow-diagram.py
 ```
 
-`--check` fails if the SVG is out of date with the diagram, for use in CI.
+`--check` verifies the committed SVG was generated from the diagram as it stands now,
+by comparing a `source-sha256` stamp written into the file. It does not re-render, so it
+needs no browser and runs in milliseconds — this is the CI check.
+
+That indirection is not laziness. Mermaid lays out text by measuring it in a browser, so
+node coordinates depend on which fonts the machine has; a byte-for-byte comparison passes
+locally and fails in CI for no reason a reader could act on. The stamp catches the
+failure that matters — editing the diagram and forgetting to regenerate.
+
+`--check-render` does the strict byte comparison against a fresh render. Use it on the
+machine that generated the file, not in CI.
+
+The stamp covers the diagram source, not this script: change the styling logic without
+regenerating and `--check` still passes. If you edit the script, re-run it and commit the
+SVG.
 
 The script exists because this was a ten-step manual parse, and doing it by hand loses
 things quietly. Two failures found the first time it ran, neither visible in the output

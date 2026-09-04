@@ -9,7 +9,7 @@ Phases 1–5 are additive and reversible. Phase 6 is the point of no return.
 | 3 | Driver | ✅ Done | `.agents/workflow.json`, `workflow-lib.sh`, `workflow-next.sh`, `workflow-gate.sh`, `wp-append.sh`, `run-workflow` skill, 4 slash commands |
 | 4 | Codex reviewer | ✅ Done | `codex-review.sh` + JSON output schema; verified against the real CLI on a live diff (4m34s, 199,652 tokens, 6 Blockers found) |
 | 5 | Review rework | ✅ Done (2 rounds) | Fix the 6 Blockers and 1 Major from the Codex review: double stage advance, rejected-gate bypass, unopened UAT gate, bug-workflow Developer inputs, review requirement on workflow/website releases, driver test coverage |
-| 6 | Skills | 🔶 Partial | `agent-runtime` written; `workflow:` commit-msg regex fixed early (it blocked phase 1). Remaining: 3 new skills, 4 deleted, 2 rewritten, rename `SKLL.md` |
+| 6 | Skills | ✅ Done | 23 skills moved to `.agents/skills/`, 6 deleted, 4 new (`agent-runtime`, `run-workflow`, `authoring-roles`, `context-pack`, `retrospective-evidence`); `SKLL.md` renamed; Copilot-isms and retired git wrappers purged |
 | 7 | Demolition | ⬜ Not started | 49 deletions; split `docs/agents.md`; update validation and CI paths |
 | 8 | Dry run | ⬜ Not started | Drive one real work item end to end in auto mode; record where it stopped |
 

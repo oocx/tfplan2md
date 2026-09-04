@@ -1,0 +1,10 @@
+{
+  // Rule configuration lives in .markdownlint.json; this file scopes what is linted.
+  // Two skills vendor npm packages whose bundled READMEs are not ours to fix.
+  "config": { "extends": ".markdownlint.json" },
+  "ignores": [
+    "**/node_modules/**",
+    "website/dist/**",
+    "website.old/**"
+  ]
+}

@@ -270,3 +270,28 @@
   - The branch failed `git diff --check`. The trailing whitespace was pre-existing in
     skill helper scripts and only showed as added lines because this change relocated
     them; stripped in the canonical copies.
+
+### Workflow Engineer (round 11)
+
+- **Date:** 2026-09-04
+- **Summary:** Rebuilt the branch on `origin/main`. The original base was a stale,
+  shallow local `main` with no computable merge base against the remote; all 17 commits
+  were replayed onto the current `origin/main` instead.
+- **Artifacts Produced:** the replayed branch; `.agents/skills/pre-pr-checklist/`
+- **Problems Encountered:**
+  - Local `main` was far behind `origin/main` and organised differently — work items up
+    to 124 locally against 667 on the remote, 88 feature folders against 68. Every signal
+    available when the number was chosen (`.next-issue-number` said 119, local docs said
+    124) was stale. The Maintainer confirmed 125 is genuinely unused on origin, where
+    numbering runs 120–124 and then jumps, so the number stands.
+  - Only four files overlapped between this change and 26 commits of remote history:
+    `pr-validation.yml`, `README.md`, and the two deleted Copilot files.
+  - `pr-validation.yml` conflicted twice. `origin/main` had broadened its ignore list to
+    cover all of `.github/` and `scripts/`, and did **not** have the `workflow_changed`
+    refinement present on the stale lineage. That refinement is not part of this change,
+    so it was deliberately left out rather than smuggled in; if it is wanted on `main`
+    it should land on its own.
+  - The replay surfaced what a rebase would have hidden: `origin/main` added a
+    `pre-pr-checklist` skill after the stale base, so the "move every skill to
+    `.agents/`" commit did not know about it and `.github/skills/` survived. Moved, and
+    its references to `docs/agents.md` repointed to `docs/workflow.md`.

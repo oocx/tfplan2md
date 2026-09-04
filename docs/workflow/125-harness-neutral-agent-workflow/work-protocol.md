@@ -177,7 +177,7 @@
     Left in place deliberately: it was never committed, so deleting it would be
     irreversible rather than recoverable from history.
 
-### Workflow Engineer
+### Workflow Engineer (round 7)
 
 - **Date:** 2026-09-04
 - **Summary:** Completed phases 1-8 of the harness-neutral workflow migration: canonical .agents/ layout, 13 roles, the auto-mode driver, the Codex reviewer, skills migration, and removal of the Copilot corpus.

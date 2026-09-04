@@ -195,6 +195,24 @@ assert_exit "a question requires the assumption in force" 1 \
 assert_eq "a recorded question does not change the stage" "developer" "$(stage_of "$R9")"
 assert_exit "the run continues after a question" 0 env -C "$R9" scripts/workflow-next.sh
 
+# --- repeated entries must not produce duplicate markdown headings ---------
+# A role logs again on every rework. Bare repeats trip markdownlint MD024,
+# which PR validation runs, so every rework loop would fail the build.
+R12="$(new_repo feature 913-dup requirements-engineer)"
+(cd "$R12" && scripts/wp-append.sh --role "Requirements Engineer" --summary a) >/dev/null 2>&1
+(cd "$R12" && scripts/wp-append.sh --gate spec --decision rejected) >/dev/null 2>&1
+(cd "$R12" && scripts/wp-append.sh --role "Requirements Engineer" --summary b) >/dev/null 2>&1
+WP12="$(find "$R12/docs" -name work-protocol.md | head -1)"
+assert_eq "a repeated role entry gets a distinct heading" "1" \
+    "$(grep -c '^### Requirements Engineer (round 2)$' "$WP12")"
+assert_eq "the original heading is untouched" "1" \
+    "$(grep -c '^### Requirements Engineer$' "$WP12")"
+# The numbered heading must still satisfy the completeness matcher. The check
+# as a whole still fails here — a feature workflow needs seven roles — so
+# assert on this role's row rather than the overall exit code.
+assert_eq "the completeness matcher accepts a numbered heading" "1" \
+    "$( (cd "$R12" && scripts/workflow-gate.sh work-protocol 2>&1) | grep -c '^  ok    Requirements Engineer$')"
+
 # --- work-protocol completeness --------------------------------------------
 R10="$(new_repo workflow 909-gate release-manager)"
 assert_exit "release is refused while a required role has no entry" 1 \

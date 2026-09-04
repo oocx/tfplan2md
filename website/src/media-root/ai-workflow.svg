@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-64.94100189208984 0.0 1256.2926025390625 2178.0" role="graphics-document document" aria-roledescription="flowchart-v2">
   <title>tfplan2md agent workflow</title>
+  <!-- source-sha256 3ca4a7470a7d55d6a934d2ea545fbec19e0a6b71e73e59802bfc2c3f5b84a005 -->
   <defs>
     <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">
       <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>

@@ -13,11 +13,16 @@ hand-placed nodes drift from the diagram they claim to depict.
 
 Usage:
     scripts/render-workflow-diagram.py            extract, render and restyle
-    scripts/render-workflow-diagram.py --check    fail if the SVG is out of date
+    scripts/render-workflow-diagram.py --check    verify the SVG was generated
+                                                  from the current diagram (no render)
+    scripts/render-workflow-diagram.py --check-render
+                                                  strict byte comparison against a
+                                                  fresh render (same machine only)
 """
 
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import re
@@ -234,7 +239,13 @@ def parse_edge_labels(svg: str) -> list[dict]:
     return labels
 
 
-def build_svg(raw: str) -> str:
+def source_digest(mmd: str) -> str:
+    """Hash the mermaid source, normalised for line endings and trailing space."""
+    norm = "\n".join(line.rstrip() for line in mmd.replace("\r\n", "\n").split("\n")).strip()
+    return hashlib.sha256(norm.encode("utf-8")).hexdigest()
+
+
+def build_svg(raw: str, mmd: str) -> str:
     vb = re.search(r'viewBox="([^"]+)"', raw)
     if not vb:
         die("no viewBox in the mermaid output")
@@ -250,6 +261,9 @@ def build_svg(raw: str) -> str:
     out.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{minx} {miny} {width} {height}" '
                'role="graphics-document document" aria-roledescription="flowchart-v2">')
     out.append('  <title>tfplan2md agent workflow</title>')
+    # Stamped so --check can tell whether this file was generated from the
+    # current diagram source without re-rendering it. See main().
+    out.append(f'  <!-- source-sha256 {source_digest(mmd)} -->')
     out.append("  <defs>")
     out.append('    <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">')
     out.append('      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>')
@@ -301,21 +315,57 @@ def build_svg(raw: str) -> str:
 
 
 def main() -> int:
-    check = "--check" in sys.argv[1:]
-    with tempfile.TemporaryDirectory() as tmp:
-        raw = render_with_mermaid(extract_mermaid(), Path(tmp))
-    svg = build_svg(raw)
+    argv = sys.argv[1:]
+    check = "--check" in argv
+    render_check = "--check-render" in argv
+    mmd = extract_mermaid()
 
-    if check:
+    # --check answers "was the committed SVG generated from the diagram as it
+    # stands now?" by comparing a stamped hash of the mermaid source. It does not
+    # re-render, which is deliberate: mermaid lays out text by measuring it in a
+    # browser, so the coordinates depend on which fonts that machine has. A
+    # byte-for-byte comparison therefore cannot pass on two different machines
+    # without pinning the entire font stack, while the failure actually worth
+    # catching — editing the diagram and forgetting to regenerate — is exactly
+    # what the hash detects. It needs no browser or network, so CI stays fast.
+    #
+    # --check-render does the strict byte comparison, for use on the machine that
+    # generated the file.
+    if check and not render_check:
+        if not TARGET_SVG.exists():
+            print(f"FAIL: {TARGET_SVG.relative_to(REPO)} does not exist")
+            return 1
+        want = source_digest(mmd)
+        m = re.search(r"<!-- source-sha256 ([0-9a-f]{64}) -->",
+                      TARGET_SVG.read_text(encoding="utf-8"))
+        if not m:
+            print(f"FAIL: {TARGET_SVG.relative_to(REPO)} carries no source stamp")
+            print("Run scripts/render-workflow-diagram.py and commit the result.")
+            return 1
+        if m.group(1) != want:
+            print(f"FAIL: {TARGET_SVG.relative_to(REPO)} was generated from a different "
+                  f"version of the mermaid diagram in {SOURCE_DOC.relative_to(REPO)}")
+            print(f"  stamped: {m.group(1)}")
+            print(f"  current: {want}")
+            print("Run scripts/render-workflow-diagram.py and commit the result.")
+            return 1
+        print(f"OK: {TARGET_SVG.relative_to(REPO)} was generated from the current diagram")
+        return 0
+
+    with tempfile.TemporaryDirectory() as tmp:
+        raw = render_with_mermaid(mmd, Path(tmp))
+    svg = build_svg(raw, mmd)
+
+    if render_check:
         if not TARGET_SVG.exists():
             print(f"FAIL: {TARGET_SVG.relative_to(REPO)} does not exist")
             return 1
         if TARGET_SVG.read_text(encoding="utf-8") != svg:
-            print(f"FAIL: {TARGET_SVG.relative_to(REPO)} is out of date with the mermaid "
-                  f"diagram in {SOURCE_DOC.relative_to(REPO)}")
-            print("Run scripts/render-workflow-diagram.py and commit the result.")
+            print(f"FAIL: {TARGET_SVG.relative_to(REPO)} differs from a fresh render")
+            print("Note: coordinates depend on this machine's fonts, so a difference "
+                  "here does not necessarily mean the committed file is wrong.")
             return 1
-        print(f"OK: {TARGET_SVG.relative_to(REPO)} matches the diagram")
+        print(f"OK: {TARGET_SVG.relative_to(REPO)} matches a fresh render")
         return 0
 
     TARGET_SVG.parent.mkdir(parents=True, exist_ok=True)

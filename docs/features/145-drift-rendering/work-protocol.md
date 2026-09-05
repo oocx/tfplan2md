@@ -77,3 +77,24 @@
 - **Summary:** Rework review: confirmed the escaping fix preserves the documented drift contract and clarified that grouped drift paths, values, and addresses are safely escaped while line breaks remain visible within inline code. Reconsidered README.md, docs/features.md, docs/architecture.md, and docs/testing-strategy.md; only docs/features.md required clarification.
 - **Artifacts Produced:** docs/features.md; docs/features/145-drift-rendering/work-protocol.md
 - **Problems Encountered:** None
+
+### Code Reviewer (round 2)
+
+- **Date:** 2026-09-05
+- **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 4 Major
+- **Artifacts Produced:** docs/features/145-drift-rendering/code-review.md
+- **Problems Encountered:** None
+
+### Developer (round 3)
+
+- **Date:** 2026-09-05
+- **Summary:** Closed round-2 review findings: added automated coverage for grouping keys, ordering, duplicate addresses, normalized masked values, suppression, ordinal relevance, and empty/single rendering; regenerated the drift demo; and corrected the documentation-only commit type. Verified full PR-validation-style coverage run: 1372 passed, 0 failed, 0 skipped; line 88.80% and branch 79.94%, both above thresholds.
+- **Artifacts Produced:** src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportRendererTests.cs; artifacts/drift-single-entry-plan.md; docs/features/145-drift-rendering/uat-plan.json; docs/features/145-drift-rendering/uat-plan.md
+- **Problems Encountered:** Three early focused test attempts used unsupported TUnit selector syntax or an incorrect wrapper directory; no tests ran in the first two, and the corrected run exposed fixture expectations that were fixed before the passing rerun.
+
+### Technical Writer (round 3)
+
+- **Date:** 2026-09-05
+- **Summary:** Rechecked the implemented grouped drift modes, regenerated demonstration, and strengthened test coverage against existing user-facing documentation. Considered README.md, docs/features.md, docs/architecture.md, docs/testing-strategy.md, and docs/workflow.md: all remain accurate; no wording change was needed because the prior documentation already describes modes, grouping, masking, escaping, and omitted empty sections.
+- **Artifacts Produced:** docs/features/145-drift-rendering/work-protocol.md
+- **Problems Encountered:** None

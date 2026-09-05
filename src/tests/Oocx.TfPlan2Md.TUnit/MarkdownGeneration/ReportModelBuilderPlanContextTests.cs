@@ -1,6 +1,8 @@
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
@@ -173,6 +175,23 @@ public class ReportModelBuilderPlanContextTests
     }
 
     [Test]
+    public void Build_DriftCandidatesDifferingOnlyBeforeValue_CreateSeparateGroups()
+    {
+        var plan = new TerraformPlan(
+            "1.2", "1.14.0", [],
+            ResourceDrift:
+            [
+                MakeUpdateChange("example_resource.old", before: "old", after: "new"),
+                MakeUpdateChange("example_resource.new", before: "older", after: "new")
+            ]);
+
+        var drift = new ReportModelBuilder().Build(plan).Drift;
+
+        drift.Should().HaveCount(2);
+        drift.Select(group => group.Before).Should().Equal("old", "older");
+    }
+
+    [Test]
     public void Build_DuplicateAndMultiplePathDrift_DeduplicatesAddressesAndRetainsEachPath()
     {
         var repeated = CreateUpdateChange("example_resource.b", "example_resource", "old", "new", "second");
@@ -260,6 +279,57 @@ public class ReportModelBuilderPlanContextTests
         group.Before.Should().Be("(sensitive)");
         group.After.Should().Be("(sensitive)");
         group.Addresses.Should().Equal("example_resource.a", "example_resource.b");
+    }
+
+    [Test]
+    public void Build_DriftWithInjectedAttributeSuppressionStage_OmitsSuppressedGroups()
+    {
+        var plan = MakePlan(resourceDrift: [MakeUpdateChange("example_resource.suppressed")]);
+        var services = new ReportModelBuilderServices(AttributeFilteringStage: new SuppressAllAttributesStage());
+
+        var model = new ReportModelBuilder(services: services).Build(plan);
+
+        model.Drift.Should().BeEmpty();
+    }
+
+    [Test]
+    public void Build_DriftWithShowUnchangedValues_StillOmitsStableAttributes()
+    {
+        var drift = MakeUpdateWithStableAttribute("example_resource.drifted");
+        var options = new ReportModelBuilderOptions(ShowUnchangedValues: true);
+
+        var model = new ReportModelBuilder(options).Build(
+            new TerraformPlan("1.2", "1.14.0", [], ResourceDrift: [drift]));
+
+        model.Drift.Should().ContainSingle();
+        model.Drift[0].AttributePath.Should().Be("changed");
+    }
+
+    private sealed class SuppressAllAttributesStage : IAttributeFilteringStage
+    {
+        public IReadOnlyList<ResourceChangeModel> Build(IReadOnlyList<ResourceChangeModel> resourceChanges)
+        {
+            foreach (var change in resourceChanges)
+            {
+                if (change.AttributeChanges is List<AttributeChangeModel> attributes)
+                {
+                    attributes.Clear();
+                }
+            }
+
+            return resourceChanges;
+        }
+    }
+
+    private static ResourceChange MakeUpdateWithStableAttribute(string address)
+    {
+        return new ResourceChange(
+            address, null, "managed", "example_resource", address.Split('.')[1], "registry.terraform.io/example/example",
+            new Change(
+                ["update"],
+                JsonDocument.Parse("{\"changed\":\"old\",\"stable\":\"same\"}").RootElement,
+                JsonDocument.Parse("{\"changed\":\"new\",\"stable\":\"same\"}").RootElement,
+                null, null, null));
     }
 
     [Test]

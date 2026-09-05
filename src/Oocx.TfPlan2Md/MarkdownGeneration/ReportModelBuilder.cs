@@ -326,12 +326,12 @@ internal partial class ReportModelBuilder
     /// Creates the default resource-change construction stage for this builder instance.
     /// </summary>
     /// <returns>The default resource-change stage.</returns>
-    private ResourceChangeStage CreateResourceChangeStage()
+    private ResourceChangeStage CreateResourceChangeStage(bool? showUnchangedValues = null)
     {
         return new ResourceChangeStage(
             _summaryBuilder,
             _showSensitive,
-            _showUnchangedValues,
+            showUnchangedValues ?? _showUnchangedValues,
             _viewModelFactoryRegistry,
             _principalMapper,
             _iconProviderRegistry,

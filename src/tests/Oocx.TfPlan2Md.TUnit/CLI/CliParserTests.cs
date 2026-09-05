@@ -20,10 +20,19 @@ public class CliParserTests
     [Test]
     public void Parse_DriftOptionOmittedOrValidValue_SetsExpectedDisplayMode()
     {
-        CliParser.Parse([PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.All);
-        CliParser.Parse(["--drift", "ALL", PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.All);
-        CliParser.Parse(["--drift", "relevant", PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.Relevant);
-        CliParser.Parse(["--drift", "NoNe", PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.None);
+        var omitted = CliParser.Parse([PlanJson]);
+        var all = CliParser.Parse(["--drift", "ALL", PlanJson]);
+        var relevant = CliParser.Parse(["--drift", "relevant", PlanJson]);
+        var none = CliParser.Parse(["--drift", "NoNe", PlanJson]);
+
+        omitted.InputFile.Should().Be(PlanJson);
+        omitted.DriftDisplayMode.Should().Be(DriftDisplayMode.All);
+        all.InputFile.Should().Be(PlanJson);
+        all.DriftDisplayMode.Should().Be(DriftDisplayMode.All);
+        relevant.InputFile.Should().Be(PlanJson);
+        relevant.DriftDisplayMode.Should().Be(DriftDisplayMode.Relevant);
+        none.InputFile.Should().Be(PlanJson);
+        none.DriftDisplayMode.Should().Be(DriftDisplayMode.None);
     }
 
     [Test]

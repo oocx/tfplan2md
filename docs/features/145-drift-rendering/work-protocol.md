@@ -56,3 +56,17 @@
 - **Summary:** Updated user-facing documentation for grouped and configurable drift rendering, including --drift modes, default behavior, grouped output, and CLI references. Considered README.md and docs/features.md affected; skipped docs/architecture.md and docs/testing-strategy.md because no global architecture or test-framework changes were introduced.
 - **Artifacts Produced:** README.md; docs/features.md; docs/features/145-drift-rendering/work-protocol.md
 - **Problems Encountered:** None
+
+### Code Reviewer
+
+- **Date:** 2026-09-05
+- **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 1 Blocker, 3 Major
+- **Artifacts Produced:** docs/features/145-drift-rendering/code-review.md
+- **Problems Encountered:** None
+
+### Developer (round 2)
+
+- **Date:** 2026-09-05
+- **Summary:** Addressed code-review blocker by normalizing CR and LF in grouped drift code fields; added unsafe text rendering coverage.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/ReportRenderer.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportRendererTests.cs
+- **Problems Encountered:** Full coverage expansion and commit-type correction remain in progress.

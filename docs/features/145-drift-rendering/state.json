@@ -1,13 +1,13 @@
 {
   "type": "feature",
   "slug": "145-drift-rendering",
-  "stage": "uat-tester",
+  "stage": "retrospective",
   "status": "running",
   "arch_contested": false,
   "gates": {
     "spec": "approved",
     "arch": "n/a",
-    "uat": "n/a"
+    "uat": "approved"
   },
   "attempts": {
     "requirements-engineer": 1,

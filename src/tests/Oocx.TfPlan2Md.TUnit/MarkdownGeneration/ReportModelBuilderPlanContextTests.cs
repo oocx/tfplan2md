@@ -13,22 +13,28 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// </summary>
 public class ReportModelBuilderPlanContextTests
 {
-    private static ResourceChange MakeUpdateChange(string address)
+    private static ResourceChange MakeUpdateChange(
+        string address,
+        string type = "example_resource",
+        string before = "old",
+        string after = "new",
+        object? beforeSensitive = null,
+        object? afterSensitive = null)
     {
         return new ResourceChange(
             address,
             null,
             "managed",
-            "example_resource",
+            type,
             address.Split('.')[1],
             "registry.terraform.io/example/example",
             new Change(
                 ["update"],
-                JsonDocument.Parse("{\"name\":\"old\"}").RootElement,
-                JsonDocument.Parse("{\"name\":\"new\"}").RootElement,
+                JsonDocument.Parse($"{{\"name\":{JsonSerializer.Serialize(before)}}}").RootElement,
+                JsonDocument.Parse($"{{\"name\":{JsonSerializer.Serialize(after)}}}").RootElement,
                 null,
-                null,
-                null));
+                beforeSensitive,
+                afterSensitive));
     }
 
     private static ResourceChange MakeNoOpChange(string address)
@@ -138,6 +144,57 @@ public class ReportModelBuilderPlanContextTests
     }
 
     [Test]
+    public void Build_DriftCandidatesDifferingInGroupingKeyParts_CreateOrderedSeparateGroups()
+    {
+        var plan = new TerraformPlan(
+            "1.2", "1.14.0", [],
+            ResourceDrift:
+            [
+                MakeUpdateChange("z_resource.z", "z_resource", "old", "new"),
+                MakeUpdateChange("example_resource.b", "example_resource", "old", "new"),
+                MakeUpdateChange("example_resource.a", "example_resource", "old", "new"),
+                MakeUpdateChange("example_resource.path", "example_resource", "old", "changed"),
+                CreateUpdateChange("example_resource.second_path", "example_resource", "old", "new", "other"),
+                MakeUpdateChange("another_resource.a", "another_resource", "old", "new"),
+                MakeUpdateChange("example_resource.normalized", "example_resource", "old", "new")
+            ]);
+
+        var drift = new ReportModelBuilder().Build(plan).Drift;
+
+        drift.Should().HaveCount(5);
+        drift.Select(group => (group.ResourceType, group.AttributePath, group.Before, group.After)).Should()
+            .ContainInOrder(
+                ("another_resource", "name", "old", "new"),
+                ("example_resource", "name", "old", "changed"),
+                ("example_resource", "name", "old", "new"),
+                ("example_resource", "other", "before", "after"),
+                ("z_resource", "name", "old", "new"));
+        drift[2].Addresses.Should().Equal("example_resource.a", "example_resource.b", "example_resource.normalized", "example_resource.second_path");
+    }
+
+    [Test]
+    public void Build_DuplicateAndMultiplePathDrift_DeduplicatesAddressesAndRetainsEachPath()
+    {
+        var repeated = CreateUpdateChange("example_resource.b", "example_resource", "old", "new", "second");
+        var plan = new TerraformPlan(
+            "1.2", "1.14.0", [],
+            ResourceDrift:
+            [
+                repeated,
+                repeated,
+                CreateUpdateChange("example_resource.a", "example_resource", "old", "new", "second")
+            ]);
+
+        var drift = new ReportModelBuilder().Build(plan).Drift;
+
+        drift.Should().HaveCount(2);
+        drift[0].AttributePath.Should().Be("name");
+        drift[0].Addresses.Should().Equal("example_resource.a", "example_resource.b");
+        drift[1].AttributePath.Should().Be("second");
+        drift[1].Addresses.Should().Equal("example_resource.a", "example_resource.b");
+    }
+
+    [Test]
     public void Build_RelevantDrift_NoOpPlannedChangeDoesNotMakeDriftRelevant()
     {
         var changing = MakeUpdateChange("example_resource.changing");
@@ -153,6 +210,56 @@ public class ReportModelBuilderPlanContextTests
 
         model.Drift.Should().ContainSingle();
         model.Drift[0].Addresses.Should().ContainSingle().Which.Should().Be("example_resource.changing");
+    }
+
+    [Test]
+    public void Build_RelevantDrift_CaseDistinctOrAttributeSuppressedPlannedChangesDoNotMakeDriftRelevant()
+    {
+        var changing = MakeUpdateChange("example_resource.api");
+        var suppressed = MakeUpdateChange("example_resource.suppressed", before: "same", after: "same");
+        var plan = new TerraformPlan(
+            "1.2", "1.14.0", [changing, suppressed],
+            ResourceDrift: [changing, MakeUpdateChange("Example_Resource.api"), MakeUpdateChange("example_resource.suppressed")]);
+
+        var drift = new ReportModelBuilder(
+            new ReportModelBuilderOptions(DriftDisplayMode: DriftDisplayMode.Relevant)).Build(plan).Drift;
+
+        drift.Should().ContainSingle();
+        drift[0].Addresses.Should().ContainSingle().Which.Should().Be("example_resource.api");
+    }
+
+    [Test]
+    public void Build_NoOpOrAttributeSuppressedDrift_IsAbsentInEveryMode()
+    {
+        var noOp = MakeNoOpChange("example_resource.no_op");
+        var suppressed = MakeUpdateChange("example_resource.suppressed", before: "same", after: "same");
+        var plan = new TerraformPlan("1.2", "1.14.0", [noOp, suppressed], ResourceDrift: [noOp, suppressed]);
+
+        foreach (var mode in new[] { DriftDisplayMode.All, DriftDisplayMode.Relevant, DriftDisplayMode.None })
+        {
+            var model = new ReportModelBuilder(new ReportModelBuilderOptions(DriftDisplayMode: mode)).Build(plan);
+
+            model.Drift.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void Build_SensitiveDrift_UsesMaskedValuesForGrouping()
+    {
+        var sensitive = JsonDocument.Parse("{\"name\":true}").RootElement;
+        var plan = new TerraformPlan(
+            "1.2", "1.14.0", [],
+            ResourceDrift:
+            [
+                MakeUpdateChange("example_resource.a", before: "first-secret", after: "second-secret", beforeSensitive: sensitive, afterSensitive: sensitive),
+                MakeUpdateChange("example_resource.b", before: "different-secret", after: "another-secret", beforeSensitive: sensitive, afterSensitive: sensitive)
+            ]);
+
+        var group = new ReportModelBuilder().Build(plan).Drift.Should().ContainSingle().Subject;
+
+        group.Before.Should().Be("(sensitive)");
+        group.After.Should().Be("(sensitive)");
+        group.Addresses.Should().Equal("example_resource.a", "example_resource.b");
     }
 
     [Test]
@@ -190,5 +297,16 @@ public class ReportModelBuilderPlanContextTests
 
         model.RelevantAttributes.Should().NotBeNull();
         model.RelevantAttributes.Should().BeEmpty();
+    }
+
+    private static ResourceChange CreateUpdateChange(string address, string type, string before, string after, string secondAttribute)
+    {
+        return new ResourceChange(
+            address, null, "managed", type, address.Split('.')[1], "registry.terraform.io/example/example",
+            new Change(
+                ["update"],
+                JsonDocument.Parse($"{{\"name\":{JsonSerializer.Serialize(before)},\"{secondAttribute}\":\"before\"}}").RootElement,
+                JsonDocument.Parse($"{{\"name\":{JsonSerializer.Serialize(after)},\"{secondAttribute}\":\"after\"}}").RootElement,
+                null, null, null));
     }
 }

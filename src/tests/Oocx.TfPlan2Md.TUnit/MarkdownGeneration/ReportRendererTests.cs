@@ -58,6 +58,38 @@ public class ReportRendererTests
     }
 
     [Test]
+    public void Render_SingleSensitiveDriftGroup_RendersOneCollapsedMaskedEntry()
+    {
+        var model = CreateModel([], drift:
+        [
+            new DriftGroupModel
+            {
+                ResourceType = "example_resource",
+                AttributePath = "secret",
+                Before = "(sensitive)",
+                After = "(sensitive)",
+                Addresses = ["example_resource.secret"]
+            }
+        ]);
+
+        var markdown = new ReportRenderer().Render(model, CreateContext());
+
+        markdown.Should().Contain("<details><summary>🌀\u00A01 example_resource resources");
+        markdown.Should().Contain("<code>(sensitive)</code> → <code>(sensitive)</code>");
+        markdown.Should().Contain("- <code>example_resource.secret</code>");
+        markdown.Should().NotContain("<details open>");
+    }
+
+    [Test]
+    public void Render_EmptyDriftGroups_OmitsDriftHeadingAndDetails()
+    {
+        var markdown = new ReportRenderer().Render(CreateModel([]), CreateContext());
+
+        markdown.Should().NotContain("## 🌀\u00A0Drift Detected");
+        markdown.Should().NotContain("<details><summary>🌀");
+    }
+
+    [Test]
     public void Render_DriftGroupWithUnsafeText_NormalizesLineBreaksAndEscapesMarkup()
     {
         var model = CreateModel([], drift:

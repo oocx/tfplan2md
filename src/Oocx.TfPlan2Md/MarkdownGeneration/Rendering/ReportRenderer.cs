@@ -102,19 +102,27 @@ internal sealed class ReportRenderer
                 .Replace("\n", "<br/>", StringComparison.Ordinal)
                 .Replace("\r", "<br/>", StringComparison.Ordinal);
             var summary = $"🌀\u00A0{group.Addresses.Count} {safeResourceType} resources — " +
-                $"{MarkdownHelpers.FormatCodeSummary(group.AttributePath)}: " +
-                $"{MarkdownHelpers.FormatCodeSummary(group.Before)} → {MarkdownHelpers.FormatCodeSummary(group.After)}";
+                $"{FormatDriftCode(group.AttributePath)}: " +
+                $"{FormatDriftCode(group.Before)} → {FormatDriftCode(group.After)}";
             writer.DetailsOpen(summary);
             writer.BlankLine();
             foreach (var address in group.Addresses)
             {
-                writer.Paragraph($"- {MarkdownHelpers.FormatCodeSummary(address)}");
+                writer.Paragraph($"- {FormatDriftCode(address)}");
             }
 
             writer.BlankLine();
             writer.DetailsClose();
         }
     }
+
+    /// <summary>
+    /// Formats drift text as inline code without allowing a Terraform value to split details markup across lines.
+    /// </summary>
+    private static string FormatDriftCode(string? value) => MarkdownHelpers.FormatCodeSummary(value)
+        .Replace("\r\n", "<br/>", StringComparison.Ordinal)
+        .Replace("\n", "<br/>", StringComparison.Ordinal)
+        .Replace("\r", "<br/>", StringComparison.Ordinal);
 
     /// <summary>
     /// Renders the fallback <c>&lt;details&gt;</c> section for <c>relevant_attributes</c> entries that

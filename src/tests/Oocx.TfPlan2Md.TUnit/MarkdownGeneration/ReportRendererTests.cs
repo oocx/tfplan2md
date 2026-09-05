@@ -57,6 +57,29 @@ public class ReportRendererTests
         markdown.Should().NotContain("<details open>");
     }
 
+    [Test]
+    public void Render_DriftGroupWithUnsafeText_NormalizesLineBreaksAndEscapesMarkup()
+    {
+        var model = CreateModel([], drift:
+        [
+            new DriftGroupModel
+            {
+                ResourceType = "example_resource",
+                AttributePath = "name\nnext",
+                Before = "<before>`\r",
+                After = "<after>`\r\n",
+                Addresses = ["example_resource.\nunsafe"]
+            }
+        ]);
+
+        var markdown = new ReportRenderer().Render(model, CreateContext());
+
+        markdown.Should().Contain("<code>name<br/>next</code>");
+        markdown.Should().Contain("<code>&lt;before&gt;`<br/></code>");
+        markdown.Should().Contain("<code>example_resource.<br/>unsafe</code>");
+        markdown.Should().NotContain("<before>");
+    }
+
     /// <summary>
     /// Verifies root-module resources render with root module heading.
     /// </summary>

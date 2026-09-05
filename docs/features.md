@@ -1052,6 +1052,7 @@ Simple single-command interface with flags:
 | `--report-title <text>` | Override the report's level-1 heading |
 | `--render-target <github\|azuredevops\|bitbucket>` | Target platform for rendering: `github` (simple diff), `azuredevops` (inline diff, default), or `bitbucket` (markdown-only output for Bitbucket comments) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
+| `--drift <all\|relevant\|none>` | Control drift display: `all` (default), `relevant` (planned-change resources only), or `none` |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
@@ -3159,7 +3160,36 @@ No banner is emitted for ordinary, applyable, complete plans, or for effectively
 
 #### 🌀 Drift Detected Section
 
-When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining drifted resources are listed with the same renderer registry as regular changes.
+When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list.
+
+Use `--drift` to control which displayable drift entries appear:
+
+| Option | Behaviour |
+|--------|-----------|
+| `--drift all` (default) | Show all displayable drift entries, including drift on resources without a planned change. |
+| `--drift relevant` | Show drift only for resources that also have a displayable planned change. Terraform no-op and fully suppressed planned changes do not make drift relevant. |
+| `--drift none` | Omit the drift section, including its heading. |
+
+Omitting `--drift` is equivalent to `--drift all`. The option accepts `all`, `relevant`, and `none` case-insensitively. For example:
+
+```bash
+tfplan2md --drift relevant plan.json
+```
+
+For two resources with the same `repository[0].branch_name` transition, the grouped output is rendered as:
+
+```markdown
+## 🌀 Drift Detected
+
+<details><summary>🌀 2 azuredevops_build_definition resources — <code>repository[0].branch_name</code>: <code>refs/heads/main</code> → <code>main</code></summary>
+
+- <code>azuredevops_build_definition.api</code>
+- <code>azuredevops_build_definition.worker</code>
+
+</details>
+```
+
+Entries with different value transitions remain in separate groups. See the [Configurable, Aggregated Drift Rendering specification](features/145-drift-rendering/specification.md) for the complete behaviour and acceptance criteria.
 
 #### Relevant Attributes Annotations
 

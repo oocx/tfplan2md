@@ -49,3 +49,10 @@
 - **Summary:** Implemented configurable all, relevant, and none drift display modes; grouped drift by normalized type, path, and value transition; added deterministic collapsed rendering and excluded no-op planned changes from relevant mode.
 - **Artifacts Produced:** src/Oocx.TfPlan2Md/; src/tests/Oocx.TfPlan2Md.TUnit/; docs/features/145-drift-rendering/uat-plan.json; docs/features/145-drift-rendering/uat-plan.md; docs/features/145-drift-rendering/tasks.md
 - **Problems Encountered:** The repository snapshot helper cleared baselines without restoring generated files; regenerated and reviewed the three affected drift snapshots through their focused test classes.
+
+### Technical Writer
+
+- **Date:** 2026-09-05
+- **Summary:** Updated user-facing documentation for grouped and configurable drift rendering, including --drift modes, default behavior, grouped output, and CLI references. Considered README.md and docs/features.md affected; skipped docs/architecture.md and docs/testing-strategy.md because no global architecture or test-framework changes were introduced.
+- **Artifacts Produced:** README.md; docs/features.md; docs/features/145-drift-rendering/work-protocol.md
+- **Problems Encountered:** None

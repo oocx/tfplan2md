@@ -161,3 +161,10 @@
 - **Summary:** Analysed the completed drift-rendering cycle using workflow state, work-protocol entries, review and UAT reports, branch history, and CI-status evidence. Recorded the approved GitHub UAT and Maintainer-approved Azure DevOps UAT waiver, plus actionable improvements for pre-review coverage, generated artifact validation, focused tests, and tool fallback handling.
 - **Artifacts Produced:** docs/features/145-drift-rendering/retrospective.md
 - **Problems Encountered:** The workflow-status CI check could not reach GitHub; the retrospective relies on recorded independent local validation and UAT evidence.
+
+### Release Manager
+
+- **Date:** 2026-09-05
+- **Summary:** Prepared release notes and a verified grouped-drift screenshot; rebased the release branch on origin/main; created PR #672; confirmed PR Validation passed; and retired the completed GitHub UAT PR after the Maintainer-approved Azure DevOps waiver.
+- **Artifacts Produced:** docs/features/145-drift-rendering/release-notes.md; docs/features/145-drift-rendering/drift-rendering.png; https://github.com/oocx/tfplan2md/pull/672
+- **Problems Encountered:** The normal UAT cleanup state file belonged to an unrelated prior run, so GitHub UAT PR #126 and its exact disposable branch were closed and deleted via the repository UAT helper and git.

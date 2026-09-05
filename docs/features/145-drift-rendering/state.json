@@ -2,7 +2,7 @@
   "type": "feature",
   "slug": "145-drift-rendering",
   "stage": "release-manager",
-  "status": "running",
+  "status": "done",
   "arch_contested": false,
   "gates": {
     "spec": "approved",

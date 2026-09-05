@@ -112,3 +112,10 @@
 - **Summary:** Fixed the round-3 blocker: drift construction now always excludes unchanged attributes, even with --show-unchanged-values. Added regressions for that mode, before-only grouping differences, injected attribute suppression, CLI positional input preservation, and exact collapsed-detail counts. Full PR-validation-style run: 1375 passed, 0 failed, 0 skipped; CoverageEnforcer passed at 88.80% line and 79.95% branch.
 - **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs; src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.PlanContext.cs; src/tests/Oocx.TfPlan2Md.TUnit/CLI/CliParserTests.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportRendererTests.cs; docs/features/145-drift-rendering/uat-plan.md
 - **Problems Encountered:** None
+
+### Technical Writer (round 4)
+
+- **Date:** 2026-09-05
+- **Summary:** Rechecked the --show-unchanged-values drift correction against README.md, docs/features.md, docs/architecture.md, docs/testing-strategy.md, and docs/workflow.md. Existing documentation remains accurate: drift summaries contain changed attributes only, while the flag affects planned resource rendering. No user-facing wording change was needed.
+- **Artifacts Produced:** docs/features/145-drift-rendering/work-protocol.md
+- **Problems Encountered:** None

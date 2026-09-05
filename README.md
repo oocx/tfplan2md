@@ -56,7 +56,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps build definitions and variable groups, Azure AD resources, and inline parent-child tables for memberships and Azure network resources)
 - 📚 **Azure API documentation links** - Reliable links to Microsoft Learn REST API documentation for 92 Azure resource types (AzAPI provider)
 - 🔇 **Case-insensitive Azure ID filter** - Azure resource ID attribute changes that differ only in casing (ARM API quirk) are suppressed by default (`--ignore-azure-id-case-changes`), reducing noise in reports
-- 🎬 **Terraform 1.14/1.15 plan-JSON support** - Action invocations (`action_invocations[]`, `deferred_action_invocations[]`) rendered inline under their triggering resource; plan-context sections for drift detection (`🌀 Drift Detected`, with no-op/suppressed drift entries filtered out), relevant attributes, and plan-status banners (errored / incomplete / not applyable when actionable); deprecation warnings for variables and outputs flagged `deprecated` in Terraform 1.15 plans
+- 🎬 **Terraform 1.14/1.15 plan-JSON support** - Action invocations (`action_invocations[]`, `deferred_action_invocations[]`) rendered inline under their triggering resource; plan-context sections for drift detection (`🌀 Drift Detected`, with grouped and configurable drift entries), relevant attributes, and plan-status banners (errored / incomplete / not applyable when actionable); deprecation warnings for variables and outputs flagged `deprecated` in Terraform 1.15 plans
 
 ## Installation
 
@@ -236,6 +236,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--report-title <text>` | Override the level-1 heading in the generated report |
 | `--render-target <github\|azuredevops\|bitbucket>` | Target platform for rendering: `github` (simple diff), `azuredevops` (inline diff, default), or `bitbucket` (markdown-only simple diff for Bitbucket PR comments) |
 | `--details <auto\|open\|closed>` | Control resource details display: `auto` (expand resources with findings, default), `open` (expand all), `closed` (collapse all) |
+| `--drift <all\|relevant\|none>` | Control drift display: `all` (show all displayable drift, default), `relevant` (show drift for resources with planned changes), or `none` (hide drift) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--code-analysis-results <pattern>` | SARIF file pattern for static analysis findings (can be specified multiple times) |
 | `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |

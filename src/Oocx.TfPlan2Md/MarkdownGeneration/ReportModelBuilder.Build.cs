@@ -63,7 +63,7 @@ internal partial class ReportModelBuilder
         // Build plan-context models from Terraform 1.14+ fields
         // Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md
         var planStatus = BuildPlanStatus(plan);
-        var drift = BuildResourceDrift(plan, _configurationReferenceIndex);
+        var drift = BuildResourceDrift(plan, _configurationReferenceIndex, displayChanges);
         var relevantAttributes = BuildRelevantAttributes(plan);
         var uncorrelatedRelevantAttributes = BuildInlineRelevantAttributeAnnotations(allChanges, relevantAttributes);
         var otherActions = BuildActionInvocations(plan, allChanges);

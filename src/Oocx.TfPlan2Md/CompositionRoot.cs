@@ -247,7 +247,8 @@ internal sealed class CompositionRoot(CliOptions options)
                 ReportTitle: options.ReportTitle,
                 HideMetadata: options.HideMetadata,
                 DetailsDisplayMode: options.DetailsDisplayMode,
-                IgnoreAzureIdCaseChanges: options.IgnoreAzureIdCaseChanges),
+                IgnoreAzureIdCaseChanges: options.IgnoreAzureIdCaseChanges,
+                DriftDisplayMode: options.DriftDisplayMode),
             services: new ReportModelBuilderServices(
                 SummaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
                 PrincipalMapper: principalMapper,

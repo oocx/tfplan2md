@@ -69,7 +69,7 @@ internal sealed class ReportRenderer
         RenderResourceChanges(writer, model, effectiveContext);
         CodeAnalysisSectionRenderer.RenderOtherFindings(writer, model.CodeAnalysis);
         RenderOtherActions(writer, model, effectiveContext);
-        RenderDriftSection(writer, model, effectiveContext);
+        RenderDriftSection(writer, model);
         RenderRelevantAttributes(writer, model.RelevantAttributes);
         RenderRefactoring(writer, model.RefactoringOperations);
         RenderOutputs(writer, model.GlobalOutputs, effectiveContext);
@@ -79,17 +79,13 @@ internal sealed class ReportRenderer
     }
 
     /// <summary>
-    /// Renders the "🌀 Drift Detected" H2 section listing every entry from
-    /// <see cref="ReportModel.Drift"/>. Section is omitted when drift is empty.
-    /// Reuses the resource renderer registry so each drift entry is rendered
-    /// with the same provider-specific styling as in the main "Resource Changes"
-    /// section.
-    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// Renders the "🌀 Drift Detected" H2 section as collapsed, grouped attribute transitions.
+    /// Section is omitted when drift is empty.
+    /// Related feature: docs/features/145-drift-rendering/specification.md.
     /// </summary>
     /// <param name="writer">Markdown writer.</param>
     /// <param name="model">Report model.</param>
-    /// <param name="context">Render context.</param>
-    private void RenderDriftSection(MarkdownWriter writer, ReportModel model, IRenderContext context)
+    private static void RenderDriftSection(MarkdownWriter writer, ReportModel model)
     {
         if (model.Drift.Count == 0)
         {
@@ -99,10 +95,24 @@ internal sealed class ReportRenderer
         writer.Heading("🌀\u00A0Drift Detected", 2);
         writer.BlankLine();
 
-        foreach (var change in model.Drift)
+        foreach (var group in model.Drift)
         {
-            var renderer = _resourceRendererRegistry.GetRenderer(change.Type) ?? _defaultResourceRenderer;
-            renderer.Render(writer, change, context);
+            var safeResourceType = MarkdownHelpers.HtmlEncode(group.ResourceType)
+                .Replace("\r\n", "<br/>", StringComparison.Ordinal)
+                .Replace("\n", "<br/>", StringComparison.Ordinal)
+                .Replace("\r", "<br/>", StringComparison.Ordinal);
+            var summary = $"🌀\u00A0{group.Addresses.Count} {safeResourceType} resources — " +
+                $"{MarkdownHelpers.FormatCodeSummary(group.AttributePath)}: " +
+                $"{MarkdownHelpers.FormatCodeSummary(group.Before)} → {MarkdownHelpers.FormatCodeSummary(group.After)}";
+            writer.DetailsOpen(summary);
+            writer.BlankLine();
+            foreach (var address in group.Addresses)
+            {
+                writer.Paragraph($"- {MarkdownHelpers.FormatCodeSummary(address)}");
+            }
+
+            writer.BlankLine();
+            writer.DetailsClose();
         }
     }
 

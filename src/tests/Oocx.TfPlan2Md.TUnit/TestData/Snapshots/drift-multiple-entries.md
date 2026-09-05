@@ -8,22 +8,13 @@ No changes
 
 ## 🌀 Drift Detected
 
-<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 example_resource <b><code>drifted1</code></b> — <code>🆔 actual1</code> | 1 🔧 name</summary>
-<br>
+<details><summary>🌀 1 example_resource resources — <code>name</code>: <code>expected1</code> → <code>actual1</code></summary>
 
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-| name | `🆔 expected1` | `🆔 actual1` |
+- <code>example_resource.drifted1</code>
 
 </details>
+<details><summary>🌀 1 example_resource resources — <code>name</code>: <code>expected2</code> → <code>actual2</code></summary>
 
-<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 example_resource <b><code>drifted2</code></b> — <code>🆔 actual2</code> | 1 🔧 name</summary>
-<br>
-
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-| name | `🆔 expected2` | `🆔 actual2` |
+- <code>example_resource.drifted2</code>
 
 </details>

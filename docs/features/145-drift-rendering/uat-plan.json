@@ -1,0 +1,96 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_build_definition.api",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "api",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "api" },
+        "after": { "name": "api-updated" },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    },
+    {
+      "address": "example_resource.no_op",
+      "mode": "managed",
+      "type": "example_resource",
+      "name": "no_op",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["no-op"],
+        "before": { "name": "same" }, "after": { "name": "same" },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    }
+  ],
+  "resource_drift": [
+    {
+      "address": "azuredevops_build_definition.api",
+      "mode": "managed", "type": "azuredevops_build_definition", "name": "api",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": { "repository": [{ "branch_name": "refs/heads/main" }] },
+        "after": { "repository": [{ "branch_name": "main" }] },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.worker",
+      "mode": "managed", "type": "azuredevops_build_definition", "name": "worker",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": { "repository": [{ "branch_name": "refs/heads/main" }] },
+        "after": { "repository": [{ "branch_name": "main" }] },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.release",
+      "mode": "managed", "type": "azuredevops_build_definition", "name": "release",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": { "repository": [{ "branch_name": "refs/heads/release" }] },
+        "after": { "repository": [{ "branch_name": "release" }] },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    },
+    {
+      "address": "example_resource.no_op",
+      "mode": "managed", "type": "example_resource", "name": "no_op",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "old" }, "after": { "name": "new" },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    },
+    {
+      "address": "example_resource.filtered",
+      "mode": "managed", "type": "example_resource", "name": "filtered",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["no-op"],
+        "before": { "name": "same" }, "after": { "name": "same" },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    },
+    {
+      "address": "example_resource.escaped",
+      "mode": "managed", "type": "example_resource", "name": "escaped",
+      "provider_name": "registry.terraform.io/example/example",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "<unsafe>`before" }, "after": { "name": "<unsafe>`after" },
+        "after_unknown": {}, "before_sensitive": {}, "after_sensitive": {}
+      }
+    }
+  ]
+}

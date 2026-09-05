@@ -8,16 +8,11 @@ No changes
 
 ## 🌀 Drift Detected
 
-<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 example_resource <b><code>drifted</code></b> — <code>🆔 new</code> | 1 🔧 name</summary>
-<br>
+<details><summary>🌀 1 example_resource resources — <code>name</code>: <code>old</code> → <code>new</code></summary>
 
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-| name | `🆔 old` | `🆔 new` |
+- <code>example_resource.drifted</code>
 
 </details>
-
 <details>
 <summary>🔗 Other plan inputs (1) — read by this plan but not tied to a specific change</summary>
 

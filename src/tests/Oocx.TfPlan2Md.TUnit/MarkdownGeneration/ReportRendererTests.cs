@@ -31,6 +31,32 @@ public class ReportRendererTests
         markdown.Should().NotContain("## Resource Changes");
     }
 
+    [Test]
+    public void Render_DriftGroup_RendersCollapsedDetailsWithAllAddresses()
+    {
+        var model = CreateModel(
+            moduleChanges: [],
+            drift:
+            [
+                new DriftGroupModel
+                {
+                    ResourceType = "example_resource",
+                    AttributePath = "settings[0].name",
+                    Before = "old",
+                    After = "new",
+                    Addresses = ["example_resource.api", "example_resource.worker"]
+                }
+            ]);
+
+        var markdown = new ReportRenderer().Render(model, CreateContext());
+
+        markdown.Should().Contain("## 🌀\u00A0Drift Detected");
+        markdown.Should().Contain("<details><summary>🌀\u00A02 example_resource resources — <code>settings[0].name</code>: <code>old</code> → <code>new</code></summary>");
+        markdown.Should().Contain("- <code>example_resource.api</code>");
+        markdown.Should().Contain("- <code>example_resource.worker</code>");
+        markdown.Should().NotContain("<details open>");
+    }
+
     /// <summary>
     /// Verifies root-module resources render with root module heading.
     /// </summary>
@@ -321,7 +347,8 @@ public class ReportRendererTests
     private static ReportModel CreateModel(
         IReadOnlyList<ModuleChangeGroup> moduleChanges,
         IReadOnlyList<RefactoringOperationModel>? operations = null,
-        IReadOnlyList<OutputChangeModel>? globalOutputs = null)
+        IReadOnlyList<OutputChangeModel>? globalOutputs = null,
+        IReadOnlyList<DriftGroupModel>? drift = null)
     {
         return new ReportModel
         {
@@ -353,7 +380,8 @@ public class ReportRendererTests
             RenderTarget = RenderTarget.AzureDevOps,
             DetailsDisplayMode = DetailsDisplayMode.Auto,
             RefactoringOperations = operations ?? [],
-            GlobalOutputs = globalOutputs ?? []
+            GlobalOutputs = globalOutputs ?? [],
+            Drift = drift ?? []
         };
     }
 

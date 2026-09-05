@@ -1,8 +1,8 @@
 {
   "type": "feature",
   "slug": "145-drift-rendering",
-  "stage": "code-reviewer",
-  "status": "running",
+  "stage": "developer",
+  "status": "blocked",
   "arch_contested": false,
   "gates": {
     "spec": "approved",
@@ -11,7 +11,7 @@
   },
   "attempts": {
     "requirements-engineer": 1,
-    "developer": 3
+    "developer": 4
   },
   "open_questions": [
     {

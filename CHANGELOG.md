@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.46.0"></a>
+## [1.46.0](https://github.com/oocx/tfplan2md/compare/v1.45.3...v1.46.0) (2026-09-05)
+
+### ✨ Features
+
+* add configurable grouped drift rendering SNAPSHOT_UPDATE_OK: grouped drift snapshots reflect the approved collapsed details layout ([359bda5](https://github.com/oocx/tfplan2md/commit/359bda5f12fab0e58376e2fff1b86654babd8088))
+
+### 🐛 Bug Fixes
+
+* escape line breaks in grouped drift details ([d284247](https://github.com/oocx/tfplan2md/commit/d284247c43d1330973237fb28e18f4a81ee90998))
+* exclude unchanged attributes from drift groups ([7bc7e7f](https://github.com/oocx/tfplan2md/commit/7bc7e7fbc6976aaa943704b1e1d6ddf42c5e0302))
+
+### 📚 Documentation
+
+* add drift rendering release notes ([74b809f](https://github.com/oocx/tfplan2md/commit/74b809f86215423ba811705c7ff42d5b933dbd18))
+* add drift rendering retrospective ([0ea7398](https://github.com/oocx/tfplan2md/commit/0ea7398d6fc654cd3ed030c30af26c1f8abcb9e6))
+* add drift rendering test plans ([8560b0f](https://github.com/oocx/tfplan2md/commit/8560b0f4feccb16861f9669d4160c4eda680a302))
+* approve drift rendering review ([fcd3841](https://github.com/oocx/tfplan2md/commit/fcd384154f51d0a2b69c0f46a73585f29fd0ed2c))
+* clarify drift text escaping ([28286f1](https://github.com/oocx/tfplan2md/commit/28286f1862ab3f300c6694e0395fe0ecfaa23049))
+* design aggregated drift rendering ([0d1a016](https://github.com/oocx/tfplan2md/commit/0d1a0166458d9ae1df0689b810c1131d2576041c))
+* document configurable drift rendering ([442a736](https://github.com/oocx/tfplan2md/commit/442a7367973b86232e224096576335e84832b77d))
+* normalize work item numbering ([47c9e45](https://github.com/oocx/tfplan2md/commit/47c9e4517e77a38660479baf1296258605cd129f))
+* record drift filtering documentation review ([ea84ac0](https://github.com/oocx/tfplan2md/commit/ea84ac0666b8872b5097b3bfc759c6f8f9ffc149))
+* record drift rendering release ([6bb9b59](https://github.com/oocx/tfplan2md/commit/6bb9b59f36af50b69f6953c9ecf1092ece57de86))
+* record drift rendering review rework ([f8d1892](https://github.com/oocx/tfplan2md/commit/f8d1892305b4a431fa0d369e92ee7b2743b12b12))
+* record drift rendering review rework ([3746916](https://github.com/oocx/tfplan2md/commit/3746916617006de3fb0abcf2438ea4ed70fa920a))
+* record drift rendering UAT ([cb89484](https://github.com/oocx/tfplan2md/commit/cb894845c70ee463e771d8e51ed9fc0f9ac7558a))
+* record UAT artifact documentation review ([4e77ad0](https://github.com/oocx/tfplan2md/commit/4e77ad003a3fe13e8235af677756d6c37db37960))
+* regenerate drift UAT artifact ([9944bb3](https://github.com/oocx/tfplan2md/commit/9944bb33f52a56e1b87e1c03f0eec8c2e2ac8b96))
+* specify configurable drift rendering ([6632687](https://github.com/oocx/tfplan2md/commit/6632687ea45feab718889b5c8a1b6f03f761ece6))
+
 <a name="1.45.3"></a>
 ## [1.45.3](https://github.com/oocx/tfplan2md/compare/v1.45.2...v1.45.3) (2026-09-01)
 

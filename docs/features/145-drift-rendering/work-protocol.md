@@ -70,3 +70,10 @@
 - **Summary:** Addressed code-review blocker by normalizing CR and LF in grouped drift code fields; added unsafe text rendering coverage.
 - **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/ReportRenderer.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportRendererTests.cs
 - **Problems Encountered:** Full coverage expansion and commit-type correction remain in progress.
+
+### Technical Writer (round 2)
+
+- **Date:** 2026-09-05
+- **Summary:** Rework review: confirmed the escaping fix preserves the documented drift contract and clarified that grouped drift paths, values, and addresses are safely escaped while line breaks remain visible within inline code. Reconsidered README.md, docs/features.md, docs/architecture.md, and docs/testing-strategy.md; only docs/features.md required clarification.
+- **Artifacts Produced:** docs/features.md; docs/features/145-drift-rendering/work-protocol.md
+- **Problems Encountered:** None

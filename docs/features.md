@@ -3160,7 +3160,7 @@ No banner is emitted for ordinary, applyable, complete plans, or for effectively
 
 #### 🌀 Drift Detected Section
 
-When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list.
+When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list. Values, paths, and addresses are safely escaped for the collapsed markup; line breaks are preserved as visible breaks within inline code.
 
 Use `--drift` to control which displayable drift entries appear:
 

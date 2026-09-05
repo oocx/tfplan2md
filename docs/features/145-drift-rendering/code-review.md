@@ -4,74 +4,70 @@
 
 ## Summary
 
-The production implementation now satisfies the configurable drift-selection and
-grouping contract, including the round-3 correction that keeps unchanged values out
-of drift when `--show-unchanged-values` is enabled. The automated suite and coverage
-thresholds pass. The branch is not ready for UAT, however, because the checked-in UAT
-render was manually changed after generation and no longer preserves the markdown
-section boundary before the drift heading.
+The implementation satisfies the configurable drift-selection and deterministic
+grouping contract. The round-4 production correction continues to keep unchanged
+values out of drift when `--show-unchanged-values` is enabled, and the round-5
+regeneration restored the required markdown boundary between the preceding resource
+details block and the Drift H2. No release-blocking or advisory findings remain.
 
 ## Verification Results
 
-- Fresh PR-validation-style TUnit run: 1,375 passed, 0 failed, 0 skipped.
-- Fresh CoverageEnforcer result: 88.80% line coverage against 84.48%; 79.95%
+- Independent PR-validation-style TUnit run: 1,375 passed, 0 failed, 0 skipped.
+- Independent CoverageEnforcer result: 88.80% line coverage against 84.48%; 79.95%
   branch coverage against 72.80%; both pass without an override.
-- The Developer's recorded totals and percentages match the fresh run.
-- No GitHub PR exists for `feature/145-drift-rendering`, so no authoritative CI
-  result is available for the reviewed revision.
+- The independent totals and percentages match the Developer's round-4 and round-5
+  records in `work-protocol.md`.
+- `docs/features/145-drift-rendering/uat-plan.md:22-24` contains `</details>`, a blank
+  line, then `## 🌀 Drift Detected`; the heading is therefore outside the CommonMark
+  HTML block and is parsed as an H2.
+- Commit `ec3076f3` is a generated-artifact-only correction and introduces exactly
+  the missing separator plus regenerated metadata.
 - Commit `3ed79bf7` authorizes the three snapshot changes with
   `SNAPSHOT_UPDATE_OK` and a specific grouped-layout justification.
-- `CHANGELOG.md` is untouched, `git diff --check origin/main...HEAD` is clean,
-  documentation-only commits use non-version-bumping types, and the required roles
-  have entries in `work-protocol.md`.
-- A fresh render of `uat-plan.json` differs structurally from the tracked
-  `uat-plan.md`: current code emits a blank line between the planned resource's
-  closing `</details>` and the drift H2; the tracked artifact does not.
+- `git diff --check origin/main...HEAD` and the current worktree diff check are clean.
+  `CHANGELOG.md` is untouched, all 15 branch commits use valid conventional types,
+  documentation-only commits avoid version-bumping types, and required workflow
+  roles have entries in `work-protocol.md`.
+- No GitHub PR exists for this feature branch, so there is no authoritative CI result
+  for the reviewed revision. The repository review wrapper also cannot reach its
+  verdict because of the unrelated invalid template reported by the driver; this
+  isolated review used the same diff and local validation evidence instead.
 
 ## Specification Compliance
 
-1. Matching type, path, before, and after values group in
-   `ReportModelBuilder.PlanContext.cs:98-125`; matching candidates are tested in
-   `ReportModelBuilderPlanContextTests.cs:102-116`.
-2. The complete tuple key at `ReportModelBuilder.PlanContext.cs:109` separates type,
-   path, before, and after differences; tests cover each component, including the
-   before-only regression at `ReportModelBuilderPlanContextTests.cs:178-193`.
-3. `DriftGroupModel.cs:6-31` carries the required summary data and
-   `ReportRenderer.cs:98-106` renders it; renderer tests cover ordinary and masked
-   values.
-4. `ReportRenderer.cs:107-115` emits collapsed details and every address; tests prove
-   two-address and single-address output, exact element counts, ordering, and
-   deduplication.
-5. `CliParser.cs:151,293-301,331` defaults to `All`, accepts the three modes
-   case-insensitively, and preserves the plan path; `CompositionRoot.cs:247-252`
-   propagates the mode. Parser and builder tests cover omitted and explicit modes.
-6. `ReportModelBuilder.PlanContext.cs:80-92` intersects drift with displayable planned
-   changes using ordinal address equality; no-op, suppressed, and case-distinct
-   planned changes are covered.
-7. `None` short-circuits at `ReportModelBuilder.PlanContext.cs:52-55`, and the renderer
-   guard at `ReportRenderer.cs:90-93` omits the complete section for empty groups.
-8. Selection occurs at `ReportModelBuilder.PlanContext.cs:73-76` before grouping;
-   the mixed-address mode test proves excluded addresses cannot leak into a group.
-9. Attribute and display filtering run at `ReportModelBuilder.PlanContext.cs:63-71`.
-   No-op drift, injected full suppression, and the `--show-unchanged-values`
-   regression are tested.
-10. Missing and invalid CLI values are rejected at `CliParser.cs:289-301,382-390`
-    with all accepted values named; both failure paths are tested.
-11. Absent, no-op, fully suppressed, and `None` drift produce no groups, and renderer
-    coverage proves that empty groups produce no drift heading.
-12. Automated coverage spans all three modes, complete grouping keys, collapsed
-    address rendering, masking, escaping, filtering, ordering, deduplication, and
-    empty states. No acceptance criterion lacks implementation or a proving test.
+1. `ReportModelBuilder.PlanContext.cs:98-125` groups by resource type, normalized
+   attribute path, before value, and after value; builder tests cover matching and
+   every differing key component.
+2. `DriftGroupModel.cs:6-31` carries the type, path, transition, and complete address
+   list required by the specification.
+3. `ReportModelBuilder.PlanContext.cs:52-77` applies `none`, display filtering, and
+   mode selection before grouping; tests cover all/default, relevant, none, no-op,
+   fully suppressed, and empty drift.
+4. `ReportModelBuilder.PlanContext.cs:83-92` derives relevant membership from
+   displayable planned changes using ordinal address equality; tests cover no-op,
+   suppressed, and case-distinct planned addresses.
+5. `ReportModelBuilder.PlanContext.cs:57-71` forces changed-attribute-only drift while
+   retaining established masking, provider formatting, attribute suppression, and
+   display filtering. The `--show-unchanged-values` regression is covered.
+6. `ReportRenderer.cs:88-125` omits empty drift, renders collapsed grouped details,
+   lists every address, and safely encodes HTML and line breaks. Renderer tests cover
+   multi-address, single masked, empty, and unsafe-text cases.
+7. `CliParser.cs` defaults to `all`, accepts `all`, `relevant`, and `none`
+   case-insensitively, preserves the positional plan path, and names all accepted
+   values in missing/invalid errors. Parser tests cover each path.
+8. The three updated drift snapshots and the regenerated focused UAT artifact reflect
+   the approved collapsed layout. No acceptance criterion lacks implementation or a
+   proving automated test.
 
 ## What I Tried To Break
 
-I checked omitted/all/relevant/none selection, selection-before-grouping, ordinal
-relevance, no-op and injected attribute suppression, unchanged attributes with
-`--show-unchanged-values`, every grouping-key component, masked-value grouping,
-multiple paths, duplicate and unordered addresses, empty and single-member output,
-HTML/backtick/CR/LF escaping, snapshots, documentation, commit types, architecture
-boundaries, and generated artifacts. The code paths behaved as specified. Regenerating
-the focused UAT fixture exposed the stale section boundary in the tracked artifact.
+I checked selection before grouping, all four grouping-key fields, ordinal relevance,
+no-op and injected attribute suppression, unchanged attributes with
+`--show-unchanged-values`, masked-value grouping, multiple paths, duplicate and
+unordered addresses, empty and single-member rendering, HTML/backtick/CR/LF escaping,
+snapshot authorization, documentation scope, commit types, architecture boundaries,
+and the generated section boundary. I also reran the complete TUnit suite and coverage
+enforcer against the reviewed checkout. All behaved as specified.
 
 ## Issues Found
 
@@ -81,14 +77,7 @@ None.
 
 ### Major
 
-- **The checked-in UAT render no longer matches current output and loses the drift
-  heading boundary** — `docs/features/145-drift-rendering/uat-plan.md:23` follows a
-  closing `</details>` immediately with `## 🌀 Drift Detected`. A `<details>` element
-  starts a CommonMark HTML block that ends at a blank line, so the heading line is
-  consumed as raw HTML-block content instead of being parsed as an H2. A fresh render
-  from the checked-in `uat-plan.json` emits the required blank line. Regenerate the
-  Developer-owned artifact (or restore the generated separator) without adding an
-  extra blank line at EOF before handing it to UAT.
+None.
 
 ### Minor
 
@@ -100,4 +89,4 @@ None.
 
 ## Decision
 
-`VERDICT: REWORK`
+`VERDICT: APPROVED`

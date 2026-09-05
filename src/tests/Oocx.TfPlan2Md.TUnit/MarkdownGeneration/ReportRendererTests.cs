@@ -55,6 +55,8 @@ public class ReportRendererTests
         markdown.Should().Contain("- <code>example_resource.api</code>");
         markdown.Should().Contain("- <code>example_resource.worker</code>");
         markdown.Should().NotContain("<details open>");
+        markdown.Split("<details>", StringSplitOptions.None).Length.Should().Be(2);
+        markdown.Split("<summary>", StringSplitOptions.None).Length.Should().Be(2);
     }
 
     [Test]

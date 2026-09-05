@@ -54,7 +54,10 @@ internal partial class ReportModelBuilder
             return [];
         }
 
-        var resourceChangeStage = _resourceChangeStage ?? CreateResourceChangeStage();
+        // Drift groups represent changed attributes only. Keep this independent from the
+        // planned-change display option: --show-unchanged-values must not turn stable state
+        // into drift groups. The normal stage still supplies canonical masking and formatting.
+        var resourceChangeStage = _resourceChangeStage ?? CreateResourceChangeStage(showUnchangedValues: false);
 
         // Simulate a plan with just drift entries to reuse the resource change stage
         var driftPlan = plan with { ResourceChanges = plan.ResourceDrift };

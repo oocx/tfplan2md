@@ -98,3 +98,17 @@
 - **Summary:** Rechecked the implemented grouped drift modes, regenerated demonstration, and strengthened test coverage against existing user-facing documentation. Considered README.md, docs/features.md, docs/architecture.md, docs/testing-strategy.md, and docs/workflow.md: all remain accurate; no wording change was needed because the prior documentation already describes modes, grouping, masking, escaping, and omitted empty sections.
 - **Artifacts Produced:** docs/features/145-drift-rendering/work-protocol.md
 - **Problems Encountered:** None
+
+### Code Reviewer (round 3)
+
+- **Date:** 2026-09-05
+- **Summary:** Reviewed against origin/main independently. Verdict: REWORK. Findings: 1 Blocker, 1 Major, 1 Minor
+- **Artifacts Produced:** docs/features/145-drift-rendering/code-review.md
+- **Problems Encountered:** Local markdownlint executable/container image was unavailable; fresh tests and CoverageEnforcer were run successfully.
+
+### Developer (round 4)
+
+- **Date:** 2026-09-05
+- **Summary:** Fixed the round-3 blocker: drift construction now always excludes unchanged attributes, even with --show-unchanged-values. Added regressions for that mode, before-only grouping differences, injected attribute suppression, CLI positional input preservation, and exact collapsed-detail counts. Full PR-validation-style run: 1375 passed, 0 failed, 0 skipped; CoverageEnforcer passed at 88.80% line and 79.95% branch.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs; src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.PlanContext.cs; src/tests/Oocx.TfPlan2Md.TUnit/CLI/CliParserTests.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs; src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportRendererTests.cs; docs/features/145-drift-rendering/uat-plan.md
+- **Problems Encountered:** None

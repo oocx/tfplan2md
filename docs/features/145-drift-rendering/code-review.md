@@ -4,32 +4,109 @@
 
 ## Summary
 
-The line-break escaping blocker from the prior review is fixed, but the branch remains unready. Required acceptance-test coverage is still incomplete, no authoritative test or coverage result is recorded or available from CI, a drift demo artifact is stale, and a documentation-only commit still violates the version-bump guardrail.
+The drift modes, deterministic grouping, masking, escaping, documentation, snapshots,
+and ordinary empty-state behavior are implemented coherently, and the full local test
+and coverage checks pass. The branch is nevertheless not ready: enabling
+`--show-unchanged-values` causes unchanged attributes to be emitted as drift groups,
+which violates the changed-attribute contract and can recreate the report-size problem
+this feature is intended to solve.
 
 ## Verification Results
 
-The sandbox was read-only, so tests and CoverageEnforcer were not run. The Developer recorded no test command, pass/fail totals, coverage percentage, or enforcer result; round 2 explicitly says coverage expansion remains in progress. GitHub CI could not be inspected because api.github.com was unreachable. The three snapshot changes are authorized by commit d6da4ed4 with SNAPSHOT_UPDATE_OK and a relevant justification. CHANGELOG.md is untouched.
+- Fresh PR-validation-style TUnit run: 1,372 passed, 0 failed, 0 skipped.
+- Fresh CoverageEnforcer result: 88.80% line coverage against 84.48%; 79.94%
+  branch coverage against 72.80%; both pass without an override.
+- The Developer's recorded totals and percentages match the fresh run.
+- No GitHub PR exists for `feature/145-drift-rendering`, so no authoritative CI
+  result is available for the reviewed revision.
+- Commit `3ed79bf7` authorizes the three snapshot changes with
+  `SNAPSHOT_UPDATE_OK` and a specific grouped-layout justification.
+- The drift snapshots and `artifacts/drift-single-entry-plan.md` contain the new
+  collapsed grouped rendering; `CHANGELOG.md` is untouched; documentation-only
+  commits use non-version-bumping types.
+- Markdownlint could not be run because its local executable/container image was
+  unavailable. `git diff --check origin/main...HEAD` reports one trailing blank line
+  in `uat-plan.md`.
 
 ## Specification Compliance
 
-1: GroupDrift (ReportModelBuilder.PlanContext.cs:95) groups matching tuples; Build_DriftModes...:120 partially tests it. 2: the key includes type/path/before/after at :106, but only differing values are tested; type/path and normalized-equivalence cases are missing. 3: DriftGroupModel and ReportRenderer.cs:104 implement summary fields; ReportRendererTests.cs:35 tests ordinary values. 4: ReportRenderer.cs:107 renders collapsed address lists; test :35 covers two addresses. 5: CliParser.cs:151 and :290 plus CliParserTests.cs:21 implement/test default and explicit modes; builder default/all equivalence is only partial. 6: SelectRelevantDrift at ReportModelBuilder.PlanContext.cs:80 uses display changes and ordinal equality; no-op is tested at :141, but fully suppressed and case-distinct membership are not. 7: None short-circuits at :52 and renderer emptiness at ReportRenderer.cs:90; model emptiness is tested, but rendered omission for None is not. 8: selection precedes grouping at :70-74 and is tested at :120. 9: filtering is applied at :63-68; no-op is tested at :110, but fully suppressed drift is not. 10: invalid/missing CLI values are implemented at CliParser.cs:290 and :382 and tested at CliParserTests.cs:30. 11: empty guards and existing empty/no-op snapshots cover ordinary absence, but no-heading output across all three modes is not proved. 12: not satisfied because the test-plan edge cases and suppression scenarios remain absent.
+1. Matching type, path, before, and after values group at
+   `ReportModelBuilder.PlanContext.cs:95-122`; ordinary matching candidates are tested.
+2. Different transitions split through the complete tuple key at
+   `ReportModelBuilder.PlanContext.cs:106`; type, path, and after differences are tested,
+   but a before-only difference is not.
+3. `DriftGroupModel` carries all required summary data and
+   `ReportRenderer.cs:98-106` renders it; renderer tests cover ordinary values.
+4. `ReportRenderer.cs:107-115` emits collapsed details and every address; two-address,
+   single-address, ordering, and deduplication scenarios are covered.
+5. `CliParser.cs` defaults to `All`, accepts all three values case-insensitively, and
+   `CompositionRoot` propagates the selection. Parser tests cover modes, but do not
+   assert that the positional plan path remains intact.
+6. `Relevant` intersects displayable planned changes with ordinal address equality at
+   `ReportModelBuilder.PlanContext.cs:80-89`; no-op and case-distinct addresses are tested.
+7. `None` short-circuits at `ReportModelBuilder.PlanContext.cs:52-55`; empty renderer
+   behavior proves omission of the complete section.
+8. Selection precedes grouping at `ReportModelBuilder.PlanContext.cs:70-74` and the
+   mixed-address mode test proves excluded addresses do not leak into a group.
+9. Attribute and display filtering run before selection at
+   `ReportModelBuilder.PlanContext.cs:63-68`; no-op and naturally empty attribute diffs
+   are covered, but an actual provider/injected suppression stage is not.
+10. Invalid and missing `--drift` values name `all`, `relevant`, and `none`; both paths
+    are tested.
+11. Absent, no-op, and empty drift omit the section in the existing model, renderer,
+    and snapshot coverage.
+12. The three modes, grouping, masking, escaping, ordering, deduplication, and ordinary
+    filtering have automated coverage, but the unchanged-value failure and several
+    explicitly planned proof points remain uncovered.
 
 ## What I Tried To Break
 
-Checked empty and no-op drift, all/relevant/none selection, filtering-before-grouping, ordinal address correlation and ordering, grouping-key dimensions, duplicate addresses, masking/suppression coverage, unsafe HTML/backticks/CR/LF, collapsed markup, snapshots, demo artifacts, documentation, role entries, commit types, and CI evidence. The CR/LF implementation now normalizes line breaks, but several required branches remain untested and the checked drift demo still shows the obsolete resource-card layout.
+I checked omitted/all/relevant/none selection, selection-before-grouping, each grouping
+key component, deterministic ordering, duplicate addresses, multiple paths, sensitive
+masking, no-op and suppressed resources, ordinal case-distinct relevance, empty and
+single-member output, unsafe HTML/backticks/CR/LF, snapshots, generated drift artifacts,
+architecture boundaries, role entries, commit types, and CI availability. A direct CLI
+reproduction with one changed and one stable field showed that
+`--show-unchanged-values` renders both `changed: old → new` and the invalid
+`stable: same → same` drift group.
 
 ## Issues Found
 
+### Blockers
+
+- **`--show-unchanged-values` renders unchanged attributes as drift** —
+  `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.PlanContext.cs:98`
+  `BuildResourceDrift` reuses a `ResourceChangeStage` configured with
+  `_showUnchangedValues`, and `GroupDrift` flattens every retained
+  `AttributeChangeModel` without knowing whether its raw values changed. A resource
+  with one real drift field and many stable fields therefore emits `same → same`
+  groups for every stable path. This violates the requirement to group changed
+  attribute paths and can recreate the excessive output the feature is meant to
+  prevent. Filtering by normalized before/after equality is not a safe fix because
+  distinct sensitive raw transitions intentionally normalize to the same mask.
+
 ### Majors
 
-- **Required drift acceptance coverage remains incomplete** — `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs:94`
-  The implemented tests do not prove differences in every grouping-key component, normalized-equivalent raw values, multiple changed paths, duplicate-address removal, complete group ordering, fully suppressed planned and drift changes, sensitive masking, ordinal case-distinct relevance, single-member rendering, or heading absence across every mode. Several acceptance criteria therefore have code but no proving automated test, contrary to the specification and test plan.
-- **No verifiable automated-test or coverage evidence** — `docs/features/145-drift-rendering/work-protocol.md:46`
-  The Developer entries provide no executed command, pass/fail totals, coverage result, or CoverageEnforcer output. CI was also unavailable for inspection. The round-2 entry explicitly states that full coverage expansion remains in progress, so correctness cannot be established from the available evidence.
-- **Drift demo artifact still uses the obsolete rendering** — `artifacts/drift-single-entry-plan.md:28`
-  The tracked drift demo still renders a provider-specific resource card and attribute table instead of the new grouped collapsed summary. Rendering changes require regenerated demo artifacts; this stale artifact also means there is no reviewed demo evidence for the new output.
-- **Documentation-only commit uses a version-bumping commit type** — `docs/features/145-drift-rendering/specification.md:1`
-  Commit 1a6ace64 changes only documentation under the work-item folder but is titled `feat: specify configurable drift rendering`. AGENTS.md requires docs/workflow/chore/ci for documentation-only changes because `feat:` triggers an unintended release bump. Rewrite the commit type.
+- **Required acceptance branches lack proving tests** —
+  `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderPlanContextTests.cs:147`
+  The suite has no regression for `ShowUnchangedValues`, does not vary only the before
+  component of the grouping key, and represents “fully suppressed” resources with
+  equal raw values instead of exercising `IAttributeFilteringStage` or a provider
+  filter. `CliParserTests.cs:21` also does not assert the preserved plan path, while
+  `ReportRendererTests.cs:35` checks content but not the planned exact count of details
+  and summary elements. These leave DRIFT-02, DRIFT-03, DRIFT-07, DRIFT-09, and CLI-01
+  incompletely proved.
+
+### Minors
+
+- **Generated UAT markdown has trailing whitespace at EOF** —
+  `docs/features/145-drift-rendering/uat-plan.md:47`
+  `git diff --check origin/main...HEAD` reports a newly added blank line at EOF. This
+  is formatting cleanup rather than a functional defect.
+
+### Suggestions
+
+None.
 
 ## Decision
 

@@ -2,6 +2,7 @@ using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -90,7 +91,7 @@ public class ReportModelBuilderPlanContextTests
     }
 
     [Test]
-    public void Build_ResourceDrift_PopulatesDriftModel()
+    public void Build_ResourceDrift_GroupsNormalizedAttributeTransition()
     {
         var plan = MakePlan(resourceDrift: new[] { MakeUpdateChange("example_resource.drifted") });
 
@@ -98,8 +99,11 @@ public class ReportModelBuilderPlanContextTests
 
         model.Drift.Should().NotBeNull();
         model.Drift.Should().HaveCount(1);
-        model.Drift[0].Address.Should().Be("example_resource.drifted");
-        model.Drift[0].Action.Should().Be("update");
+        model.Drift[0].ResourceType.Should().Be("example_resource");
+        model.Drift[0].AttributePath.Should().Be("name");
+        model.Drift[0].Before.Should().Be("old");
+        model.Drift[0].After.Should().Be("new");
+        model.Drift[0].Addresses.Should().ContainSingle().Which.Should().Be("example_resource.drifted");
     }
 
     [Test]
@@ -110,6 +114,45 @@ public class ReportModelBuilderPlanContextTests
         var model = new ReportModelBuilder().Build(plan);
 
         model.Drift.Should().BeEmpty();
+    }
+
+    [Test]
+    public void Build_DriftModes_GroupAndSelectDisplayableAddressesBeforeGrouping()
+    {
+        var api = MakeUpdateChange("example_resource.api");
+        var worker = MakeUpdateChange("example_resource.worker");
+        var release = new ResourceChange(
+            "example_resource.release", null, "managed", "example_resource", "release", "registry.terraform.io/example/example",
+            new Change(["update"], JsonDocument.Parse("{\"name\":\"old-release\"}").RootElement, JsonDocument.Parse("{\"name\":\"new-release\"}").RootElement, null, null, null));
+        var plan = new TerraformPlan("1.2", "1.14.0", [api], ResourceDrift: [worker, api, release]);
+
+        var all = new ReportModelBuilder().Build(plan);
+        var relevant = new ReportModelBuilder(new ReportModelBuilderOptions(DriftDisplayMode: DriftDisplayMode.Relevant)).Build(plan);
+        var none = new ReportModelBuilder(new ReportModelBuilderOptions(DriftDisplayMode: DriftDisplayMode.None)).Build(plan);
+
+        all.Drift.Should().HaveCount(2);
+        all.Drift[0].Addresses.Should().BeEquivalentTo(["example_resource.api", "example_resource.worker"], options => options.WithStrictOrdering());
+        relevant.Drift.Should().ContainSingle();
+        relevant.Drift[0].Addresses.Should().ContainSingle().Which.Should().Be("example_resource.api");
+        none.Drift.Should().BeEmpty();
+    }
+
+    [Test]
+    public void Build_RelevantDrift_NoOpPlannedChangeDoesNotMakeDriftRelevant()
+    {
+        var changing = MakeUpdateChange("example_resource.changing");
+        var noOp = MakeNoOpChange("example_resource.no_op");
+        var plan = new TerraformPlan(
+            "1.2",
+            "1.14.0",
+            [changing, noOp],
+            ResourceDrift: [changing, MakeUpdateChange("example_resource.no_op")]);
+
+        var model = new ReportModelBuilder(
+            new ReportModelBuilderOptions(DriftDisplayMode: DriftDisplayMode.Relevant)).Build(plan);
+
+        model.Drift.Should().ContainSingle();
+        model.Drift[0].Addresses.Should().ContainSingle().Which.Should().Be("example_resource.changing");
     }
 
     [Test]

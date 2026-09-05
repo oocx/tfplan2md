@@ -16,6 +16,25 @@ public class CliParserTests
     private const string ReportTitleFlag = "--report-title";
     private const string PrincipalsJson = "principals.json";
     private const string PrincipalMappingFlag = "--principal-mapping";
+
+    [Test]
+    public void Parse_DriftOptionOmittedOrValidValue_SetsExpectedDisplayMode()
+    {
+        CliParser.Parse([PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.All);
+        CliParser.Parse(["--drift", "ALL", PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.All);
+        CliParser.Parse(["--drift", "relevant", PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.Relevant);
+        CliParser.Parse(["--drift", "NoNe", PlanJson]).DriftDisplayMode.Should().Be(DriftDisplayMode.None);
+    }
+
+    [Test]
+    public void Parse_DriftOptionInvalidOrMissingValue_ThrowsErrorListingAcceptedValues()
+    {
+        var invalid = () => CliParser.Parse(["--drift", "unexpected", PlanJson]);
+        var missing = () => CliParser.Parse(["--drift"]);
+
+        invalid.Should().Throw<CliParseException>().Which.Message.Should().ContainAll("all", "relevant", "none");
+        missing.Should().Throw<CliParseException>().Which.Message.Should().ContainAll("all", "relevant", "none");
+    }
     [Test]
     public void Parse_NoArgs_ReturnsDefaultOptions()
     {

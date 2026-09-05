@@ -303,8 +303,7 @@ public class ReportModelBuilderInlineRelevantAttributeTests
             ]);
 
         model.Drift.Should().ContainSingle();
-        model.Drift[0].ForcedReplacementAnnotations.Should().BeEmpty();
-        model.Drift[0].DependsOnAnnotations.Should().BeEmpty();
+        model.Drift[0].Addresses.Should().ContainSingle().Which.Should().Be("example_resource.drifted");
         model.RelevantAttributes.Should().ContainSingle().Which.Resource.Should().Be("example_resource.source");
     }
 

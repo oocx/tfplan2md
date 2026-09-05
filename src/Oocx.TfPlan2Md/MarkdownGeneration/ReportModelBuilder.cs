@@ -5,6 +5,7 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -53,6 +54,7 @@ internal partial class ReportModelBuilder
         _reportTitle = opts.ReportTitle;
         _hideMetadata = opts.HideMetadata;
         _detailsDisplayMode = opts.DetailsDisplayMode;
+        _driftDisplayMode = opts.DriftDisplayMode;
         _renderTarget = opts.RenderTarget;
         _largeValueFormat = ConvertRenderTargetToLargeValueFormat(opts.RenderTarget);
 
@@ -95,6 +97,11 @@ internal partial class ReportModelBuilder
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
     private readonly bool _ignoreAzureIdCaseChanges;
+
+    /// <summary>
+    /// Specifies which displayable drift entries should be included in the report.
+    /// </summary>
+    private readonly DriftDisplayMode _driftDisplayMode;
 
     /// <summary>
     /// Registry of attribute change filters consulted when <see cref="_ignoreAzureIdCaseChanges"/> is active.

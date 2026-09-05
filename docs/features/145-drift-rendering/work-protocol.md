@@ -42,3 +42,10 @@
 - **Summary:** Decomposed configurable drift rendering into CLI plumbing, deterministic grouping, mode-aware selection/filter preservation, grouped rendering, and regression snapshot tasks with test traceability.
 - **Artifacts Produced:** tasks.md; work-protocol.md
 - **Problems Encountered:** None
+
+### Developer
+
+- **Date:** 2026-09-05
+- **Summary:** Implemented configurable all, relevant, and none drift display modes; grouped drift by normalized type, path, and value transition; added deterministic collapsed rendering and excluded no-op planned changes from relevant mode.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/; src/tests/Oocx.TfPlan2Md.TUnit/; docs/features/145-drift-rendering/uat-plan.json; docs/features/145-drift-rendering/uat-plan.md; docs/features/145-drift-rendering/tasks.md
+- **Problems Encountered:** The repository snapshot helper cleared baselines without restoring generated files; regenerated and reviewed the three affected drift snapshots through their focused test classes.

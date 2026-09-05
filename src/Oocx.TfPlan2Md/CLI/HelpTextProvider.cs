@@ -26,6 +26,7 @@ public static class HelpTextProvider
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
             ("--render-target <github|azuredevops|bitbucket>", "Target platform for rendering (default: azuredevops). Use bitbucket for markdown-only output in Bitbucket comments. When azuredevops and --output is used, emits ##vso[task.setvariable variable=tfplan2md_haschanges]true/false."),
             ("--details <auto|open|closed>", "Control resource details display (default: auto)."),
+            ("--drift <all|relevant|none>", "Control drift display (default: all)."),
             ("--code-analysis-results <pattern>", "SARIF file pattern for static analysis findings (repeatable)."),
             ("--code-analysis-minimum-level <level>", "Minimum severity to display (critical, high, medium, low, informational)."),
             ("--fail-on-static-code-analysis-errors <level>", "Exit with code 10 when findings at or above this level exist."),

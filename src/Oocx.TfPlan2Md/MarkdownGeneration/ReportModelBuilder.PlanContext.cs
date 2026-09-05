@@ -3,6 +3,7 @@ using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -36,19 +37,21 @@ internal partial class ReportModelBuilder
     }
 
     /// <summary>
-    /// Builds resource change models for drift detected outside Terraform.
-    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// Builds deterministic groups for drift detected outside Terraform.
+    /// Related feature: docs/features/145-drift-rendering/specification.md.
     /// </summary>
     /// <param name="plan">The Terraform plan containing optional resource drift.</param>
     /// <param name="configurationReferenceIndex">Configuration reference index for drift resources.</param>
-    /// <returns>A list of resource change models representing drift.</returns>
-    private List<ResourceChangeModel> BuildResourceDrift(
+    /// <param name="displayChanges">Already display-filtered planned changes used by relevant mode.</param>
+    /// <returns>A list of grouped displayable drift entries.</returns>
+    private List<DriftGroupModel> BuildResourceDrift(
         TerraformPlan plan,
-        IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> configurationReferenceIndex)
+        IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> configurationReferenceIndex,
+        IReadOnlyList<ResourceChangeModel> displayChanges)
     {
-        if (plan.ResourceDrift is null || plan.ResourceDrift.Count == 0)
+        if (_driftDisplayMode == DriftDisplayMode.None || plan.ResourceDrift is null || plan.ResourceDrift.Count == 0)
         {
-            return new List<ResourceChangeModel>();
+            return [];
         }
 
         var resourceChangeStage = _resourceChangeStage ?? CreateResourceChangeStage();
@@ -57,9 +60,66 @@ internal partial class ReportModelBuilder
         var driftPlan = plan with { ResourceChanges = plan.ResourceDrift };
         var builtDrift = resourceChangeStage.Build(driftPlan, configurationReferenceIndex).ToList();
 
-        // Reuse the same display filtering semantics used for normal resource changes so
-        // no-op and fully suppressed drift entries do not render as false positives.
-        return (_displayFilteringStage ?? CreateDisplayFilteringStage()).Build(builtDrift).DisplayChanges.ToList();
+        var attributeFilteredDrift = (_attributeFilteringStage ?? CreateAttributeFilteringStage())
+            .Build(builtDrift)
+            .ToList();
+        var displayableDrift = (_displayFilteringStage ?? CreateDisplayFilteringStage())
+            .Build(attributeFilteredDrift)
+            .DisplayChanges;
+
+        var selectedDrift = _driftDisplayMode == DriftDisplayMode.Relevant
+            ? SelectRelevantDrift(displayableDrift, displayChanges)
+            : displayableDrift;
+
+        return GroupDrift(selectedDrift);
+    }
+
+    /// <summary>
+    /// Selects drift whose Terraform address has a displayable planned change.
+    /// </summary>
+    private static List<ResourceChangeModel> SelectRelevantDrift(
+        IReadOnlyList<ResourceChangeModel> displayableDrift,
+        IReadOnlyList<ResourceChangeModel> displayChanges)
+    {
+        var displayableAddresses = new HashSet<string>(
+            displayChanges
+                .Where(change => change.Action != TerraformActions.NoOp)
+                .Select(change => change.Address),
+            StringComparer.Ordinal);
+        return displayableDrift.Where(change => displayableAddresses.Contains(change.Address)).ToList();
+    }
+
+    /// <summary>
+    /// Groups selected drift attribute transitions using their normalized display values.
+    /// </summary>
+    private static List<DriftGroupModel> GroupDrift(IReadOnlyList<ResourceChangeModel> selectedDrift)
+    {
+        return selectedDrift
+            .SelectMany(change => change.AttributeChanges.Select(attribute => new
+            {
+                change.Type,
+                AttributePath = attribute.Name,
+                attribute.Before,
+                attribute.After,
+                change.Address
+            }))
+            .GroupBy(candidate => (candidate.Type, candidate.AttributePath, candidate.Before, candidate.After))
+            .OrderBy(group => group.Key.Type, StringComparer.Ordinal)
+            .ThenBy(group => group.Key.AttributePath, StringComparer.Ordinal)
+            .ThenBy(group => group.Key.Before, StringComparer.Ordinal)
+            .ThenBy(group => group.Key.After, StringComparer.Ordinal)
+            .Select(group => new DriftGroupModel
+            {
+                ResourceType = group.Key.Type,
+                AttributePath = group.Key.AttributePath,
+                Before = group.Key.Before,
+                After = group.Key.After,
+                Addresses = group.Select(candidate => candidate.Address)
+                    .Distinct(StringComparer.Ordinal)
+                    .OrderBy(address => address, StringComparer.Ordinal)
+                    .ToList()
+            })
+            .ToList();
     }
 
     /// <summary>

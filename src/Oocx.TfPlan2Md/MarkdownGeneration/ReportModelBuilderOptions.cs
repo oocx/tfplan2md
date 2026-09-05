@@ -15,6 +15,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <param name="HideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
 /// <param name="DetailsDisplayMode">Display mode for resource details blocks.</param>
 /// <param name="IgnoreAzureIdCaseChanges">Whether attribute change rows where before/after are Azure resource IDs differing only in casing are suppressed.</param>
+/// <param name="DriftDisplayMode">Which displayable resource drift entries should appear in the report.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md,
 /// docs/features/014-unchanged-values-cli-option/specification.md, and
@@ -27,7 +28,8 @@ internal sealed record ReportModelBuilderOptions(
     string? ReportTitle = null,
     bool HideMetadata = false,
     RenderTargets.DetailsDisplayMode DetailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto,
-    bool IgnoreAzureIdCaseChanges = true);
+    bool IgnoreAzureIdCaseChanges = true,
+    RenderTargets.DriftDisplayMode DriftDisplayMode = RenderTargets.DriftDisplayMode.All);
 
 /// <summary>
 /// Groups the injected service dependencies for <see cref="ReportModelBuilder"/>.

@@ -113,6 +113,12 @@ internal record CliOptions
     /// Related feature: docs/features/092-details-display-mode/specification.md.
     /// </summary>
     public DetailsDisplayMode DetailsDisplayMode { get; init; }
+
+    /// <summary>
+    /// Gets the display mode for drift detected outside Terraform's planned changes.
+    /// Related feature: docs/features/145-drift-rendering/specification.md.
+    /// </summary>
+    public DriftDisplayMode DriftDisplayMode { get; init; }
 }
 
 /// <summary>
@@ -142,6 +148,7 @@ internal static class CliParser
         var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
         var debug = false;
         var detailsDisplayMode = DetailsDisplayMode.Auto; // Default to Auto (current behavior)
+        var driftDisplayMode = DriftDisplayMode.All;
 
         var codeAnalysisResultsPatterns = new List<string>();
         string? codeAnalysisMinimumLevel = null;
@@ -280,6 +287,16 @@ internal static class CliParser
                         throw new CliParseException("--details requires a value (open, closed, or auto).");
                     }
                     break;
+                case "--drift":
+                    if (i + 1 < args.Length)
+                    {
+                        driftDisplayMode = ParseDriftDisplayMode(args[++i]);
+                    }
+                    else
+                    {
+                        throw new CliParseException("--drift requires a value (all, relevant, or none).");
+                    }
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -310,8 +327,8 @@ internal static class CliParser
             RenderTarget = renderTarget,
             ReportTitle = reportTitle,
             Debug = debug,
-            DetailsDisplayMode = detailsDisplayMode
-            ,
+            DetailsDisplayMode = detailsDisplayMode,
+            DriftDisplayMode = driftDisplayMode,
             CodeAnalysisResultsPatterns = codeAnalysisResultsPatterns,
             CodeAnalysisMinimumLevel = codeAnalysisMinimumLevel,
             FailOnStaticCodeAnalysisErrorsLevel = failOnStaticCodeAnalysisErrorsLevel
@@ -353,6 +370,23 @@ internal static class CliParser
             "closed" => DetailsDisplayMode.Closed,
             "auto" => DetailsDisplayMode.Auto,
             _ => throw new CliParseException("--details must be 'open', 'closed', or 'auto'.")
+        };
+    }
+
+    /// <summary>
+    /// Parses the drift display mode value from CLI input.
+    /// </summary>
+    /// <param name="value">The drift display mode string (case-insensitive).</param>
+    /// <returns>The parsed <see cref="DriftDisplayMode"/> value.</returns>
+    /// <exception cref="CliParseException">Thrown when the value is not recognized.</exception>
+    private static DriftDisplayMode ParseDriftDisplayMode(string value)
+    {
+        return value.Trim().ToLowerInvariant() switch
+        {
+            "all" => DriftDisplayMode.All,
+            "relevant" => DriftDisplayMode.Relevant,
+            "none" => DriftDisplayMode.None,
+            _ => throw new CliParseException("--drift must be 'all', 'relevant', or 'none'.")
         };
     }
 }

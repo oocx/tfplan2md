@@ -50,10 +50,10 @@ internal sealed record ReportAssemblyInput(
     public PlanStatusModel? PlanStatus { get; init; }
 
     /// <summary>
-    /// Gets resource drift detected outside Terraform.
-    /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
+    /// Gets grouped resource drift detected outside Terraform.
+    /// Related feature: docs/features/145-drift-rendering/specification.md.
     /// </summary>
-    public IReadOnlyList<ResourceChangeModel>? Drift { get; init; }
+    public IReadOnlyList<DriftGroupModel>? Drift { get; init; }
 
     /// <summary>
     /// Gets the relevant attributes that influenced downstream resource computation.

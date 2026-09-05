@@ -49,7 +49,7 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
         var moduleGroups = BuildModuleGroups(input.DisplayChanges, outputsByModule);
         var refactoringOperations = BuildRefactoringOperations(input.AllChanges);
         var planStatus = BuildPlanStatusFromInput(input);
-        var drift = input.Drift ?? new List<ResourceChangeModel>();
+        var drift = input.Drift ?? new List<DriftGroupModel>();
         var relevantAttributes = input.RelevantAttributes ?? new List<RelevantAttributeModel>();
 
         return new ReportModel

@@ -154,3 +154,10 @@
 - **Summary:** Created GitHub UAT PR #126 with the feature-specific drift report and comprehensive regression report. The Maintainer confirmed GitHub UAT passed and explicitly waived Azure DevOps UAT because its credentials were unavailable.
 - **Artifacts Produced:** docs/features/145-drift-rendering/uat-report.md; https://github.com/oocx/tfplan2md-uat/pull/126
 - **Problems Encountered:** Azure DevOps UAT was waived by the Maintainer; no Azure DevOps PAT was available in this environment.
+
+### Retrospective
+
+- **Date:** 2026-09-05
+- **Summary:** Analysed the completed drift-rendering cycle using workflow state, work-protocol entries, review and UAT reports, branch history, and CI-status evidence. Recorded the approved GitHub UAT and Maintainer-approved Azure DevOps UAT waiver, plus actionable improvements for pre-review coverage, generated artifact validation, focused tests, and tool fallback handling.
+- **Artifacts Produced:** docs/features/145-drift-rendering/retrospective.md
+- **Problems Encountered:** The workflow-status CI check could not reach GitHub; the retrospective relies on recorded independent local validation and UAT evidence.

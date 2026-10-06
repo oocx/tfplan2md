@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
@@ -106,6 +107,11 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     private readonly ValueFormatterRegistry? _valueFormatterRegistry;
 
     /// <summary>
+    /// Ordered generic resource identity paths configured for this report.
+    /// </summary>
+    private readonly ImmutableArray<string> _summaryNameAttributes;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ResourceChangeStage"/> class.
     /// </summary>
     /// <param name="summaryBuilder">Strategy used to build summaries.</param>
@@ -115,6 +121,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     /// <param name="principalMapper">Mapper for Azure principal display names.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <param name="summaryNameAttributes">Ordered generic resource identity paths for this report.</param>
     internal ResourceChangeStage(
         IResourceSummaryBuilder summaryBuilder,
         bool showSensitive,
@@ -122,7 +129,8 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         IResourceViewModelFactoryRegistry viewModelFactoryRegistry,
         IPrincipalMapper principalMapper,
         IconProviderRegistry? iconProviderRegistry,
-        ValueFormatterRegistry? valueFormatterRegistry = null)
+        ValueFormatterRegistry? valueFormatterRegistry = null,
+        ImmutableArray<string> summaryNameAttributes = default)
     {
         _summaryBuilder = summaryBuilder;
         _showSensitive = showSensitive;
@@ -131,6 +139,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         _principalMapper = principalMapper;
         _iconProviderRegistry = iconProviderRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
+        _summaryNameAttributes = summaryNameAttributes;
     }
 
     /// <inheritdoc />
@@ -183,6 +192,16 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         // Related issue: docs/issues/123-already-imported-false-positive/analysis.md.
         var isImportAlreadyApplied = false;
         var isMoveAlreadyApplied = action == NoOpAction && movedFromAddress is not null;
+        var summaryDisplayIdentity = ResourceDisplayIdentityResolver.Resolve(
+            resourceChange.Type,
+            action,
+            resourceChange.Change.Before,
+            resourceChange.Change.After,
+            resourceChange.Change.AfterUnknown,
+            resourceChange.Change.BeforeSensitive,
+            resourceChange.Change.AfterSensitive,
+            _showSensitive,
+            _summaryNameAttributes);
 
         var model = new ResourceChangeModel
         {
@@ -206,6 +225,9 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
             IsMoveAlreadyApplied = isMoveAlreadyApplied,
             HasWholeResourceUnknownAfterApply = hasWholeResourceUnknownAfterApply,
             ConfigurationReferences = configurationReferences,
+            SummaryDisplayIdentityPath = summaryDisplayIdentity?.Path,
+            SummaryDisplayIdentity = summaryDisplayIdentity?.Value,
+            UsesGenericDisplayIdentityPolicy = !ResourceSummaryMappings.IsExplicitlyMapped(resourceChange.Type),
             ResourceChange = resourceChange
         };
 

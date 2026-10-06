@@ -39,16 +39,20 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("subscription", out var subscriptionName);
         flatState.TryGetValue("subscription_id", out var subscriptionId);
 
-        // Fall back to principal_name as primary identifier when "name" is absent.
-        // Tracks whether we switched to principal_name so we can include remaining
-        // mapped attributes in the summary line (e.g., account_license_type, licensing_source
-        // for azuredevops_user_entitlement).
-        // Related feature: docs/features/115-azuredevops-user-entitlement-summary/specification.md.
         var usedPrincipalNameFallback = false;
-        if (string.IsNullOrWhiteSpace(nameValue))
+        var nameAttributeKey = "name";
+        if (model.UsesGenericDisplayIdentityPolicy)
         {
+            // Use the shared resolver result so a generic summary cannot expose a masked or computed candidate.
+            nameValue = model.SummaryDisplayIdentity;
+            nameAttributeKey = model.SummaryDisplayIdentityPath ?? "name";
+        }
+        else if (string.IsNullOrWhiteSpace(nameValue))
+        {
+            // Mapped Azure DevOps resources retain the existing principal-name summary behavior.
             flatState.TryGetValue("principal_name", out nameValue);
             usedPrincipalNameFallback = !string.IsNullOrWhiteSpace(nameValue);
+            nameAttributeKey = usedPrincipalNameFallback ? "principal_name" : "name";
         }
 
         // For AzAPI resources without a friendly name, fall back to the Terraform resource name
@@ -61,7 +65,6 @@ internal static class ResourceSummaryHtmlBuilder
         var detailParts = new List<string>();
         var refactoringContext = BuildRefactoringContext(model);
 
-        var nameAttributeKey = usedPrincipalNameFallback ? "principal_name" : "name";
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
             ? FormatAttributeValueSummary(nameAttributeKey, nameValue!, null)
             : null;

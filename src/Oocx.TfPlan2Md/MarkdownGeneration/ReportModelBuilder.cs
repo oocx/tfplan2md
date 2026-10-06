@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
@@ -50,6 +51,7 @@ internal partial class ReportModelBuilder
         // Option fields
         _showSensitive = opts.ShowSensitive;
         _showUnchangedValues = opts.ShowUnchangedValues;
+        _summaryNameAttributes = opts.SummaryNameAttributes;
         _ignoreAzureIdCaseChanges = opts.IgnoreAzureIdCaseChanges;
         _reportTitle = opts.ReportTitle;
         _hideMetadata = opts.HideMetadata;
@@ -90,6 +92,11 @@ internal partial class ReportModelBuilder
     /// Indicates whether unchanged attribute values should be included in output tables.
     /// </summary>
     private readonly bool _showUnchangedValues;
+
+    /// <summary>
+    /// Ordered generic resource identity paths configured for this report.
+    /// </summary>
+    private readonly ImmutableArray<string> _summaryNameAttributes;
 
     /// <summary>
     /// Indicates whether attribute change rows where before/after are Azure resource IDs
@@ -335,7 +342,8 @@ internal partial class ReportModelBuilder
             _viewModelFactoryRegistry,
             _principalMapper,
             _iconProviderRegistry,
-            _valueFormatterRegistry);
+            _valueFormatterRegistry,
+            _summaryNameAttributes);
     }
 
     /// <summary>

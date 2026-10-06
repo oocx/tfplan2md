@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "developer",
+  "stage": "technical-writer",
   "status": "running",
   "gates": {
     "spec": "approved",

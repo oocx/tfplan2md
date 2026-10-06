@@ -175,6 +175,29 @@ public class ResourceChangeModel
         new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
+    /// Gets or sets the attribute path of the sensitivity-safe summary identity.
+    /// </summary>
+    /// <remarks>
+    /// Kept on the shared resource model so text, HTML, and refactoring summaries use the same selected value.
+    /// Related feature: docs/features/146-generic-resource-review-clarity/specification.md.
+    /// </remarks>
+    internal string? SummaryDisplayIdentityPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets the sensitivity-safe scalar identity selected for resource summary context.
+    /// </summary>
+    /// <remarks>
+    /// Kept on the shared resource model so text, HTML, and refactoring summaries use the same selected value.
+    /// Related feature: docs/features/146-generic-resource-review-clarity/specification.md.
+    /// </remarks>
+    internal string? SummaryDisplayIdentity { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the resource uses generic identity selection rather than a resource mapping.
+    /// </summary>
+    internal bool UsesGenericDisplayIdentityPolicy { get; set; }
+
+    /// <summary>
     /// Gets or sets the action invocations attached to this resource via
     /// <c>lifecycle_action_trigger.triggering_resource_address</c>. Populated by
     /// <c>ReportModelBuilder.Actions</c> after parent-child merging. Empty for

@@ -1,0 +1,40 @@
+{
+  "type": "feature",
+  "slug": "147-guid-display-name-resolution",
+  "stage": "architect",
+  "status": "running",
+  "gates": {
+    "spec": "pending",
+    "arch": "n/a",
+    "uat": "n/a"
+  },
+  "attempts": {
+    "requirements-engineer": 1
+  },
+  "open_questions": [
+    {
+      "q": "Should the initial built-in Microsoft ID catalog include well-known first-party application IDs?",
+      "assumed": "No. Initial scope includes Entra built-in directory role templates and the three built-in authentication strength policies; first-party application IDs are deferred.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "Should built-in Entra directory-role and authentication-strength IDs resolve only with --resolve-all-guids, or by default in attributes whose semantic type is already recognized?",
+      "assumed": "Resolve them by default in recognized semantic attributes; require --resolve-all-guids when they occur in arbitrary or free-form attributes.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "How should a GUID that appears in multiple mapping sources be resolved?",
+      "assumed": "A user-provided mapping overrides an offline built-in catalog entry; among existing user mapping sections, preserve the product's established precedence and entity-specific formatting rather than inventing a new order.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "When broad resolution has no semantic context and the same GUID appears in more than one user mapping section, which label and entity type should be shown?",
+      "assumed": "Leave the GUID raw because the match is ambiguous. When semantic context is known, use only its matching category; when exactly one user mapping matches, it overrides an offline built-in name.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    }
+  ]
+}

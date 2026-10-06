@@ -63,10 +63,66 @@ public class CliParserTests
 
         options.ShowSensitive.Should().BeFalse();
         options.ShowUnchangedValues.Should().BeFalse();
+        options.SummaryNameAttributes.Should().BeEmpty();
+        options.HideUnchangedOutputs.Should().BeFalse();
         options.ShowHelp.Should().BeFalse();
         options.ShowVersion.Should().BeFalse();
         options.HideMetadata.Should().BeFalse();
         options.IgnoreAzureIdCaseChanges.Should().BeTrue();
+    }
+
+    [Test]
+    public void Parse_SummaryNameAttributes_TrimsEntriesAndPreservesOrder()
+    {
+        var options = CliParser.Parse([
+            "--summary-name-attributes",
+            " body.title , body.properties.title ",
+            PlanJson]);
+
+        options.SummaryNameAttributes.Should().BeEquivalentTo(
+            ["body.title", "body.properties.title"],
+            assertionOptions => assertionOptions.WithStrictOrdering());
+        options.InputFile.Should().Be(PlanJson);
+    }
+
+    [Test]
+    public void Parse_SummaryNameAttributes_MissingOrEmptyEntries_ThrowsOptionSpecificError()
+    {
+        var invalidArguments = new[]
+        {
+            new[] { "--summary-name-attributes" },
+            new[] { "--summary-name-attributes", string.Empty },
+            new[] { "--summary-name-attributes", "   " },
+            new[] { "--summary-name-attributes", ",name" },
+            new[] { "--summary-name-attributes", "name," },
+            new[] { "--summary-name-attributes", "name,,display_name" }
+        };
+
+        foreach (var arguments in invalidArguments)
+        {
+            var act = () => CliParser.Parse(arguments);
+
+            act.Should().Throw<CliParseException>()
+                .Which.Message.Should().Contain("--summary-name-attributes");
+        }
+    }
+
+    [Test]
+    public void Parse_SummaryNameAttributes_NonexistentPathsAreAccepted()
+    {
+        var options = CliParser.Parse(["--summary-name-attributes", "missing.path,name", PlanJson]);
+
+        options.SummaryNameAttributes.Should().BeEquivalentTo(
+            ["missing.path", "name"],
+            assertionOptions => assertionOptions.WithStrictOrdering());
+    }
+
+    [Test]
+    public void Parse_HideUnchangedOutputsFlag_SetsOption()
+    {
+        var options = CliParser.Parse(["--hide-unchanged-outputs"]);
+
+        options.HideUnchangedOutputs.Should().BeTrue();
     }
 
     /// <summary>

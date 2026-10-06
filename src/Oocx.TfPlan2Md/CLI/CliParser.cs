@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.CLI;
@@ -76,6 +77,19 @@ internal record CliOptions
     public bool ShowUnchangedValues { get; init; }
 
     /// <summary>
+    /// Gets the ordered generic resource name paths supplied by the caller.
+    /// An empty list leaves the built-in candidate order in effect.
+    /// Related feature: docs/features/146-generic-resource-review-clarity/specification.md.
+    /// </summary>
+    public ImmutableArray<string> SummaryNameAttributes { get; init; } = ImmutableArray<string>.Empty;
+
+    /// <summary>
+    /// Gets a value indicating whether outputs with a no-op action should be omitted.
+    /// Related feature: docs/features/146-generic-resource-review-clarity/specification.md.
+    /// </summary>
+    public bool HideUnchangedOutputs { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether tfplan2md metadata should be hidden from the report header.
     /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
@@ -143,6 +157,7 @@ internal static class CliParser
         var showHelp = false;
         var showVersion = false;
         var showUnchangedValues = false;
+        var hideUnchangedOutputs = false;
         var hideMetadata = false;
         var ignoreAzureIdCaseChanges = true;
         var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
@@ -151,6 +166,7 @@ internal static class CliParser
         var driftDisplayMode = DriftDisplayMode.All;
 
         var codeAnalysisResultsPatterns = new List<string>();
+        var summaryNameAttributes = ImmutableArray<string>.Empty;
         string? codeAnalysisMinimumLevel = null;
         string? failOnStaticCodeAnalysisErrorsLevel = null;
 
@@ -252,6 +268,24 @@ internal static class CliParser
                 case "--show-unchanged-values":
                     showUnchangedValues = true;
                     break;
+                case "--summary-name-attributes":
+                    if (i + 1 >= args.Length || args[i + 1].StartsWith('-'))
+                    {
+                        throw new CliParseException("--summary-name-attributes requires a comma-separated list of attribute paths.");
+                    }
+
+                    summaryNameAttributes = args[++i]
+                        .Split(',', StringSplitOptions.None)
+                        .Select(path => path.Trim())
+                        .ToImmutableArray();
+                    if (summaryNameAttributes.Any(string.IsNullOrWhiteSpace))
+                    {
+                        throw new CliParseException("--summary-name-attributes cannot contain empty path entries.");
+                    }
+                    break;
+                case "--hide-unchanged-outputs":
+                    hideUnchangedOutputs = true;
+                    break;
                 case "--ignore-azure-id-case-changes":
                     ignoreAzureIdCaseChanges = true;
                     break;
@@ -322,6 +356,8 @@ internal static class CliParser
             ShowVersion = showVersion,
             PrincipalMappingFile = principalMappingFile,
             ShowUnchangedValues = showUnchangedValues,
+            SummaryNameAttributes = summaryNameAttributes,
+            HideUnchangedOutputs = hideUnchangedOutputs,
             HideMetadata = hideMetadata,
             IgnoreAzureIdCaseChanges = ignoreAzureIdCaseChanges,
             RenderTarget = renderTarget,

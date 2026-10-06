@@ -31,6 +31,8 @@ public static class HelpTextProvider
             ("--code-analysis-minimum-level <level>", "Minimum severity to display (critical, high, medium, low, informational)."),
             ("--fail-on-static-code-analysis-errors <level>", "Exit with code 10 when findings at or above this level exist."),
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
+            ("--summary-name-attributes <path1,path2,...>", "Replace the generic resource name candidate order for this run."),
+            ("--hide-unchanged-outputs", "Opt in to hide outputs whose Terraform action is no-op."),
             ("--ignore-azure-id-case-changes", "Suppress attribute changes where before/after values differ only in casing (default: on). Use --no-ignore-azure-id-case-changes to disable."),
             ("--hide-metadata", "Hide tfplan2md version/commit/timestamp metadata in the header."),
             ("--show-sensitive", "Show sensitive values unmasked."),

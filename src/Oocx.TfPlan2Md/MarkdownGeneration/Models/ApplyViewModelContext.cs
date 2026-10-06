@@ -20,10 +20,12 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// <param name="AttributeChanges">Pre-computed attribute changes for the resource.</param>
 /// <param name="PrincipalMapper">Mapper used for Azure principal resolution.</param>
 /// <param name="IconProviderRegistry">Optional registry of icon providers for summary rendering.</param>
+/// <param name="ShowSensitive">Whether sensitive values may appear unmasked in provider view models.</param>
 internal sealed record ApplyViewModelContext(
     ResourceChangeModel Model,
     ResourceChange ResourceChange,
     string Action,
     IReadOnlyList<AttributeChangeModel> AttributeChanges,
     IPrincipalMapper PrincipalMapper,
-    IconProviderRegistry? IconProviderRegistry);
+    IconProviderRegistry? IconProviderRegistry,
+    bool ShowSensitive = false);

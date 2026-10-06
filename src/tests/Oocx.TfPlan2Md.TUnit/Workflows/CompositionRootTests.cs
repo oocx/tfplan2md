@@ -61,7 +61,7 @@ public class CompositionRootTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CompositionRoot.CreateProviderRegistry"/> registers all four provider modules.
+    /// Verifies that <see cref="CompositionRoot.CreateProviderRegistry"/> registers all five provider modules.
     /// </summary>
     [Test]
     public async Task CreateProviderRegistry_RegistersAllProviders()
@@ -93,11 +93,12 @@ public class CompositionRootTests
         var providers = registry.GetProviders();
         var providerNames = providers.Select(p => p.ProviderName).ToList();
         await Assert.That(registry).IsNotNull();
-        await Assert.That(providerNames).Count().IsEqualTo(4);
+        await Assert.That(providerNames).Count().IsEqualTo(5);
         await Assert.That(providerNames).Contains("azapi");
         await Assert.That(providerNames).Contains("azuread");
         await Assert.That(providerNames).Contains("azurerm");
         await Assert.That(providerNames).Contains("azuredevops");
+        await Assert.That(providerNames).Contains("msgraph");
     }
 
     /// <summary>

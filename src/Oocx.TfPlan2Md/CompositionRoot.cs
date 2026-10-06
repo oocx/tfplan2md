@@ -15,6 +15,7 @@ using Oocx.TfPlan2Md.Providers.AzApi;
 using Oocx.TfPlan2Md.Providers.AzureAD;
 using Oocx.TfPlan2Md.Providers.AzureDevOps;
 using Oocx.TfPlan2Md.Providers.AzureRM;
+using Oocx.TfPlan2Md.Providers.MsGraph;
 
 namespace Oocx.TfPlan2Md;
 
@@ -207,6 +208,7 @@ internal sealed class CompositionRoot(CliOptions options)
             azdoGroupMapper: azdoGroupMapper,
             azdoProjectMapper: azdoProjectMapper,
             azdoRepositoryMapper: azdoRepositoryMapper));
+        registry.RegisterProvider(new MsGraphModule());
 
         return registry;
     }

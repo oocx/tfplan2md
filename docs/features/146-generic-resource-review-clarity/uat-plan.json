@@ -1,0 +1,977 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "review_object.defaults[\"first\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "defaults",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "Default Name Wins",
+          "display_name": "Display Name",
+          "displayName": "Camel Display",
+          "body": {
+            "displayName": "Body Display",
+            "properties": {
+              "displayName": "Nested Display"
+            },
+            "name": "Body Name"
+          }
+        }
+      }
+    },
+    {
+      "address": "review_object.fallback[0]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "fallback",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": null,
+          "display_name": "",
+          "displayName": {
+            "invalid": "object"
+          },
+          "body.displayName": "literal dotted key",
+          "body": {
+            "displayName": "Review & <script> \"quoted\" | `terraform`"
+          }
+        }
+      }
+    },
+    {
+      "address": "review_object.none[1]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "none",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {}
+      }
+    },
+    {
+      "address": "module.demo.review_object.update[\"a.b[0]\"]",
+      "module_address": "module.demo",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "update",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "Prior Update Name",
+          "body": {
+            "name": "Old Body Name"
+          }
+        },
+        "after": {
+          "name": null,
+          "body": {
+            "name": "Later Candidate",
+            "displayName": "Later Display"
+          },
+          "pseudo_each_key": null,
+          "pseudo_each_value": null,
+          "pseudo_count_index": null,
+          "pseudo_self": null,
+          "specific_ref": null,
+          "static_ref": null,
+          "variable_ref": null,
+          "local_ref": null,
+          "mixed_ref": null
+        },
+        "after_unknown": {
+          "name": true,
+          "pseudo_each_key": true,
+          "pseudo_each_value": true,
+          "pseudo_count_index": true,
+          "pseudo_self": true,
+          "specific_ref": true,
+          "static_ref": true,
+          "variable_ref": true,
+          "local_ref": true,
+          "mixed_ref": true
+        }
+      }
+    },
+    {
+      "address": "review_object.deleted[2]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "deleted",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "display_name": "Deleted Prior Name"
+        },
+        "after": null
+      }
+    },
+    {
+      "address": "review_object.replaced[\"quote\\\"and\\\\slash\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "replaced",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete",
+          "create"
+        ],
+        "before": {
+          "displayName": "Replacement old"
+        },
+        "after": {
+          "displayName": "Replacement & <new> | `key`"
+        }
+      }
+    },
+    {
+      "address": "review_object.override[\"custom\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "override",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "Default Override Name",
+          "body": {
+            "title": "Override Title",
+            "properties": {
+              "title": "Nested Override Title"
+            }
+          }
+        }
+      }
+    },
+    {
+      "address": "review_object.masked[\"secret\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "masked",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "SENSITIVE-IDENTITY-DO-NOT-LEAK",
+          "displayName": "Safe Visible Identity"
+        },
+        "after_sensitive": {
+          "name": true
+        },
+        "importing": {
+          "id": "synthetic-mask-id"
+        }
+      }
+    },
+    {
+      "address": "module.demo.review_object.imported[\"named\"]",
+      "module_address": "module.demo",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "imported",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": {
+          "id": "existing-import-id",
+          "api_version": "v1.0",
+          "url": "/items/legacy",
+          "ignore_missing_property": false,
+          "body": {}
+        },
+        "after": {
+          "name": "Imported Friendly Name",
+          "body": {
+            "desired": true
+          }
+        },
+        "importing": {
+          "id": "existing-import-id"
+        }
+      }
+    },
+    {
+      "address": "module.demo.review_object.moved[\"new\"]",
+      "module_address": "module.demo",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "moved",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "Moved Friendly Name"
+        }
+      },
+      "previous_address": "module.demo.review_object.moved[\"old\"]"
+    },
+    {
+      "address": "msgraph_resource.policy[\"block_legacy_auth\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_resource",
+      "name": "policy",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "api_version": "v1.0",
+          "url": "/policies/authenticationMethodsPolicy",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Authentication policy",
+            "conditions": {
+              "clientAppTypes": [
+                "browser"
+              ]
+            }
+          }
+        },
+        "after": {
+          "api_version": "v1.0",
+          "url": "/policies/authenticationMethodsPolicy",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Authentication policy",
+            "conditions": {
+              "clientAppTypes": [
+                "browser",
+                "mobileAppsAndDesktopClients"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "address": "msgraph_update_resource.policy[\"require_mfa_admins\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_update_resource",
+      "name": "policy",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "api_version": "v1.0",
+          "url": "/policies/conditionalAccessPolicies/policy-id-old",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Require MFA for admins",
+            "state": "disabled"
+          }
+        },
+        "after": {
+          "api_version": "v1.0",
+          "url": "/policies/conditionalAccessPolicies/policy-id",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Require MFA for admins",
+            "state": "enabled"
+          }
+        }
+      }
+    },
+    {
+      "address": "msgraph_resource.created[0]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_resource",
+      "name": "created",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "api_version": "v1.0",
+          "url": "/groups",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Created Graph group"
+          }
+        }
+      }
+    },
+    {
+      "address": "msgraph_update_resource.import_empty[\"empty\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_update_resource",
+      "name": "import_empty",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": {
+          "id": "graph-existing-empty",
+          "api_version": "v1.0",
+          "url": "/groups/empty",
+          "ignore_missing_property": false,
+          "body": {}
+        },
+        "after": {
+          "api_version": "v1.0",
+          "url": "/groups/empty",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Empty imported group",
+            "enabled": true
+          }
+        },
+        "importing": {
+          "id": "graph-existing-empty"
+        }
+      }
+    },
+    {
+      "address": "msgraph_resource.import_full[\"full\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_resource",
+      "name": "import_full",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": {
+          "body": {
+            "displayName": "Populated imported group",
+            "enabled": false
+          }
+        },
+        "after": {
+          "api_version": "v1.0",
+          "url": "/groups/full",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Populated imported group",
+            "enabled": true
+          }
+        },
+        "importing": {
+          "id": "graph-existing-full"
+        }
+      }
+    },
+    {
+      "address": "msgraph_resource.settings_added[\"add\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_resource",
+      "name": "settings_added",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "url": "/groups/add",
+          "body": {
+            "displayName": "Setting added"
+          }
+        },
+        "after": {
+          "api_version": "v1.0",
+          "url": "/groups/add",
+          "ignore_missing_property": false,
+          "body": {
+            "displayName": "Setting added"
+          }
+        }
+      }
+    },
+    {
+      "address": "msgraph_update_resource.settings_removed[\"remove\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "msgraph_update_resource",
+      "name": "settings_removed",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "api_version": "v1.0",
+          "url": "/groups/remove",
+          "ignore_missing_property": true,
+          "body": {
+            "displayName": "Setting removed"
+          }
+        },
+        "after": {
+          "api_version": "v1.0",
+          "url": "/groups/remove",
+          "body": {
+            "displayName": "Setting removed"
+          }
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.mapped[0]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "mapped",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "mapped-api",
+          "type": "Contoso.Widgets/widgets@2023-01-01",
+          "parent_id": "/subscriptions/example",
+          "body": {
+            "title": "Old azapi title"
+          }
+        },
+        "after": {
+          "name": "mapped-api",
+          "type": "Contoso.Widgets/widgets@2024-01-01",
+          "parent_id": "/subscriptions/example",
+          "body": {
+            "title": "Competing azapi override"
+          }
+        }
+      }
+    },
+    {
+      "address": "azurerm_resource_group.mapped[\"rg\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "mapped",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "rg-feature-146",
+          "location": "eastus",
+          "body": {
+            "title": "Competing AzureRM override"
+          }
+        }
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.mapped[0]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "mapped",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "Review variables",
+          "description": "Ordinary provider-owned variable diff",
+          "variable": [
+            {
+              "name": "MODE",
+              "value": "old",
+              "enabled": true
+            }
+          ]
+        },
+        "after": {
+          "name": "Review variables",
+          "description": "Ordinary provider-owned variable diff",
+          "variable": [
+            {
+              "name": "MODE",
+              "value": "new",
+              "enabled": true
+            },
+            {
+              "name": "ADDED",
+              "value": "yes",
+              "enabled": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.references",
+      "module_address": null,
+      "mode": "managed",
+      "type": "review_object",
+      "name": "references",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "Reference hints",
+          "pseudo_each_key": null,
+          "pseudo_each_value": null,
+          "pseudo_count_index": null,
+          "pseudo_self": null,
+          "specific_ref": null,
+          "static_ref": null,
+          "variable_ref": null,
+          "local_ref": null,
+          "mixed_ref": null,
+          "sensitive_computed": null
+        },
+        "after_unknown": {
+          "pseudo_each_key": true,
+          "pseudo_each_value": true,
+          "pseudo_count_index": true,
+          "pseudo_self": true,
+          "specific_ref": true,
+          "static_ref": true,
+          "variable_ref": true,
+          "local_ref": true,
+          "mixed_ref": true,
+          "sensitive_computed": true
+        },
+        "after_sensitive": {
+          "sensitive_computed": true
+        }
+      }
+    },
+    {
+      "address": "module.demo.review_object.module_references",
+      "module_address": "module.demo",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "module_references",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "Module reference hints",
+          "pseudo_each_key": null,
+          "pseudo_each_value": null,
+          "pseudo_count_index": null,
+          "pseudo_self": null,
+          "specific_ref": null,
+          "static_ref": null,
+          "variable_ref": null,
+          "local_ref": null,
+          "mixed_ref": null
+        },
+        "after_unknown": {
+          "pseudo_each_key": true,
+          "pseudo_each_value": true,
+          "pseudo_count_index": true,
+          "pseudo_self": true,
+          "specific_ref": true,
+          "static_ref": true,
+          "variable_ref": true,
+          "local_ref": true,
+          "mixed_ref": true
+        }
+      }
+    }
+  ],
+  "output_changes": {
+    "root_unchanged": {
+      "actions": [
+        "no-op"
+      ],
+      "before": "root-unchanged-value",
+      "after": "root-unchanged-value"
+    },
+    "root_created": {
+      "actions": [
+        "create"
+      ],
+      "before": null,
+      "after": "root-created-value"
+    },
+    "root_updated": {
+      "actions": [
+        "update"
+      ],
+      "before": "root-before-value",
+      "after": "root-updated-value"
+    },
+    "root_deleted": {
+      "actions": [
+        "delete"
+      ],
+      "before": "root-deleted-value",
+      "after": null
+    },
+    "root_sensitive": {
+      "actions": [
+        "update"
+      ],
+      "before": "old-secret",
+      "after": "ROOT-SENSITIVE-OUTPUT-DO-NOT-LEAK",
+      "after_sensitive": true
+    },
+    "root_unknown": {
+      "actions": [
+        "update"
+      ],
+      "before": "old-computed",
+      "after": null,
+      "after_unknown": true
+    },
+    "module_unchanged": {
+      "actions": [
+        "no-op"
+      ],
+      "before": "module-unchanged-value",
+      "after": "module-unchanged-value"
+    },
+    "module_created": {
+      "actions": [
+        "create"
+      ],
+      "before": null,
+      "after": "module-created-value"
+    },
+    "module_updated": {
+      "actions": [
+        "update"
+      ],
+      "before": "module-before-value",
+      "after": "module-updated-value"
+    },
+    "module_deleted": {
+      "actions": [
+        "delete"
+      ],
+      "before": "module-deleted-value",
+      "after": null
+    },
+    "module_sensitive": {
+      "actions": [
+        "update"
+      ],
+      "before": "old-module-secret",
+      "after": "MODULE-SENSITIVE-OUTPUT-DO-NOT-LEAK",
+      "after_sensitive": true
+    },
+    "module_unknown": {
+      "actions": [
+        "update"
+      ],
+      "before": "old-module-computed",
+      "after": null,
+      "after_unknown": true
+    },
+    "module_noop_only": {
+      "actions": [
+        "no-op"
+      ],
+      "before": "module-noop-value",
+      "after": "module-noop-value"
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "review_object.references",
+          "mode": "managed",
+          "type": "review_object",
+          "name": "references",
+          "expressions": {
+            "pseudo_each_key": {
+              "references": [
+                "each.key"
+              ]
+            },
+            "pseudo_each_value": {
+              "references": [
+                "each.value"
+              ]
+            },
+            "pseudo_count_index": {
+              "references": [
+                "count.index"
+              ]
+            },
+            "pseudo_self": {
+              "references": [
+                "self"
+              ]
+            },
+            "specific_ref": {
+              "references": [
+                "each.value.group_object_id"
+              ]
+            },
+            "static_ref": {
+              "references": [
+                "aws_instance.web.id"
+              ]
+            },
+            "variable_ref": {
+              "references": [
+                "var.tenant_id"
+              ]
+            },
+            "local_ref": {
+              "references": [
+                "local.prefix"
+              ]
+            },
+            "mixed_ref": {
+              "references": [
+                "each.key",
+                "aws_instance.web.id",
+                "var.tenant_id"
+              ]
+            },
+            "sensitive_computed": {
+              "references": [
+                "each.key"
+              ]
+            }
+          }
+        }
+      ],
+      "module_calls": {
+        "demo": {
+          "module": {
+            "resources": [
+              {
+                "address": "review_object.update",
+                "mode": "managed",
+                "type": "review_object",
+                "name": "update",
+                "expressions": {
+                  "pseudo_each_key": {
+                    "references": [
+                      "each.key"
+                    ]
+                  },
+                  "pseudo_each_value": {
+                    "references": [
+                      "each.value"
+                    ]
+                  },
+                  "pseudo_count_index": {
+                    "references": [
+                      "count.index"
+                    ]
+                  },
+                  "pseudo_self": {
+                    "references": [
+                      "self"
+                    ]
+                  },
+                  "specific_ref": {
+                    "references": [
+                      "each.value.group_object_id"
+                    ]
+                  },
+                  "static_ref": {
+                    "references": [
+                      "aws_instance.web.id"
+                    ]
+                  },
+                  "variable_ref": {
+                    "references": [
+                      "var.tenant_id"
+                    ]
+                  },
+                  "local_ref": {
+                    "references": [
+                      "local.prefix"
+                    ]
+                  },
+                  "mixed_ref": {
+                    "references": [
+                      "each.key",
+                      "aws_instance.web.id",
+                      "var.tenant_id"
+                    ]
+                  }
+                }
+              },
+              {
+                "address": "review_object.module_references",
+                "mode": "managed",
+                "type": "review_object",
+                "name": "module_references",
+                "expressions": {
+                  "pseudo_each_key": {
+                    "references": [
+                      "each.key"
+                    ]
+                  },
+                  "pseudo_each_value": {
+                    "references": [
+                      "each.value"
+                    ]
+                  },
+                  "pseudo_count_index": {
+                    "references": [
+                      "count.index"
+                    ]
+                  },
+                  "pseudo_self": {
+                    "references": [
+                      "self"
+                    ]
+                  },
+                  "specific_ref": {
+                    "references": [
+                      "each.value.group_object_id"
+                    ]
+                  },
+                  "static_ref": {
+                    "references": [
+                      "aws_instance.web.id"
+                    ]
+                  },
+                  "variable_ref": {
+                    "references": [
+                      "var.tenant_id"
+                    ]
+                  },
+                  "local_ref": {
+                    "references": [
+                      "local.prefix"
+                    ]
+                  },
+                  "mixed_ref": {
+                    "references": [
+                      "each.key",
+                      "aws_instance.web.id",
+                      "var.tenant_id"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "outputs": {
+        "root_unchanged": {
+          "description": "Feature 146 root output root_unchanged",
+          "sensitive": false
+        },
+        "root_created": {
+          "description": "Feature 146 root output root_created",
+          "sensitive": false
+        },
+        "root_updated": {
+          "description": "Feature 146 root output root_updated",
+          "sensitive": false
+        },
+        "root_deleted": {
+          "description": "Feature 146 root output root_deleted",
+          "sensitive": false
+        },
+        "root_sensitive": {
+          "description": "Feature 146 root output root_sensitive",
+          "sensitive": true
+        },
+        "root_unknown": {
+          "description": "Feature 146 root output root_unknown",
+          "sensitive": false
+        }
+      },
+      "modules": [
+        {
+          "address": "module.demo",
+          "outputs": {
+            "module_unchanged": {
+              "description": "Feature 146 module output module_unchanged",
+              "sensitive": false
+            },
+            "module_created": {
+              "description": "Feature 146 module output module_created",
+              "sensitive": false
+            },
+            "module_updated": {
+              "description": "Feature 146 module output module_updated",
+              "sensitive": false
+            },
+            "module_deleted": {
+              "description": "Feature 146 module output module_deleted",
+              "sensitive": false
+            },
+            "module_sensitive": {
+              "description": "Feature 146 module output module_sensitive",
+              "sensitive": true
+            },
+            "module_unknown": {
+              "description": "Feature 146 module output module_unknown",
+              "sensitive": false
+            }
+          }
+        },
+        {
+          "address": "module.noop",
+          "outputs": {
+            "module_noop_only": {
+              "description": "Only no-op module output",
+              "sensitive": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

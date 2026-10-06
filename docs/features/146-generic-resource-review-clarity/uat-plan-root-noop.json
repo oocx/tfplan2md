@@ -1,0 +1,24 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [],
+  "output_changes": {
+    "root_only_noop": {
+      "actions": [
+        "no-op"
+      ],
+      "before": "root-only-before",
+      "after": "root-only-after"
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "root_only_noop": {
+          "description": "The only root output is unchanged.",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

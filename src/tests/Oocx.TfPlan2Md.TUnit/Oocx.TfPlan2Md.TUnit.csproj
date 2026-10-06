@@ -28,6 +28,8 @@
     <None Update="TestData\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="../../../docs/features/146-generic-resource-review-clarity/uat-plan.json" Link="TestData\feature-146-uat-plan.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../../docs/features/146-generic-resource-review-clarity/uat-plan-root-noop.json" Link="TestData\feature-146-uat-plan-root-noop.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -212,20 +212,20 @@ repository skill and run focused/full checks through `run-dotnet-tests`.
 
 **Acceptance Criteria:**
 
-- [ ] Automated tests cover every T01–T18 scenario and SC1–SC17, using synthetic
+- [x] Automated tests cover every T01–T18 scenario and SC1–SC17, using synthetic
   unmapped resources separately from mapped msgraph/azapi compatibility cases;
   tests use TUnit and prescribed naming (SC16; test-plan coverage matrix).
-- [ ] Full-render fixtures cover actions, instances, fallback/override naming,
+- [x] Full-render fixtures cover actions, instances, fallback/override naming,
   sensitive/unknown identities, meaningful/pseudo hints, refactoring labels,
   empty/populated imports, settings modes/counts, and root/module filtering
   (SC16; T02–T17).
-- [ ] GitHub, Azure DevOps, and Bitbucket deterministic assertions check escaping,
+- [x] GitHub, Azure DevOps, and Bitbucket deterministic assertions check escaping,
   note placement, settings access, counts/diffs, and output selection; existing
   fixture changes are limited to approved clarity behavior (SC15–SC17; T17–T18).
-- [ ] `uat-plan.json`, default rendered `uat-plan.md`, documented variants/options,
+- [x] `uat-plan.json`, default rendered `uat-plan.md`, documented variants/options,
   and the root-only-no-op variant match `uat-test-plan.md`; no platform UAT is
   claimed from snapshots or assigned to the Developer (SC17; UAT inventory).
-- [ ] Intentional snapshots use `update-test-snapshots`; their commit includes
+- [x] Intentional snapshots use `update-test-snapshots`; their commit includes
   `SNAPSHOT_UPDATE_OK` with rationale. Record check results and remaining
   limitations for Code Reviewer and UAT Tester handoff (SC15–SC17; T17–T18).
 

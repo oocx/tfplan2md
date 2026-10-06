@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// </summary>
 public class ImportedPriorStateContextTests
 {
-    private const string ImportNote = "> 📥 Prior state from import is empty; the values below show the full desired state.";
+    private const string ImportNote = "> 📥\u00A0Prior state from import is empty; the values below show the full desired state.";
 
     [Test]
     public void Render_ImportedResourceWithNullPriorState_ExplainsDesiredStateBeforeAttributes()

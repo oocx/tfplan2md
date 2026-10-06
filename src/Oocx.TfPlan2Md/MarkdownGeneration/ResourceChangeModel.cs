@@ -120,6 +120,13 @@ public class ResourceChangeModel
     public string? ImportId { get; init; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether an imported resource has no meaningful prior attribute state.
+    /// Provider factories may refine this classification with their root housekeeping paths.
+    /// Related feature: docs/features/146-generic-resource-review-clarity/specification.md.
+    /// </summary>
+    internal bool IsImportedWithEmptyPriorState { get; set; }
+
+    /// <summary>
     /// Gets the previous address when this resource is moved by a refactoring block.
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>

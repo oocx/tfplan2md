@@ -45,6 +45,8 @@ internal static class NsgMergedSecurityRulesRenderer
             writer.BlankLine();
         }
 
+        ImportPriorStateNoteRenderer.Render(writer, change);
+
         var headers = new List<string> { "Change" };
         headers.AddRange(group.Columns.Select(column => column.Header));
 

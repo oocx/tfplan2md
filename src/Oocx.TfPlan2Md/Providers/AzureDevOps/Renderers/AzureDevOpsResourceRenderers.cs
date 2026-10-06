@@ -103,6 +103,8 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
             writer.BlankLine();
         }
 
+        ImportPriorStateNoteRenderer.Render(writer, change);
+
         // Render variables using the appropriate table format based on the action.
         if (viewModel.VariableChanges.Count > 0)
         {
@@ -208,6 +210,7 @@ internal sealed class BuildDefinitionRenderer : AzureDevOpsDelegatingRenderer
         var viewModel = BuildDefinitionViewModelFactory.Build(change.ResourceChange, change.ProviderName, largeValueFormat, _repositoryMapper);
 
         RenderHeader(writer, change, context, viewModel);
+        ImportPriorStateNoteRenderer.Render(writer, change);
         RenderVariableSection(writer, viewModel);
         RenderSupplementarySections(writer, viewModel);
 

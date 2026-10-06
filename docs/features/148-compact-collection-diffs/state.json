@@ -1,0 +1,20 @@
+{
+  "type": "feature",
+  "slug": "148-compact-collection-diffs",
+  "stage": "architect",
+  "status": "running",
+  "gates": {
+    "spec": "pending",
+    "arch": "n/a",
+    "uat": "n/a"
+  },
+  "attempts": {},
+  "open_questions": [
+    {
+      "q": "When the available Terraform plan data does not identify a primitive collection as a list/tuple or a set, should tfplan2md treat reorder-only differences as meaningful?",
+      "assumed": "Yes. Treat an unidentified collection as ordered, preserve duplicate occurrences, and surface reorder-only changes so potentially meaningful information is not lost. Known sets remain order-insensitive.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    }
+  ]
+}

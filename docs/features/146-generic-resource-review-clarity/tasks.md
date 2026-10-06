@@ -76,14 +76,14 @@ assembly's independent name/url selection.
 
 **Acceptance Criteria:**
 
-- [ ] Create, update, both replacement orders, delete, import, and move headers
+- [x] Create, update, both replacement orders, delete, import, and move headers
   preserve string/numeric suffixes, including dots, brackets, escaped quotes,
   backslashes, and indexed modules; unindexed names gain no suffix (SC6; T08).
-- [ ] Existing module grouping and mapped identifying content remain intact in
+- [x] Existing module grouping and mapped identifying content remain intact in
   default cards and provider-owned headers (SC5–SC6, SC15; T07–T08).
-- [ ] Every import/move label keeps its full address, appending optional visible
+- [x] Every import/move label keeps its full address, appending optional visible
   identity; supported combined import/move metadata uses the same rule (SC9; T11).
-- [ ] Resource/refactoring labels preserve output escaping and sensitivity policy,
+- [x] Resource/refactoring labels preserve output escaping and sensitivity policy,
   with no secret exposure or malformed markup (SC3, SC9; T02–T03, T11).
 
 **Dependencies:** Task 2.

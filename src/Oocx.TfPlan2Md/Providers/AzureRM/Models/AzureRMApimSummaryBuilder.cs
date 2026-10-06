@@ -36,7 +36,7 @@ internal static class AzureRMApimSummaryBuilder
         flatState.TryGetValue(ResourceGroupNameAttribute, out var resourceGroup);
         flatState.TryGetValue("location", out var location);
 
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.NameWithInstanceSuffix)}</b>";
         var detailParts = new List<string>();
 
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
@@ -87,7 +87,7 @@ internal static class AzureRMApimSummaryBuilder
         flatState.TryGetValue(ApiManagementNameAttribute, out var apiManagementName);
         flatState.TryGetValue(ResourceGroupNameAttribute, out var resourceGroup);
 
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.NameWithInstanceSuffix)}</b>";
         if (!string.IsNullOrWhiteSpace(displayName))
         {
             prefix = $"{prefix} {FormatAttributeValueSummary("display_name", displayName!, null)}";

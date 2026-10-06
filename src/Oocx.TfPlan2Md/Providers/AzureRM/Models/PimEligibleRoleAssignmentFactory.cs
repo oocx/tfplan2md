@@ -105,7 +105,7 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     /// <returns>Summary HTML string for the resource.</returns>
     private static string BuildSummaryHtml(ResourceChangeModel model, string roleSummaryHtml, string principalSummaryHtml)
     {
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.NameWithInstanceSuffix)}</b>";
         return $"{prefix} — Assign {roleSummaryHtml} to {principalSummaryHtml}";
     }
 

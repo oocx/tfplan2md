@@ -49,7 +49,7 @@ internal abstract class AzApiRendererBase(string resourceType) : IResourceRender
         };
 
         var summary = string.IsNullOrWhiteSpace(change.SummaryHtml)
-            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.Name)}"
+            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.NameWithInstanceSuffix)}"
             : change.SummaryHtml;
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");

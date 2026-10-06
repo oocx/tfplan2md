@@ -18,16 +18,10 @@ internal sealed class RefactoringOperationModel
     public required string Address { get; init; }
 
     /// <summary>
-    /// Gets the resource type shown in the summary table.
-    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// Gets the optional safe identifying context selected for the resource.
+    /// Related feature: docs/features/146-generic-resource-review-clarity/specification.md.
     /// </summary>
-    public required string ResourceType { get; init; }
-
-    /// <summary>
-    /// Gets the resource name shown in the summary table.
-    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
-    /// </summary>
-    public required string ResourceName { get; init; }
+    public string? DisplayIdentity { get; init; }
 
     /// <summary>
     /// Gets the details column value (import ID or previous address).

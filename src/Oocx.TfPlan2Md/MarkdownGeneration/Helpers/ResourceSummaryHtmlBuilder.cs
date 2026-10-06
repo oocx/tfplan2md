@@ -56,9 +56,7 @@ internal static class ResourceSummaryHtmlBuilder
         }
 
         // For AzAPI resources without a friendly name, fall back to the Terraform resource name
-        var displayName = !string.IsNullOrWhiteSpace(model.Name)
-            ? model.Name
-            : ExtractTerraformLocalName(model.Address);
+        var displayName = model.NameWithInstanceSuffix;
 
         var encodedType = HtmlEncoder.Default.Encode(model.Type);
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{encodedType} <b>{FormatCodeSummary(displayName)}</b>";
@@ -310,24 +308,4 @@ internal static class ResourceSummaryHtmlBuilder
         }
     }
 
-    /// <summary>
-    /// Extracts the Terraform local resource name from a resource address.
-    /// Related issue: docs/issues/086-style-guide-compliance-fixes/issue-analysis.md (Violation 2).
-    /// </summary>
-    /// <param name="address">The full Terraform resource address (e.g., "azapi_resource.automation_account").</param>
-    /// <returns>The local resource name (e.g., "automation_account").</returns>
-    /// <remarks>
-    /// For module resources, extracts the name after the last dot (e.g., "module.network.azapi_resource.vm" returns "vm").
-    /// </remarks>
-    private static string ExtractTerraformLocalName(string address)
-    {
-        if (string.IsNullOrWhiteSpace(address))
-        {
-            return string.Empty;
-        }
-
-        // Address format: "resource_type.local_name" or "module.name.resource_type.local_name"
-        var lastDotIndex = address.LastIndexOf('.');
-        return lastDotIndex >= 0 ? address[(lastDotIndex + 1)..] : address;
-    }
 }

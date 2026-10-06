@@ -170,8 +170,7 @@ public class ReportRendererTests
                 {
                     Operation = "Import",
                     Address = "azurerm_resource_group.main",
-                    ResourceType = "azurerm_resource_group",
-                    ResourceName = "main",
+                    DisplayIdentity = "main",
                     Details = "/subscriptions/x/resourceGroups/rg-main",
                     Status = "Ready",
                     IsAlreadyApplied = false

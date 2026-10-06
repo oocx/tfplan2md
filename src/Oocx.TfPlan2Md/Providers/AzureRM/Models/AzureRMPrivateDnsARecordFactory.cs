@@ -71,13 +71,14 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
             return;
         }
 
-        var recordNameToken = FormatCodeTable($"{RecordNameIcon}{NonBreakingSpace}{recordName}");
+        var displayRecordName = recordName + context.Model.ResourceInstanceSuffix;
+        var recordNameToken = FormatCodeTable($"{RecordNameIcon}{NonBreakingSpace}{displayRecordName}");
         var fqdnToken = FormatCodeTable(fqdn);
         var recordTokens = BuildRecordValueTokens(recordValues);
         var recordSuffix = recordTokens.Count > 0 ? $" {string.Join(" ", recordTokens)}" : string.Empty;
 
         context.Model.Summary = $"{recordNameToken} — {fqdnToken}{recordSuffix}";
-        context.Model.SummaryHtml = BuildSummaryHtml(context.Model, recordName, fqdn, recordValues);
+        context.Model.SummaryHtml = BuildSummaryHtml(context.Model, displayRecordName, fqdn, recordValues);
     }
 
     /// <summary>

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
@@ -119,6 +121,42 @@ internal static class ResourceSummaryMappings
         }
 
         return GenericFallback;
+    }
+
+    /// <summary>
+    /// Determines whether a resource type has an explicit resource-specific summary mapping.
+    /// </summary>
+    /// <param name="resourceType">Terraform resource type.</param>
+    /// <returns><see langword="true"/> when an explicit mapping exists.</returns>
+    internal static bool IsExplicitlyMapped(string resourceType)
+    {
+        return ResourceMappings.ContainsKey(resourceType);
+    }
+
+    /// <summary>
+    /// Selects identity paths while preserving custom paths for generic resources and legacy priority for mapped resources.
+    /// </summary>
+    /// <param name="resourceType">Terraform resource type.</param>
+    /// <param name="configuredCandidatePaths">Invocation-specific candidate order.</param>
+    /// <param name="defaultCandidatePaths">Default generic candidate order.</param>
+    /// <param name="mappedCandidatePriority">Legacy identity order for explicitly mapped resources.</param>
+    /// <returns>Candidate paths in the order that applies to this resource.</returns>
+    internal static ImmutableArray<string> ResolveIdentityCandidatePaths(
+        string resourceType,
+        ImmutableArray<string> configuredCandidatePaths,
+        ImmutableArray<string> defaultCandidatePaths,
+        ImmutableArray<string> mappedCandidatePriority)
+    {
+        if (!ResourceMappings.TryGetValue(resourceType, out var mappedKeys))
+        {
+            return configuredCandidatePaths.IsDefaultOrEmpty ? defaultCandidatePaths : configuredCandidatePaths;
+        }
+
+        var mappedCandidates = mappedCandidatePriority
+            .Where(preferredPath => mappedKeys.Contains(preferredPath, StringComparer.OrdinalIgnoreCase))
+            .ToImmutableArray();
+
+        return mappedCandidates.IsDefaultOrEmpty ? [.. mappedKeys] : mappedCandidates;
     }
 
     /// <summary>

@@ -47,18 +47,18 @@ possible; provider fallback keys cannot override generic candidate order.
 
 **Acceptance Criteria:**
 
-- [ ] Unmapped `review_object` selects the first usable candidate from all six
+- [x] Unmapped `review_object` selects the first usable candidate from all six
   documented defaults or the replacement list; zero/false are usable, while
   null, empty string, objects, and collections are skipped (SC1–SC2; T01, T05).
-- [ ] Nested path traversal distinguishes nested properties from literal dotted
+- [x] Nested path traversal distinguishes nested properties from literal dotted
   keys and does not parse string-valued JSON bodies (SC1, SC4; T01, T05).
-- [ ] Desired state wins for create/update/replace and prior state for delete;
+- [x] Desired state wins for create/update/replace and prior state for delete;
   the other side at the same path is tried before the next candidate, including
   known prior fallback for unknown desired values (SC1–SC3; T02, T04).
-- [ ] Leaf, ancestor, and whole-resource sensitivity/unknown markers respect
+- [x] Leaf, ancestor, and whole-resource sensitivity/unknown markers respect
   existing sensitivity union and authorized sensitive mode; masked or unknown
   values never become identity placeholders or leak into summaries (SC3; T03–T04).
-- [ ] Raw identity is escaped at HTML/text boundaries; no usable identity leaves
+- [x] Raw identity is escaped at HTML/text boundaries; no usable identity leaves
   a valid summary. Competing overrides preserve azapi, both msgraph types,
   azurerm, and provider-owned identifying content (SC2, SC5, SC15; T02, T07).
 

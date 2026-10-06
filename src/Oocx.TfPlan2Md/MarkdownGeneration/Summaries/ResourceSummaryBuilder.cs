@@ -83,7 +83,10 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var keys = ResolveKeys(change.Type);
         var values = ExtractValues(keys, state);
 
-        var name = FormatSummaryValue(GetDisplayName(values, state, change), change.ProviderName);
+        var displayName = change.UsesGenericDisplayIdentityPolicy
+            ? change.SummaryDisplayIdentity ?? change.Address
+            : GetDisplayName(values, state, change);
+        var name = FormatSummaryValue(displayName, change.ProviderName);
         var resourceGroup = FormatSummaryValue(TryGet(values, "resource_group_name"), change.ProviderName);
         var location = FormatSummaryValue(TryGet(values, "location"), change.ProviderName);
         var url = FormatPlainValue(TryGet(values, "url"));
@@ -207,7 +210,10 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
     private string? BuildUpdateSummary(ResourceChangeModel change)
     {
         var state = GetStateDictionary(change.AfterJson) ?? GetStateDictionary(change.BeforeJson);
-        var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: true), change.ProviderName);
+        var displayName = change.UsesGenericDisplayIdentityPolicy
+            ? change.SummaryDisplayIdentity ?? change.Address
+            : GetDisplayName(state, change, preferAfter: true);
+        var name = FormatSummaryValue(displayName, change.ProviderName);
         var changeNames = change.AttributeChanges
             .Select(a => EscapeMarkdown(a.Name))
             .ToList();
@@ -228,7 +234,10 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
     private string? BuildReplaceSummary(ResourceChangeModel change)
     {
         var state = GetStateDictionary(change.AfterJson) ?? GetStateDictionary(change.BeforeJson);
-        var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: true), change.ProviderName);
+        var displayName = change.UsesGenericDisplayIdentityPolicy
+            ? change.SummaryDisplayIdentity ?? change.Address
+            : GetDisplayName(state, change, preferAfter: true);
+        var name = FormatSummaryValue(displayName, change.ProviderName);
 
         if (change.ReplacePaths is { Count: > 0 })
         {
@@ -254,7 +263,10 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
     private string? BuildDeleteSummary(ResourceChangeModel change)
     {
         var state = GetStateDictionary(change.BeforeJson);
-        var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: false), change.ProviderName);
+        var displayName = change.UsesGenericDisplayIdentityPolicy
+            ? change.SummaryDisplayIdentity ?? change.Address
+            : GetDisplayName(state, change, preferAfter: false);
+        var name = FormatSummaryValue(displayName, change.ProviderName);
         return name;
     }
 

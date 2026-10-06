@@ -44,6 +44,11 @@ internal partial class ReportModelBuilder
             // Related issue: docs/issues/113-argument-null-source/analysis.md.
             var action = outputChange.Actions is { Count: > 0 } ? outputChange.Actions[0] : "no-op";
 
+            if (_hideUnchangedOutputs && string.Equals(action, TerraformActions.NoOp, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             // Select value based on action (after for create/update/no-op, before for delete)
             var value = action == "delete" ? outputChange.Before : outputChange.After;
 

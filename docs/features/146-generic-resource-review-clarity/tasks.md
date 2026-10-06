@@ -190,13 +190,13 @@ value-selection and formatting path for retained outputs.
 
 **Acceptance Criteria:**
 
-- [ ] The flag omits only effective no-ops at root and module scope, preserving
+- [x] The flag omits only effective no-ops at root and module scope, preserving
   existing absent-action handling, create/update/delete markers, before/after
   values, sensitive masking, and computed presentation (SC14; T15).
-- [ ] Empty output sections and output-only module headings disappear; modules
+- [x] Empty output sections and output-only module headings disappear; modules
   retaining resources and non-empty section order remain valid, including
   no-output plans (SC14; T16).
-- [ ] Without the flag, existing output selection remains unchanged
+- [x] Without the flag, existing output selection remains unchanged
   (SC15; T17).
 
 **Dependencies:** Task 1.

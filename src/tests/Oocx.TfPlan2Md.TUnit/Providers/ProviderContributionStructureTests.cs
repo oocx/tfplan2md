@@ -45,6 +45,7 @@ public class ProviderContributionStructureTests
             typeof(Oocx.TfPlan2Md.Providers.AzureAD.AzureADModule),
             typeof(Oocx.TfPlan2Md.Providers.AzureDevOps.AzureDevOpsModule),
             typeof(Oocx.TfPlan2Md.Providers.AzureRM.AzureRMModule),
+            typeof(Oocx.TfPlan2Md.Providers.MsGraph.MsGraphModule),
             typeof(AzureRoleDefinitionResolver)
         };
 

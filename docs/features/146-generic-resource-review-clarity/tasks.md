@@ -145,15 +145,15 @@ primary summary/count construction. Keep resource types and setting paths in
 
 **Acceptance Criteria:**
 
-- [ ] Both msgraph types place unchanged settings, plus desired settings for
+- [x] Both msgraph types place unchanged settings, plus desired settings for
   creates/empty imports, in secondary models with no primary row/count entries
   in either unchanged-value mode (SC11–SC13; T13).
-- [ ] Against meaningful prior state, settings added, removed, or changed remain
+- [x] Against meaningful prior state, settings added, removed, or changed remain
   primary and count once, including populated imports; unchanged companions
   remain secondary (SC12–SC13; T14).
-- [ ] Missing settings produce no phantom rows. Secondary models preserve
+- [x] Missing settings produce no phantom rows. Secondary models preserve
   masking/computed presentation and mapped friendly context (SC3, SC11; T13).
-- [ ] Non-msgraph resources retain ordinary presentation for identical attribute
+- [x] Non-msgraph resources retain ordinary presentation for identical attribute
   names; no new provider rule is added to core mappings (SC15; T14, T17).
 
 **Dependencies:** Tasks 2 and 5.

@@ -60,6 +60,11 @@ public class ResourceChangeModel
     public required IReadOnlyList<AttributeChangeModel> AttributeChanges { get; init; }
 
     /// <summary>
+    /// Gets or sets attributes moved by a provider into a secondary section instead of primary change summaries.
+    /// </summary>
+    internal IReadOnlyList<AttributeChangeModel> SecondaryAttributeChanges { get; set; } = [];
+
+    /// <summary>
     /// Gets the raw JSON representation of the resource state before the change.
     /// Used by resource-specific templates for semantic diffing.
     /// </summary>

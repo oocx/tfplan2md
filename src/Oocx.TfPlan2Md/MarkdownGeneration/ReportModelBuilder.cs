@@ -51,6 +51,7 @@ internal partial class ReportModelBuilder
         // Option fields
         _showSensitive = opts.ShowSensitive;
         _showUnchangedValues = opts.ShowUnchangedValues;
+        _hideUnchangedOutputs = opts.HideUnchangedOutputs;
         _summaryNameAttributes = opts.SummaryNameAttributes;
         _ignoreAzureIdCaseChanges = opts.IgnoreAzureIdCaseChanges;
         _reportTitle = opts.ReportTitle;
@@ -92,6 +93,11 @@ internal partial class ReportModelBuilder
     /// Indicates whether unchanged attribute values should be included in output tables.
     /// </summary>
     private readonly bool _showUnchangedValues;
+
+    /// <summary>
+    /// Indicates whether effective no-op output changes should be removed before report grouping.
+    /// </summary>
+    private readonly bool _hideUnchangedOutputs;
 
     /// <summary>
     /// Ordered generic resource identity paths configured for this report.

@@ -107,6 +107,21 @@ public class NsgMergedSecurityRuleRenderingTests
     }
 
     /// <summary>
+    /// Verifies imported NSGs with merged security rules explain that the displayed values are desired state.
+    /// </summary>
+    [Test]
+    public void Render_ImportedNsgWithMergedSecurityRules_ShowsImportContextBeforeTable()
+    {
+        var markdown = Render(BuildNoOpParentWithSeparateRulePlan(CreateAction, imported: true));
+        const string importNote = "> 📥 Prior state from import is empty; the values below show the full desired state.";
+        var notePosition = markdown.IndexOf(importNote, StringComparison.Ordinal);
+        var tablePosition = markdown.IndexOf("| Change |", StringComparison.Ordinal);
+
+        notePosition.Should().BeGreaterThanOrEqualTo(0);
+        tablePosition.Should().BeGreaterThan(notePosition);
+    }
+
+    /// <summary>
     /// Verifies a separate updated rule remains visible under a no-op NSG parent.
     /// </summary>
     [Test]
@@ -205,7 +220,7 @@ public class NsgMergedSecurityRuleRenderingTests
     /// </summary>
     /// <param name="childAction">The child action to model: create, update, or delete.</param>
     /// <returns>The constructed Terraform plan.</returns>
-    private static TerraformPlan BuildNoOpParentWithSeparateRulePlan(string childAction)
+    private static TerraformPlan BuildNoOpParentWithSeparateRulePlan(string childAction, bool imported = false)
     {
         var parentState = JsonDocument.Parse(
             """
@@ -250,7 +265,14 @@ public class NsgMergedSecurityRuleRenderingTests
                     ParentNsgAddress,
                     NetworkSecurityGroupType,
                     ParentNsgName,
-                    new Change([NoOpAction], parentState, parentState, null, null, null)),
+                    new Change(
+                        [NoOpAction],
+                        imported ? JsonDocument.Parse("{}").RootElement : parentState,
+                        parentState,
+                        null,
+                        null,
+                        null,
+                        importing: imported ? new Importing { Id = "existing-id" } : null)),
                 CreateSeparateRuleChange(childAction)
             ]);
     }

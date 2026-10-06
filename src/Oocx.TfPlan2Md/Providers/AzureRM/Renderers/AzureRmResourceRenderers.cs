@@ -130,6 +130,8 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
             writer.Raw(viewModel.Description + "\n\n");
         }
 
+        ImportPriorStateNoteRenderer.Render(writer, change);
+
         var isDelete = string.Equals(change.Action, "delete", StringComparison.OrdinalIgnoreCase);
         var isUpdateOrReplace = !string.Equals(change.Action, "create", StringComparison.OrdinalIgnoreCase) && !isDelete;
 
@@ -240,6 +242,7 @@ internal sealed class NsgRenderer : AzureRmDelegatingRenderer
         // Heading is always "Security Rules" regardless of action type to preserve established output.
         writer.Heading("Security Rules", 4);
         writer.BlankLine();
+        ImportPriorStateNoteRenderer.Render(writer, change);
         writer.TableHeader("Change", "Name", "Priority", "Direction", "Access", "Protocol", "Source Addresses", "Source Ports", "Destination Addresses", "Destination Ports", "Description");
 
         if (isCreate)
@@ -308,6 +311,7 @@ internal sealed class FirewallNetworkRuleRenderer : AzureRmDelegatingRenderer
 
         WriteDetailsOpen(writer, change, context);
         WriteFirewallCollectionHeader(writer, viewModel.Name, viewModel.Priority, viewModel.Action);
+        ImportPriorStateNoteRenderer.Render(writer, change);
 
         if (isCreate)
         {
@@ -418,6 +422,7 @@ internal sealed class FirewallAppRuleRenderer : AzureRmDelegatingRenderer
 
         WriteDetailsOpen(writer, change, context);
         WriteAppCollectionHeader(writer, viewModel.Name, viewModel.Priority, viewModel.Action);
+        ImportPriorStateNoteRenderer.Render(writer, change);
 
         if (isCreate)
         {

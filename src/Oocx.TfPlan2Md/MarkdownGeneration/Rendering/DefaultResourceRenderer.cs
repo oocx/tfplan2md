@@ -53,6 +53,7 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
         var smallAttributes = change.AttributeChanges.Where(attribute => !attribute.IsLarge).ToArray();
         var largeAttributes = change.AttributeChanges.Where(attribute => attribute.IsLarge).ToArray();
 
+        ImportPriorStateNoteRenderer.Render(writer, change);
         RenderAttributeTable(writer, change, smallAttributes, policy.UseKnownAfterApplyFormatting, context.ValueFormatterRegistry, context.IconProviderRegistry, _useResourceTypeForAttributeIcons);
         WriteTagsBadgesSection(writer, change);
         WriteNoChangesMessage(writer, change, smallAttributes, largeAttributes, policy);

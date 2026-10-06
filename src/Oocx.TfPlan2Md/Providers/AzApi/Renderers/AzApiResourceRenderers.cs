@@ -354,6 +354,7 @@ internal sealed class AzApiResourceRenderer : AzApiRendererBase
 
         var metadata = AzApiMetadataExtractor.Extract(change);
         RenderTypeAndDocs(writer, metadata, context);
+        ImportPriorStateNoteRenderer.Render(writer, change);
         RenderResourceMetadataTable(writer, metadata, context);
         RenderTags(writer, metadata);
         RenderBody(writer, change, context);
@@ -385,6 +386,7 @@ internal sealed class AzApiUpdateResourceRenderer : AzApiRendererBase
 
         var metadata = AzApiMetadataExtractor.Extract(change);
         RenderTypeAndDocs(writer, metadata, context);
+        ImportPriorStateNoteRenderer.Render(writer, change);
         RenderResourceIdTable(writer, metadata, context);
         RenderBody(writer, change, context);
         RenderOutputValues(writer, change, context);
@@ -412,6 +414,7 @@ internal sealed class AzApiOutputValuesRenderer : AzApiRendererBase
     public override void Render(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context)
     {
         RenderDetailsOpen(writer, change, context);
+        ImportPriorStateNoteRenderer.Render(writer, change);
         RenderOutputValues(writer, change, context);
 
         writer.BlankLine();

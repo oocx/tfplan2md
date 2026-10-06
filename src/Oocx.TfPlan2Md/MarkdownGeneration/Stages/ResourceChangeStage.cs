@@ -72,6 +72,12 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
     private const string SensitiveMask = "(sensitive)";
 
     /// <summary>
+    /// Terraform's root resource identifier is housekeeping data for import context.
+    /// </summary>
+    private static readonly ImmutableHashSet<string> ImportStateHousekeepingRootPaths =
+        ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, "id");
+
+    /// <summary>
     /// Strategy used to build resource summaries.
     /// </summary>
     private readonly IResourceSummaryBuilder _summaryBuilder;
@@ -220,6 +226,8 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
             AfterUnknown = resourceChange.Change.AfterUnknown,
             ReplacePaths = resourceChange.Change.ReplacePaths,
             ImportId = importId,
+            IsImportedWithEmptyPriorState = importId is not null
+                && !MeaningfulStateWalker.HasMeaningfulState(resourceChange.Change.Before, ImportStateHousekeepingRootPaths),
             MovedFromAddress = movedFromAddress,
             IsImportAlreadyApplied = isImportAlreadyApplied,
             IsMoveAlreadyApplied = isMoveAlreadyApplied,

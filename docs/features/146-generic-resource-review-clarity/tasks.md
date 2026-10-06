@@ -120,15 +120,15 @@ both default and provider-owned cards.
 
 **Acceptance Criteria:**
 
-- [ ] Null/empty state, housekeeping-only root values, `body: {}`, and nested
+- [x] Null/empty state, housekeeping-only root values, `body: {}`, and nested
   null/empty strings/empty collections trigger the import note (SC10; T12).
-- [ ] Substantive root/nested values, including zero, false, non-empty arrays,
+- [x] Substantive root/nested values, including zero, false, non-empty arrays,
   and `body.id`, suppress the note; root exclusions do not suppress same-named
   nested data (SC10; T12).
-- [ ] Imported cards explain full desired state before attributes and make no
+- [x] Imported cards explain full desired state before attributes and make no
   newly-created claim solely from missing history; ordinary creates show no
   import note and sensitive desired values retain protection (SC10; T12).
-- [ ] Default and provider-owned renderers consume the shared flag without
+- [x] Default and provider-owned renderers consume the shared flag without
   provider decisions in the reusable walker (SC10; T12).
 
 **Dependencies:** None.

@@ -111,7 +111,7 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
     /// <returns>Summary HTML string for the resource.</returns>
     private static string BuildSummaryHtml(ResourceChangeModel model, string roleSummaryHtml, string scopeMarkdown)
     {
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.NameWithInstanceSuffix)}</b>";
         var scopeHtml = ConvertMarkdownCodeToSummaryHtml(scopeMarkdown);
         return $"{prefix} — {roleSummaryHtml} in {scopeHtml}";
     }

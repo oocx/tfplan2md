@@ -537,7 +537,11 @@ internal sealed class ReportRenderer
         foreach (var operation in operations)
         {
             var operationText = operation.Operation == "Import" ? "📥\u00A0Import" : "🔀\u00A0Move";
-            var resourceText = $"{MarkdownHelpers.EscapeMarkdown(operation.ResourceType)} {MarkdownHelpers.FormatCodeTable(operation.ResourceName)}";
+            var resourceText = MarkdownHelpers.FormatCodeTable(operation.Address);
+            if (!string.IsNullOrWhiteSpace(operation.DisplayIdentity))
+            {
+                resourceText += $" — {MarkdownHelpers.FormatCodeSummary(operation.DisplayIdentity)}";
+            }
             var detailsText = operation.Operation == "Import"
                 ? $"ID: {MarkdownHelpers.FormatImportIdDetails(operation.Details)}"
                 : $"From: {MarkdownHelpers.FormatCodeTable(operation.Details)}";

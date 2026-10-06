@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 
@@ -160,16 +159,13 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
 
         foreach (var change in changes)
         {
-            var resourceName = ResolveRefactoringResourceName(change);
-
             if (change.ImportId is not null)
             {
                 operations.Add(new RefactoringOperationModel
                 {
                     Operation = ImportOperation,
                     Address = change.Address,
-                    ResourceType = change.Type,
-                    ResourceName = resourceName,
+                    DisplayIdentity = change.SummaryDisplayIdentity,
                     Details = change.ImportId,
                     Status = change.IsImportAlreadyApplied ? AlreadyAppliedStatus : ReadyStatus,
                     IsAlreadyApplied = change.IsImportAlreadyApplied
@@ -182,8 +178,7 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
                 {
                     Operation = MoveOperation,
                     Address = change.Address,
-                    ResourceType = change.Type,
-                    ResourceName = resourceName,
+                    DisplayIdentity = change.SummaryDisplayIdentity,
                     Details = change.MovedFromAddress,
                     Status = change.IsMoveAlreadyApplied ? AlreadyAppliedStatus : ReadyStatus,
                     IsAlreadyApplied = change.IsMoveAlreadyApplied
@@ -198,31 +193,4 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
             .ToList();
     }
 
-    private static string ResolveRefactoringResourceName(ResourceChangeModel change)
-    {
-        var state = change.AfterJson ?? change.BeforeJson;
-        var flatState = Helpers.JsonFlattener.ConvertToFlatDictionary(state);
-
-        static string? GetValue(Dictionary<string, string?> values, string key)
-        {
-            return values.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value)
-                ? value
-                : null;
-        }
-
-        var fromState = GetValue(flatState, "name")
-            ?? GetValue(flatState, "display_name")
-            ?? GetValue(flatState, "body.displayName")
-            ?? GetValue(flatState, "displayName")
-            ?? GetValue(flatState, "url");
-
-        if (fromState is not null)
-        {
-            return fromState;
-        }
-
-        return !string.IsNullOrWhiteSpace(change.Name)
-            ? change.Name
-            : change.Address;
-    }
 }

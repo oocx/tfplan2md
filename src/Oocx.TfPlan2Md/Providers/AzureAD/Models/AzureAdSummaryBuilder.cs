@@ -144,7 +144,7 @@ internal static partial class AzureAdSummaryBuilder
     /// <returns>Summary HTML string.</returns>
     private static string BuildSummaryHtml(ResourceChangeModel model, string detailText)
     {
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.NameWithInstanceSuffix)}</b>";
         return $"{prefix} \u2014 {detailText}";
     }
 

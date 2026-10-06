@@ -70,7 +70,7 @@ internal sealed class VariableGroupRenderer : AzureDevOpsDelegatingRenderer
         };
 
         var summary = change.SummaryHtml
-            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
+            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.NameWithInstanceSuffix)}</b>";
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");
         writer.Raw("<summary>");
@@ -232,7 +232,7 @@ internal sealed class BuildDefinitionRenderer : AzureDevOpsDelegatingRenderer
         };
 
         var summary = change.SummaryHtml
-            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
+            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.NameWithInstanceSuffix)}</b>";
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");
         writer.Raw("<summary>");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -27,6 +28,16 @@ public class ResourceChangeModel
     /// Gets the resource name.
     /// </summary>
     public required string Name { get; init; }
+
+    /// <summary>
+    /// Gets the resource's Terraform local name with its exact instance suffix for summary headers.
+    /// </summary>
+    internal string NameWithInstanceSuffix => TerraformResourceAddressFormatter.AppendInstanceSuffix(Name, Address);
+
+    /// <summary>
+    /// Gets the exact instance suffix from the final resource address segment.
+    /// </summary>
+    internal string ResourceInstanceSuffix => TerraformResourceAddressFormatter.GetFinalResourceInstanceSuffix(Address);
 
     /// <summary>
     /// Gets the provider name (e.g., "aws", "azurerm").

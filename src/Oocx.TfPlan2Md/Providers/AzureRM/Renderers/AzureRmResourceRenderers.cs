@@ -47,7 +47,7 @@ internal abstract class AzureRmDelegatingRenderer(string resourceType) : IResour
         };
 
         var summary = change.SummaryHtml
-            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
+            ?? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.NameWithInstanceSuffix)}</b>";
 
         writer.Raw(detailsTag + DetailsStyle + ">\n");
         writer.Raw("<summary>");
@@ -173,7 +173,7 @@ internal sealed class RoleAssignmentRenderer : AzureRmDelegatingRenderer
         // SummaryHtml for role assignments may already include provider-specific content
         // (e.g. Azure resource name badge, change-count badges) that is not part of the
         // plain action/type/name prefix the snapshot expects.
-        var baseSummary = $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.Name)}</b>";
+        var baseSummary = $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} <b>{MarkdownHelpers.FormatCodeSummary(change.NameWithInstanceSuffix)}</b>";
         var enrichedSummary = !string.IsNullOrWhiteSpace(summaryText)
             ? $"{baseSummary} — {summaryText}"
             : baseSummary;

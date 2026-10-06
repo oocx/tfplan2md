@@ -112,7 +112,7 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
     private static string ResolveSummary(ResourceChangeModel change)
     {
         return string.IsNullOrWhiteSpace(change.SummaryHtml)
-            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.Name)}"
+            ? $"{change.ActionSymbol}\u00A0{MarkdownHelpers.EscapeMarkdown(change.Type)} {MarkdownHelpers.FormatCodeTable(change.NameWithInstanceSuffix)}"
             : change.SummaryHtml;
     }
 

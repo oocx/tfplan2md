@@ -135,4 +135,43 @@ public class ReferenceSelectorTests
         ReferenceSelector.SelectResourceLevelReference(["module.identity.azuread_user.admin.object_id", "module.identity.azuread_user.admin"])
             .Should().Be("module.identity.azuread_user.admin");
     }
+
+    /// <summary>
+    /// T09: Ignores pseudo references after one or more module prefixes are consumed.
+    /// </summary>
+    [Test]
+    public void SelectBestReference_NestedModulePseudoReferences_ReturnsNull()
+    {
+        string[] pseudoReferences =
+        [
+            "module.compute.each.key",
+            "module.compute.each.value",
+            "module.compute.count.index",
+            "module.compute.self",
+            "module.root.module.compute.count.index"
+        ];
+
+        foreach (var reference in pseudoReferences)
+        {
+            ReferenceSelector.SelectBestReference([reference]).Should().BeNull(reference);
+        }
+    }
+
+    /// <summary>
+    /// T09: Keeps useful resource and each.value attribute references alongside nested pseudo references.
+    /// </summary>
+    [Test]
+    public void SelectBestReference_NestedModuleMixedReferences_PreservesUsefulPriority()
+    {
+        ReferenceSelector.SelectBestReference(
+            [
+                "module.compute.each.key",
+                "module.shared.azuread_group.admins.object_id",
+                "local.tenant_prefix"
+            ])
+            .Should().Be("module.shared.azuread_group.admins");
+
+        ReferenceSelector.SelectBestReference(["module.compute.each.value.group_object_id"])
+            .Should().Be("each.value.group_object_id");
+    }
 }

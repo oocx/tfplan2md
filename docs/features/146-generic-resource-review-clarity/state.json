@@ -1,10 +1,10 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "architect",
+  "stage": "quality-engineer",
   "status": "running",
   "gates": {
-    "spec": "pending",
+    "spec": "approved",
     "arch": "n/a",
     "uat": "n/a"
   },
@@ -40,5 +40,6 @@
       "raised_by": "requirements-engineer",
       "raised_at": "2026-10-06"
     }
-  ]
+  ],
+  "arch_contested": false
 }

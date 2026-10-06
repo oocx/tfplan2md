@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "quality-engineer",
+  "stage": "task-planner",
   "status": "running",
   "gates": {
     "spec": "approved",

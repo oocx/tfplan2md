@@ -242,12 +242,27 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |
 | `--fail-on-static-code-analysis-errors <level>` | Exit with code 10 when findings at or above this level exist |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
+| `--summary-name-attributes <path1,path2,...>` | Replace the generic resource summary identity candidates, in the supplied order; paths may be nested (for example, `body.displayName`) |
+| `--hide-unchanged-outputs` | Omit outputs whose Terraform action is no-op from root and module output sections |
 | `--ignore-azure-id-case-changes` | Suppress attribute change rows where before/after values are Azure resource IDs that differ only in casing (see [below](#case-insensitive-azure-resource-id-filter)) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
 | `--debug` | Append diagnostic information to the report for troubleshooting |
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
+
+For example, choose a project-specific generic resource identity order and omit
+unchanged outputs:
+
+```bash
+tfplan2md --summary-name-attributes body.title,body.properties.title \
+  --hide-unchanged-outputs plan.json
+```
+
+The identity option replaces the built-in generic fallback order. Empty entries
+(including leading, trailing, or repeated commas) are rejected. Existing
+resource-specific summaries keep their identifying content. Without
+`--hide-unchanged-outputs`, output selection remains unchanged.
 
 #### Render Target Selection
 

@@ -3227,6 +3227,63 @@ Plans from Terraform 1.13 and all earlier supported versions that lack any of th
 
 See [docs/features/130-terraform-1-15-support/](features/130-terraform-1-15-support/) for the full specification, ADRs, and implementation details.
 
+## Generic Resource Review Clarity (Feature 146)
+
+Generic resources such as `msgraph_resource`, `msgraph_update_resource`, and
+`azapi_resource` can represent different objects while sharing one Terraform type.
+Feature 146 makes their summaries easier to distinguish and reduces secondary report
+noise while keeping review-relevant values available.
+
+### Generic resource identities
+
+For resources without a resource-specific summary mapping, the report tries these
+paths in order: `name`, `display_name`, `displayName`, `body.displayName`,
+`body.properties.displayName`, and `body.name`. A candidate must resolve to a usable
+scalar; missing, null, empty, object, collection, masked-sensitive, and unknown values
+are skipped. Nested paths are traversed as attributes. For create/update/replace, the
+planned value is preferred; for delete, prior state is preferred. If a preferred
+candidate is unknown, a known value at the same path on the other side can still be
+used. Numeric zero and `false` are valid identities. Existing mapped summaries retain
+their identifying choices.
+
+`--summary-name-attributes <path1,path2,...>` replaces the generic fallback order for
+that run. Paths are tried in order, and nested paths such as `body.title` are supported.
+The option rejects missing values and empty list entries. It does not change existing
+resource-specific mappings. Resource summaries preserve the full Terraform instance
+suffix, including quoted `for_each` keys and numeric `count` indexes. Refactoring
+Summary import and move labels include the full resource address and append an
+available generic identity as context.
+
+### Review context and secondary details
+
+Computed values whose reference is only `each.key`, `each.value`, `count.index`, or
+`self` (including module-qualified forms) show the plain `(known after apply)` marker.
+Useful references, including specific `each.value.<attribute>` paths, remain visible.
+
+An imported resource whose prior attributes contain no meaningful state shows a note
+that the values are its full desired state. Empty values and import housekeeping
+attributes do not make prior state meaningful. The note is omitted when substantive
+prior state exists.
+
+For `msgraph_resource` and `msgraph_update_resource`, unchanged `api_version`, `url`,
+and `ignore_missing_property` values remain accessible in a collapsed **Provider
+settings** area. Creates and imports with empty prior state show desired settings
+there. If meaningful prior state shows one of these settings changing, the setting
+stays in the normal diff and contributes to the changed-attribute count. The setting
+remains collapsed even with `--show-unchanged-values`.
+
+### Unchanged outputs
+
+`--hide-unchanged-outputs` is an opt-in filter for no-op outputs at both root and module
+scope. Changed, created, and deleted outputs retain their normal values, markers, and
+sensitivity handling. Empty output sections and output-only module headings are
+omitted after filtering. Without the option, output selection is unchanged.
+
+```bash
+tfplan2md --summary-name-attributes body.title,body.properties.title \
+  --hide-unchanged-outputs plan.json
+```
+
 ## Future Considerations
 
 The following features may be added in future versions:

@@ -442,6 +442,20 @@ Detailed findings are displayed in a collapsible section within the resource det
 
 Resources that are part of refactoring operations (import or move) display special indicators in their summaries and are listed in a separate Refactoring Summary section.
 
+For generic resources, the summary preserves the full Terraform instance suffix, such
+as `policy["block_legacy_auth"]` or `server[0]`, and may append a resolved display
+identity. Import and move entries in Refactoring Summary use the full resource address
+as their label and may append that identity as secondary context. Generic identity
+selection follows the ordered paths documented under [Generic Resource Review
+Clarity](features.md#generic-resource-review-clarity-feature-146). Existing
+resource-specific summary mappings keep their established identifying content.
+
+An imported resource with no meaningful prior state has a note immediately before its
+desired-state attributes explaining that those values are the full desired state.
+Unchanged Microsoft Graph provider settings appear in a collapsed **Provider
+settings** area within the resource card; changed settings remain in the ordinary
+attribute diff.
+
 ### Import Operations
 
 Resources being imported from existing infrastructure show the 📥 Import indicator:
@@ -478,13 +492,13 @@ A separate section summarizes all refactoring operations at the end of the repor
 
 | Operation | Resource | Details | Status |
 | --------- | -------- | ------- | ------ |
-| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-...` | ✅ Ready |
-| 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |
+| 📥 Import | `module.identity.review_object.policy["admins"]` — <code>Require MFA</code> | ID: `existing-policy-id` | ✅ Ready |
+| 🔀 Move | `module.identity.review_object.policy["admins"]` — <code>Require MFA</code> | From: `module.identity.review_object.policy["legacy"]` | ⚠️ Already moved |
 ```
 
 **Columns:**
 - **Operation**: Icon (📥 or 🔀) and operation type
-- **Resource**: Resource type and local name (code-formatted)
+- **Resource**: Full Terraform address (code-formatted), optionally followed by a generic display identity
 - **Details**: For imports, the resource ID; for moves, the source address
 - **Status**: ✅ Ready or ⚠️ Already applied
 

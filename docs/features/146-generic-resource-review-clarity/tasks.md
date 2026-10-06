@@ -169,12 +169,12 @@ normal diff path.
 
 **Acceptance Criteria:**
 
-- [ ] Secondary settings remain readable and accessible inside the card for
+- [x] Secondary settings remain readable and accessible inside the card for
   updates, creates, and empty imports, including `--show-unchanged-values`
   (SC11–SC13; T13).
-- [ ] Changed settings remain in ordinary primary diffs/counts exactly once;
+- [x] Changed settings remain in ordinary primary diffs/counts exactly once;
   import-note position and selected identity are preserved (SC10–SC13; T12–T14).
-- [ ] GitHub, Azure DevOps, and Bitbucket output uses established collapse/fallback
+- [x] GitHub, Azure DevOps, and Bitbucket output uses established collapse/fallback
   conventions; annotations, inline actions, large values, masking, and card/table
   structure retain existing rendering behavior (SC15, SC17; T17–T18).
 

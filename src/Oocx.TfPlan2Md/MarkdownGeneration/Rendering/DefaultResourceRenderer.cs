@@ -16,6 +16,7 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
 
     private readonly bool _useResourceTypeForAttributeIcons;
     private readonly bool _suppressNoAttributeChangesForNoOpParents;
+    private readonly Action<MarkdownWriter, ResourceChangeModel, IRenderContext>? _renderAdditionalSection;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultResourceRenderer"/> class.
@@ -26,10 +27,15 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
     /// <param name="suppressNoAttributeChangesForNoOpParents">
     /// When <c>true</c>, the "_No attribute changes._" message is suppressed when child resource groups are present.
     /// </param>
-    public DefaultResourceRenderer(bool useResourceTypeForAttributeIcons = false, bool suppressNoAttributeChangesForNoOpParents = false)
+    /// <param name="renderAdditionalSection">Optional provider-neutral section rendered after primary attributes.</param>
+    public DefaultResourceRenderer(
+        bool useResourceTypeForAttributeIcons = false,
+        bool suppressNoAttributeChangesForNoOpParents = false,
+        Action<MarkdownWriter, ResourceChangeModel, IRenderContext>? renderAdditionalSection = null)
     {
         _useResourceTypeForAttributeIcons = useResourceTypeForAttributeIcons;
         _suppressNoAttributeChangesForNoOpParents = suppressNoAttributeChangesForNoOpParents;
+        _renderAdditionalSection = renderAdditionalSection;
     }
 
     /// <inheritdoc />
@@ -55,6 +61,7 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
 
         ImportPriorStateNoteRenderer.Render(writer, change);
         RenderAttributeTable(writer, change, smallAttributes, policy.UseKnownAfterApplyFormatting, context.ValueFormatterRegistry, context.IconProviderRegistry, _useResourceTypeForAttributeIcons);
+        _renderAdditionalSection?.Invoke(writer, change, context);
         WriteTagsBadgesSection(writer, change);
         WriteNoChangesMessage(writer, change, smallAttributes, largeAttributes, policy);
 
@@ -174,113 +181,6 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
     {
         var policy = DefaultResourceRenderPolicy.Resolve(change, context);
         return (policy.UseOutputsFocusedFormatting, policy.UseKnownAfterApplyFormatting);
-    }
-
-    /// <summary>
-    /// Renders attribute changes table according to action semantics.
-    /// </summary>
-    /// <param name="writer">Markdown writer target.</param>
-    /// <param name="change">Resource change model.</param>
-    /// <param name="smallAttributes">Non-large attribute changes.</param>
-    /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
-    /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
-    /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
-    private static void RenderAttributeTable(
-        MarkdownWriter writer,
-        ResourceChangeModel change,
-        AttributeChangeModel[] smallAttributes,
-        bool useKnownAfterApplyFormatting,
-        ValueFormatterRegistry? valueFormatterRegistry,
-        IconProviderRegistry? iconProviderRegistry,
-        bool useResourceTypeForAttributeIcons = false)
-    {
-        if (smallAttributes.Length == 0)
-        {
-            return;
-        }
-
-        if (change.Action is "create" or "delete")
-        {
-            RenderSingleValueTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
-        }
-        else
-        {
-            RenderBeforeAfterTable(writer, change, smallAttributes, useKnownAfterApplyFormatting, valueFormatterRegistry, iconProviderRegistry, useResourceTypeForAttributeIcons);
-        }
-
-        writer.BlankLine();
-    }
-
-    /// <summary>
-    /// Renders a two-column attribute table for create/delete actions.
-    /// </summary>
-    /// <param name="writer">Markdown writer target.</param>
-    /// <param name="change">Resource change model.</param>
-    /// <param name="smallAttributes">Non-large attribute changes.</param>
-    /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
-    /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
-    /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
-    private static void RenderSingleValueTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, bool useResourceTypeForAttributeIcons = false)
-    {
-        // Use fixed-width separators to preserve baseline output for all cases.
-        _ = useKnownAfterApplyFormatting;
-        writer.Raw("| Attribute | Value |\n");
-        writer.Raw("| ----------- | ------- |\n");
-
-        foreach (var attribute in smallAttributes)
-        {
-            if (ShouldSkipTagAttribute(change, attribute.Name))
-            {
-                continue;
-            }
-
-            var raw = change.Action == "create" ? attribute.After : attribute.Before;
-            var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
-            var value = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
-                attribute.Name, raw, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
-            var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
-
-            writer.TableRow([
-                MarkdownHelpers.EscapeMarkdown(attribute.Name) + indicator,
-                value
-            ]);
-        }
-    }
-
-    /// <summary>
-    /// Renders a three-column before/after attribute table for update-like actions.
-    /// </summary>
-    /// <param name="writer">Markdown writer target.</param>
-    /// <param name="change">Resource change model.</param>
-    /// <param name="smallAttributes">Non-large attribute changes.</param>
-    /// <param name="useKnownAfterApplyFormatting">Whether known-after-apply formatting is enabled.</param>
-    /// <param name="valueFormatterRegistry">Optional value formatter registry for attribute value enrichment.</param>
-    /// <param name="iconProviderRegistry">Optional icon provider registry for resource-type-aware icon resolution.</param>
-    /// <param name="useResourceTypeForAttributeIcons">When <c>true</c>, passes the resource type for icon lookup.</param>
-    private static void RenderBeforeAfterTable(MarkdownWriter writer, ResourceChangeModel change, AttributeChangeModel[] smallAttributes, bool useKnownAfterApplyFormatting, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, bool useResourceTypeForAttributeIcons = false)
-    {
-        // Use fixed-width separators to preserve baseline output for all cases.
-        _ = useKnownAfterApplyFormatting;
-        writer.Raw("| Attribute | Before | After |\n");
-        writer.Raw("| ----------- | -------- | ------- |\n");
-
-        foreach (var attribute in smallAttributes)
-        {
-            var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
-            var beforeValue = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
-                attribute.Name, attribute.Before, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
-            var afterValue = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
-                attribute.Name, attribute.After, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
-            var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
-
-            writer.TableRow([
-                MarkdownHelpers.EscapeMarkdown(attribute.Name) + indicator,
-                string.IsNullOrEmpty(beforeValue) ? "-" : beforeValue,
-                string.IsNullOrEmpty(afterValue) ? "-" : afterValue
-            ]);
-        }
     }
 
 }

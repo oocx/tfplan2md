@@ -5,6 +5,7 @@ using Oocx.TfPlan2Md.Providers.AzApi.Renderers;
 using Oocx.TfPlan2Md.Providers.AzureAD.Renderers;
 using Oocx.TfPlan2Md.Providers.AzureDevOps.Renderers;
 using Oocx.TfPlan2Md.Providers.AzureRM.Renderers;
+using Oocx.TfPlan2Md.Providers.MsGraph.Renderers;
 using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
@@ -29,6 +30,8 @@ public class ProviderResourceRenderersTests
         "azapi_resource",
         "azapi_update_resource",
         "azapi_output_values",
+        "msgraph_resource",
+        "msgraph_update_resource",
         "azuread_user",
         "azuread_group",
         "azuread_group_without_members",
@@ -54,6 +57,8 @@ public class ProviderResourceRenderersTests
             new AzApiResourceRenderer(),
             new AzApiUpdateResourceRenderer(),
             new AzApiOutputValuesRenderer(),
+            new MsGraphResourceRenderer("msgraph_resource"),
+            new MsGraphResourceRenderer("msgraph_update_resource"),
             new UserRenderer(),
             new GroupRenderer(),
             new GroupWithoutMembersRenderer(),

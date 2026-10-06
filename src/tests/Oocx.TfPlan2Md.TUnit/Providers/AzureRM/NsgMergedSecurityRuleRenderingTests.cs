@@ -113,7 +113,7 @@ public class NsgMergedSecurityRuleRenderingTests
     public void Render_ImportedNsgWithMergedSecurityRules_ShowsImportContextBeforeTable()
     {
         var markdown = Render(BuildNoOpParentWithSeparateRulePlan(CreateAction, imported: true));
-        const string importNote = "> 📥 Prior state from import is empty; the values below show the full desired state.";
+        const string importNote = "> 📥\u00A0Prior state from import is empty; the values below show the full desired state.";
         var notePosition = markdown.IndexOf(importNote, StringComparison.Ordinal);
         var tablePosition = markdown.IndexOf("| Change |", StringComparison.Ordinal);
 

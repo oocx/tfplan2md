@@ -17,7 +17,7 @@ internal static class ImportPriorStateNoteRenderer
             return;
         }
 
-        writer.Paragraph("> 📥 Prior state from import is empty; the values below show the full desired state.");
+        writer.Paragraph("> 📥\u00A0Prior state from import is empty; the values below show the full desired state.");
         writer.BlankLine();
     }
 }

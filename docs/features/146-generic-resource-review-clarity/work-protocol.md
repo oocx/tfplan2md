@@ -49,3 +49,17 @@
 - **Summary:** Completed Feature 146 Tasks 3–9, including multi-target rendered acceptance coverage, review artifacts, and verified output updates.
 - **Artifacts Produced:** src/; src/tests/; docs/features/146-generic-resource-review-clarity/uat-plan*; artifacts/ and examples/ generated reports; seven reviewed snapshots; tasks.md
 - **Problems Encountered:** Initial no-restore builds/tests hit NU1403; the normal commit hook later built Release successfully. Full Release TUnit passed 1449/1449 with no skips. No package-lock changes retained; platform UAT remains for the UAT Tester.
+
+### Technical Writer
+
+- **Date:** 2026-10-06
+- **Summary:** Documented Feature 146 behavior, ordered identity defaults and overrides, exact instance/refactoring labels, import context, MsGraph settings, and unchanged-output filtering. README CLI options and report-style guidance were updated; architecture, testing-strategy, and workflow docs were considered and skipped because no architecture, test framework, or workflow behavior changed.
+- **Artifacts Produced:** README.md, docs/features.md, docs/report-style-guide.md; commit 02c388b1
+- **Problems Encountered:** None; worktree Git metadata required scoped access for commit; the repo wp-append script also required the Homebrew jq directory on PATH.
+
+### Code Reviewer
+
+- **Date:** 2026-10-06
+- **Summary:** Reviewed Feature 146 through 02c388b1; REWORK for incomplete generic imported-state housekeeping exclusions and missing coverage/markdownlint evidence. Audited recorded 1449/1449 tests, intentional snapshots, implementation and multi-target acceptance tests without modifying source.
+- **Artifacts Produced:** docs/features/146-generic-resource-review-clarity/code-review.md
+- **Problems Encountered:** scripts/codex-review.sh exited 2 because installed Codex CLI rejects gpt-6.1-sol for this ChatGPT account; completed GPT-Sol 6.1 subagent fallback review, not Claude. SC10 fails for non-MsGraph housekeeping-only imports; no CoverageEnforcer, markdownlint, or PR CI evidence available.

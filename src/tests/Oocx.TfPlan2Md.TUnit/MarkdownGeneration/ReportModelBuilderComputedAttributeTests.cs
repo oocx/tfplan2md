@@ -384,6 +384,67 @@ public class ReportModelBuilderComputedAttributeTests
         memberAttr.After.Should().Be("(known after apply: var.users)");
     }
 
+    [Test]
+    public void Scenario_ModuleQualifiedPseudoReferences_UsePlainKnownAfterApply()
+    {
+        string[] references = ["each.key", "each.value", "count.index", "self"];
+
+        foreach (var reference in references)
+        {
+            var model = BuildModel($$"""
+                {
+                  "format_version": "1.2",
+                  "terraform_version": "1.14.0",
+                  "resource_changes": [
+                    {
+                      "address": "module.compute.example_resource.item",
+                      "module_address": "module.compute",
+                      "mode": "managed",
+                      "type": "example_resource",
+                      "name": "item",
+                      "provider_name": "registry.terraform.io/example/provider",
+                      "change": {
+                        "actions": ["create"],
+                        "before": null,
+                        "after": { "id": null },
+                        "after_unknown": { "id": true },
+                        "before_sensitive": {},
+                        "after_sensitive": {}
+                      }
+                    }
+                  ],
+                  "configuration": {
+                    "root_module": {
+                      "module_calls": {
+                        "compute": {
+                          "module": {
+                            "resources": [
+                              {
+                                "address": "example_resource.item",
+                                "mode": "managed",
+                                "type": "example_resource",
+                                "name": "item",
+                                "expressions": {
+                                  "id": { "references": ["{{reference}}"] }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                """);
+
+            model.Changes.Single().AttributeChanges
+                .Single(attribute => attribute.Name == "id")
+                .After
+                .Should()
+                .Be("(known after apply)", reference);
+        }
+    }
+
     private ReportModel BuildModel(string json, bool showSensitive = false, ProviderRegistry? providerRegistry = null)
     {
         var plan = _parser.Parse(json);

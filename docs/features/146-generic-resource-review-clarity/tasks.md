@@ -98,12 +98,12 @@ selection; preserve existing meaningful-reference priorities and formatting.
 
 **Acceptance Criteria:**
 
-- [ ] Bare and nested-module-qualified `each.key`, `each.value`, `count.index`,
+- [x] Bare and nested-module-qualified `each.key`, `each.value`, `count.index`,
   and `self` alone produce plain `(known after apply)` without colon/hint
   (SC7; T09).
-- [ ] Static resource, variable, local, and `each.value.group_object_id` hints
+- [x] Static resource, variable, local, and `each.value.group_object_id` hints
   retain existing priorities, including mixed pseudo/useful lists (SC8; T09).
-- [ ] Sensitive computed values retain existing masking/authorized-mode policy;
+- [x] Sensitive computed values retain existing masking/authorized-mode policy;
   pseudo suppression introduces no expression/source tracing (SC8; T09–T10).
 
 **Dependencies:** None.

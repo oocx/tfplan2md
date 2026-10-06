@@ -90,13 +90,15 @@ internal static class ReferenceSelector
             return false;
         }
 
-        if (IsNonResourcePrefix(parts[0]))
+        var modulePrefixLength = CountModulePrefixSegments(parts);
+        if (modulePrefixLength < 0 || modulePrefixLength >= parts.Length)
         {
             return false;
         }
 
-        var modulePrefixLength = CountModulePrefixSegments(parts);
-        if (modulePrefixLength < 0)
+        // A module prefix is address context. Classify the actual reference after that
+        // context so nested pseudo references cannot look like static resources.
+        if (IsNonResourcePrefix(parts[modulePrefixLength]))
         {
             return false;
         }
@@ -126,18 +128,19 @@ internal static class ReferenceSelector
         }
 
         var parts = reference.Split('.', StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length != 3)
+        var modulePrefixLength = CountModulePrefixSegments(parts);
+        if (modulePrefixLength < 0 || parts.Length - modulePrefixLength != 3)
         {
             return false;
         }
 
-        if (!parts[0].Equals("each", StringComparison.OrdinalIgnoreCase)
-            || !parts[1].Equals("value", StringComparison.OrdinalIgnoreCase))
+        if (!parts[modulePrefixLength].Equals("each", StringComparison.OrdinalIgnoreCase)
+            || !parts[modulePrefixLength + 1].Equals("value", StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
 
-        eachValueReference = reference;
+        eachValueReference = string.Join('.', parts.Skip(modulePrefixLength));
         return true;
     }
 
@@ -156,19 +159,20 @@ internal static class ReferenceSelector
         }
 
         var parts = reference.Split('.', StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length != 2)
+        var modulePrefixLength = CountModulePrefixSegments(parts);
+        if (modulePrefixLength < 0 || parts.Length - modulePrefixLength != 2)
         {
             return false;
         }
 
-        var isVariable = parts[0].Equals("var", StringComparison.OrdinalIgnoreCase);
-        var isLocal = parts[0].Equals("local", StringComparison.OrdinalIgnoreCase);
+        var isVariable = parts[modulePrefixLength].Equals("var", StringComparison.OrdinalIgnoreCase);
+        var isLocal = parts[modulePrefixLength].Equals("local", StringComparison.OrdinalIgnoreCase);
         if (!isVariable && !isLocal)
         {
             return false;
         }
 
-        variableReference = reference;
+        variableReference = string.Join('.', parts.Skip(modulePrefixLength));
         return true;
     }
 

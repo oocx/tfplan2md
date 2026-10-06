@@ -23,14 +23,14 @@ and 8 implement its report behavior.
 
 **Acceptance Criteria:**
 
-- [ ] `--summary-name-attributes` preserves supplied order, trims entry whitespace,
+- [x] `--summary-name-attributes` preserves supplied order, trims entry whitespace,
   and replaces the default candidate list without appending defaults (SC4; T05).
-- [ ] Missing values, empty/whitespace-only lists, leading/trailing commas, and
+- [x] Missing values, empty/whitespace-only lists, leading/trailing commas, and
   consecutive commas produce clear existing-style CLI errors naming the option
   (SC4; T06).
-- [ ] Nonexistent paths parse successfully; options reach model construction and
+- [x] Nonexistent paths parse successfully; options reach model construction and
   `--hide-unchanged-outputs` defaults to false (SC4, SC14–SC15; T05, T15).
-- [ ] Help states replacement semantics and opt-in output filtering (T06).
+- [x] Help states replacement semantics and opt-in output filtering (T06).
 
 **Dependencies:** None.
 

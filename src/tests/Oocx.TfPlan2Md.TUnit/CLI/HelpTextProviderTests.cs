@@ -25,6 +25,17 @@ public class HelpTextProviderTests
     }
 
     [Test]
+    public void GetHelpText_DescribesGenericNameOverrideAndOptInOutputFiltering()
+    {
+        var help = HelpTextProvider.GetHelpText();
+
+        help.Should().Contain("--summary-name-attributes <path1,path2,...>")
+            .And.Contain("Replace the generic resource name candidate order")
+            .And.Contain("--hide-unchanged-outputs")
+            .And.Contain("Opt in to hide outputs");
+    }
+
+    [Test]
     public void GetHelpText_AlignsOptionDescriptions()
     {
         var help = HelpTextProvider.GetHelpText();

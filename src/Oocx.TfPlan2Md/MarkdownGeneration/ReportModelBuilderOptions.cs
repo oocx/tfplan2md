@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
@@ -16,10 +17,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <param name="DetailsDisplayMode">Display mode for resource details blocks.</param>
 /// <param name="IgnoreAzureIdCaseChanges">Whether attribute change rows where before/after are Azure resource IDs differing only in casing are suppressed.</param>
 /// <param name="DriftDisplayMode">Which displayable resource drift entries should appear in the report.</param>
+/// <param name="SummaryNameAttributes">Ordered generic resource identity paths; empty keeps the built-in candidate order.</param>
+/// <param name="HideUnchangedOutputs">Whether outputs with a no-op action should be omitted.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md,
 /// docs/features/014-unchanged-values-cli-option/specification.md, and
-/// docs/features/103-azure-id-case-insensitive-filter/specification.md.
+/// docs/features/103-azure-id-case-insensitive-filter/specification.md, and
+/// docs/features/146-generic-resource-review-clarity/specification.md.
 /// </remarks>
 internal sealed record ReportModelBuilderOptions(
     bool ShowSensitive = false,
@@ -29,7 +33,9 @@ internal sealed record ReportModelBuilderOptions(
     bool HideMetadata = false,
     RenderTargets.DetailsDisplayMode DetailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto,
     bool IgnoreAzureIdCaseChanges = true,
-    RenderTargets.DriftDisplayMode DriftDisplayMode = RenderTargets.DriftDisplayMode.All);
+    RenderTargets.DriftDisplayMode DriftDisplayMode = RenderTargets.DriftDisplayMode.All,
+    ImmutableArray<string> SummaryNameAttributes = default,
+    bool HideUnchangedOutputs = false);
 
 /// <summary>
 /// Groups the injected service dependencies for <see cref="ReportModelBuilder"/>.

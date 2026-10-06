@@ -1,0 +1,44 @@
+{
+  "type": "feature",
+  "slug": "146-generic-resource-review-clarity",
+  "stage": "architect",
+  "status": "running",
+  "gates": {
+    "spec": "pending",
+    "arch": "n/a",
+    "uat": "n/a"
+  },
+  "attempts": {},
+  "open_questions": [
+    {
+      "q": "When --summary-name-attributes is supplied, does it replace or extend the built-in generic candidate order?",
+      "assumed": "It replaces the built-in ordered list for generic fallback naming; missing, null, empty, object, and collection values are skipped so the next candidate can be tried.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "Should known-after-apply hints follow each.value, each.key, or count.index through locals and collection expressions to find an underlying resource?",
+      "assumed": "No. This bounded feature suppresses bare or module-qualified pseudo references but keeps specific hints such as each.value.group_object_id and existing meaningful resource, variable, and local references.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "What label should Refactoring Summary use when a generic display identity is available?",
+      "assumed": "Always show the full Terraform resource address as the stable label and append the resolved display identity when one is available.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "How should unchanged msgraph provider metadata be de-emphasized without hiding review information?",
+      "assumed": "Place api_version, url, and ignore_missing_property in a collapsed provider-settings area when unchanged; if any of them changes, render that change with ordinary changed attributes and include it in change counts.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    },
+    {
+      "q": "Which outputs are affected by changed-output filtering?",
+      "assumed": "The opt-in filter applies to root and module output sections and removes only outputs whose Terraform action is no-op; changed, created, deleted, sensitive, and known-after-apply outputs retain existing rendering.",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-06"
+    }
+  ]
+}

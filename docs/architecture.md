@@ -302,7 +302,8 @@ tfplan2md/
 │   ├── AzApi/                   # AzApi provider (azapi_resource, azapi_update_resource)
 │   ├── AzureAD/                 # Azure AD provider (azuread_*)
 │   ├── AzureRM/                 # AzureRM provider (azurerm_*)
-│   └── AzureDevOps/             # AzureDevOps provider (azuredevops_*)
+│   ├── AzureDevOps/             # AzureDevOps provider (azuredevops_*)
+│   └── MsGraph/                 # Microsoft Graph provider (msgraph_resource, msgraph_update_resource)
 │
 ├── RenderTargets/               # Platform-specific rendering (GitHub vs Azure DevOps)
 │   ├── RenderTarget.cs          # Enum: GitHub, AzureDevOps
@@ -329,7 +330,7 @@ tfplan2md/
 ```
 
 **Key Architectural Patterns:**
-- **Provider Separation:** All Terraform provider-specific code (azapi, azuread, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProvider` plus optional capability interfaces.
+- **Provider Separation:** All Terraform provider-specific code (azapi, azuread, azurerm, azuredevops, msgraph) lives in dedicated `Providers/` folders with explicit registration via `IProvider` plus optional capability interfaces.
 - **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
 - **C# Renderer Dispatch:** `ResourceRendererRegistry` maps resource type strings to `IResourceRenderer` implementations; the provider-supplied renderers override `DefaultResourceRenderer`.
 - **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry`, which aggregates optional capabilities into `ProviderContributionSet` (AOT-compatible).
@@ -357,7 +358,7 @@ flowchart LR
         CLI[CLI]
         Parsing[Parsing]
         Markdown[Markdown<br/>Generation]
-        Providers[Providers<br/>AzApi, AzureAD,<br/>AzureRM, AzureDevOps]
+        Providers[Providers<br/>AzApi, AzureAD, AzureRM,<br/>AzureDevOps, MsGraph]
         RenderTargets[RenderTargets<br/>GitHub, Azure DevOps]
         CodeAnalysis[Code Analysis<br/>SARIF Integration]
         Platforms[Platform Utilities<br/>PrincipalMapper, etc.]
@@ -797,6 +798,7 @@ providerRegistry.RegisterProvider(new AzApiModule());
 providerRegistry.RegisterProvider(new AzureADModule());
 providerRegistry.RegisterProvider(new AzureRMModule(...));
 providerRegistry.RegisterProvider(new AzureDevOpsModule(...));
+providerRegistry.RegisterProvider(new MsGraphModule());
 
 var contributions = providerRegistry.CreateContributionSet();
 ```
@@ -809,6 +811,7 @@ var contributions = providerRegistry.CreateContributionSet();
 | **AzureAD** | `Oocx.TfPlan2Md.Providers.AzureAD` | `azuread_user`, `azuread_group`, `azuread_group_member`, `azuread_service_principal`, `azuread_invitation` | Group member extraction, user/group summaries |
 | **AzureRM** | `Oocx.TfPlan2Md.Providers.AzureRM` | `azurerm_*` (firewall, NSG, role assignments, APIM, DNS, etc.) | Semantic diffs, parent-child grouping, role definition mapping |
 | **AzureDevOps** | `Oocx.TfPlan2Md.Providers.AzureDevOps` | `azuredevops_build_definition`, `azuredevops_variable_group`, `azuredevops_group`, `azuredevops_user_entitlement`, `azuredevops_project` | Build definition tables, variable group templates, descriptor formatting |
+| **MsGraph** | `Oocx.TfPlan2Md.Providers.MsGraph` | `msgraph_resource`, `msgraph_update_resource` | Generic resource identities, provider settings presentation |
 
 **Provider Structure (Example: AzureRM):**
 
@@ -1027,7 +1030,7 @@ flowchart TD
     
     subgraph CompositionRoot["Pure DI Composition"]
         Compose --> Registries[Create Registries<br/>ValueFormatter, Icon,<br/>ResourceModelMapper]
-        Registries --> Providers[Register Providers<br/>AzApi, AzureAD,<br/>AzureRM, AzureDevOps]
+        Registries --> Providers[Register Providers<br/>AzApi, AzureAD, AzureRM,<br/>AzureDevOps, MsGraph]
         Providers --> Services[Create Services<br/>Parser, Builder, Renderer]
         Services --> AppSvc[ApplicationServices<br/>record]
     end

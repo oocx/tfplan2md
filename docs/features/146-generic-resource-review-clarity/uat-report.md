@@ -4,13 +4,14 @@
 
 | Platform | PR | Publication result | Visual decision |
 | --- | --- | --- | --- |
-| GitHub | [UAT #127](https://github.com/oocx/tfplan2md-uat/pull/127) | Open; eight feature comments and one regression comment | Approved regarding this feature |
-| Azure DevOps | [UAT #113](https://dev.azure.com/oocx/test/_git/test/pullrequest/113) | Active; eight feature comments and one regression comment | Approved regarding this feature |
+| GitHub | [UAT #127](https://github.com/oocx/tfplan2md-uat/pull/127) | Eight feature comments and one regression comment; retired after approval | Approved regarding this feature |
+| Azure DevOps | [UAT #113](https://dev.azure.com/oocx/test/_git/test/pullrequest/113) | Eight feature comments and one regression comment; retired after approval | Approved regarding this feature |
 | Bitbucket | No platform PR | Eight target reports generated locally | Real UI validation unavailable |
 
 PR overview links: [GitHub](https://github.com/oocx/tfplan2md-uat/pulls) and
 [Azure DevOps](https://dev.azure.com/oocx/test/_git/test/pullrequests?_a=mine).
-Both UAT PRs remain open for the Maintainer. No cleanup has been run.
+The original UAT PRs were retired after the Maintainer approved the feature.
+Their published reports remain the real-platform evidence for this unchanged output.
 GitHub PR #127 is attached to the Codex chat. The app rejected attachment of the
 Azure DevOps URL with: "attach_artifact requires a supported artifact type and
 valid pull request URL." Its link remains available above.
@@ -113,3 +114,35 @@ of PR creation was separate from this visual decision. The Maintainer then asked
 whether root_sensitive exposed ROOT-SENSITIVE-OUTPUT-DO-NOT-LEAK; investigation
 confirmed exposure only in the authorized synthetic --show-sensitive variant,
 with the default output masked. Bitbucket real UI validation remains unavailable.
+
+
+## Revalidation after build repairs
+
+At reviewed commit 4f67449b, compared the current checkout against approved source
+ba84aa61 and original UAT publication commit 4bb5f815. Every one of the 573 tracked
+C# source, Scriban template and project files is byte-identical to ba84aa61,
+including rendering, helpers and CLI options. Both feature fixtures, uat-plan.md,
+and both tracked comprehensive regression reports are also byte-identical. The
+source diff against both baselines contains only these three build files:
+
+- src/Oocx.TfPlan2Md/packages.lock.json updates the .NET ILCompiler and ILLink
+  tooling locks from 10.0.11 to 10.0.12 and associated runtime compiler hashes.
+- src/tests/Oocx.TfPlan2Md.TUnit/packages.lock.json aligns the project dependency
+  lock with application version 1.46.0 rather than 1.45.2.
+- src/Dockerfile updates the available Alpine zlib-dev revision from 1.3.2-r0
+  to 1.3.2-r1.
+
+These build repairs do not change application rendering source, option behavior
+or fixtures. The existing target reports therefore still represent the feature
+behavior reviewed in GitHub #127 and Azure DevOps #113. Documentation, protocol,
+review and workflow-state updates do not change that conclusion.
+
+Carry forward the existing explicit human decision:
+
+> approved regarding the changes from this feature.
+
+No duplicate approval, new platform PR, external comment, test run or output
+regeneration was needed for this source-equivalent revalidation. The workflow
+driver will preserve the recorded human approval after the mechanical UAT stage
+completion. This finding concerns unchanged output; it does not claim completion
+of the separate build validation run.

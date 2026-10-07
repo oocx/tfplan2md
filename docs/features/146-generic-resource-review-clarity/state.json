@@ -2,7 +2,7 @@
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
   "stage": "developer",
-  "status": "blocked",
+  "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",

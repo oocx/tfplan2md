@@ -6,7 +6,7 @@
   "gates": {
     "spec": "approved",
     "arch": "n/a",
-    "uat": "pending"
+    "uat": "approved"
   },
   "attempts": {
     "developer": 1

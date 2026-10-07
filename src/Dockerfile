@@ -16,7 +16,7 @@ RUN apk add --no-cache \
     upx=5.0.2-r0 \
     clang=21.1.2-r2 \
     build-base=0.5-r3 \
-    zlib-dev=1.3.2-r0 \
+    zlib-dev=1.3.2-r1 \
     linux-headers=6.16.12-r0 \
     bash=5.3.3-r1 \
     lld=21.1.2-r1

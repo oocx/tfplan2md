@@ -47,6 +47,19 @@ public class ImportedPriorStateContextTests
     }
 
     [Test]
+    public void Render_ImportedGenericResourceWithOnlyProviderHousekeepingState_ShowsNote()
+    {
+        var markdown = Render(BuildModel(
+            "review_object",
+            ["create"],
+            beforeJson: "{\"url\":\"/existing\",\"api_version\":\"v1.0\",\"ignore_missing_property\":false,\"body\":{}}",
+            afterJson: "{\"body\":{\"name\":\"legacy\"}}"));
+
+        AssertNotePrecedesAttributes(markdown);
+        markdown.Should().Contain("body.name");
+    }
+
+    [Test]
     public void Render_ImportedResourcesWithSubstantivePriorState_OmitNote()
     {
         string[] meaningfulStates =

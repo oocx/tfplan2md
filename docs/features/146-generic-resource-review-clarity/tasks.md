@@ -241,13 +241,13 @@ handoff supplies option defaults/errors and concrete output examples.
 
 **Acceptance Criteria:**
 
-- [ ] Documentation explains ordered defaults, replacement override semantics,
+- [x] Documentation explains ordered defaults, replacement override semantics,
   nested paths, unusable candidates, mapped-summary compatibility, and exact
   indexed labels (SC1–SC6).
-- [ ] Documentation explains pseudo-hint suppression, stable refactoring labels,
+- [x] Documentation explains pseudo-hint suppression, stable refactoring labels,
   empty-import context, secondary versus changed settings, and unchanged-value
   mode (SC7–SC13).
-- [ ] Documentation describes opt-in root/module no-op output removal and preserved
+- [x] Documentation describes opt-in root/module no-op output removal and preserved
   defaults, with examples of both new options; `CHANGELOG.md` is untouched
   (SC14–SC15).
 

@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "release-manager",
+  "stage": "developer",
   "status": "running",
   "gates": {
     "spec": "approved",
@@ -9,7 +9,7 @@
     "uat": "approved"
   },
   "attempts": {
-    "developer": 1
+    "developer": 2
   },
   "open_questions": [
     {

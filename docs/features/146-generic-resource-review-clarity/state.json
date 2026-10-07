@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "uat-tester",
+  "stage": "developer",
   "status": "running",
   "gates": {
     "spec": "approved",
@@ -9,7 +9,7 @@
     "uat": "approved"
   },
   "attempts": {
-    "developer": 3
+    "developer": 4
   },
   "open_questions": [
     {

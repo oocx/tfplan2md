@@ -4,8 +4,8 @@
 
 | Platform | PR | Publication result | Visual decision |
 | --- | --- | --- | --- |
-| GitHub | [UAT #127](https://github.com/oocx/tfplan2md-uat/pull/127) | Open; eight feature comments and one regression comment | Pending Maintainer review |
-| Azure DevOps | [UAT #113](https://dev.azure.com/oocx/test/_git/test/pullrequest/113) | Active; eight feature comments and one regression comment | Pending Maintainer review |
+| GitHub | [UAT #127](https://github.com/oocx/tfplan2md-uat/pull/127) | Open; eight feature comments and one regression comment | Approved regarding this feature |
+| Azure DevOps | [UAT #113](https://dev.azure.com/oocx/test/_git/test/pullrequest/113) | Active; eight feature comments and one regression comment | Approved regarding this feature |
 | Bitbucket | No platform PR | Eight target reports generated locally | Real UI validation unavailable |
 
 PR overview links: [GitHub](https://github.com/oocx/tfplan2md-uat/pulls) and
@@ -60,14 +60,14 @@ before creation. Published titles are `UAT: github-default` and
 
 | Scenario group | Prepared evidence | Platform visual result |
 | --- | --- | --- |
-| Indexed identities, fallback order, unknown prior names, deletes/replaces and escaped text | Default reports; all required generic resource scenarios present | Pending |
-| Full-address import/move refactoring labels and protected names | Default and authorized synthetic show-sensitive comparisons | Pending |
-| Empty/housekeeping imported prior-state note versus populated import | Default reports contain the import note and both import classes | Pending |
-| Accessible unchanged msgraph Provider settings and primary changed/added/removed settings | Default, show-unchanged and combined reports | Pending |
-| Bare/module pseudo-reference suppression and retained useful computed hints | Root/module reference resources and sensitive computed markers | Pending |
-| Ordered override affecting only generic fallback summaries | Summary-overrides and combined reports; mapped resources retained | Pending |
-| Default and filtered root/module outputs, protection and section/group removal | Default/filtered reports and root-noop pair | Pending |
-| Provider-owned diffs, tables, ordinary/large values and card structure | Matching-target feature reports plus comprehensive regression comments | Pending |
+| Indexed identities, fallback order, unknown prior names, deletes/replaces and escaped text | Default reports; all required generic resource scenarios present | Approved regarding this feature |
+| Full-address import/move refactoring labels and protected names | Default and authorized synthetic show-sensitive comparisons | Approved regarding this feature |
+| Empty/housekeeping imported prior-state note versus populated import | Default reports contain the import note and both import classes | Approved regarding this feature |
+| Accessible unchanged msgraph Provider settings and primary changed/added/removed settings | Default, show-unchanged and combined reports | Approved regarding this feature |
+| Bare/module pseudo-reference suppression and retained useful computed hints | Root/module reference resources and sensitive computed markers | Approved regarding this feature |
+| Ordered override affecting only generic fallback summaries | Summary-overrides and combined reports; mapped resources retained | Approved regarding this feature |
+| Default and filtered root/module outputs, protection and section/group removal | Default/filtered reports and root-noop pair | Approved regarding this feature |
+| Provider-owned diffs, tables, ordinary/large values and card structure | Matching-target feature reports plus comprehensive regression comments | Approved regarding this feature |
 
 Local content inspection confirmed Provider settings and import notes are exercised,
 output-only module.noop is present by default and absent under filtering,
@@ -95,10 +95,21 @@ coverage; they do not establish platform rendering acceptance.
 - Azure DevOps app attachment is unsupported for this URL; Bitbucket real UI
   evidence is unavailable through repository UAT tooling.
 
-No rendering defect has been reported yet. No acceptance decision has been inferred.
+The Maintainer approved the changes from this feature. The subsequent sensitive-output
+question was investigated against all nine published GitHub comments: the synthetic
+value ROOT-SENSITIVE-OUTPUT-DO-NOT-LEAK appears only in the explicitly authorized
+[--show-sensitive comment](https://github.com/oocx/tfplan2md-uat/pull/127#issuecomment-6043712650).
+The default report masks root_sensitive. This is the expected synthetic comparison
+behavior; no default-output secret leak was found.
 
 ## Maintainer decision
 
-Pending visual review. The Maintainer's "approved" response authorized PR creation
-and publication of the exact proposed content. It is not a UAT pass. The workflow
-driver owns the acceptance gate and will record the Maintainer's pass/fail verbatim.
+The Maintainer's visual decision, verbatim:
+
+> approved regarding the changes from this feature.
+
+The driver recorded the UAT gate as approved in commit 441e8ef0. Earlier approval
+of PR creation was separate from this visual decision. The Maintainer then asked
+whether root_sensitive exposed ROOT-SENSITIVE-OUTPUT-DO-NOT-LEAK; investigation
+confirmed exposure only in the authorized synthetic --show-sensitive variant,
+with the default output masked. Bitbucket real UI validation remains unavailable.

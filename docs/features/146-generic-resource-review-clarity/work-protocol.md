@@ -84,3 +84,10 @@
 - **Summary:** Reviewed against origin/main in codex (gpt-6.1-sol). Verdict: APPROVED. Findings: 1 Suggestion
 - **Artifacts Produced:** docs/features/146-generic-resource-review-clarity/code-review.md
 - **Problems Encountered:** None
+
+### UAT Tester
+
+- **Date:** 2026-10-07
+- **Summary:** Created approved GitHub UAT #127 and Azure DevOps UAT #113; posted eight matching-target feature reports and one regression demo on each; verified open status and exact approved descriptions; acceptance pending Maintainer visual review.
+- **Artifacts Produced:** uat-report.md; GitHub https://github.com/oocx/tfplan2md-uat/pull/127; Azure DevOps https://dev.azure.com/oocx/test/_git/test/pullrequest/113; .tmp/feature-146-uat/ report manifest and separate platform state files
+- **Problems Encountered:** Handled wrapper option-order rejection, missing UAT gitlinks with scratch checkout overrides, hardcoded /tmp logs with command-scoped tee shim, Azure PAT preflight with existing credential in child environment, and backslash alteration by restoring approved bodies. Azure DevOps app attachment rejected; Bitbucket UI validation unavailable. Maintainer UAT decision pending.

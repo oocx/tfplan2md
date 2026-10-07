@@ -17,6 +17,15 @@ StrykerOutput/
 
 # Non-essential repo content for image build context
 docs/
+# TUnit links these UAT plan fixtures into its Docker test build.
+!docs/
+docs/*
+!docs/features/
+docs/features/*
+!docs/features/146-generic-resource-review-clarity/
+docs/features/146-generic-resource-review-clarity/*
+!docs/features/146-generic-resource-review-clarity/uat-plan.json
+!docs/features/146-generic-resource-review-clarity/uat-plan-root-noop.json
 artifacts/
 website/
 uat-repos/

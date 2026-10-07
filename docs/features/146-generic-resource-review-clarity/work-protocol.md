@@ -168,3 +168,10 @@
 - **Summary:** Revalidated unchanged Feature 146 output after build-only repairs: 573 C#/template/project files and five fixtures/reports byte-identical to approved ba84aa61; source diff versus original UAT commit contains only compiler/test locks and Docker zlib-dev revision. Existing explicit human visual approval carries forward; no new UAT PR or duplicate approval.
 - **Artifacts Produced:** uat-report.md; original GitHub UAT #127 and Azure DevOps UAT #113 real-platform evidence
 - **Problems Encountered:** None for feature rendering equivalence. Original Bitbucket UI limitation remains; separate build CI is outside this source-equivalence finding.
+
+### Developer (round 7)
+
+- **Date:** 2026-10-07
+- **Summary:** Whitelisted only the two UAT JSON fixtures linked by TUnit while preserving docs, scratch, and build-output exclusions. The repository test-image wrapper built the full image successfully: all 36 Alpine packages installed, Release solution build had 0 warnings/errors, NativeAOT publish completed, and UPX packed the binary. An actual context probe found exactly the two fixture files under docs and no .tmp/bin/obj paths; the scratch image CLI --version exited 0.
+- **Artifacts Produced:** .dockerignore; local tfplan2md-test:latest image
+- **Problems Encountered:** The full PR test suite was left to authoritative CI. The runnable image's version text includes the existing Git metadata diagnostic because .git is excluded from Docker context.

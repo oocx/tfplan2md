@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "retrospective",
+  "stage": "release-manager",
   "status": "running",
   "gates": {
     "spec": "approved",

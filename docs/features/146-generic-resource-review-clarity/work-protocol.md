@@ -119,3 +119,10 @@
 - **Summary:** Reviewed against origin/main in codex (gpt-6.1-sol). Verdict: APPROVED. Findings: 1 Suggestion
 - **Artifacts Produced:** docs/features/146-generic-resource-review-clarity/code-review.md
 - **Problems Encountered:** None
+
+### Developer (round 5)
+
+- **Date:** 2026-10-07
+- **Summary:** Corrected the NativeAOT lock graph using Microsoft's SDK 10.0.401 (runtime 10.0.12), matching PR CI. A clean SDK and NuGet.org-only cache generated official ILCompiler/ILLink hashes and all seven declared RID package edges; the TUnit project lock now matches app version 1.46.0. Locked solution restore, JsonEmbedGenerator build, and Release solution build passed. No source or rendered-output changes.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/packages.lock.json; src/tests/Oocx.TfPlan2Md.TUnit/packages.lock.json
+- **Problems Encountered:** The previous distro SDK 10.0.112 lock used Ubuntu /usr/lib/dotnet/library-packs hashes and omitted RID package edges, causing hosted CI NU1403/NU1102. Reproduced and corrected with official SDK 10.0.401 from an isolated cache; no broad dependency changes.

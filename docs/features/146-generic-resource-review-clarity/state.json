@@ -1,14 +1,16 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "technical-writer",
+  "stage": "uat-tester",
   "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",
-    "uat": "n/a"
+    "uat": "required"
   },
-  "attempts": {},
+  "attempts": {
+    "developer": 1
+  },
   "open_questions": [
     {
       "q": "When --summary-name-attributes is supplied, does it replace or extend the built-in generic candidate order?",

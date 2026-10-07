@@ -161,3 +161,10 @@
 - **Summary:** Reviewed against origin/main in codex (gpt-6.1-sol). Verdict: APPROVED. Findings: 1 Minor, 1 Suggestion
 - **Artifacts Produced:** docs/features/146-generic-resource-review-clarity/code-review.md
 - **Problems Encountered:** None
+
+### UAT Tester (round 2)
+
+- **Date:** 2026-10-07
+- **Summary:** Revalidated unchanged Feature 146 output after build-only repairs: 573 C#/template/project files and five fixtures/reports byte-identical to approved ba84aa61; source diff versus original UAT commit contains only compiler/test locks and Docker zlib-dev revision. Existing explicit human visual approval carries forward; no new UAT PR or duplicate approval.
+- **Artifacts Produced:** uat-report.md; original GitHub UAT #127 and Azure DevOps UAT #113 real-platform evidence
+- **Problems Encountered:** None for feature rendering equivalence. Original Bitbucket UI limitation remains; separate build CI is outside this source-equivalence finding.

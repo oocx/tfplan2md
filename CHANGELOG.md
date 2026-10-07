@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.47.0"></a>
+## [1.47.0](https://github.com/oocx/tfplan2md/compare/v1.46.0...v1.47.0) (2026-10-07)
+
+### ✨ Features
+
+* explain empty prior state for imports ([087f87c](https://github.com/oocx/tfplan2md/commit/087f87c012a612a11251a8d2f9330325034f2b6c))
+* expose generic resource review options ([70c0bed](https://github.com/oocx/tfplan2md/commit/70c0bed8c225f2afc3650705597b824f55938c39))
+* hide unchanged output values ([9603bed](https://github.com/oocx/tfplan2md/commit/9603bedaef5ed0183b51bb43ada5819b050164f1))
+* integrate review clarity acceptance SNAPSHOT_UPDATE_OK ([ccd405a](https://github.com/oocx/tfplan2md/commit/ccd405a4a441e2f6d64d9ace9d7da653cf2cf6b5))
+* preserve full resource labels for review clarity ([f3940b2](https://github.com/oocx/tfplan2md/commit/f3940b2bfc1c66efba501e168d286c017ae3ba1e))
+* render Microsoft Graph provider settings ([ac6075a](https://github.com/oocx/tfplan2md/commit/ac6075ad4fba1fca1212071f1f43f5f7daca31fc))
+* resolve safe generic resource identities ([d5ebc41](https://github.com/oocx/tfplan2md/commit/d5ebc414e647cf24c46536fb2d357ddeef79ad9c))
+* separate unchanged Microsoft Graph settings ([17c3266](https://github.com/oocx/tfplan2md/commit/17c3266ebe19c68c0a9512acaf89d58fd6c95919))
+* suppress non-informative computed reference hints ([ba2fa37](https://github.com/oocx/tfplan2md/commit/ba2fa378cbf139a275f70b26ad50fb63e7d5f462))
+
+### 🐛 Bug Fixes
+
+* classify imported housekeeping state consistently ([71cfca9](https://github.com/oocx/tfplan2md/commit/71cfca90ab17e409acf000550898a07e5eef8147))
+
+### 📚 Documentation
+
+* approve Docker package pin repair review ([00827f2](https://github.com/oocx/tfplan2md/commit/00827f2dce9b3a415c10d588b86157ca475f147f))
+* approve feature 146 rework review ([79e7174](https://github.com/oocx/tfplan2md/commit/79e717431cd6c13c22e0f656c055ff9fdc860310))
+* approve official-source dependency repair ([90a59fc](https://github.com/oocx/tfplan2md/commit/90a59fcea4bd5c8b0d7d476734d0b58b1255e510))
+* carry forward feature 146 UAT approval after build repairs ([f250a13](https://github.com/oocx/tfplan2md/commit/f250a13d5715a323e4166596de62d2155fd988eb))
+* confirm feature 146 docs after Docker pin update ([65bd453](https://github.com/oocx/tfplan2md/commit/65bd453e97c1048b4e80a4d10f92d1110d2d8b3b))
+* confirm feature 146 docs after lock refresh ([fb09e76](https://github.com/oocx/tfplan2md/commit/fb09e76c5e3bfccd7bed3e6ee3236541a95e5c40))
+* confirm feature 146 docs after official lock refresh ([769a0dd](https://github.com/oocx/tfplan2md/commit/769a0dd736ae0f8ebae1067104aa8e74839aeb7e))
+* confirm feature docs after Docker fixture fix ([99b1ce7](https://github.com/oocx/tfplan2md/commit/99b1ce74348fb21d09aa7834b78c803b6057cb4a))
+* confirm import context documentation after rework ([554d89f](https://github.com/oocx/tfplan2md/commit/554d89f7381a70d8d63ce210590b3fb7ae71cbc2))
+* define feature 146 acceptance and UAT coverage ([0925e8f](https://github.com/oocx/tfplan2md/commit/0925e8fd1ed896cf4257d1b3081fef14ed11f7a9))
+* design generic resource review clarity for feature 146 ([d16a09c](https://github.com/oocx/tfplan2md/commit/d16a09cc2c21fd11a24584e8985e4ee3fe88a09f))
+* explain generic resource review clarity ([f2da9d2](https://github.com/oocx/tfplan2md/commit/f2da9d2d259d851468a875ad2f83dcda6d3c5005))
+* include Microsoft Graph provider in architecture ([ce3945a](https://github.com/oocx/tfplan2md/commit/ce3945a5e304bed8c26fd0797d98201cd6cc6ff2))
+* plan generic resource review clarity implementation ([39bee1e](https://github.com/oocx/tfplan2md/commit/39bee1e8fd9688303017aa1e1e0a2faeb4b7a369))
+* prepare feature 146 release notes and screenshots ([949bec6](https://github.com/oocx/tfplan2md/commit/949bec6b94194950b956c6ae0d777123ec7ca6b0))
+* record feature 146 retrospective ([f769c4a](https://github.com/oocx/tfplan2md/commit/f769c4a115ef4075c305751deb69646f5e7579c0))
+* record feature 146 UAT approval ([b44333b](https://github.com/oocx/tfplan2md/commit/b44333be1588a5dbb9a24e098c356361e4ed8154))
+* record feature 146 UAT publication ([46f151f](https://github.com/oocx/tfplan2md/commit/46f151f5e65c9138f0c994a496fe10ee4eaffbeb))
+* record feature specification handoff notes ([3fa4b5a](https://github.com/oocx/tfplan2md/commit/3fa4b5ade886751942d3eab2ec06a694f3c9cbc1))
+* review feature 146 dependency rework ([8c135be](https://github.com/oocx/tfplan2md/commit/8c135bec901329f834e7db3575c097a0ed86cf33))
+* review generic resource review clarity ([10087d2](https://github.com/oocx/tfplan2md/commit/10087d292edc6cb449f2ec5ed41adc86bea4dc36))
+* specify compact collection diffs ([1fcf94e](https://github.com/oocx/tfplan2md/commit/1fcf94ea874b1b08e6a000af8ca21a7e7bddaf19))
+* specify generic resource review clarity ([d4eb5cc](https://github.com/oocx/tfplan2md/commit/d4eb5cc3b4d484fb0e7b9974bd6b712cb33b35ed))
+* specify GUID display-name resolution ([4ba4736](https://github.com/oocx/tfplan2md/commit/4ba4736a2f9251eb3adbd39a2f6d38048ca7b158))
+
 <a name="1.46.0"></a>
 ## [1.46.0](https://github.com/oocx/tfplan2md/compare/v1.45.3...v1.46.0) (2026-09-05)
 

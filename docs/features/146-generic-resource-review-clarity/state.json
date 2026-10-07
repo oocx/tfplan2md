@@ -1,12 +1,12 @@
 {
   "type": "feature",
   "slug": "146-generic-resource-review-clarity",
-  "stage": "uat-tester",
+  "stage": "retrospective",
   "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",
-    "uat": "required"
+    "uat": "pending"
   },
   "attempts": {
     "developer": 1

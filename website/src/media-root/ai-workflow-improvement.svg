@@ -63,6 +63,4 @@
     <text x="530" y="415" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📝 RETRO REPORT</text>
   </g>
   
-  <!-- Improvement loop back -->
-  <path d="M 380,410 L 200,410 L 200,545 L 190,545" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-green)"/>
 </svg>

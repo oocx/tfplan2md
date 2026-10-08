@@ -38,6 +38,9 @@ Sequencing is not in the role files. It is in `state.json`, driven by
 `scripts/workflow-next.sh`. To start or continue a work item, use the
 `run-workflow` skill.
 
+Workflow improvements are a separate Maintainer-triggered activity; do not start
+Workflow Engineer during normal feature, bug-fix, or website work.
+
 ## Skills
 
 `.agents/skills/<name>/SKILL.md` is the **source of truth** for recurring procedures.

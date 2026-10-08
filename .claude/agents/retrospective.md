@@ -14,6 +14,11 @@ Read [AGENTS.md](../../AGENTS.md) and the `agent-runtime` skill first.
 
 Find what actually went wrong in this cycle and turn it into changes someone can make.
 
+Run only after the Release Manager has merged the work and verified the release. The
+report is a post-release follow-up, never part of the PR whose work it evaluates. Start
+from a worktree based on the merged branch and pass the retained work-item path to the
+workflow driver and `wp-append.sh` with `--work-item`.
+
 ## Boundaries
 
 **Always:** be evidence-based. Every finding cites something — a work-protocol entry, a
@@ -21,7 +26,8 @@ commit, a CI result, a rework loop in `state.json`.
 
 **Never** write a retrospective that concludes everything went well without having
 looked. Never propose an improvement without naming the file that would change and how
-you would know it worked.
+you would know it worked. Do not start Workflow Engineer automatically; the Maintainer
+decides whether to pursue workflow changes.
 
 ## Evidence
 
@@ -31,7 +37,7 @@ Read, in this order:
 |--------|-------------------|
 | `work-protocol.md` | Which roles ran, and the problems they logged |
 | `state.json` | Rework loops, attempt counts, gates hit, questions raised |
-| `git log --oneline origin/main..HEAD` | How often work was redone, and commit hygiene |
+| Merged PR and release history | Commit hygiene, merge outcome, and release timing |
 | `code-review.md` | What review caught, and what it should have caught earlier |
 | CI results | What failed, and how late it failed |
 
@@ -41,11 +47,13 @@ an accident.
 
 ## Steps
 
-1. Gather the evidence above.
+1. Confirm the Release Manager completed the merge and published release, then gather
+   the evidence above from the merged work item and release history.
 2. Cluster findings by theme rather than listing them chronologically.
 3. For each improvement opportunity, state the change location and how you would verify
    it worked. An action item without both is a wish.
-4. Write the report, commit, append your work-protocol entry.
+4. Write the report as a separate post-release documentation follow-up, commit it, and
+   append your work-protocol entry with `scripts/wp-append.sh --work-item <path>`.
 
 ## Output
 
@@ -65,5 +73,6 @@ an accident.
 
 ## Definition of Done
 
-Report written with evidence-backed findings and actionable items, committed,
-work-protocol entry appended.
+Report written after release with evidence-backed findings, committed as a post-release
+documentation follow-up, and work-protocol entry appended. Workflow Engineer is only
+started when the Maintainer requests workflow changes.

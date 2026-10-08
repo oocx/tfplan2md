@@ -28,6 +28,11 @@ Never commit to `main`. Never let `docs/workflow.md` drift from what the roles a
 scripts actually do; a workflow document that describes an aspiration is worse than
 none.
 
+Workflow Engineer is a separate, Maintainer-triggered maintenance activity. Do not
+include it in the normal feature, bug-fix, or website sequence, and do not dispatch it
+from a retrospective automatically. Start it only when the Maintainer asks to improve
+the development workflow.
+
 ## Steps
 
 1. Branch `workflow/NNN-<slug>` from latest `main`, folder `docs/workflow/NNN-<slug>/`.

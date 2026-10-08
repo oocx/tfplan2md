@@ -5,6 +5,7 @@
 #   Complete a stage (appends the log entry and advances .stage):
 #     scripts/wp-append.sh --role "Developer" --summary "..." \
 #         [--artifacts "..."] [--problems "..."]
+#     scripts/wp-append.sh --work-item docs/features/NNN-slug --role "Retrospective" ...
 #
 #   Record a question without blocking (away from a gate):
 #     scripts/wp-append.sh --question "..." --assumed "..."
@@ -28,6 +29,7 @@ ROLE="" SUMMARY="" ARTIFACTS="" PROBLEMS="None"
 QUESTION="" ASSUMED=""
 GATE="" DECISION=""
 REWORK="" REASON=""
+WORK_ITEM_OVERRIDE="${WORK_ITEM_OVERRIDE:-}"
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -42,10 +44,15 @@ while [ $# -gt 0 ]; do
         --decision)  DECISION="$2"; shift 2 ;;
         --rework)    REWORK="$2"; shift 2 ;;
         --reason)    REASON="$2"; shift 2 ;;
+        --work-item)
+            [ $# -ge 2 ] || die "--work-item needs a path"
+            WORK_ITEM_OVERRIDE="$2"
+            shift 2 ;;
         -h|--help)   sed -n '2,20p' "$0"; exit 0 ;;
         *) die "unknown argument: $1" ;;
     esac
 done
+export WORK_ITEM_OVERRIDE
 
 # --- create a work item -----------------------------------------------------
 if [ -n "$INIT_TYPE" ]; then

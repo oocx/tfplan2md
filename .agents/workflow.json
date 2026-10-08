@@ -13,8 +13,8 @@
         "technical-writer",
         "code-reviewer",
         "uat-tester",
-        "retrospective",
-        "release-manager"
+        "release-manager",
+        "retrospective"
       ],
       "conditional_stages": [
         "uat-tester"
@@ -39,8 +39,8 @@
         "technical-writer",
         "code-reviewer",
         "uat-tester",
-        "retrospective",
-        "release-manager"
+        "release-manager",
+        "retrospective"
       ],
       "conditional_stages": [
         "uat-tester"

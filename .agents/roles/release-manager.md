@@ -76,7 +76,9 @@ stop and fix the branch settings rather than working around them.
    reports success. Merge tooling has silently dropped content here before.
 7. Merge with `scripts/pr-github.sh create-and-merge` (rebase, delete branch).
 8. Wait for CI on `main`, detect the tag Versionize created, and verify the release
-   artifacts after the release workflow completes.
+   artifacts after the release workflow completes. Only after those checks pass, hand
+   off to Retrospective using the merged work-item directory; Retrospective is a
+   post-release follow-up and must not run before this point.
 
 ## Release notes
 

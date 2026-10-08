@@ -26,8 +26,9 @@ flowchart TB
 
     RE["<b>Requirements Engineer</b>"]
     IAR["<b>Issue Analyst</b>"]
-    WEN["<b>Workflow Engineer</b>"]
     WDS["<b>Web Designer</b>"]
+    WEN["<b>Workflow Engineer</b><br/><i>separate, Maintainer-triggered</i>"]
+    WFRM["<b>Release Manager</b><br/>workflow change"]
 
     G1{{"🚦 <b>GATE</b><br/>Specification approval"}}
     AR["<b>Architect</b>"]
@@ -43,12 +44,16 @@ flowchart TB
     RM["<b>Release Manager</b>"]
     RETRO["<b>Retrospective</b>"]
 
+    subgraph MAINT["Separate, Maintainer-triggered process"]
+        WEN --> WFRM
+    end
+
     WP["📓 work-protocol.md<br/>+ state.json"]
 
     HUMAN -->|"request"| DRIVER
+    HUMAN -.->|"requests workflow improvement"| WEN
     DRIVER -->|"feature"| RE
     DRIVER -->|"bug"| IAR
-    DRIVER -->|"workflow"| WEN
     DRIVER -->|"website"| WDS
 
     RE --> G1
@@ -64,25 +69,25 @@ flowchart TB
     CR -.->|"REWORK"| DEV
 
     UAT --> G3
-    G3 -->|"approved"| RETRO
+    G3 -->|"approved"| RM
     G3 -.->|"failed"| DEV
-    CR -->|"no user-visible change<br/>UAT skipped"| RETRO
+    CR -->|"no user-visible change<br/>UAT skipped"| RM
 
-    WEN --> RM
-    WDS --> RM
-    RETRO --> RM
-    RETRO -.->|"improvements"| WEN
+    WDS --> G3
+    RM -->|"feature/bug release complete"| RETRO
+    RETRO -.->|"improvement ideas"| HUMAN
 
     DEV -.-> WP
     CR -.-> WP
     RM -.-> WP
+    RETRO -.-> WP
     WP -.->|"resumes the run"| DRIVER
 
     G1 -.-> HUMAN
     G2 -.-> HUMAN
     G3 -.-> HUMAN
 
-    class RE,IAR,AR,QE,TPL,DEV,TW,UAT,RM,RETRO role;
+    class RE,IAR,AR,QE,TPL,DEV,TW,UAT,RM,RETRO,WFRM role;
     class WEN,WDS meta;
     class CR external;
     class G1,G2,G3 gate;
@@ -107,15 +112,19 @@ flowchart TB
 | 7 | Code Reviewer | `code-review.md` + verdict |
 | 8 | UAT Tester | UAT PRs in GitHub and Azure DevOps, `uat-report.md` |
 | — | **GATE: UAT** | only when user-visible output changed — decided after the PRs exist |
-| 9 | Retrospective | `retrospective.md` |
-| 10 | Release Manager | PR, `release-notes.md`, the release |
+| 9 | Release Manager | PR, `release-notes.md`, the release |
+| 10 | Retrospective | post-release analysis in `retrospective.md` |
 
 ### Bug fix — `fix/NNN-<slug>` → `docs/issues/NNN-<slug>/`
 
 Issue Analyst (`analysis.md`) → Developer → Technical Writer → Code Reviewer →
-UAT Tester (if applicable) → Retrospective → Release Manager.
+UAT Tester (if applicable) → Release Manager → Retrospective.
 
-### Workflow improvement — `workflow/NNN-<slug>` → `docs/workflow/NNN-<slug>/`
+### Separate process: workflow improvement — `workflow/NNN-<slug>` → `docs/workflow/NNN-<slug>/`
+
+The Maintainer starts this process when they want to improve the development workflow.
+It is not an automatic entry point in the feature, bug-fix, or website process and is
+not dispatched automatically from a retrospective.
 
 Workflow Engineer → Release Manager. UAT does not apply.
 
@@ -184,11 +193,19 @@ the entry role creates it with:
 scripts/wp-append.sh --init <type> <slug>
 ```
 
-The Retrospective runs **before** the Release Manager, not after. The driver locates a
-work item by its branch name, and the release merges with `--delete-branch` — anything
-sequenced after that has no branch to resolve, and would strand the run with
-`status: "running"` forever. Running it before also means the retrospective ships in
-the same PR as the work it examines.
+For features and bug fixes, the Retrospective runs only after the Release Manager has
+merged the work and verified the published release. The retrospective is a post-release
+follow-up; it is not part of the release PR and cannot delay or change that release.
+Because the Release Manager deletes the source branch, resume the final stage from a
+worktree on a separate documentation follow-up branch based on the merged branch, and
+pass the retained work-item directory explicitly:
+
+```bash
+scripts/workflow-next.sh --work-item docs/features/NNN-<slug>
+```
+
+Use `docs/issues/NNN-<slug>` for a bug fix. The post-release report is kept as a
+separate documentation follow-up, so it never ships in the PR whose process it reviews.
 
 `stage` is the role that runs next. `attempts` counts rework loops and drives model
 escalation — a role at attempt 2 or later runs one tier deeper. `status` is `running`,

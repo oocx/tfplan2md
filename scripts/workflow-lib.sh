@@ -25,6 +25,19 @@ current_branch() {
 # Derive the workflow type from the branch prefix.
 # Echoes one of: feature | fix | workflow | website
 workflow_type_from_branch() {
+    if [ -n "${WORK_ITEM_OVERRIDE:-}" ]; then
+        local dir type folder
+        dir="$(work_item_dir)"
+        type="$(jq -r '.type // empty' "$dir/state.json")"
+        [ -n "$type" ] || die "no workflow type in $dir/state.json"
+        folder="$(jq -r --arg t "$type" '.types[$t].folder // empty' "$WORKFLOW_JSON")"
+        case "$dir" in
+            "$REPO_ROOT/$folder"/*) echo "$type" ;;
+            *) die "work item $dir is not under the configured $type folder ($folder)" ;;
+        esac
+        return
+    fi
+
     local branch prefix
     branch="$(current_branch)"
     prefix="${branch%%/*}"
@@ -37,6 +50,25 @@ workflow_type_from_branch() {
 # Echo the work item directory for the current branch, e.g.
 # docs/workflow/125-harness-neutral-agent-workflow
 work_item_dir() {
+    if [ -n "${WORK_ITEM_OVERRIDE:-}" ]; then
+        local dir
+        case "$WORK_ITEM_OVERRIDE" in
+            /*) dir="$WORK_ITEM_OVERRIDE" ;;
+            *) dir="$REPO_ROOT/$WORK_ITEM_OVERRIDE" ;;
+        esac
+        [ -d "$dir" ] || die "work item directory does not exist: $WORK_ITEM_OVERRIDE"
+        dir="$(cd "$dir" && pwd -P)"
+        case "$dir" in
+            "$REPO_ROOT"/docs/features/*|\
+            "$REPO_ROOT"/docs/issues/*|\
+            "$REPO_ROOT"/docs/workflow/*|\
+            "$REPO_ROOT"/docs/website/*) ;;
+            *) die "work item must be under docs/features, docs/issues, docs/workflow or docs/website: $dir" ;;
+        esac
+        echo "$dir"
+        return
+    fi
+
     local branch type folder slug dir
     branch="$(current_branch)"
     type="$(workflow_type_from_branch)"

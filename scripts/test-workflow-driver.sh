@@ -206,18 +206,16 @@ assert_exit "a question requires the assumption in force" 1 \
 assert_eq "a recorded question does not change the stage" "developer" "$(stage_of "$R9")"
 assert_exit "the run continues after a question" 0 env -C "$R9" scripts/workflow-next.sh
 
-# --- the retrospective must run before the branch is deleted ---------------
-# The driver resolves the work item from the branch name, and the release merges
-# with --delete-branch. Anything sequenced after that is stranded forever.
+# --- the retrospective runs after release and can resume without its branch --
 for wt in feature fix; do
     LAST="$(jq -r --arg t "$wt" '.types[$t].stages[-1]' .agents/workflow.json)"
-    assert_eq "$wt ends at the release, not after it" "release-manager" "$LAST"
+    assert_eq "$wt ends with the retrospective" "retrospective" "$LAST"
     IDX_R="$(jq -r --arg t "$wt" '.types[$t].stages | index("retrospective")' .agents/workflow.json)"
     IDX_M="$(jq -r --arg t "$wt" '.types[$t].stages | index("release-manager")' .agents/workflow.json)"
-    if [ "$IDX_R" -lt "$IDX_M" ]; then
-        ok "$wt runs the retrospective before the merge"
+    if [ "$IDX_M" -lt "$IDX_R" ]; then
+        ok "$wt runs the retrospective after release"
     else
-        bad "$wt runs the retrospective before the merge" "retrospective is at $IDX_R, release at $IDX_M"
+        bad "$wt runs the retrospective after release" "release is at $IDX_M, retrospective at $IDX_R"
     fi
 done
 

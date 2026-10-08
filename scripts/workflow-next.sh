@@ -6,6 +6,8 @@
 # Usage:
 #   scripts/workflow-next.sh          what to run next
 #   scripts/workflow-next.sh --json   the same, as JSON
+#   scripts/workflow-next.sh --work-item docs/features/NNN-slug
+#       resume a post-release stage after the source branch has been deleted
 set -euo pipefail
 # shellcheck source=scripts/workflow-lib.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/workflow-lib.sh"
@@ -13,7 +15,21 @@ set -euo pipefail
 require_jq
 
 AS_JSON=0
-[ "${1:-}" = "--json" ] && AS_JSON=1
+WORK_ITEM_OVERRIDE="${WORK_ITEM_OVERRIDE:-}"
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --json) AS_JSON=1; shift ;;
+        --work-item)
+            [ $# -ge 2 ] || die "--work-item needs a path"
+            WORK_ITEM_OVERRIDE="$2"
+            shift 2 ;;
+        -h|--help)
+            sed -n '2,12p' "$0"
+            exit 0 ;;
+        *) die "unknown argument: $1" ;;
+    esac
+done
+export WORK_ITEM_OVERRIDE
 
 TYPE="$(workflow_type_from_branch)"
 DIR="$(work_item_dir)"

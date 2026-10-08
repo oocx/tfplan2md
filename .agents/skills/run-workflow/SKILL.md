@@ -73,7 +73,7 @@ The entry role creates the branch, the folder, `work-protocol.md` and `state.jso
 |---------|-----------|--------|
 | New feature | Requirements Engineer | `feature/NNN-<slug>` |
 | Bug | Issue Analyst | `fix/NNN-<slug>` |
-| Workflow change | Workflow Engineer | `workflow/NNN-<slug>` |
+| Workflow improvement requested by the Maintainer | Workflow Engineer | `workflow/NNN-<slug>` |
 | Website change | Web Designer | `website/NNN-<slug>` |
 
 Reserve `NNN` with the `next-issue-number` skill. Do not ask which role to start with —
@@ -92,6 +92,26 @@ scripts/wp-append.sh --gate spec --decision approved
 `arch` is only pending when the Architect wrote `contested` into it. `uat` is skipped
 automatically when the diff does not touch user-visible output — the driver reports the
 skip and moves on.
+
+## After release
+
+For features and bug fixes, the Release Manager completes the merge and verifies the
+published release before the Retrospective runs. The release deletes the source branch,
+so resume the final stage by its retained work-item directory from a worktree based on
+the merged branch, on a separate documentation follow-up branch. The driver selects
+the Retrospective; the role appends its own entry after completing the report:
+
+```bash
+scripts/workflow-next.sh --work-item docs/features/NNN-<slug>
+# Retrospective role, after writing its report:
+scripts/wp-append.sh --work-item docs/features/NNN-<slug> \
+  --role "Retrospective" --summary "..."
+```
+
+Use `docs/issues/NNN-<slug>` for a bug fix. Keep the retrospective report in a separate
+post-release documentation follow-up, not in the PR for the work being reviewed.
+Recommendations may be presented to the Maintainer; start Workflow Engineer only when
+the Maintainer asks for workflow improvements.
 
 ## Rework
 

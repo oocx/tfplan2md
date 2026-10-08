@@ -164,16 +164,34 @@ def validate_workflow_json(known_stages: set[str]) -> None:
         if "prompt" not in cfg:
             errors.append(f"workflow.json: gate {gate!r} has no prompt")
 
-    # The driver resolves a work item from its branch name, and the release
-    # deletes the branch. A stage sequenced after release-manager is stranded.
-    for type_name, cfg in wf.get("types", {}).items():
+    # Feature and bug-fix retrospectives are post-release. The release deletes
+    # their source branch, so both driver entry points must support an explicit
+    # retained work-item directory for the follow-up stage.
+    post_release_types = {"feature", "fix"}
+    next_text = (REPO / "scripts" / "workflow-next.sh").read_text(encoding="utf-8")
+    append_text = (REPO / "scripts" / "wp-append.sh").read_text(encoding="utf-8")
+    for type_name in post_release_types:
+        cfg = wf.get("types", {}).get(type_name, {})
         stages = cfg.get("stages", [])
-        if "release-manager" in stages and stages[-1] != "release-manager":
-            after = stages[stages.index("release-manager") + 1:]
+        if "release-manager" not in stages or "retrospective" not in stages:
+            continue
+        if stages.index("retrospective") < stages.index("release-manager"):
             errors.append(
-                f"workflow.json: type {type_name!r} sequences {', '.join(after)} after "
-                "release-manager, but the release deletes the branch the driver "
-                "resolves the work item from"
+                f"workflow.json: type {type_name!r} must run retrospective after release-manager"
+            )
+        if "--work-item" not in next_text or "--work-item" not in append_text:
+            errors.append(
+                f"workflow.json: type {type_name!r} runs a post-release retrospective, "
+                "but the driver cannot resume it by work-item path after branch deletion"
+            )
+
+    # Workflow Engineer is a separate Maintainer-triggered process, not a stage
+    # in the primary delivery sequences.
+    for type_name in ("feature", "fix", "website"):
+        stages = wf.get("types", {}).get(type_name, {}).get("stages", [])
+        if "workflow-engineer" in stages:
+            errors.append(
+                f"workflow.json: primary type {type_name!r} must not include workflow-engineer"
             )
 
 

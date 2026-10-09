@@ -9,3 +9,4 @@
 | Medium | Correct post-release evidence guidance, conditional handoff wording, and the UAT-skip regression assertion. | ✅ Done | Supporting guidance and checks must preserve Release Manager before Retrospective. |
 | High | Replace markup-heavy cyclic diagram with separate numbered workflow lanes and explicit reading order. | ✅ Done | Labels must render cleanly and the forward stage sequence must remain easy to follow. |
 | Medium | Preserve Mermaid subgraph headings and nested layout coordinates in the generated website SVG. | ✅ Done | Website diagrams must show the same ordered workflows as the canonical documentation. |
+| High | Run the pinned website Markdown checker through npm. | ✅ Done | PR Validation repeatedly failed at the Docker Hub download limit before it could finish checking the website. |

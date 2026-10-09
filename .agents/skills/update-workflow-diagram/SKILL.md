@@ -22,6 +22,8 @@ Regenerate the `website/ai-workflow.svg` file from the canonical mermaid diagram
 - Use mermaid-cli (`mmdc`) to render the mermaid diagram to SVG
 - Parse the generated SVG to extract node positions and path definitions
 - Preserve exact node positions and path routing from mermaid output
+- Keep each workflow in its own numbered sequence; use plain labels rather than HTML bold or italic tags
+- Preserve subgraph headings and nested transforms, and omit invisible links used only to order the layout
 - Apply blueprint styling consistently per node type
 - Keep the SVG self-contained (all styles inline or in `<style>` block)
 
@@ -48,7 +50,7 @@ Regenerate the `website/ai-workflow.svg` file from the canonical mermaid diagram
 | Artifact text | `#00ffff` (cyan) | Monospace font |
 | Human borders | `#ffffff` (white) | Dashed 2px (`4,2`) |
 | Human text | `#00ffff` (cyan) | Monospace font |
-| Paths (solid) | `#00ffff` (cyan) | 2px with glow |
+| Paths (solid) | `#00ffff` (cyan) | 2px without filters, so straight arrows render reliably |
 | Paths (dashed/feedback) | `#ff6b6b` (coral red) | 2px, dasharray `6,3` |
 | Arrow markers | Same as path color | |
 
@@ -63,14 +65,13 @@ Regenerate the `website/ai-workflow.svg` file from the canonical mermaid diagram
 
 ### Glow Effects
 
-All nodes and paths have CSS filter glow:
+Nodes have CSS filter glow. Edge paths have no filters: zero-width bounding boxes on
+perfectly vertical paths cause some SVG renderers to hide filtered arrows.
 
 ```css
 /* Nodes */
 filter: drop-shadow(0 0 4px rgba(0,255,255,0.6));
 
-/* Paths */
-filter: drop-shadow(0 0 2px rgba(0,255,255,0.4));
 ```
 
 ## Actions
@@ -86,7 +87,7 @@ scripts/render-workflow-diagram.py
 by comparing a `source-sha256` stamp written into the file. It does not re-render, so it
 needs no browser and runs in milliseconds — this is the CI check.
 
-That indirection is not laziness. Mermaid lays out text by measuring it in a browser, so
+Mermaid lays out text by measuring it in a browser, so
 node coordinates depend on which fonts the machine has; a byte-for-byte comparison passes
 locally and fails in CI for no reason a reader could act on. The stamp catches the
 failure that matters — editing the diagram and forgetting to regenerate.
@@ -107,12 +108,16 @@ text:
   node was skipped without an error.
 - The gate hexagons rendered ~100px from their own labels, because a mermaid
   `<polygon>` carries its own inner `transform` in addition to the node group's.
+- Workflow lanes lost their headings and overlapped when nested subgraph transforms
+  were ignored. The parser composes those translations for nodes, paths and labels.
+- Invisible links used to order the workflows became visible arrows. They affect the
+  Mermaid layout but must be omitted from the website SVG.
 
 **Always look at the rendered image before committing.** A grep for the node names
 passes in both broken cases above.
 
 ```bash
-npx --yes sharp-cli -i website/src/media-root/ai-workflow.svg -o /tmp/check.png resize 900
+npx --yes sharp-cli -i website/src/media-root/ai-workflow.svg -o .tmp/workflow-diagram.png resize 1400
 ```
 
 ## Node styling

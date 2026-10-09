@@ -158,7 +158,7 @@ assert_eq "a UAT failure routes to the Developer" "developer" "$(stage_of "$R3")
 
 R4="$(new_repo feature 903-nouat uat-tester "docs/notes.md")"
 (cd "$R4" && scripts/workflow-next.sh) >/dev/null 2>&1
-assert_eq "a non-user-visible diff skips UAT" "retrospective" "$(stage_of "$R4")"
+assert_eq "skipping UAT preserves the release stage" "release-manager" "$(stage_of "$R4")"
 assert_eq "the skip is recorded" "not-required" "$(gate_of "$R4" uat)"
 
 # --- model escalation -------------------------------------------------------

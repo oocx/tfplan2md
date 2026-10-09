@@ -116,7 +116,7 @@ Detects suboptimal path routing that could be improved for visual clarity.
    - Fix: Simplify the path to use the minimum number of segments
 
 4. **Suboptimal Routes**: Check if shorter intersection-free routes exist
-   - Example violation: Retro Report → Workflow Engineer going left-down-right instead of right-up-left
+   - Example violation: UAT Tester → Developer going left-down-right instead of right-up-left
    - Fix: Reroute using the shorter valid alternative
 
 **Why This Works:**

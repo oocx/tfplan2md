@@ -1,6 +1,6 @@
-# Work Protocol: 146-post-release-retrospective
+# Work Protocol: 149-post-release-retrospective
 
-**Work Item:** `docs/workflow/146-post-release-retrospective/`
+**Work Item:** `docs/workflow/149-post-release-retrospective/`
 **Workflow Type:** workflow
 **Created:** 2026-10-08
 
@@ -19,7 +19,7 @@
 
 - **Date:** 2026-10-09
 - **Summary:** Aligned website workflow content, supporting guidance, and regression coverage with post-release retrospectives and Maintainer-triggered workflow improvements; regenerated agent adapters and validated the workflow and SVG.
-- **Artifacts Produced:** website/src/_data/aiWorkflowPage.js, website/src/media-root/ai-workflow-improvement.svg, .agents/roles/release-manager.md, .agents/skills/retrospective-evidence/SKILL.md, .agents/skills/detect-diagram-crossings/SKILL.md, scripts/test-workflow-driver.sh, docs/workflow/146-post-release-retrospective/tasks.md, generated .claude adapters
+- **Artifacts Produced:** website/src/_data/aiWorkflowPage.js, website/src/media-root/ai-workflow-improvement.svg, .agents/roles/release-manager.md, .agents/skills/retrospective-evidence/SKILL.md, .agents/skills/detect-diagram-crossings/SKILL.md, scripts/test-workflow-driver.sh, docs/workflow/149-post-release-retrospective/tasks.md, generated .claude adapters
 - **Problems Encountered:** Baseline workflow regression had one stale UAT-skip expectation (60 passed, 1 failed) and the sandbox runner failed on an unrelated /mnt/einstein/paperless-export mount. Final workflow regression passed 61/61. Website build and HTML/CSS/JS lint passed, but Docker-backed Markdown lint could not run because this host has no Docker socket.
 
 ### Workflow Engineer (round 3)
@@ -35,3 +35,10 @@
 - **Summary:** Rebased on current main, prepared PR #680 and release notes, verified workflow gates and successful PR Validation run 37990588745. Resolved the website Markdown checker download failure with the same pinned npm checker; full website verification passed. Recorded this audit before rebase merge, with final-head validation required before merging.
 - **Artifacts Produced:** release-notes.md; [PR #680](https://github.com/oocx/tfplan2md/pull/680); scripts/website-lint.sh; tasks.md; work-protocol.md; state.json
 - **Problems Encountered:** PR Validation failed twice because Docker Hub limited the Markdown checker download. The pinned npm invocation removed that dependency and passed. Local Docker was unavailable earlier; final complete website verification succeeded without it.
+
+### Release Manager (round 2)
+
+- **Date:** 2026-10-09
+- **Summary:** Verified PR #680 merged with successful final-head PR Validation. Found that feature work item 146 had merged first, reserved 149 after checking local and remote work items, and renumbered this workflow directory, state identity and recorded paths. Preserved the completed workflow and its audit history. Validated Markdown and workflow gates; the corrective PR must pass PR Validation before rebase merge.
+- **Artifacts Produced:** Renumbered docs/workflow/149-post-release-retrospective/; [original PR #680](https://github.com/oocx/tfplan2md/pull/680)
+- **Problems Encountered:** The global numbering collision was missed before the original merge; a documentation-only follow-up corrects it.

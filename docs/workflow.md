@@ -9,91 +9,71 @@ from `state.json`, resolved by `scripts/workflow-next.sh`.
 
 ## Workflow diagram
 
-This diagram is the source for the website's `ai-workflow.svg`. Regenerate it with the
+Read the workflows from left to right, and each numbered sequence from top to bottom.
+Workflow improvement is a separate process started only at the Maintainer's request.
+This diagram is the source for the website's `ai-workflow.svg`; regenerate it with the
 `update-workflow-diagram` skill after changing it.
 
 ```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-flowchart TB
-    classDef role fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:8,ry:8;
-    classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:6,ry:6;
-    classDef meta fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff,rx:8,ry:8;
-    classDef gate fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
-    classDef external fill:#ec4899,stroke:#f472b6,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+%%{init: {'theme':'dark', 'flowchart': {'curve':'linear', 'nodeSpacing':30, 'rankSpacing':35}, 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
+flowchart LR
+    classDef role fill:#3b82f6,stroke:#60a5fa,stroke-width:2px,color:#ffffff;
+    classDef meta fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef gate fill:#f59e0b,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef external fill:#ec4899,stroke:#f472b6,stroke-width:2px,color:#ffffff;
 
-    HUMAN(["👤 <b>Maintainer</b>"])
-    DRIVER["🔁 <b>Driver</b><br/>workflow-next.sh + state.json"]
-
-    RE["<b>Requirements Engineer</b>"]
-    IAR["<b>Issue Analyst</b>"]
-    WDS["<b>Web Designer</b>"]
-    WEN["<b>Workflow Engineer</b><br/><i>separate, Maintainer-triggered</i>"]
-    WFRM["<b>Release Manager</b><br/>workflow change"]
-
-    G1{{"🚦 <b>GATE</b><br/>Specification approval"}}
-    AR["<b>Architect</b>"]
-    G2{{"🚦 <b>GATE</b><br/>Architecture choice<br/><i>only when options compete</i>"}}
-
-    QE["<b>Quality Engineer</b>"]
-    TPL["<b>Task Planner</b>"]
-    DEV["<b>Developer</b>"]
-    TW["<b>Technical Writer</b>"]
-    CR["<b>Code Reviewer</b><br/>runs in Codex"]
-    UAT["<b>UAT Tester</b>"]
-    G3{{"🚦 <b>GATE</b><br/>UAT approval<br/><i>only when output changes</i>"}}
-    RM["<b>Release Manager</b>"]
-    RETRO["<b>Retrospective</b>"]
-
-    subgraph MAINT["Separate, Maintainer-triggered process"]
-        WEN --> WFRM
+    subgraph FEATURE["Feature"]
+        direction TB
+        F_RE["1. Requirements Engineer"] --> F_SPEC{{"Specification approval"}}
+        F_SPEC --> F_AR["2. Architect"]
+        F_AR --> F_ARCH{{"Architecture choice<br/>only when options compete"}}
+        F_ARCH --> F_QE["3. Quality Engineer"]
+        F_QE --> F_TP["4. Task Planner"]
+        F_TP --> F_DEV["5. Developer"]
+        F_DEV --> F_TW["6. Technical Writer"]
+        F_TW --> F_CR["7. Code Reviewer<br/>runs in Codex"]
+        F_CR --> F_UAT["8. UAT Tester<br/>only when output changes"]
+        F_UAT --> F_UAT_GATE{{"UAT approval"}}
+        F_UAT_GATE --> F_RM["9. Release Manager"]
+        F_RM -->|"release verified"| F_RETRO["10. Retrospective"]
+        F_CR -->|"UAT skipped"| F_RM
     end
 
-    WP["📓 work-protocol.md<br/>+ state.json"]
+    subgraph BUG["Bug fix"]
+        direction TB
+        B_IA["1. Issue Analyst"] --> B_DEV["2. Developer"]
+        B_DEV --> B_TW["3. Technical Writer"]
+        B_TW --> B_CR["4. Code Reviewer<br/>runs in Codex"]
+        B_CR --> B_UAT["5. UAT Tester<br/>only when output changes"]
+        B_UAT --> B_GATE{{"UAT approval"}}
+        B_GATE --> B_RM["6. Release Manager"]
+        B_RM -->|"release verified"| B_RETRO["7. Retrospective"]
+        B_CR -->|"UAT skipped"| B_RM
+    end
 
-    HUMAN -->|"request"| DRIVER
-    HUMAN -.->|"requests workflow improvement"| WEN
-    DRIVER -->|"feature"| RE
-    DRIVER -->|"bug"| IAR
-    DRIVER -->|"website"| WDS
+    subgraph WEBSITE["Website"]
+        direction TB
+        S_WD["1. Web Designer"] --> S_GATE{{"UAT approval"}}
+        S_GATE --> S_RM["2. Release Manager"]
+    end
 
-    RE --> G1
-    G1 -->|"approved"| AR
-    G1 -.->|"rejected"| RE
-    AR --> G2
-    G2 -->|"decided"| QE
-    G2 -.->|"uncontested: auto"| QE
+    subgraph MAINTENANCE["Workflow improvement"]
+        direction TB
+        W_WE["1. Workflow Engineer<br/>Maintainer request only"] --> W_RM["2. Release Manager"]
+    end
 
-    QE --> TPL --> DEV --> TW --> CR
-    IAR --> DEV
-    CR -->|"APPROVED"| UAT
-    CR -.->|"REWORK"| DEV
-
-    UAT --> G3
-    G3 -->|"approved"| RM
-    G3 -.->|"failed"| DEV
-    CR -->|"no user-visible change<br/>UAT skipped"| RM
-
-    WDS --> G3
-    RM -->|"feature/bug release complete"| RETRO
-    RETRO -.->|"improvement ideas"| HUMAN
-
-    DEV -.-> WP
-    CR -.-> WP
-    RM -.-> WP
-    RETRO -.-> WP
-    WP -.->|"resumes the run"| DRIVER
-
-    G1 -.-> HUMAN
-    G2 -.-> HUMAN
-    G3 -.-> HUMAN
-
-    class RE,IAR,AR,QE,TPL,DEV,TW,UAT,RM,RETRO,WFRM role;
-    class WEN,WDS meta;
-    class CR external;
-    class G1,G2,G3 gate;
-    class WP artifact;
-    class DRIVER meta;
+    FEATURE ~~~ BUG ~~~ WEBSITE ~~~ MAINTENANCE
+    class F_RE,F_AR,F_QE,F_TP,F_DEV,F_TW,F_UAT,F_RM,F_RETRO,B_IA,B_DEV,B_TW,B_UAT,B_RM,B_RETRO,S_RM,W_RM role;
+    class F_SPEC,F_ARCH,F_UAT_GATE,B_GATE,S_GATE gate;
+    class F_CR,B_CR external;
+    class S_WD,W_WE meta;
 ```
+
+The Maintainer approves the gates. Architecture approval is needed only when options
+compete; UAT and its approval are skipped when output does not change. Retrospective
+follows the completed, verified feature or bug-fix release and reports findings to the
+Maintainer. Rework and audit links are described below to keep the diagram focused on
+the forward sequence.
 
 ## Stages
 
@@ -120,6 +100,11 @@ flowchart TB
 Issue Analyst (`analysis.md`) → Developer → Technical Writer → Code Reviewer →
 UAT Tester (if applicable) → Release Manager → Retrospective.
 
+### Website — `website/NNN-<slug>` → `docs/website/NNN-<slug>/`
+
+Web Designer → **GATE: UAT** → Release Manager. A website change is user-visible by
+definition, so the gate fires whenever the diff touches `website/`.
+
 ### Separate process: workflow improvement — `workflow/NNN-<slug>` → `docs/workflow/NNN-<slug>/`
 
 The Maintainer starts this process when they want to improve the development workflow.
@@ -127,11 +112,6 @@ It is not an automatic entry point in the feature, bug-fix, or website process a
 not dispatched automatically from a retrospective.
 
 Workflow Engineer → Release Manager. UAT does not apply.
-
-### Website — `website/NNN-<slug>` → `docs/website/NNN-<slug>/`
-
-Web Designer → **GATE: UAT** → Release Manager. A website change is user-visible by
-definition, so the gate fires whenever the diff touches `website/`.
 
 ## Gates
 

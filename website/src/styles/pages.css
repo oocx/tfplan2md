@@ -929,7 +929,7 @@
 
 .ai-workflow-diagram-object {
     width: 100%;
-    max-width: 700px;
+    min-width: 1200px;
     margin: 0 auto;
     display: block;
 }

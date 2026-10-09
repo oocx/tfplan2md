@@ -32,26 +32,30 @@ import sys
 import tempfile
 from pathlib import Path
 
+from workflow_diagram_svg import (
+    NODE_CLASS,
+    clean_label,
+    parse_clusters,
+    parse_edge_labels,
+    parse_edges,
+    parse_nodes,
+)
+
 REPO = Path(__file__).resolve().parent.parent
 SOURCE_DOC = REPO / "docs" / "workflow.md"
 TARGET_SVG = REPO / "website" / "src" / "media-root" / "ai-workflow.svg"
 MERMAID_VERSION = "11.17.0"
-
-# classDef name in the mermaid source -> CSS class in the blueprint SVG.
-NODE_CLASS = {
-    "role": "node-agent",
-    "meta": "node-metaagent",
-    "artifact": "node-artifact",
-    "gate": "node-gate",
-    "external": "node-external",
-    "default": "node-human",
-}
 
 STYLE = """
     /* Blueprint: a technical drawing of the workflow, not a UI. Node role is
        carried by border colour and dash pattern so it survives greyscale. */
     .bg { fill: #0d1b2a; }
     .grid { fill: url(#grid-blueprint); }
+
+    .cluster rect { fill: rgba(13,27,42,0.78); stroke: rgba(0,255,255,0.35);
+                    stroke-width: 1.5; }
+    .cluster-title { fill: #ffffff; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+                     font-size: 14px; font-weight: 600; text-anchor: middle; }
 
     g[class^="node-"] rect,
     g[class^="node-"] polygon,
@@ -85,10 +89,8 @@ STYLE = """
     }
     g[class^="node-"] text.sub { font-size: 11px; opacity: 0.75; }
 
-    .path-solid  { fill: none; stroke: #00ffff; stroke-width: 2;
-                   filter: drop-shadow(0 0 2px rgba(0,255,255,0.4)); }
-    .path-dashed { fill: none; stroke: #ff6b6b; stroke-width: 2; stroke-dasharray: 6,3;
-                   filter: drop-shadow(0 0 2px rgba(255,107,107,0.35)); }
+    .path-solid  { fill: none; stroke: #00ffff; stroke-width: 2; }
+    .path-dashed { fill: none; stroke: #ff6b6b; stroke-width: 2; stroke-dasharray: 6,3; }
 
     .edge-label {
         font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -116,11 +118,7 @@ def render_with_mermaid(mmd: str, workdir: Path) -> str:
     src = workdir / "workflow.mmd"
     out = workdir / "raw.svg"
     src.write_text(mmd, encoding="utf-8")
-    # Pinned: this script parses mermaid's SVG markup, so an upstream release can
-    # change the output and break --check with no change in this repository.
-    # Bumping the pin can require a matching puppeteer Chrome — if the render
-    # fails with "Could not find Chrome", run:
-    #     npx puppeteer browsers install chrome-headless-shell
+    # The parser depends on Mermaid's SVG markup, so keep the CLI pinned.
     if shutil.which("mmdc"):
         cmd = ["mmdc"]
     else:
@@ -132,11 +130,8 @@ def render_with_mermaid(mmd: str, workdir: Path) -> str:
 
     result = run([])
 
-    # GitHub's runners disable unprivileged user namespaces, so Chrome's sandbox
-    # cannot start and the render dies before mermaid sees the diagram. Retry
-    # without it rather than disabling it everywhere: on a developer machine the
-    # sandbox works and is worth keeping. The input is this repository's own
-    # diagram source, and the flag does not affect the rendered bytes.
+    # GitHub runners cannot start Chrome's sandbox. Retry only that failure with
+    # the sandbox disabled; the input is this repository's own diagram source.
     if result.returncode != 0 and "No usable sandbox" in (result.stderr + result.stdout):
         cfg = workdir / "puppeteer.json"
         cfg.write_text(
@@ -148,95 +143,6 @@ def render_with_mermaid(mmd: str, workdir: Path) -> str:
     if result.returncode != 0 or not out.exists():
         die(f"mermaid render failed:\n{result.stdout}\n{result.stderr}")
     return out.read_text(encoding="utf-8")
-
-
-def clean_label(raw: str) -> list[str]:
-    """Mermaid labels are HTML. Return them as plain text lines."""
-    raw = re.sub(r"<br\s*/?>", "\n", raw)
-    raw = re.sub(r"<[^>]+>", "", raw)
-    lines = [html.unescape(x).strip() for x in raw.split("\n")]
-    return [x for x in lines if x]
-
-
-def parse_nodes(svg: str) -> list[dict]:
-    nodes = []
-    pattern = re.compile(
-        r'<g class="node ([^"]+)" id="[^"]*flowchart-([A-Za-z0-9_]+)-\d+"'
-        r'[^>]*transform="translate\(([-\d.]+),\s*([-\d.]+)\)">(.*?)</g></g>',
-        re.S,
-    )
-    for m in pattern.finditer(svg):
-        classes, node_id, x, y, body = m.groups()
-        kind = next((c for c in classes.split() if c in NODE_CLASS and c != "default"), "default")
-
-        # Mermaid emits three shape forms, and each needs different handling:
-        # a plain rect; a polygon that carries its OWN transform (dropping it
-        # leaves the label outside the shape); and a stadium, drawn as a free
-        # path inside an "outer-path" group, which matches neither pattern and
-        # was silently skipping the node.
-        shape = None
-        rect = re.search(r'<rect class="basic label-container"[^>]*x="([-\d.]+)" y="([-\d.]+)" '
-                         r'width="([\d.]+)" height="([\d.]+)"', body)
-        # Grab the whole element first, then pull points and transform out of
-        # it separately: combining them into one pattern lets [^>]* swallow the
-        # transform, and an optional group the engine is happy to skip means the
-        # hexagon silently renders 100px away from its own label.
-        poly_el = re.search(r'<polygon\b[^>]*/>', body)
-        poly_points = poly_xform = None
-        if poly_el:
-            el = poly_el.group(0)
-            pts = re.search(r'points="([^"]+)"', el)
-            xf = re.search(r'transform="translate\(([-\d.]+),\s*([-\d.]+)\)"', el)
-            poly_points = pts.group(1) if pts else None
-            poly_xform = (float(xf.group(1)), float(xf.group(2))) if xf else (0.0, 0.0)
-        stadium = re.search(r'class="[^"]*outer-path"[^>]*>\s*<path d="([^"]+)"', body)
-        if rect:
-            shape = ("rect", tuple(float(v) for v in rect.groups()), (0.0, 0.0))
-        elif poly_points:
-            shape = ("polygon", poly_points, poly_xform)
-        elif stadium:
-            # A stadium is a fully-rounded rectangle, and mermaid draws it as a
-            # Bezier path whose control points differ slightly on every render —
-            # the one source of nondeterminism in this pipeline, which would make
-            # a --check in CI fail at random. Derive the box from the path's
-            # extents and emit a rect instead: same shape, stable bytes.
-            coords = [float(v) for v in re.findall(r"-?\d+\.?\d*", stadium.group(1))]
-            xs, ys = coords[0::2], coords[1::2]
-            x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
-            shape = ("stadium", (x0, y0, x1 - x0, y1 - y0), (0.0, 0.0))
-        if shape is None:
-            continue
-
-        label = re.search(r'class="nodeLabel"[^>]*>(.*?)</span>', body, re.S)
-        lines = clean_label(label.group(1)) if label else [node_id]
-        nodes.append({"id": node_id, "kind": kind, "x": float(x), "y": float(y),
-                      "shape": shape, "lines": lines})
-    return nodes
-
-
-def parse_edges(svg: str) -> list[dict]:
-    edges = []
-    for m in re.finditer(r'<path d="([^"]+)" id="[^"]*L_([A-Za-z0-9_]+)_\d+" class="([^"]*)"', svg):
-        d, name, classes = m.groups()
-        dashed = "edge-pattern-dotted" in classes or "edge-pattern-dashed" in classes
-        edges.append({"d": d, "dashed": dashed, "name": name})
-    return edges
-
-
-def parse_edge_labels(svg: str) -> list[dict]:
-    labels = []
-    for m in re.finditer(
-        r'<g class="edgeLabel"[^>]*transform="translate\(([-\d.]+),\s*([-\d.]+)\)">(.*?)</g></g></g>',
-        svg, re.S,
-    ):
-        x, y, body = m.groups()
-        text = re.search(r'class="edgeLabel"[^>]*>(.*?)</span>', body, re.S)
-        if not text:
-            continue
-        lines = clean_label(text.group(1))
-        if lines:
-            labels.append({"x": float(x), "y": float(y), "lines": lines})
-    return labels
 
 
 def source_digest(mmd: str) -> str:
@@ -252,6 +158,7 @@ def build_svg(raw: str, mmd: str) -> str:
     minx, miny, width, height = (float(v) for v in vb.group(1).split())
 
     nodes = parse_nodes(raw)
+    clusters = parse_clusters(raw)
     edges = parse_edges(raw)
     labels = parse_edge_labels(raw)
     if not nodes:
@@ -277,10 +184,22 @@ def build_svg(raw: str, mmd: str) -> str:
     out.append(f'  <rect class="bg" x="{minx}" y="{miny}" width="{width}" height="{height}"/>')
     out.append(f'  <rect class="grid" x="{minx}" y="{miny}" width="{width}" height="{height}"/>')
 
+    for cluster in clusters:
+        out.append(f'  <g class="cluster" transform="translate({cluster["x"]:.3f}, {cluster["y"]:.3f})">')
+        x, y, width, height = cluster["rect"]
+        out.append(f'    <rect x="{x:.3f}" y="{y:.3f}" width="{width:.3f}" height="{height:.3f}"/>')
+        for index, line in enumerate(cluster["lines"]):
+            title_y = cluster["label_y"] + 17 + index * 18
+            out.append(f'    <text class="cluster-title" x="{cluster["label_x"]:.3f}" y="{title_y:.3f}">'
+                       f'{html.escape(line)}</text>')
+        out.append("  </g>")
+
     for e in edges:
         cls = "path-dashed" if e["dashed"] else "path-solid"
         marker = "arrow-dashed" if e["dashed"] else "arrow-solid"
-        out.append(f'  <path class="{cls}" marker-end="url(#{marker})" d="{e["d"]}"/>')
+        shift = (f' transform="translate({e["x"]:.3f}, {e["y"]:.3f})"'
+                 if e["x"] or e["y"] else "")
+        out.append(f'  <path class="{cls}" marker-end="url(#{marker})"{shift} d="{e["d"]}"/>')
 
     for lab in labels:
         n = len(lab["lines"])

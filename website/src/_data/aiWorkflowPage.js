@@ -16,8 +16,8 @@ module.exports = {
   ],
   diagram: {
     title: "Workflow Diagram",
-    description: "The diagram below shows the delivery workflow from requirements through release and its post-release retrospective, plus the separate workflow-maintenance process that only the Maintainer can start.",
-    note: "Agents produce and consume artifacts. Solid arrows show artifact creation and consumption. Dashed arrows indicate rework/feedback loops."
+    description: "Read Feature, Bug fix, and Website from left to right, with numbered stages running from top to bottom in each lane. The separate Workflow improvement lane starts only when the Maintainer requests it.",
+    note: "Arrows show the forward sequence. Architecture approval applies only when options compete; UAT is skipped when output does not change. Feature and bug-fix retrospectives follow the completed, verified release."
   },
   agents: [
     { emoji: "📋", title: "Requirements Engineer", description: "Gathers and clarifies requirements for new features" },

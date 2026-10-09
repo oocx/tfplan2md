@@ -28,3 +28,10 @@
 - **Summary:** Replaced the cyclic diagram with four numbered workflows in reading order, removed exposed formatting, preserved subgraph geometry, and restored straight arrows. Three renderer regressions, reproducible rendering, complete geometry checks, website build/source lint, Markdown lint and link checks passed.
 - **Artifacts Produced:** docs/workflow.md; scripts/render-workflow-diagram.py; scripts/workflow_diagram_svg.py; scripts/tests/test_render_workflow_diagram.py; website workflow SVG, page copy and display styles; diagram skill and generated adapter; tasks.md
 - **Problems Encountered:** The earlier diagram validation missed visible markup and confusing layout. Chrome needed a sandbox override. Docker-backed Markdown lint was unavailable; local Markdown lint passed. Legacy crossing parsers needed a validation copy with resolved transforms and valid boundary connections excluded.
+
+### Release Manager
+
+- **Date:** 2026-10-09
+- **Summary:** Rebased on current main, prepared PR #680 and release notes, verified workflow gates and successful PR Validation run 37990588745. Resolved the website Markdown checker download failure with the same pinned npm checker; full website verification passed. Recorded this audit before rebase merge, with final-head validation required before merging.
+- **Artifacts Produced:** release-notes.md; [PR #680](https://github.com/oocx/tfplan2md/pull/680); scripts/website-lint.sh; tasks.md; work-protocol.md; state.json
+- **Problems Encountered:** PR Validation failed twice because Docker Hub limited the Markdown checker download. The pinned npm invocation removed that dependency and passed. Local Docker was unavailable earlier; final complete website verification succeeded without it.

@@ -88,6 +88,7 @@ fi
 npx --yes eslint@9.20.0 --config website/eslint.config.js "${eslint_targets[@]}"
 
 echo "Linting website markdown..."
-scripts/markdownlint.sh website/*.md website/adrs/*.md
+# Keep the pinned checker available on Node-based website runners without a Docker pull.
+npx --yes markdownlint-cli2@0.20.0 --config .markdownlint.json website/*.md website/adrs/*.md
 
 echo "Website lint OK."

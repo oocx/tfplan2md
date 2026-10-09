@@ -32,13 +32,23 @@ finding than the problem itself.
 
 ## Git history
 
+Start with the retained work item's Release Manager entry to identify the merged PR and
+published release. Use the merged PR's recorded base and head commits to inspect the
+delivery commit range, and corroborate it with the release and CI history:
+
 ```bash
-git log --oneline origin/main..HEAD          # how often work was redone
-git log --format='%s' origin/main..HEAD | cut -d: -f1 | sort | uniq -c
+git log --oneline <pr-base>..<pr-head>          # how often delivery work was redone
+git log --format='%s' <pr-base>..<pr-head> | cut -d: -f1 | sort | uniq -c
 ```
 
 Repeated commits touching the same file, or a string of `fix:` commits after a
 `feat:`, tell you where the work actually went.
+
+Do not use `origin/main..HEAD` for a post-release documentation follow-up. At that
+point the delivery commits are already on `main`, so that range contains only the
+follow-up branch and can hide the cycle being reviewed. If the Release Manager entry,
+merged PR, release, or CI record does not establish a fact, say the evidence is
+unavailable rather than reconstructing it from memory.
 
 ## CI
 

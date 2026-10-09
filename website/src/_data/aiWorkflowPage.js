@@ -16,7 +16,7 @@ module.exports = {
   ],
   diagram: {
     title: "Workflow Diagram",
-    description: "The diagram below shows the complete agent workflow from requirements to release. Each agent produces artifacts that are consumed by the next agent in the sequence.",
+    description: "The diagram below shows the delivery workflow from requirements through release and its post-release retrospective, plus the separate workflow-maintenance process that only the Maintainer can start.",
     note: "Agents produce and consume artifacts. Solid arrows show artifact creation and consumption. Dashed arrows indicate rework/feedback loops."
   },
   agents: [
@@ -28,17 +28,17 @@ module.exports = {
     { emoji: "📝", title: "Technical Writer", description: "Updates and maintains documentation" },
     { emoji: "👀", title: "Code Reviewer", description: "Reviews code quality and standards" },
     { emoji: "🧪", title: "UAT Tester", description: "Validates user-facing features" },
-    { emoji: "🚀", title: "Release Manager", description: "Prepares and executes releases" },
-    { emoji: "🔄", title: "Retrospective", description: "Identifies improvement opportunities" },
-    { emoji: "⚙️", title: "Workflow Engineer", description: "Improves the workflow itself" },
+    { emoji: "🚀", title: "Release Manager", description: "Merges approved work, publishes the release, and verifies its artifacts" },
+    { emoji: "🔄", title: "Retrospective", description: "Reviews feature and bug-fix work after the release is complete" },
+    { emoji: "⚙️", title: "Workflow Engineer", description: "Improves the workflow when the Maintainer requests separate maintenance work" },
     { emoji: "🎨", title: "Web Designer", description: "Maintains the project website" }
   ],
   processSteps: [
-    { number: "1", title: "Entry Point", description: "The Maintainer identifies a need (new feature, bug fix, or workflow improvement) and starts with the appropriate entry agent." },
+    { number: "1", title: "Entry Point", description: "The Maintainer starts feature, bug-fix, or website delivery through its entry role. Workflow improvement is a separate process started only on an explicit Maintainer request." },
     { number: "2", title: "Agent Collaboration", description: "Each agent produces artifacts (markdown documents) that serve as inputs for the next agent in the workflow." },
     { number: "3", title: "Traceability", description: "All decisions, requirements, and changes are documented in versioned artifact files in the repository." },
-    { number: "4", title: "Quality Gates", description: "Code Reviewer and UAT Tester validate changes before Release Manager creates the pull request." },
-    { number: "5", title: "Continuous Improvement", description: "Retrospective analyzes the process and provides feedback to the Workflow Engineer for improvements." }
+    { number: "4", title: "Quality Gates", description: "Code Reviewer and, when user-visible output changes, UAT Tester validate delivery work before Release Manager creates the pull request." },
+    { number: "5", title: "Post-release Learning", description: "After a feature or bug-fix release is published and verified, Retrospective records evidence-based findings for the Maintainer. Those findings do not start workflow changes automatically." }
   ],
   executionModes: [
     {

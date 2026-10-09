@@ -1,66 +1,75 @@
-<svg viewBox="0 0 690 690" xmlns="http://www.w3.org/2000/svg" width="690" height="690">
+<svg viewBox="0 0 760 760" xmlns="http://www.w3.org/2000/svg" width="760" height="760" role="img" aria-labelledby="title description">
+  <title id="title">Post-release learning and separate workflow improvement</title>
+  <desc id="description">A completed release is reviewed by Retrospective, which reports findings to the Maintainer. In a separate process, only an explicit Maintainer request starts Workflow Engineer, followed by Release Manager.</desc>
   <defs>
     <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">
       <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
     </pattern>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#00ffff"/>
+    </marker>
     <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
       <path d="M0,0 L0,10 L10,5 z" fill="#10b981"/>
     </marker>
   </defs>
-  
-  <rect width="690" height="690" fill="#0d1b2a"/>
-  <rect width="690" height="690" fill="url(#grid-blueprint)"/>
-  
-  <!-- Maintainer -->
-  <g class="node">
-    <rect rx="2" ry="2" x="0" y="385" width="300" height="50" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,2"/>
-    <text x="150" y="415" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">👤 MAINTAINER</text>
+
+  <rect width="760" height="760" fill="#0d1b2a"/>
+  <rect width="760" height="760" fill="url(#grid-blueprint)"/>
+
+  <g aria-label="Post-release follow-up">
+    <text x="40" y="52" fill="#00ffff" font-size="14" font-family="monospace" font-weight="600">POST-RELEASE FOLLOW-UP · FEATURES AND BUG FIXES</text>
+
+    <g class="node">
+      <rect x="230" y="80" width="300" height="46" rx="2" fill="none" stroke="#00ffff" stroke-width="2"/>
+      <text x="380" y="109" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RELEASE MANAGER</text>
+    </g>
+
+    <path d="M 380,126 L 380,166" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+
+    <g class="node">
+      <rect x="230" y="166" width="300" height="40" rx="2" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+      <text x="380" y="191" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">✓ RELEASE PUBLISHED + VERIFIED</text>
+    </g>
+
+    <path d="M 380,206 L 380,246" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+
+    <g class="node">
+      <rect x="230" y="246" width="300" height="46" rx="2" fill="none" stroke="#00ffff" stroke-width="2"/>
+      <text x="380" y="275" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RETROSPECTIVE</text>
+    </g>
+
+    <path d="M 380,292 L 380,332" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+
+    <g class="node">
+      <rect x="230" y="332" width="300" height="40" rx="2" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+      <text x="380" y="357" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">RETROSPECTIVE FINDINGS</text>
+    </g>
   </g>
-  
-  <path d="M 300,410 L 340,410 L 340,545 L 340,525" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
-  
-  <!-- Workflow Engineer -->
-  <g class="node">
-    <rect rx="2" ry="2" x="190" y="525" width="300" height="40" fill="none" stroke="#10b981" stroke-width="2"/>
-    <text x="340" y="550" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">WORKFLOW ENG</text>
+
+  <path d="M 380,372 L 380,452" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+
+  <g class="node" aria-label="Maintainer decision point">
+    <rect x="230" y="452" width="300" height="50" rx="2" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="380" y="482" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">MAINTAINER DECIDES</text>
   </g>
-  
-  <path d="M 340,565 L 340,655" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
-  
-  <!-- Workflow Doc -->
-  <g class="node">
-    <rect rx="2" ry="2" x="190" y="655" width="300" height="35" fill="rgba(16,185,129,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
-    <text x="340" y="677" text-anchor="middle" fill="#10b981" font-weight="600" font-size="13" font-family="monospace">⚙️ WORKFLOW DOC</text>
+
+  <g aria-label="Separate Maintainer-triggered workflow improvement process">
+    <text x="40" y="572" fill="#10b981" font-size="14" font-family="monospace" font-weight="600">SEPARATE PROCESS · ONLY ON EXPLICIT MAINTAINER REQUEST</text>
+
+    <path d="M 530,477 L 700,477 L 700,633 L 530,633" stroke="#10b981" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-green)"/>
+    <text x="585" y="595" fill="#10b981" font-size="11" font-family="monospace">optional request</text>
+
+    <g class="node">
+      <rect x="230" y="610" width="300" height="46" rx="2" fill="none" stroke="#10b981" stroke-width="2"/>
+      <text x="380" y="639" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">WORKFLOW ENGINEER</text>
+    </g>
+
+    <path d="M 380,656 L 380,684" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+    <text x="394" y="675" fill="#10b981" font-size="11" font-family="monospace">workflow change</text>
+
+    <g class="node">
+      <rect x="230" y="684" width="300" height="40" rx="2" fill="none" stroke="#00ffff" stroke-width="2"/>
+      <text x="380" y="709" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RELEASE MANAGER</text>
+    </g>
   </g>
-  
-  <!-- Release Manager -->
-  <g class="node">
-    <rect rx="2" ry="2" x="380" y="0" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
-    <text x="530" y="25" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RELEASE MGR</text>
-  </g>
-  
-  <path d="M 530,40 L 530,130" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
-  
-  <!-- Release + PR -->
-  <g class="node">
-    <rect rx="2" ry="2" x="380" y="130" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
-    <text x="530" y="152" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🚀 RELEASE + PR</text>
-  </g>
-  
-  <path d="M 530,165 L 530,255" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
-  
-  <!-- Retrospective -->
-  <g class="node">
-    <rect rx="2" ry="2" x="380" y="255" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
-    <text x="530" y="280" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RETROSPECTIVE</text>
-  </g>
-  
-  <path d="M 530,295 L 530,380 L 530,393" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
-  
-  <!-- Retro Report -->
-  <g class="node">
-    <rect rx="2" ry="2" x="380" y="393" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
-    <text x="530" y="415" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📝 RETRO REPORT</text>
-  </g>
-  
 </svg>

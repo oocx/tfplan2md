@@ -761,7 +761,7 @@ This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git h
 - **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build` (enforces code style and quality metrics)
 - **commit-msg**: Validates commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format
 
-**Code quality checks:** The build enforces cyclomatic complexity (≤15), maintainability index (≥20), and line length (≤160 characters). See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+**Code quality checks:** The build enforces cyclomatic complexity (≤15), maintainability index (≥20), and line length (≤160 characters). See [docs/development.md](docs/development.md) for details.
 
 ### Docker Build
 
@@ -771,12 +771,13 @@ docker build -t tfplan2md .
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+Bug reports, feature ideas and feedback are very welcome. Please
+[open an issue](https://github.com/oocx/tfplan2md/issues/new/choose) or start a
+[discussion](https://github.com/oocx/tfplan2md/discussions).
 
-- Branch naming conventions
-- Commit message format (Conventional Commits)
-- Pull request process
-- Code style requirements
+Pull requests that implement features or fix bugs are not accepted.
+[CONTRIBUTING.md](CONTRIBUTING.md) explains why.
+[docs/development.md](docs/development.md) describes how the project is built.
 
 ## CI/CD
 

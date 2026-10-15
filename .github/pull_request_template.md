@@ -1,3 +1,9 @@
+<!--
+tfplan2md does not accept pull requests from contributors other than the maintainer.
+Uninvited pull requests will be closed. Please open a bug report or feature request
+instead: those are very welcome. See CONTRIBUTING.md for the reasons.
+-->
+
 ### Summary
 
 Describe the change and motivation in one or two sentences.

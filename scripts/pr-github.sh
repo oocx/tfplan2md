@@ -23,7 +23,7 @@ Notes:
   - **Agent guidance:** This script is the **authoritative** repo tool for creating and merging PRs. Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them (rebase + delete branch). Body must be piped via stdin.
   - **Fallback:** Use GitHub chat tools (`github/*`) only when the script does not support a necessary advanced operation or for quick inspection of checks.
   - Requires: git + GitHub CLI (gh) authenticated when used as a CLI fallback
-  - Merge policy: uses rebase-and-merge for linear history (per CONTRIBUTING.md)
+  - Merge policy: uses rebase-and-merge for linear history (per docs/development.md)
 USAGE
 }
 

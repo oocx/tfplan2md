@@ -46,7 +46,6 @@ body:
         Anything else that would help? Examples:
         - Alternative approaches you've tried
         - Why those alternatives don't work
-        - Willingness to contribute a PR
         - Screenshots or mockups
     validations:
       required: false

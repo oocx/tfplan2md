@@ -17,7 +17,7 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
   - **Parallel work rule:** If two branches chose the same next `NNN`, the first PR to merge keeps it; later PRs must renumber before merge.
 - The testing strategy is described in /docs/testing-strategy.md
 - Features of tfplan2md (from a user perspective) are described in /docs/features.md
-- Contribution guidelines are in /CONTRIBUTING.md
+- Contribution guidelines are in /CONTRIBUTING.md; the development guide is in /docs/development.md
 
 ## Coding Standards
 

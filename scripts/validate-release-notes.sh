@@ -14,7 +14,7 @@ WORK_ITEM_EXCLUDED_PATH_PATTERN='(^src/tests/shell/|^src/Dockerfile$)'
 
 # Individual documentation files that can change workflow expectations globally and
 # should therefore also require a matching work item folder.
-WORK_ITEM_REQUIRED_FILE_PATTERN='^(docs/agents\.md$|docs/spec\.md$|README\.md$|CONTRIBUTING\.md$)'
+WORK_ITEM_REQUIRED_FILE_PATTERN='^(docs/agents\.md$|docs/spec\.md$|README\.md$|CONTRIBUTING\.md$|docs/development\.md$)'
 
 # Release-note screenshots must point at versioned raw GitHub URLs inside this repo's
 # docs work-item folders so the images render correctly in GitHub Releases.

@@ -46,6 +46,7 @@ public class DocumentationAlignmentTests
             GetRepositoryFilePath("docs", "adr-006-dependency-injection.md"),
             GetRepositoryFilePath("docs", "architecture.md"),
             GetRepositoryFilePath("CONTRIBUTING.md"),
+            GetRepositoryFilePath("docs", "development.md"),
             GetRepositoryFilePath("README.md")
         };
 

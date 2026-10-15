@@ -6,7 +6,8 @@ Before opening an issue, please check these resources:
 
 ### Documentation
 - **[README](../README.md)** - Installation, usage examples, and feature overview
-- **[Contributing Guide](../CONTRIBUTING.md)** - Development setup and contribution guidelines
+- **[Contributing Guide](../CONTRIBUTING.md)** - Which contributions are welcome (bug reports and ideas, not pull requests)
+- **[Development Guide](../docs/development.md)** - How the project is built and maintained
 - **[Examples](../examples/)** - Comprehensive demos and real-world examples
 - **[Architecture Docs](../docs/)** - Technical specifications and architecture decisions
 

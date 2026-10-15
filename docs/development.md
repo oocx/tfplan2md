@@ -1,0 +1,605 @@
+# Development guide
+
+> **tfplan2md does not accept uninvited code contributions.** Bug reports and feature
+> ideas are very welcome. [CONTRIBUTING.md](../CONTRIBUTING.md) explains how to
+> contribute and why pull requests are not accepted.
+
+This guide describes how tfplan2md is built and maintained. It is published for
+transparency and for the maintainer's own agents. It is not an invitation to open
+pull requests.
+
+## Development Workflow
+
+### Branch Strategy
+
+1. **Main branch** (`main`) — Always in a releasable state
+2. **Feature branches** — Created from `main` for new features or fixes
+
+### Creating a Feature Branch
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feat/your-feature-name
+```
+
+Use these branch prefixes:
+
+- `feat/` — New features
+- `fix/` — Bug fixes
+- `docs/` — Documentation changes
+- `refactor/` — Code refactoring
+- `chore/` — Maintenance tasks
+- `workflow/` — Agent/workflow changes (`.agents/`, workflow documentation)
+- `website/` — Website changes (`website/` directory)
+
+## Testing Requirements
+
+All changes must include appropriate tests. The project uses a comprehensive testing strategy:
+
+### Test Types
+
+1. **Unit Tests** - Test individual components in isolation
+2. **Integration Tests** - Test end-to-end workflows, including Docker-based tests
+3. **Invariant Tests** - Property-based tests that verify markdown invariants that must always hold
+4. **Snapshot Tests** - Golden file tests that detect unexpected output changes
+5. **Template Isolation Tests** - Test each template independently
+6. **Fuzz Tests** - Test with edge-case inputs (special characters, Unicode, long values)
+7. **Markdownlint Integration** - Docker-based linting with actual markdownlint-cli2
+8. **Architecture Tests** - Automated enforcement of layer boundaries and dependency rules
+
+### Running Tests
+
+```bash
+# Run all tests
+dotnet test
+
+# Run specific test categories
+dotnet test --filter "FullyQualifiedName~MarkdownInvariantTests"
+dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"
+
+# Run architecture tests
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/ArchitectureBoundaryTests/*
+```
+
+### Architecture Rules
+
+The codebase follows strict architectural layer boundaries that are automatically enforced by architecture tests:
+
+**If architecture tests fail:**
+
+1. **Read the error message** - Tests provide clear guidance on which rule was violated and why
+2. **Review [docs/architecture-rules.md](architecture-rules.md)** - Understand the layer structure and allowed dependencies
+3. **Fix the violation** - Refactor your code to respect architectural boundaries:
+   - Move code to the appropriate layer
+   - Remove forbidden dependencies
+   - Use allowed dependencies instead
+
+**Key architectural rules:**
+
+- **Parsing** layer must NOT depend on `MarkdownGeneration` (prevents circular dependencies)
+- **Platforms** layer must NOT depend on `MarkdownGeneration` (keeps metadata independent)
+- **MarkdownGeneration** layer must NOT depend on `Providers` (general rendering independent of specific providers)
+- Exception classes must end with `Exception` suffix
+
+See [docs/architecture-rules.md](architecture-rules.md) for complete layer definitions and dependency rules.
+
+### Markdown Quality Requirements
+
+All generated markdown must:
+
+- Pass markdownlint validation (MD012 and other rules)
+- Parse correctly with Markdig
+- Render correctly on GitHub and Azure DevOps
+- Have proper table structure (no blank lines between rows)
+- Have proper heading spacing (blank lines before/after)
+- Have balanced HTML tags (`<details>`, `<summary>`)
+
+See [docs/testing-strategy.md](testing-strategy.md) for complete testing documentation.
+
+## Commit Messages
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) to automate versioning and changelog generation.
+
+### Commit Message Format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+| Type | Description | Version Bump |
+|------|-------------|--------------|
+| `feat` | A new feature | Minor (0.x.0) |
+| `fix` | A bug fix | Patch (0.0.x) |
+| `docs` | Documentation only changes | None |
+| `style` | Code style changes (formatting, etc.) | None |
+| `refactor` | Code refactoring without feature changes | None |
+| `perf` | Performance improvements | Patch (0.0.x) |
+| `test` | Adding or modifying tests | None |
+| `build` | Build system or dependency changes | None |
+| `ci` | CI configuration changes | None |
+| `chore` | Other maintenance tasks | None |
+| `workflow` | Agent/workflow changes (`.agents/`, `docs/workflow.md`) | None |
+| `revert` | Reverting a previous commit | Depends |
+
+### Breaking Changes
+
+For breaking changes, add `BREAKING CHANGE:` in the commit footer:
+
+```
+feat(parser): change output format to JSON
+
+BREAKING CHANGE: The output format has changed from plain text to JSON.
+```
+
+Or use `!` after the type:
+
+```
+feat(parser)!: change output format to JSON
+```
+
+Breaking changes trigger a **major** version bump (x.0.0).
+
+### Commit Cohesion
+
+**Each commit should focus on a single topic or change.**
+
+- ✅ High cohesion: One commit for fixing a bug, another for refactoring tests
+- ❌ Low cohesion: One commit that fixes a bug AND refactors tests AND updates documentation
+
+**Why:** Focused commits make it easier to:
+
+- Understand what changed and why
+- Review changes effectively
+- Revert specific changes if needed
+- Track down bugs with `git bisect`
+
+If you find yourself using "and" repeatedly in a commit message, consider splitting it into multiple commits.
+
+### Examples
+
+```bash
+# Feature
+git commit -m "feat(cli): add --output flag for custom output path"
+
+# Bug fix
+git commit -m "fix(parser): handle empty resource changes array"
+
+# Documentation
+git commit -m "docs: update installation instructions"
+
+# Workflow changes
+git commit -m "workflow: update Task Planner agent model"
+
+# Breaking change
+git commit -m "feat(api)!: rename TerraformPlan to PlanResult"
+```
+
+## Pull Request Process
+
+1. **Create a feature branch** from `main`
+2. **Make your changes** following the coding guidelines
+3. **Ensure all checks pass**:
+
+   ```bash
+   dotnet format --verify-no-changes
+   dotnet build
+   dotnet test
+   ```
+
+4. **Push your branch** and create a Pull Request
+5. **Wait for review** — PR validation will run automatically
+6. **Merge using "Rebase and merge"** — This project requires a linear history
+
+### PR Requirements
+
+- All CI checks must pass (build, test, format, vulnerability scan)
+- Code follows the project's style guidelines (enforced by `.editorconfig`)
+- Commit messages follow Conventional Commits format
+
+### Merge Strategy
+
+**This project uses rebase and merge to maintain a linear Git history.**
+
+- When merging a PR, use the "Rebase and merge" button
+- If "Rebase and merge" is not available due to conflicts:
+  1. Update your branch by rebasing onto main: `git pull --rebase origin main`
+  2. Resolve any conflicts
+  3. Force-push your branch: `git push --force-with-lease`
+  4. The PR will then be ready to merge
+- Do NOT use "Squash and merge" or "Create a merge commit"
+
+## Coding Standards
+
+### Code Quality Metrics
+
+This project enforces automated code quality metrics to ensure maintainable, readable code:
+
+- **Cyclomatic Complexity** (CA1502): Maximum 15 per method
+- **Maintainability Index** (CA1505/CA1506): Minimum 20 per method/class (on 0-100 scale)
+- **Line Length** (IDE0055): Maximum 160 characters
+- **File Length**: Target ~300 lines per file (guideline, not enforced)
+
+These metrics are enforced at build time and will cause build failures if violated. Thresholds are defined in [CodeMetricsConfig.txt](../src/CodeMetricsConfig.txt) and [.editorconfig](../.editorconfig).
+
+**Suppression Policy:**
+
+Suppressions are allowed only when refactoring would harm readability or maintainability. Requirements:
+
+1. Use `[SuppressMessage]` attribute with clear `Justification` parameter
+2. Add a comment above the suppressed member explaining why the suppression is necessary
+3. Reference related feature/task documentation if applicable
+4. Obtain maintainer approval in the PR review
+
+Example:
+
+```csharp
+// Complex state machine requires 18 branches for RFC compliance
+// Approved by maintainer in PR #346
+[SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", 
+    Justification = "State machine for RFC 9110 HTTP semantics requires explicit branch handling")]
+public HttpStatus ProcessRequest(HttpRequest request)
+{
+    // Implementation
+}
+```
+
+See [docs/commenting-guidelines.md](commenting-guidelines.md) for complete suppression guidelines.
+
+### Access Modifiers
+
+tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:
+
+- ✅ `private` - Default for class members
+- ✅ `internal` - For cross-assembly visibility within the solution
+- ⚠️ `public` - Only for main entry points or when absolutely necessary
+
+**Never use `public` just for testing.** Instead, use `InternalsVisibleTo` to expose `internal` members to test projects.
+
+**Why:** This prevents false concerns about API backwards compatibility and breaking changes, since there are no external consumers of the code.
+
+### Code Comments
+
+All code must be thoroughly documented following [docs/commenting-guidelines.md](commenting-guidelines.md):
+
+- **All members** (public, internal, private) require XML doc comments
+- Comments must explain **"why"** not just **"what"**
+- Use standard XML tags: `<summary>`, `<param>`, `<returns>`, `<remarks>`, `<example>`
+- Reference related features/specifications for traceability
+- Keep comments synchronized with code changes
+
+Examples:
+
+```csharp
+/// <summary>
+/// Parses Terraform plan JSON and extracts resource changes.
+/// </summary>
+/// <param name="planFilePath">Absolute path to the plan JSON file.</param>
+/// <returns>Collection of resource changes found in the plan.</returns>
+/// <remarks>
+/// Uses streaming deserialization for memory efficiency on large files.
+/// Related feature: docs/features/008-comprehensive-demo/
+/// </remarks>
+internal async Task<IReadOnlyList<ResourceChange>> ParseAsync(string planFilePath)
+{
+    // Implementation
+}
+```
+
+See [docs/commenting-guidelines.md](commenting-guidelines.md) for complete guidelines.
+
+## Project Structure
+
+Understanding the codebase organization will help you navigate and contribute effectively.
+
+### High-Level Organization
+
+```
+tfplan2md/
+├── src/Oocx.TfPlan2Md/              # Main application
+│   ├── CLI/                         # Command-line interface
+│   ├── Parsing/                     # Terraform plan JSON parsing
+│   ├── MarkdownGeneration/          # Core rendering logic
+│   ├── Providers/                   # Provider-specific implementations
+│   ├── RenderTargets/               # Platform-specific rendering (GitHub vs Azure DevOps)
+│   └── Platforms/                   # Cloud platform utilities (Azure)
+├── src/tests/                       # Test projects
+└── docs/                            # Documentation
+```
+
+### Provider Architecture
+
+Terraform provider-specific code (azurerm, azapi, azuredevops) is organized into modular provider implementations:
+
+**Location:** `src/Oocx.TfPlan2Md/Providers/`
+
+Each provider is self-contained:
+
+- **Templates** (`.sbn` files): Provider-specific Scriban templates
+- **Models**: Resource view models and factories for complex resources
+- **Helpers**: Provider-specific Scriban helper functions
+- **Provider contract**: `IProvider` implementation plus any optional capability interfaces needed for registration
+
+**Adding a new provider?** See [src/Oocx.TfPlan2Md/Providers/README.md](../src/Oocx.TfPlan2Md/Providers/README.md) for a comprehensive guide.
+
+### Core Components
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| **CLI** | `CLI/` | Command-line parsing and orchestration |
+| **Parsing** | `Parsing/` | Terraform plan JSON deserialization |
+| **MarkdownGeneration** | `MarkdownGeneration/` | Core report building and rendering |
+| **Providers** | `Providers/{Provider}/` | Provider-specific logic (azurerm, azapi, azuredevops) |
+| **RenderTargets** | `RenderTargets/` | Platform-specific diff formatting (GitHub, Azure DevOps) |
+| **Platforms** | `Platforms/Azure/` | Azure-specific utilities (principal mapping, role names) |
+
+### Architecture Documentation
+
+For comprehensive architecture details, see:
+
+- [docs/architecture.md](architecture.md) - Full arc42 architecture documentation
+- [docs/spec.md](spec.md) - Project specification and technical details
+- [src/Oocx.TfPlan2Md/Providers/README.md](../src/Oocx.TfPlan2Md/Providers/README.md) - Provider development guide
+
+## Local Development Setup
+
+### Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/) (for running integration tests)
+- **Shell tools**: Keep release scripts POSIX-compatible; avoid GNU awk-only extensions (e.g., function-local params, match capture arrays). Use `POSIXLY_CORRECT=1` when testing shell changes locally.
+
+### Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+
+# Restore tools (including Husky for git hooks)
+dotnet tool restore
+
+# Install git hooks
+dotnet husky install
+
+# Build and test
+dotnet build
+dotnet test
+```
+
+### Pre-commit Hooks
+
+This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git hooks:
+
+- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build`
+- **commit-msg**: Validates commit message follows Conventional Commits format
+
+If your commit is rejected:
+
+1. **Format issues**: Run `dotnet format` to fix formatting
+2. **Build errors**: Fix the build errors before committing
+3. **Commit message**: Ensure your message follows the format `type: description`
+
+## Maintaining Azure API Documentation Mappings
+
+The AzAPI provider includes curated mappings between Azure resource types and their official REST API documentation URLs. These mappings ensure users get reliable documentation links instead of broken heuristic guesses.
+
+### When to Update Mappings
+
+Update the mappings when:
+
+- A user reports a broken or missing documentation link
+- Microsoft launches a new Azure service or resource type
+- Microsoft restructures documentation URLs (rare but possible)
+- Regular maintenance (maintainer's discretion based on Azure releases)
+
+### Update Process
+
+**Prerequisites:**
+
+- Python 3.7 or later
+- Internet connection (script scrapes Microsoft Learn)
+
+**Steps:**
+
+1. **Run the discovery script:**
+
+   ```bash
+   python3 scripts/update-azure-api-mappings.py
+   ```
+
+   This generates updated mappings by scraping the Azure SDK Specs Inventory page and saves them to `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`.
+
+2. **Spot-check the output:**
+   - Review the generated JSON file
+   - Check the `totalMappings` count in metadata (should be 90+)
+   - Verify a few sample URLs manually:
+
+     ```bash
+     # Example: Check a few URLs
+     cat src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json | \
+       jq '.mappings | to_entries | .[0:3] | .[] | .key + " -> " + .value.url'
+     ```
+
+3. **Validate URLs (optional):**
+
+   ```bash
+   # Warning: This is slow (makes HTTP requests for each URL)
+   python3 scripts/update-azure-api-mappings.py --validate
+   ```
+
+   Only use `--validate` when you need to verify URL correctness. It's not recommended for routine updates.
+
+4. **Test the changes:**
+
+   ```bash
+   dotnet build
+   dotnet test
+   ```
+
+5. **Commit the updated mappings:**
+
+   ```bash
+   git add src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json
+   git commit -m "chore: update Azure API documentation mappings"
+   ```
+
+### Script Options
+
+The `update-azure-api-mappings.py` script supports the following options:
+
+- `--output PATH` - Custom output file path (default: `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`)
+- `--validate` - Validate all URLs by making HTTP HEAD requests (slow, not recommended for routine use)
+- `--help` - Show help message
+
+### Mapping File Format
+
+The mappings are stored in JSON format:
+
+```json
+{
+  "mappings": {
+    "Microsoft.Compute/virtualMachines": {
+      "url": "https://learn.microsoft.com/rest/api/compute/virtual-machines"
+    },
+    "Microsoft.Storage/storageAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/storage-accounts"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "YYYY-MM-DD",
+    "source": "Microsoft Learn REST API Documentation (manually curated)",
+    "generatedBy": "scripts/update-azure-api-mappings.py",
+    "totalMappings": 92
+  }
+}
+```
+
+**Key points:**
+
+- Resource types are **version-agnostic** (no `@YYYY-MM-DD` suffix)
+- Nested resources have individual mappings (e.g., `Microsoft.Storage/storageAccounts/blobServices`)
+- URLs point to Microsoft Learn REST API documentation
+
+### Related Documentation
+
+- Feature specification: [docs/features/033-azure-api-doc-mapping/specification.md](features/033-azure-api-doc-mapping/specification.md)
+- Architecture design: [docs/features/033-azure-api-doc-mapping/architecture.md](features/033-azure-api-doc-mapping/architecture.md)
+
+## Maintaining Microsoft Graph App Role Mappings
+
+The Azure AD provider resolves Microsoft Graph application-permission GUIDs (e.g., `app_role_id` on `azuread_app_role_assignment`) to human-readable names (e.g., `Policy.ReadWrite.Authorization`) using the embedded mapping at `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`. The mapping is regenerated from the upstream source of the [Microsoft Graph permissions reference](https://learn.microsoft.com/graph/permissions-reference) (the `microsoftgraph/microsoft-graph-docs-contrib` markdown that the Learn page is built from).
+
+**Scope:** Microsoft Graph **application** permissions only. Delegated `oauth2PermissionScopes` GUIDs and non-Graph APIs (SharePoint, Exchange, Office 365, Intune, Azure Service Management, etc.) are intentionally out of scope.
+
+### When to Update Mappings
+
+Update the mappings when:
+
+- A user reports a well-known Microsoft Graph app permission GUID that renders as a raw GUID instead of its friendly name
+- Microsoft adds new Graph application permissions
+- Regular maintenance (maintainer's discretion)
+
+### Update Process
+
+**Prerequisites:**
+
+- Python 3.7 or later (standard library only)
+- Internet connection (script fetches the upstream markdown from GitHub)
+
+**Steps:**
+
+1. **Run the regeneration script:**
+
+   ```bash
+   python3 scripts/update-msgraph-app-roles.py
+   ```
+
+   This downloads the upstream permissions reference markdown, extracts every well-known Microsoft Graph application permission GUID, and writes the sorted `{guid: name}` mapping to `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`. The script prints an added/removed/total summary on each run and is idempotent.
+
+2. **Preview without writing:**
+
+   ```bash
+   python3 scripts/update-msgraph-app-roles.py --dry-run
+   ```
+
+3. **Use a custom source or output path** (e.g., for offline regeneration from a local checkout of the docs repo):
+
+   ```bash
+   python3 scripts/update-msgraph-app-roles.py \
+     --source /path/to/permissions-reference.md \
+     --output src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json
+   ```
+
+4. **Test the changes:**
+
+   ```bash
+   dotnet build
+   dotnet test
+   ```
+
+5. **Commit the updated mappings:**
+
+   ```bash
+   git add src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json
+   git commit -m "chore: update Microsoft Graph app role mappings"
+   ```
+
+### Script Options
+
+The `update-msgraph-app-roles.py` script supports the following options:
+
+- `--source URL_OR_PATH` — Override the upstream markdown source (default: the raw `microsoftgraph/microsoft-graph-docs-contrib` permissions reference)
+- `--output PATH` — Custom output file path (default: `src/Oocx.TfPlan2Md/Platforms/Azure/MicrosoftGraphAppRoles.json`)
+- `--dry-run` — Print the added/removed/total summary without writing the file
+- `--help` — Show help message
+
+### Mapping File Format
+
+The mappings are stored as a flat sorted `{guid: name}` JSON object so that `MicrosoftGraphAppRolesRegistry` can load them as a `FrozenDictionary`:
+
+```json
+{
+  "fb221be6-99f2-473f-bd32-01c6a0e9ca3b": "Policy.ReadWrite.Authorization",
+  "df021288-bdef-4463-88db-98f22de89214": "User.Read.All"
+}
+```
+
+GUIDs are sorted lexicographically for deterministic diffs across regenerations.
+
+## Release Process
+
+Releases are automated via GitHub Actions:
+
+1. When commits are pushed to `main`, the CI workflow runs Versionize
+2. Versionize only runs when Docker-relevant files changed (runtime code, examples, build config)
+3. If there are `feat:`, `fix:`, or `BREAKING CHANGE` commits, Versionize:
+   - Bumps the version in `.csproj`
+   - Updates `CHANGELOG.md`
+   - Creates a git tag (e.g., `v0.2.0`)
+4. The tag push triggers the Release workflow which:
+   - Looks for user-focused release notes in `docs/features/NNN-<feature-slug>/release-notes.md`
+   - If found, uses those notes for the GitHub Release (blog-post style, user-facing)
+   - Otherwise, falls back to extracting notes from `CHANGELOG.md`
+   - Builds and pushes the Docker image to Docker Hub
+   - Builds pre-built binaries for all six supported platforms (linux-x64, linux-arm64, linux-musl-x64, linux-musl-arm64, macos-arm64, windows-x64) and uploads them as release assets alongside a `SHA256SUMS` checksum file
+
+### Release Notes
+
+The Release Manager agent creates user-focused release notes in blog-post style:
+
+- **Location**: `docs/features/NNN-<feature-slug>/release-notes.md`
+- **Style**: Written for end-users, not developers
+- **Content**: Features and improvements users can see, excluding internal commits
+- **Format**: Compelling overview, code examples, practical use cases
+- **Filters out**: Task tracking commits, documentation updates, workflow changes
+
+**Note:** Changes to tests, documentation, website, scripts, or GitHub workflows do not trigger releases, as they don't affect the published Docker image.

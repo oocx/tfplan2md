@@ -25,7 +25,7 @@ Create a GitHub pull request in a consistent, policy-compliant way, and include 
 - Push the branch to `origin` before creating the PR
 - Before creating the PR, post the **exact Title and Description** in chat
 - Use the standard PR body template (Problem / Change / Verification)
-- Use **Rebase and merge** for merging PRs to maintain a linear history (see `CONTRIBUTING.md`)
+- Use **Rebase and merge** for merging PRs to maintain a linear history (see `docs/development.md`)
 
 ### Must Not
 

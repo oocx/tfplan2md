@@ -14,7 +14,7 @@ This skill prefers using the repo wrapper script `scripts/pr-azdo.sh` to minimiz
 
 ## Notes on Merge Policy
 
-`CONTRIBUTING.md` specifies **Rebase and merge** as the required merge strategy for this repo.
+`docs/development.md` specifies **Rebase and merge** as the required merge strategy for this repo.
 
 Azure DevOps UI/merge options differ by project settings. When merging an Azure DevOps PR, choose the most “rebase/linear-history” option available (often called **Rebase and fast-forward**) when available; otherwise, ask the Maintainer what to use.
 

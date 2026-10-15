@@ -19,10 +19,10 @@ Ensure every change — including simple, single-agent tasks — satisfies the r
 git diff --name-only origin/main...HEAD
 ```
 
-**Category A — Docs/agent-tooling only** (all changed files are under `docs/` *except* `docs/workflow.md` and `docs/spec.md`, `.github/` or `.agents/` (any subdirectory or file), `website/`, `website.old/`, `assets/`, `tests/`, `scripts/`, or `src/tests/shell/`):
+**Category A — Docs/agent-tooling only** (all changed files are under `docs/` *except* `docs/workflow.md`, `docs/spec.md` and `docs/development.md`, `.github/` or `.agents/` (any subdirectory or file), `website/`, `website.old/`, `assets/`, `tests/`, `scripts/`, or `src/tests/shell/`):
 → Skip to [Step 6 (Commit hygiene)](#step-6--commit-hygiene). Build/test/work-item checks are not required.
 
-**Category B — Code/tooling** (any file in `src/` (except `src/tests/shell/`), `examples/`, `docs/workflow.md`, `docs/spec.md`, `README.md`, or `CONTRIBUTING.md`):
+**Category B — Code/tooling** (any file in `src/` (except `src/tests/shell/`), `examples/`, `docs/workflow.md`, `docs/spec.md`, `README.md`, `CONTRIBUTING.md`, or `docs/development.md`):
 → Complete all steps below.
 
 ---

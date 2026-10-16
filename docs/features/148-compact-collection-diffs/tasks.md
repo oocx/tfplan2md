@@ -67,16 +67,16 @@ array, `null`, `-` for absent). `BuildAttributeChanges` skips every flat key at 
 handling are excluded here (Tasks 4 and 5). The same detection rule applies to `output_changes`
 as to resource changes, and output paths keep their current naming (TC-114).
 **Acceptance Criteria:**
-- [ ] A primitive list `[a,b,c]` on create produces exactly one row for its path, with no `path[0]` rows (SC 2, TC-14 row count)
-- [ ] A primitive list nested inside an object list (`security_rule[0].source_address_prefixes`) becomes one row; sibling scalar rows of `security_rule[0]` remain separate and naturally sorted (SC 2, TC-14)
-- [ ] `[]` to `[a]` yields distinct before states `Empty` and `Elements`; `null` to `[a]` and absent to `[a]` yield `Null` and `Absent` before states, not collapsed (SC 9, TC-40, TC-41, TC-43 model)
-- [ ] `["1"]` to `[1]` yields one `Removed` and one `Added`; `true` vs `"true"` and `null` vs `"null"` are different elements; `1` vs `1.0` assertion matches observed raw-text behaviour (SC 12, TC-60)
-- [ ] `[1,"a",true,null]` keeps each element with its own kind, and the `null` element is kept as `null` (SC 12, TC-61)
-- [ ] A list of objects, a nested list `[[1],[2]]`, and a list mixing one object element with primitives all keep indexed rows; one object element disqualifies the path on either side; a primitive list changed to a list of objects is not compacted (SC 13, TC-62, TC-63, TC-64)
-- [ ] An `output_changes` array keeps its current path behaviour (TC-114)
-- [ ] A type change from array to scalar or object renders through existing rendering with no exception (TC-112)
-- [ ] An empty-to-empty case produces no row (TC-42)
-- [ ] `Collection` is null on every scalar row; a `Collection` row never sets `IsLarge` from its canonical text
+- [x] A primitive list `[a,b,c]` on create produces exactly one row for its path, with no `path[0]` rows (SC 2, TC-14 row count)
+- [x] A primitive list nested inside an object list (`security_rule[0].source_address_prefixes`) becomes one row; sibling scalar rows of `security_rule[0]` remain separate and naturally sorted (SC 2, TC-14)
+- [x] `[]` to `[a]` yields distinct before states `Empty` and `Elements`; `null` to `[a]` and absent to `[a]` yield `Null` and `Absent` before states, not collapsed (SC 9, TC-40, TC-41, TC-43 model)
+- [x] `["1"]` to `[1]` yields one `Removed` and one `Added`; `true` vs `"true"` and `null` vs `"null"` are different elements; `1` vs `1.0` assertion matches observed raw-text behaviour (SC 12, TC-60)
+- [x] `[1,"a",true,null]` keeps each element with its own kind, and the `null` element is kept as `null` (SC 12, TC-61)
+- [x] A list of objects, a nested list `[[1],[2]]`, and a list mixing one object element with primitives all keep indexed rows; one object element disqualifies the path on either side; a primitive list changed to a list of objects is not compacted (SC 13, TC-62, TC-63, TC-64)
+- [x] An `output_changes` array keeps its current path behaviour (TC-114)
+- [x] A type change from array to scalar or object renders through existing rendering with no exception (TC-112)
+- [x] An empty-to-empty case produces no row (TC-42)
+- [x] `Collection` is null on every scalar row; a `Collection` row never sets `IsLarge` from its canonical text
 **Dependencies:** Task 1, Task 2
 
 ### Task 4: Unknown and partially unknown collections
@@ -87,10 +87,10 @@ produces the After text including any reference hint. A partially unknown collec
 `IsUnresolved = true`, marks unknown-flagged elements `Status = Unknown`, and computes no
 `Removed`, `Added` or `Moved` markers. Malformed shapes (`true` vs array vs absent) must not throw.
 **Acceptance Criteria:**
-- [ ] Whole-collection unknown after gives a known-after-apply rendering, with the configuration-reference hint when present (SC 10, TC-44)
-- [ ] `after_unknown: [false,true,false]` gives an unknown element with the known-after-apply label and no marker in the row (SC 10, TC-45)
-- [ ] The diff for a partially unknown collection reports `IsUnresolved` true and no statuses other than `Unknown` and `Unchanged` (SC 10, TC-46)
-- [ ] Malformed `after_unknown` shapes and unknown-only-in-before inputs produce a row and no exception (TC-113)
+- [x] Whole-collection unknown after gives a known-after-apply rendering, with the configuration-reference hint when present (SC 10, TC-44)
+- [x] `after_unknown: [false,true,false]` gives an unknown element with the known-after-apply label and no marker in the row (SC 10, TC-45)
+- [x] The diff for a partially unknown collection reports `IsUnresolved` true and no statuses other than `Unknown` and `Unchanged` (SC 10, TC-46)
+- [x] Malformed `after_unknown` shapes and unknown-only-in-before inputs produce a row and no exception (TC-113)
 **Dependencies:** Task 3
 
 ### Task 5: Sensitive collections in the model and generic cell
@@ -102,13 +102,13 @@ normal diff and keep `IsSensitive` true. Masking is at the whole-collection leve
 or duplicate information may reach the model for a masked row. Handle the `before_sensitive` shapes
 `true`, array of bool, and object.
 **Acceptance Criteria:**
-- [ ] A sensitive whole collection shows `(sensitive)` in both Before and After cells (SC 11, TC-50)
-- [ ] One sensitive element masks the whole collection; neither non-sensitive sibling values nor the collection length appear in the output (SC 11, TC-51)
-- [ ] A reorder or duplicate change on a sensitive collection renders no `➖`, `➕` or `🔀` (SC 11, TC-52)
-- [ ] A masked row's element lists are empty and both states are `Masked` (SC 11, TC-53)
-- [ ] With `--show-sensitive`, the normal diff renders and `IsSensitive` stays true (SC 11, TC-54)
-- [ ] A sensitive value present only in `after_sensitive` or only in `before_sensitive` is masked on the corresponding delete or create (SC 11, TC-56)
-- [ ] Sentinel secret values are absent from the full Markdown output and the summary (SC 11, TC-56)
+- [x] A sensitive whole collection shows `(sensitive)` in both Before and After cells (SC 11, TC-50)
+- [x] One sensitive element masks the whole collection; neither non-sensitive sibling values nor the collection length appear in the output (SC 11, TC-51)
+- [x] A reorder or duplicate change on a sensitive collection renders no `➖`, `➕` or `🔀` (SC 11, TC-52)
+- [x] A masked row's element lists are empty and both states are `Masked` (SC 11, TC-53)
+- [x] With `--show-sensitive`, the normal diff renders and `IsSensitive` stays true (SC 11, TC-54)
+- [x] A sensitive value present only in `after_sensitive` or only in `before_sensitive` is masked on the corresponding delete or create (SC 11, TC-56)
+- [x] Sentinel secret values are absent from the full Markdown output and the summary (SC 11, TC-56)
 **Dependencies:** Task 3
 
 ### Task 6: Element-wise attribute filter for collection rows

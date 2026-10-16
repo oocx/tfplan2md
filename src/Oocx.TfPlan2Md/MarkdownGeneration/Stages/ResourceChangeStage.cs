@@ -295,11 +295,27 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
         var afterSensitiveDict = ConvertToFlatDictionary(change.AfterSensitive);
 
-        var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order(AttributePathComparer.Instance);
+        var collections = PrimitiveCollectionDiffer.Detect(change.Before, change.After);
+        var allKeys = beforeDict.Keys.Union(afterDict.Keys)
+            .Where(key => !IsUnderCollection(key, collections))
+            .Union(collections.Keys)
+            .Order(AttributePathComparer.Instance);
         var changes = new List<AttributeChangeModel>();
 
         foreach (var key in allKeys)
         {
+            if (collections.TryGetValue(key, out var detected))
+            {
+                var collectionRow = BuildCollectionAttribute(
+                    change, configurationReferences, detected, beforeSensitiveDict, afterSensitiveDict);
+                if (collectionRow is not null)
+                {
+                    changes.Add(collectionRow);
+                }
+
+                continue;
+            }
+
             beforeDict.TryGetValue(key, out var beforeValue);
             afterDict.TryGetValue(key, out var afterValue);
 

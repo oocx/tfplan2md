@@ -29,7 +29,7 @@
         "string",
         "null"
       ],
-      "description": "What evidence of correctness exists - the Developer's recorded test results, CI status, coverage. State plainly where evidence is absent."
+      "description": "What evidence of correctness exists - the Developer's recorded test results and coverage (CI does not exist yet and is not reviewed). State plainly where evidence is absent."
     },
     "probed": {
       "type": [

@@ -203,3 +203,10 @@
 - **Summary:** Round 6 documentation pass after Developer round 6 (large-value summary counts). Verified with the Release CLI built from HEAD on temporary plans: an unknown-as-a-whole large collection on update reads 'items (1 line, 1 change)' and one unknown element with one more entry reads '(2 lines, 1 change)' (matches LargeCollectionStateTests). Also checked: a remove, an add and a reorder of a large two-element list each read '(2 lines, 1 change)', so one changed element and a changed order each count once. Updated docs/features.md (Large collections: Summary bullet) and docs/report-style-guide.md (large collections bullet). Considered and left unchanged: README.md (no CLI, install or usage change), docs/architecture.md (round 6 changed LargeValueSummary.cs only, no new component or file), docs/testing-strategy.md (no new test pattern), docs/workflow.md (no workflow or role change), CHANGELOG.md (generated). markdownlint-cli2 (via npx) reports 193 findings across the two files on both main and this branch, so the edits add none.
 - **Artifacts Produced:** docs/features.md, docs/report-style-guide.md, docs/features/148-compact-collection-diffs/work-protocol.md, docs/features/148-compact-collection-diffs/state.json
 - **Problems Encountered:** 1) markdownlint via scripts/markdownlint.sh needs Docker; I ran markdownlint-cli2 through npx instead with the repo config, and the counts match main. 2) Create and delete summary counts were not rendered; the Summary rule is taken from CountCollectionChanges and verified only on update, remove, add, reorder and unknown cases. 3) Still open for other owners, not edited here: architecture.md section 7 (Architect) and uat-test-plan.md step 4 (Quality Engineer). 4) The round 6 coverage was not re-measured by the Developer; CI remains authoritative (round 5 Major still open, needs the Maintainer to push).
+
+### Code Reviewer (round 6)
+
+- **Date:** 2026-10-16
+- **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 1 Major
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
+- **Problems Encountered:** None

@@ -189,3 +189,10 @@
 - **Summary:** The run was blocked after the round 5 review (developer attempts 5). The Maintainer approved one more Developer attempt, limited to the round 5 Blocker: a large collection that is wholly unknown on one side must not be summarised as 0 changes in the large-value summary. Status set back to running by the driver.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/state.json
 - **Problems Encountered:** No script exists to unblock a run; state.json was edited by hand.
+
+### Developer (round 6)
+
+- **Date:** 2026-10-16
+- **Summary:** Round 6 (Maintainer-approved extra attempt, limited to the round 5 Blocker). CountCollectionChanges in LargeValueSummary.cs now counts Unknown-status occurrences and adds one when the after side is unknown as a whole, so a large collection that becomes unknown reads 'items (1 line, 1 change)' instead of '0 changes'; a large collection with one unknown element reads '(2 lines, 1 change)'. Two new LargeCollectionStateTests assert the rendered summary; both failed before the fix (0 changes) and pass after. Full suite: 1687 passed, 0 failed, 0 skipped. Demo artifacts and uat-plan.md regenerated: only the metadata line changed, so nothing was committed. Round 5 Major (CI evidence) left out of scope; needs the Maintainer to push.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/MarkdownHelpers/LargeValueSummary.cs, src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Collections/LargeCollectionStateTests.cs
+- **Problems Encountered:** None. Coverage was not re-measured with CoverageEnforcer this round; the change adds two small branches, both exercised by the new tests.

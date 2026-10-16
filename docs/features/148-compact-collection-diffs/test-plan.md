@@ -139,9 +139,9 @@ Notation: `L(a,b)` is a JSON array of strings. "Row" is an `AttributeChangeModel
 
 ### Empty, absent, null (C9)
 
-- **TC-40** `Diff_AbsentToEmpty_StatesAreAbsentAndEmpty` (U). `[]` renders as `[]`, absent as `-`.
-- **TC-41** `Diff_NullToEmpty_StatesAreNullAndEmpty` (U).
-- **TC-42** `Diff_EmptyToEmpty_NoRow` (U). Both `[]` -> unchanged, not a row (unless `--show-unchanged-values`).
+- **TC-40** `Diff_AbsentToEmpty_StatesAreAbsentAndEmpty` (U). Absent -> `[]` has no elements on either side, so no row by default; row present with `--show-unchanged-values`. Model keeps the absent and empty states distinct.
+- **TC-41** `Diff_NullToEmpty_StatesAreNullAndEmpty` (U). Same as TC-40 for `null` -> `[]`: no row by default, row with `--show-unchanged-values`. Sensitive element-less collections behave the same.
+- **TC-42** `Diff_EmptyToEmpty_NoRow` (U). Both `[]` -> unchanged, not a row (unless `--show-unchanged-values`). `[]` is shown only when the other side has elements (TC-43).
 - **TC-43** `Update_EmptyToElements_ShowsAddedNotCreateFromNull` (I). `[]` -> `[a]` shows `[]` before.
   `null` -> `[a]` and absent -> `[a]` each render distinct before cells; no pair collapses to the same cell where today they differed.
 

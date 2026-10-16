@@ -24,7 +24,7 @@ folder from a valid Terraform plan JSON fixture with `resource_changes`, `resour
 | generic review_object.dup, update | list with duplicates: `[a,a,b]` -> `[a,b]` and `[a,b]` -> `[a,a,b]` |
 | review_object.insert, update | 12-element list with one insertion at index 3 |
 | review_object.sorted, update | sorted set-like GUID list, membership change only |
-| review_object.states, update | one attribute per state transition: absent -> `[]`, `null` -> `[]`, `[]` -> `[x]`, `[x]` -> `[]`, `[]` -> `[]` (unchanged) |
+| review_object.states, update | one attribute per state transition: absent -> `[]`, `null` -> `[]`, `[]` -> `[]` (all element-less on both sides, so no row by default), `[]` -> `[x]`, `[x]` -> `[]` (rows shown) |
 | review_object.types, update | `[1,"1",true,"true",null]` -> `["1",1,true,null]` |
 | review_object.unknown, update | whole list unknown after apply; separate list with one unknown element |
 | review_object.secret, update | list with one sensitive element (default masking) and a sentinel value that must never appear; plus a fully sensitive list reordered |
@@ -62,7 +62,7 @@ a platform is unavailable, record the limitation in uat-report.md; a Markdown sn
    too unwieldy (design follow-up: collapse unchanged runs).
 3. **Order.** The reordered list shows the sequences and a `🔀 order changed` line, no `➖`/`➕`.
    The sorted set-like list shows no order line.
-4. **States.** `-` (absent/null), `[]`, and elements are distinguishable; unchanged `[]` is hidden by default.
+4. **States.** Element-less collections (absent, `null`, `[]` on both sides, including sensitive ones) produce no row by default; the absent -> `[]`, `null` -> `[]` and `[]` -> `[]` attributes must not appear. When the other side has elements, `[]` is shown and is distinguishable from `-` (absent/null). With `--show-unchanged-values` the element-less rows appear.
 5. **Types.** `1` versus `"1"` shows as a visible change, not as equal.
 6. **Unknown.** Whole-unknown shows the known-after-apply text; partial-unknown shows a label in place with no markers.
 7. **Sensitive.** Default run: `(sensitive)` both sides, sentinel text absent from the whole document, no hint of length or order. `--show-sensitive`: normal diff.

@@ -26,8 +26,13 @@ public class SensitiveCollectionRenderingTests
     private static string Row(string markdown)
         => markdown.Split('\n').Single(line => line.StartsWith("| items |", StringComparison.Ordinal));
 
+    /// <summary>
+    /// Renders an update without the metadata line, whose timestamp would make two renders differ.
+    /// </summary>
     private static string RenderUpdate(string[] before, bool[] beforeFlags, string[] after, bool[] afterFlags)
-        => Render(Res(["update"], Items(before), Items(after), beforeSensitive: Flags(beforeFlags), afterSensitive: Flags(afterFlags)));
+        => Render(
+            Res(["update"], Items(before), Items(after), beforeSensitive: Flags(beforeFlags), afterSensitive: Flags(afterFlags)),
+            new ReportModelBuilderOptions(HideMetadata: true));
 
     [Test]
     public void Update_MaskedEntryChanged_ShowsRemovedAndAddedPlaceholders()

@@ -196,10 +196,16 @@ internal sealed partial class ResourceChangeStage
         => state is CollectionState.Absent or CollectionState.Null or CollectionState.Empty;
 
     /// <summary>
-    /// Returns comparable text for a side without exposing it; null and absent are equivalent.
+    /// Returns comparable text for a side without exposing it. Absent, <c>null</c> and <c>[]</c> are equivalent, matching
+    /// <see cref="IsElementless"/>, so a masked collection follows the same change rule as an unmasked one.
     /// </summary>
     private static string RawKey(JsonElement? side)
-        => side is null or { ValueKind: JsonValueKind.Null } ? string.Empty : CollectionValues.Compact(side.Value);
+        => side switch
+        {
+            null or { ValueKind: JsonValueKind.Null } => string.Empty,
+            { ValueKind: JsonValueKind.Array } array when array.GetArrayLength() == 0 => string.Empty,
+            _ => CollectionValues.Compact(side.Value),
+        };
 
     /// <summary>
     /// Determines whether any element beneath a collection path is marked sensitive.

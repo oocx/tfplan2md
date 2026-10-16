@@ -905,7 +905,9 @@
           "default_hostname": true
         },
         "before_sensitive": false,
-        "after_sensitive": {}
+        "after_sensitive": {
+          "connection_string": true
+        }
       }
     },
     {
@@ -950,7 +952,9 @@
         },
         "after": null,
         "after_unknown": {},
-        "before_sensitive": {},
+        "before_sensitive": {
+          "connection_string": true
+        },
         "after_sensitive": false
       }
     },

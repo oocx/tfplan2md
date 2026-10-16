@@ -295,7 +295,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
         var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
         var afterSensitiveDict = ConvertToFlatDictionary(change.AfterSensitive);
 
-        var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order();
+        var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order(AttributePathComparer.Instance);
         var changes = new List<AttributeChangeModel>();
 
         foreach (var key in allKeys)

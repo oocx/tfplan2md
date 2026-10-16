@@ -182,3 +182,10 @@
 - **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 1 Blocker, 1 Major
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
 - **Problems Encountered:** None
+
+### Maintainer decision (unblock, round 5)
+
+- **Date:** 2026-10-16
+- **Summary:** The run was blocked after the round 5 review (developer attempts 5). The Maintainer approved one more Developer attempt, limited to the round 5 Blocker: a large collection that is wholly unknown on one side must not be summarised as 0 changes in the large-value summary. Status set back to running by the driver.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/state.json
+- **Problems Encountered:** No script exists to unblock a run; state.json was edited by hand.

@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "developer",
+  "stage": "technical-writer",
   "status": "running",
   "gates": {
     "spec": "approved",
@@ -28,6 +28,12 @@
       "q": "When a case-only Azure ID filter would have hidden only some per-index rows of a list, may the compact row show those case-variant elements as removed and added?",
       "assumed": "Yes. The row is suppressed only when every differing position is case-only, which matches today's outcome in the fully suppressed case.",
       "raised_by": "architect",
+      "raised_at": "2026-10-16"
+    },
+    {
+      "q": "The UAT test plan lists absent -> [] and null -> [] as visible state transitions; after code review B1 these are hidden by default. Should uat-test-plan.md step 4 be updated?",
+      "assumed": "Yes: element-less states (absent, null, []) are equivalent for change detection, matching the previous per-key rows; [] stays visible only when the other side has elements or with --show-unchanged-values. The Quality Engineer should update uat-test-plan.md, and the Architect should update architecture section 7 (code review m3).",
+      "raised_by": "developer",
       "raised_at": "2026-10-16"
     }
   ],

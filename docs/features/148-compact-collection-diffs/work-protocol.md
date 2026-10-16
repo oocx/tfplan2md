@@ -56,3 +56,10 @@
 - **Summary:** Reviewed against origin/main as the Claude fallback. Verdict: REWORK. Findings: 1 Blocker (empty block lists render as [] rows on create and delete), 0 Major, 4 Minor, 4 Suggestions. Ran the suite myself: 1573 passed. Coverage: line 89.20%, branch 80.94%, both pass.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
 - **Problems Encountered:** reviewer: claude-fallback
+
+### Developer (round 2)
+
+- **Date:** 2026-10-16
+- **Summary:** Rework after code review (REWORK). B1: absent, null and [] are now equivalent for change detection, so unset nested block lists no longer render as [] rows on create, delete or drift; states stay distinct in the model and visible when the other side has elements or with --show-unchanged-values. m1: numeric/boolean-looking strings are quoted only when the collection mixes JSON kinds (CollectionChangeModel.HasMixedKinds). m2: empty and whitespace-only strings are always quoted. m4: tasks.md lint fixed (blank lines only). s1: removed the duplicate TestData/collection-diffs-plan.json; the UAT fixture is linked into the test project as TestData/feature-148-uat-plan.json and rendered by a new test. UAT fixture extended with azurerm_linux_web_app create and delete carrying unset block lists, and an all-string NSG port list. Full suite 1580/1580, 0 skipped. Demo artifacts regenerated: only timestamps changed, so they were not committed. No snapshot changes.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs, Helpers/CollectionValues.cs, Models/CollectionChangeModel.cs, Rendering/DefaultResourceRenderer.Collections.cs, Rendering/CollectionDriftRenderer.cs, Collections tests, TUnit csproj, uat-plan.json, uat-plan.md, tasks.md
+- **Problems Encountered:** m3 (architecture section 7 says null renders as -) is the Architect's artifact and was not changed. docs/testing-strategy.md still names collection-diffs-plan.json, which this rework removed; the Technical Writer needs to update it. uat-test-plan.md still expects absent -> [] and null -> [] rows (open question recorded).

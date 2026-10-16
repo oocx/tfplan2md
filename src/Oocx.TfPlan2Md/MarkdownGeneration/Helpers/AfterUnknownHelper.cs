@@ -69,6 +69,32 @@ internal static class AfterUnknownHelper
     }
 
     /// <summary>
+    /// Returns the <c>after_unknown</c> node at a flattened path without throwing on malformed shapes.
+    /// </summary>
+    /// <param name="afterUnknown">The raw <c>after_unknown</c> value from Terraform plan JSON.</param>
+    /// <param name="flattenedKey">Flattened key, e.g. <c>rules[0].prefixes</c>.</param>
+    /// <returns>The node when the path resolves inside the tree; otherwise <see langword="null"/>.</returns>
+    internal static JsonElement? TryGetNode(object? afterUnknown, string flattenedKey)
+    {
+        if (!TryGetJsonElement(afterUnknown, out var current)
+            || string.IsNullOrWhiteSpace(flattenedKey)
+            || !TryParseFlattenedKey(flattenedKey, out var pathSegments))
+        {
+            return null;
+        }
+
+        foreach (var segment in pathSegments)
+        {
+            if (!TryMoveNext(current, segment, out current))
+            {
+                return null;
+            }
+        }
+
+        return current;
+    }
+
+    /// <summary>
     /// Tries to move to the next path segment in an <c>after_unknown</c> tree.
     /// </summary>
     /// <param name="current">Current node in the JSON tree.</param>

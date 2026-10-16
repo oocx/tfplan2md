@@ -120,49 +120,63 @@ internal sealed partial class DefaultResourceRenderer
     /// Renders the body of a large collection attribute: one occurrence per line, with the same markers as the table.
     /// A reorder is shown as an order change, not as a removed/added pair.
     /// </summary>
+    /// <remarks>
+    /// On an update both sides are always shown, labelled, so an element-less side stays visible as <c>-</c>
+    /// (absent), <c>null</c> or <c>[]</c>, exactly as in the table cell. On a create or delete, where the table has a
+    /// single value column, the absent side is omitted and the remaining side is shown without markers.
+    /// </remarks>
     /// <param name="attribute">The large collection row.</param>
+    /// <param name="twoSided"><c>true</c> when the resource shows before and after values (not a create or delete).</param>
     /// <returns>Markdown for the attribute body.</returns>
-    private static string FormatLargeCollection(AttributeChangeModel attribute)
+    private static string FormatLargeCollection(AttributeChangeModel attribute, bool twoSided)
     {
         var collection = attribute.Collection!;
-        var comparing = collection.BeforeState is CollectionState.Elements or CollectionState.Empty
-            && collection.AfterState is CollectionState.Elements or CollectionState.Empty;
-        var quoteAmbiguous = collection.HasMixedKinds;
+        var showBefore = twoSided || collection.BeforeState != CollectionState.Absent;
+        var showAfter = twoSided || collection.AfterState != CollectionState.Absent;
+        var labelled = showBefore && showAfter;
         var builder = new StringBuilder();
 
-        var showBefore = collection.BeforeState is CollectionState.Elements or CollectionState.Empty;
-        var showAfter = collection.AfterState is CollectionState.Elements or CollectionState.Empty or CollectionState.Unknown or CollectionState.Masked;
         if (showBefore)
         {
-            AppendLargeBlock(builder, comparing && showAfter ? "Before" : null, collection.Before, comparing, quoteAmbiguous, attribute.Before);
+            AppendLargeFence(builder, labelled ? "Before" : null, LargeSideLines(attribute, beforeSide: true, withMarkers: twoSided));
         }
 
         if (showAfter)
         {
-            var lines = collection.AfterState is CollectionState.Unknown or CollectionState.Masked
-                ? [attribute.After ?? "-"]
-                : LargeLines(collection.After, comparing, quoteAmbiguous);
-            if (comparing && collection.OrderChanged)
-            {
-                lines.Add(OrderChangedLine);
-            }
-
-            AppendLargeFence(builder, showBefore && comparing ? "After" : null, lines);
+            AppendLargeFence(builder, labelled ? "After" : null, LargeSideLines(attribute, beforeSide: false, withMarkers: twoSided));
         }
 
         return builder.ToString().TrimEnd('\n') + "\n";
     }
 
-    private static void AppendLargeBlock(
-        StringBuilder builder,
-        string? label,
-        IReadOnlyList<CollectionElementModel> elements,
-        bool withMarkers,
-        bool quoteAmbiguous,
-        string? fallback)
+    /// <summary>
+    /// Returns the lines of one side of a large collection. Element-less states use the table's placeholders, and a
+    /// side masked or unknown as a whole uses the row's display text, which never holds a masked value.
+    /// </summary>
+    private static List<string> LargeSideLines(AttributeChangeModel attribute, bool beforeSide, bool withMarkers)
     {
-        var lines = elements.Count == 0 ? [fallback ?? "[]"] : LargeLines(elements, withMarkers, quoteAmbiguous);
-        AppendLargeFence(builder, label, lines);
+        var collection = attribute.Collection!;
+        var state = beforeSide ? collection.BeforeState : collection.AfterState;
+        switch (state)
+        {
+            case CollectionState.Absent:
+                return ["-"];
+            case CollectionState.Null:
+                return ["null"];
+            case CollectionState.Empty:
+                return ["[]"];
+            case CollectionState.Masked:
+            case CollectionState.Unknown:
+                return [(beforeSide ? attribute.Before : attribute.After) ?? "-"];
+        }
+
+        var lines = LargeLines(beforeSide ? collection.Before : collection.After, withMarkers, collection.HasMixedKinds);
+        if (withMarkers && !beforeSide && collection.OrderChanged)
+        {
+            lines.Add(OrderChangedLine);
+        }
+
+        return lines;
     }
 
     private static List<string> LargeLines(IEnumerable<CollectionElementModel> elements, bool withMarkers, bool quoteAmbiguous)

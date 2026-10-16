@@ -1,10 +1,10 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "requirements-engineer",
+  "stage": "architect",
   "status": "running",
   "gates": {
-    "spec": "approved",
+    "spec": "pending",
     "arch": "n/a",
     "uat": "n/a"
   },
@@ -15,32 +15,58 @@
   "open_questions": [
     {
       "q": "When the available Terraform plan data does not identify a primitive collection as a list/tuple or a set, should tfplan2md treat reorder-only differences as meaningful?",
-      "assumed": "Yes. Treat an unidentified collection as ordered, preserve duplicate occurrences, and surface reorder-only changes so potentially meaningful information is not lost. Known sets remain order-insensitive.",
+      "assumed": "RESOLVED by Maintainer 2026-10-16: Already resolved in specification.md (2026-10-16, Maintainer): every primitive collection is treated as ordered and duplicate occurrences are preserved; this entry was stale.",
       "raised_by": "requirements-engineer",
-      "raised_at": "2026-10-06"
+      "raised_at": "2026-10-06",
+      "original_assumption": "Yes. Treat an unidentified collection as ordered, preserve duplicate occurrences, and surface reorder-only changes so potentially meaningful information is not lost. Known sets remain order-insensitive.",
+      "resolved": true,
+      "resolved_by": "maintainer",
+      "resolved_at": "2026-10-16"
     },
     {
       "q": "If any element of a primitive collection is sensitive (and --show-sensitive is off), should the whole collection be masked, or only that element?",
-      "assumed": "Mask the whole collection. Per-element masking would reveal counts and positions, which the spec forbids.",
+      "assumed": "RESOLVED by Maintainer 2026-10-16: Assumption REVERSED by the Maintainer: mask only the entries that are actually sensitive, never show a sensitive value, and still show non-sensitive entries. specification.md 'Sensitive Values in Collections' defines what may and may not be revealed about masked entries.",
       "raised_by": "architect",
-      "raised_at": "2026-10-16"
+      "raised_at": "2026-10-16",
+      "original_assumption": "Mask the whole collection. Per-element masking would reveal counts and positions, which the spec forbids.",
+      "resolved": true,
+      "resolved_by": "maintainer",
+      "resolved_at": "2026-10-16"
     },
     {
       "q": "When a case-only Azure ID filter would have hidden only some per-index rows of a list, may the compact row show those case-variant elements as removed and added?",
-      "assumed": "Yes. The row is suppressed only when every differing position is case-only, which matches today's outcome in the fully suppressed case.",
+      "assumed": "RESOLVED by Maintainer 2026-10-16: Hide the collection if a case-only Azure ID difference is the only change. If it has any other change, the row is shown and the case-variant entries may appear as removed and added. specification.md updated.",
       "raised_by": "architect",
-      "raised_at": "2026-10-16"
+      "raised_at": "2026-10-16",
+      "original_assumption": "Yes. The row is suppressed only when every differing position is case-only, which matches today's outcome in the fully suppressed case.",
+      "resolved": true,
+      "resolved_by": "maintainer",
+      "resolved_at": "2026-10-16"
     },
     {
       "q": "The UAT test plan lists absent -> [] and null -> [] as visible state transitions; after code review B1 these are hidden by default. Should uat-test-plan.md step 4 be updated?",
-      "assumed": "Yes: element-less states (absent, null, []) are equivalent for change detection, matching the previous per-key rows; [] stays visible only when the other side has elements or with --show-unchanged-values. The Quality Engineer should update uat-test-plan.md, and the Architect should update architecture section 7 (code review m3).",
+      "assumed": "RESOLVED by Maintainer 2026-10-16: Confirmed: element-less states are equivalent for change detection (see the decision on criterion 9). The Quality Engineer updates uat-test-plan.md step 4, and the Architect updates architecture section 7.",
       "raised_by": "developer",
-      "raised_at": "2026-10-16"
+      "raised_at": "2026-10-16",
+      "original_assumption": "Yes: element-less states (absent, null, []) are equivalent for change detection, matching the previous per-key rows; [] stays visible only when the other side has elements or with --show-unchanged-values. The Quality Engineer should update uat-test-plan.md, and the Architect should update architecture section 7 (code review m3).",
+      "resolved": true,
+      "resolved_by": "maintainer",
+      "resolved_at": "2026-10-16"
     },
     {
       "q": "Spec success criterion (specification.md line 89) says empty, absent and null collection states are 'not silently treated as equivalent'. After review findings B1/M1 the code treats them as equivalent for change detection (no row when both sides are element-less, as on main) while keeping them distinct in display. Should the criterion be reworded?",
-      "assumed": "Yes. The criterion means display distinctness; equivalence for change detection matches main's behaviour (Terraform writes every unset block as []). architecture.md section 7a records the decision. Requirements Engineer rewords the criterion if the Maintainer confirms.",
+      "assumed": "RESOLVED by Maintainer 2026-10-16: Confirmed: criterion 9 is reworded. The states stay visibly distinct whenever a row is shown, but are equivalent for change detection, so a collection with no elements on either side produces no row or drift entry by default.",
       "raised_by": "code-reviewer",
+      "raised_at": "2026-10-16",
+      "original_assumption": "Yes. The criterion means display distinctness; equivalence for change detection matches main's behaviour (Terraform writes every unset block as []). architecture.md section 7a records the decision. Requirements Engineer rewords the criterion if the Maintainer confirms.",
+      "resolved": true,
+      "resolved_by": "maintainer",
+      "resolved_at": "2026-10-16"
+    },
+    {
+      "q": "When an entry of a primitive collection is marked sensitive on one side only, should the value on the other side be shown if Terraform does not mark it sensitive there, or should the position be masked on both sides as the per-index rows on main do?",
+      "assumed": "Mask per side: show a value that Terraform does not mark sensitive on its own side. The report never shows whether a visible value matches a masked one (specification Sensitive Values rules 5 and 6). The conservative alternative masks the position on both sides.",
+      "raised_by": "requirements-engineer",
       "raised_at": "2026-10-16"
     }
   ],

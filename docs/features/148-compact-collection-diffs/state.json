@@ -1,10 +1,10 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "requirements-engineer",
+  "stage": "architect",
   "status": "running",
   "gates": {
-    "spec": "rework",
+    "spec": "pending",
     "arch": "n/a",
     "uat": "n/a"
   },
@@ -65,7 +65,17 @@
     },
     {
       "q": "When an entry of a primitive collection is marked sensitive on one side only, should the value on the other side be shown if Terraform does not mark it sensitive there, or should the position be masked on both sides as the per-index rows on main do?",
-      "assumed": "Mask per side: show a value that Terraform does not mark sensitive on its own side. The report never shows whether a visible value matches a masked one (specification Sensitive Values rules 5 and 6). The conservative alternative masks the position on both sides.",
+      "assumed": "RESOLVED by Maintainer 2026-10-16: Confirmed per-side masking. The Maintainer also reversed the ban on change indication: a masked entry may carry added/removed/unchanged/moved markers, compared only with masked entries and always different from a non-masked entry (specification Sensitive Values rules 3-7).",
+      "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-16",
+      "original_assumption": "Mask per side: show a value that Terraform does not mark sensitive on its own side. The report never shows whether a visible value matches a masked one (specification Sensitive Values rules 5 and 6). The conservative alternative masks the position on both sides.",
+      "resolved": true,
+      "resolved_by": "maintainer",
+      "resolved_at": "2026-10-16"
+    },
+    {
+      "q": "May the report indicate that two masked entries on the same side are equal (duplicate indication between masked entries)?",
+      "assumed": "No. Each masked occurrence is its own (sensitive) placeholder and is never collapsed, counted or labelled as a duplicate of another masked entry; only cross-side masked-to-masked comparisons drive markers. Alternative: allow duplicate indication as for visible entries.",
       "raised_by": "requirements-engineer",
       "raised_at": "2026-10-16"
     }

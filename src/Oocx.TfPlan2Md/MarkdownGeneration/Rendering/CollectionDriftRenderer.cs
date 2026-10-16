@@ -57,8 +57,11 @@ internal static class CollectionDriftRenderer
         }
 
         var quoteAmbiguous = collection.HasMixedKinds;
+        // A masked entry is written as the placeholder; its value is not in the model and never reaches FormatDriftCode.
         string FormatElement(CollectionElementModel element)
-            => ReportRenderer.FormatDriftCode(CollectionValues.ElementDisplayText(element, quoteAmbiguous));
+            => ReportRenderer.FormatDriftCode(element.IsMasked
+                ? CollectionValues.SensitivePlaceholder
+                : CollectionValues.ElementDisplayText(element, quoteAmbiguous));
 
         var lines = new List<string>();
         lines.AddRange(collection.Before

@@ -385,10 +385,10 @@ A whole-collection mask keeps its single `(sensitive)` line and no element lines
 reach `FormatDriftCode`. Entry selection and path counts are unchanged.
 **Acceptance Criteria:**
 
-- [ ] A per-entry masked change shows its marker line with no value, and the visible members still show (SC 11, TC-55 per-entry)
-- [ ] A whole-collection mask shows `(sensitive)` and no element lines; the existing drift test stays green (TC-55 whole)
-- [ ] An order change involving masked entries lists them as `(sensitive)` in the retained sequence (SC 21, TC-121 at drift level)
-- [ ] A drift entry containing a masked change counts its paths as before (SC 19)
+- [x] A per-entry masked change shows its marker line with no value, and the visible members still show (SC 11, TC-55 per-entry)
+- [x] A whole-collection mask shows `(sensitive)` and no element lines; the existing drift test stays green (TC-55 whole)
+- [x] An order change involving masked entries lists them as `(sensitive)` in the retained sequence (SC 21, TC-121 at drift level)
+- [x] A drift entry containing a masked change counts its paths as before (SC 19)
 **Dependencies:** Task 17, Task 12
 
 ### Task 20: Element-wise filter for masked positions and order

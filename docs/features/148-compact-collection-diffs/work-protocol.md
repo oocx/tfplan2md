@@ -112,3 +112,10 @@
 - **Summary:** Rework after spec gate rejection: per-side masking confirmed; masked entries now indicate change (added/removed/unchanged/moved, order change) compared only with masked entries and always different from non-masked entries; invariance test rewritten; same-side duplicate indication between masked entries disallowed (open assumption). Examples, success criteria and open questions updated.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/specification.md, docs/features/148-compact-collection-diffs/state.json
 - **Problems Encountered:** Architecture, test plan and code still implement the previous no-marker rule for masked entries and must be reworked after approval.
+
+### Architect (round 2)
+
+- **Date:** 2026-10-16
+- **Summary:** Revised architecture for the approved spec: whole-collection masking replaced by per-entry, per-side masking (new section 5a). Masked entries become opaque cross-side comparison tokens before diffing (CollectionElementKey gains Masked), so masked never equals visible (rule 4) and the diff depends on masked values only through masked-to-masked equality (rule 7). Element models carry IsMasked with no value or kind; HasMixedKinds, IsLarge and canonical text ignore masked values; ElementDisplayText and the table renderer emit (sensitive) before any formatter. Case-only filter (section 6) rewritten: positional, requires no order change, masked positions only pass as Unchanged masked pairs. arch_contested stays false: one clearly superior option.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/architecture.md
+- **Problems Encountered:** Original design masked whole collections and suppressed markers on masked entries; the Maintainer reversed both. Existing implementation must change in ResourceChangeStage.Collections, CollectionElementDiffer, CollectionValues, CollectionChangeModel, AttributeFilteringStage, DefaultResourceRenderer.Collections and CollectionDriftRenderer.

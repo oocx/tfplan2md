@@ -61,8 +61,9 @@ internal sealed partial class DefaultResourceRenderer
         }
 
         var elements = beforeSide ? collection.Before : collection.After;
+        var quoteAmbiguous = collection.HasMixedKinds;
         var lines = elements
-            .Select(element => FormatCollectionElement(attribute.Name, element, withMarkers, Format))
+            .Select(element => FormatCollectionElement(attribute.Name, element, withMarkers, quoteAmbiguous, Format))
             .ToList();
         if (withMarkers && !beforeSide && collection.OrderChanged)
         {
@@ -79,6 +80,7 @@ internal sealed partial class DefaultResourceRenderer
         string path,
         CollectionElementModel element,
         bool withMarkers,
+        bool quoteAmbiguous,
         Func<string, string?, string> format)
     {
         string text;
@@ -88,11 +90,11 @@ internal sealed partial class DefaultResourceRenderer
         }
         else if (string.IsNullOrWhiteSpace(element.Value))
         {
-            text = MarkdownHelpers.FormatCodeTable(CollectionValues.ElementDisplayText(element));
+            text = MarkdownHelpers.FormatCodeTable(CollectionValues.ElementDisplayText(element, quoteAmbiguous));
         }
         else
         {
-            text = format($"{path}[{element.Index}]", CollectionValues.ElementDisplayText(element));
+            text = format($"{path}[{element.Index}]", CollectionValues.ElementDisplayText(element, quoteAmbiguous));
         }
 
         if (!withMarkers)
@@ -119,20 +121,21 @@ internal sealed partial class DefaultResourceRenderer
         var collection = attribute.Collection!;
         var comparing = collection.BeforeState is CollectionState.Elements or CollectionState.Empty
             && collection.AfterState is CollectionState.Elements or CollectionState.Empty;
+        var quoteAmbiguous = collection.HasMixedKinds;
         var builder = new StringBuilder();
 
         var showBefore = collection.BeforeState is CollectionState.Elements or CollectionState.Empty;
         var showAfter = collection.AfterState is CollectionState.Elements or CollectionState.Empty or CollectionState.Unknown or CollectionState.Masked;
         if (showBefore)
         {
-            AppendLargeBlock(builder, comparing && showAfter ? "Before" : null, collection.Before, comparing, attribute.Before);
+            AppendLargeBlock(builder, comparing && showAfter ? "Before" : null, collection.Before, comparing, quoteAmbiguous, attribute.Before);
         }
 
         if (showAfter)
         {
             var lines = collection.AfterState is CollectionState.Unknown or CollectionState.Masked
                 ? [attribute.After ?? "-"]
-                : LargeLines(collection.After, comparing);
+                : LargeLines(collection.After, comparing, quoteAmbiguous);
             if (comparing && collection.OrderChanged)
             {
                 lines.Add(OrderChangedLine);
@@ -149,16 +152,17 @@ internal sealed partial class DefaultResourceRenderer
         string? label,
         IReadOnlyList<CollectionElementModel> elements,
         bool withMarkers,
+        bool quoteAmbiguous,
         string? fallback)
     {
-        var lines = elements.Count == 0 ? [fallback ?? "[]"] : LargeLines(elements, withMarkers);
+        var lines = elements.Count == 0 ? [fallback ?? "[]"] : LargeLines(elements, withMarkers, quoteAmbiguous);
         AppendLargeFence(builder, label, lines);
     }
 
-    private static List<string> LargeLines(IEnumerable<CollectionElementModel> elements, bool withMarkers)
+    private static List<string> LargeLines(IEnumerable<CollectionElementModel> elements, bool withMarkers, bool quoteAmbiguous)
         => elements.Select(element =>
         {
-            var text = CollectionValues.ElementDisplayText(element).Replace("\r\n", "\\n", StringComparison.Ordinal)
+            var text = CollectionValues.ElementDisplayText(element, quoteAmbiguous).Replace("\r\n", "\\n", StringComparison.Ordinal)
                 .Replace("\n", "\\n", StringComparison.Ordinal)
                 .Replace("\r", "\\n", StringComparison.Ordinal);
             if (!withMarkers)

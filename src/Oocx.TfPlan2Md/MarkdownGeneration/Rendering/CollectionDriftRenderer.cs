@@ -56,6 +56,10 @@ internal static class CollectionDriftRenderer
             return ["unresolved: some values are known after apply"];
         }
 
+        var quoteAmbiguous = collection.HasMixedKinds;
+        string FormatElement(CollectionElementModel element)
+            => ReportRenderer.FormatDriftCode(CollectionValues.ElementDisplayText(element, quoteAmbiguous));
+
         var lines = new List<string>();
         lines.AddRange(collection.Before
             .Where(element => element.Status == CollectionElementStatus.Removed)
@@ -66,8 +70,8 @@ internal static class CollectionDriftRenderer
 
         if (collection.OrderChanged)
         {
-            var before = FormatRetained(collection.Before);
-            var after = FormatRetained(collection.After);
+            var before = FormatRetained(collection.Before, FormatElement);
+            var after = FormatRetained(collection.After, FormatElement);
             lines.Add($"{DefaultResourceRenderer.OrderChangedLine}: {before} → {after}");
         }
 
@@ -79,13 +83,10 @@ internal static class CollectionDriftRenderer
         return lines;
     }
 
-    private static string FormatRetained(IReadOnlyList<CollectionElementModel> elements)
+    private static string FormatRetained(IReadOnlyList<CollectionElementModel> elements, Func<CollectionElementModel, string> formatElement)
         => string.Join(", ", elements
             .Where(element => element.Status is CollectionElementStatus.Unchanged or CollectionElementStatus.Moved)
-            .Select(FormatElement));
-
-    private static string FormatElement(CollectionElementModel element)
-        => ReportRenderer.FormatDriftCode(CollectionValues.ElementDisplayText(element));
+            .Select(formatElement));
 
     private static string DescribeState(CollectionState state) => state switch
     {

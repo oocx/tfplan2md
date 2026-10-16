@@ -173,7 +173,12 @@ internal sealed partial class ResourceChangeStage
             return true;
         }
 
-        if (Normalize(model.BeforeState) != Normalize(model.AfterState))
+        if (IsElementless(model.BeforeState) && IsElementless(model.AfterState))
+        {
+            return false;
+        }
+
+        if (model.BeforeState != model.AfterState)
         {
             return true;
         }
@@ -182,10 +187,13 @@ internal sealed partial class ResourceChangeStage
     }
 
     /// <summary>
-    /// Treats a JSON null collection like an absent one, as the previous per-key rows did.
+    /// Determines whether a side holds no elements. Absent, <c>null</c> and <c>[]</c> are equivalent for change
+    /// detection, as they were for the previous per-key rows: Terraform writes every unset nested block as <c>[]</c>,
+    /// so treating them as different would add an empty row for each unset block on every create and delete.
+    /// The states stay distinct in the model and are shown when the other side has elements.
     /// </summary>
-    private static CollectionState Normalize(CollectionState state)
-        => state == CollectionState.Null ? CollectionState.Absent : state;
+    private static bool IsElementless(CollectionState state)
+        => state is CollectionState.Absent or CollectionState.Null or CollectionState.Empty;
 
     /// <summary>
     /// Returns comparable text for a side without exposing it; null and absent are equivalent.

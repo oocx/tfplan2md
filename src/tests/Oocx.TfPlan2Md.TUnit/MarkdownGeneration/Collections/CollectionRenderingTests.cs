@@ -152,10 +152,68 @@ public class CollectionRenderingTests
         Row(Render(Res(["update"], Items("a"), "{\"items\":[]}")), "items").Should().Be("| items | ➖\u00A0`a` | `[]` |");
     }
 
+    private const string WebAppWithUnsetBlocks =
+        "{\"name\":\"app-web\",\"location\":\"westeurope\",\"service_plan_id\":\"plan-1\"," +
+        "\"app_settings\":{\"MODE\":\"prod\"},\"auth_settings\":[],\"auth_settings_v2\":[],\"backup\":[]," +
+        "\"connection_string\":[],\"identity\":[],\"logs\":[],\"storage_account\":[],\"sticky_settings\":[]," +
+        "\"site_config\":[{\"always_on\":true,\"ftps_state\":\"Disabled\",\"cors\":[]," +
+        "\"ip_restriction\":[],\"scm_ip_restriction\":[]}],\"tags\":null}";
+
     [Test]
-    public void Create_EmptyCollection_RendersEmptyBrackets()
+    public void CreateAndDelete_RealisticResourceWithUnsetBlockLists_RendersNoEmptyCollectionRows()
     {
-        Row(Render(Res(["create"], null, "{\"items\":[]}")), "items").Should().Be("| items | `[]` |");
+        var create = Render(Res(["create"], null, WebAppWithUnsetBlocks, "azurerm_linux_web_app.main", "azurerm_linux_web_app",
+            provider: "registry.terraform.io/hashicorp/azurerm"));
+        var delete = Render(Res(["delete"], WebAppWithUnsetBlocks, null, "azurerm_linux_web_app.main", "azurerm_linux_web_app",
+            provider: "registry.terraform.io/hashicorp/azurerm"));
+
+        foreach (var markdown in new[] { create, delete })
+        {
+            markdown.Should().NotContain("`[]`").And.NotContain("| auth_settings |").And.NotContain("ip_restriction");
+            markdown.Should().Contain("| name |").And.Contain("| site_config[0].always_on |");
+        }
+    }
+
+    [Test]
+    public void CollectionDiffsFixture_RendersCompactRowsWithoutEmptyBlockRowsOrSecrets()
+    {
+        var markdown = Render(System.IO.File.ReadAllText("TestData/feature-148-uat-plan.json"));
+
+        markdown.Should().NotContain("SENTINEL-SECRET-VALUE-148");
+        markdown.Should().NotContain("| auth_settings |").And.NotContain("| site_config[0].ip_restriction |");
+        markdown.Should().Contain("| destination_port_ranges |").And.Contain("➕\u00A0`🔌\u00A08080`").And.NotContain("\"8080\"");
+        markdown.Should().Contain("🔀\u00A0order changed");
+        markdown.Should().Contain("changed collections");
+    }
+
+    [Test]
+    public void Create_EmptyCollection_ProducesNoRow()
+    {
+        Render(Res(["create"], null, "{\"name\":\"x\",\"items\":[]}")).Should().NotContain("| items |");
+    }
+
+    [Test]
+    public void Create_EmptyCollectionWithShowUnchangedValues_RendersEmptyBrackets()
+    {
+        var markdown = Render(Res(["create"], null, "{\"items\":[]}"), new ReportModelBuilderOptions(ShowUnchangedValues: true));
+
+        Row(markdown, "items").Should().Be("| items | `[]` |");
+    }
+
+    [Test]
+    public void Create_AllStringListOfNumericAndBooleanLookingValues_RendersUnquoted()
+    {
+        var row = Row(Render(Res(["create"], null, Items("80", "443", "true"))), "items");
+
+        row.Should().Contain("`80`").And.Contain("`443`").And.NotContain("\"80\"").And.NotContain("\"true\"");
+    }
+
+    [Test]
+    public void Update_WhitespaceOnlyStrings_AreQuotedSoTheyStayDistinguishable()
+    {
+        var row = Row(Render(Res(["update"], Items(" "), Items("  "))), "items");
+
+        row.Should().Be("| items | ➖\u00A0`\" \"` | ➕\u00A0`\"  \"` |");
     }
 
     [Test]

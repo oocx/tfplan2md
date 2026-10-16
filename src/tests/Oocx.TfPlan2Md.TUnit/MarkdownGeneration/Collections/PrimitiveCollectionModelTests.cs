@@ -74,19 +74,23 @@ public class PrimitiveCollectionModelTests
     }
 
     [Test]
-    public void Update_AbsentToEmpty_ProducesRowWithDistinctStates()
+    public void Update_AbsentToEmpty_ProducesNoRowButKeepsDistinctStatesWhenUnchangedShown()
     {
-        var row = Row(Res(["update"], "{\"n\":1}", "{\"n\":1,\"items\":[]}"), "items");
+        var resource = Res(["update"], "{\"n\":1}", "{\"n\":2,\"items\":[]}");
 
+        Rows(resource).Select(r => r.Name).Should().Equal("n");
+        var row = Row(resource, "items", new ReportModelBuilderOptions(ShowUnchangedValues: true));
         row.Collection!.BeforeState.Should().Be(CollectionState.Absent);
         row.Collection.AfterState.Should().Be(CollectionState.Empty);
     }
 
     [Test]
-    public void Update_NullToEmpty_HasNullAndEmptyStates()
+    public void Update_NullToEmpty_ProducesNoRowButKeepsDistinctStatesWhenUnchangedShown()
     {
-        var row = Row(Res(["update"], "{\"items\":null}", "{\"items\":[]}"), "items");
+        var resource = Res(["update"], "{\"items\":null,\"n\":1}", "{\"items\":[],\"n\":2}");
 
+        Rows(resource).Select(r => r.Name).Should().Equal("n");
+        var row = Row(resource, "items", new ReportModelBuilderOptions(ShowUnchangedValues: true));
         row.Collection!.BeforeState.Should().Be(CollectionState.Null);
         row.Collection.AfterState.Should().Be(CollectionState.Empty);
     }

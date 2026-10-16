@@ -479,10 +479,10 @@ that each diff contains only per-entry masked rows, collection rows, and index-o
 Markdown lint and invariant tests over the fixtures.
 **Acceptance Criteria:**
 
-- [ ] No provider table snapshot changes (SC 20, TC-90)
-- [ ] The MsGraph `excludeUsers` update still shows a compact body row beside unchanged settings rows (SC 20, TC-91)
-- [ ] Snapshot diffs contain only intended collection output and index-order changes (SC 20, TC-92)
-- [ ] `MarkdownLintIntegrationTests` and `MarkdownInvariantTests` pass over the fixtures
+- [x] No provider table snapshot changes (SC 20, TC-90)
+- [x] The MsGraph `excludeUsers` update still shows a compact body row beside unchanged settings rows (SC 20, TC-91)
+- [x] Snapshot diffs contain only intended collection output and index-order changes (SC 20, TC-92)
+- [x] `MarkdownLintIntegrationTests` and `MarkdownInvariantTests` pass over the fixtures
 **Dependencies:** Tasks 18, 19, 20, 21, 22, 23
 
 ### Task 25: UAT fixtures for the revised scenarios

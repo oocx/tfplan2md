@@ -445,11 +445,11 @@ it is shown. A case-only collection that also has an added member, a removed mem
 or an unrelated element change is shown. Fix any path that does not match the expected output.
 **Acceptance Criteria:**
 
-- [ ] A case-only collection gives no row by default (SC 27, TC-131)
-- [ ] The same collection gives no row under `--show-unchanged-values` (SC 27, TC-131)
-- [ ] It produces no drift entry and does not count as a changed attribute (SC 27, TC-131)
-- [ ] With the flag disabled the row is shown (SC 27, TC-131)
-- [ ] Case-only plus an added member, a removed member, an order change or an unrelated change shows the row, and a drift entry appears only for that collection (SC 27, TC-132)
+- [x] A case-only collection gives no row by default (SC 27, TC-131)
+- [x] The same collection gives no row under `--show-unchanged-values` (SC 27, TC-131)
+- [x] It produces no drift entry and does not count as a changed attribute (SC 27, TC-131)
+- [x] With the flag disabled the row is shown (SC 27, TC-131)
+- [x] Case-only plus an added member, a removed member, an order change or an unrelated change shows the row, and a drift entry appears only for that collection (SC 27, TC-132)
 **Dependencies:** Task 20, Task 6
 
 ### Task 23: Element-less and empty-state verification

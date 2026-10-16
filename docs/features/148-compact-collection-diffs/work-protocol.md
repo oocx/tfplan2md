@@ -119,3 +119,10 @@
 - **Summary:** Revised architecture for the approved spec: whole-collection masking replaced by per-entry, per-side masking (new section 5a). Masked entries become opaque cross-side comparison tokens before diffing (CollectionElementKey gains Masked), so masked never equals visible (rule 4) and the diff depends on masked values only through masked-to-masked equality (rule 7). Element models carry IsMasked with no value or kind; HasMixedKinds, IsLarge and canonical text ignore masked values; ElementDisplayText and the table renderer emit (sensitive) before any formatter. Case-only filter (section 6) rewritten: positional, requires no order change, masked positions only pass as Unchanged masked pairs. arch_contested stays false: one clearly superior option.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/architecture.md
 - **Problems Encountered:** Original design masked whole collections and suppressed markers on masked entries; the Maintainer reversed both. Existing implementation must change in ResourceChangeStage.Collections, CollectionElementDiffer, CollectionValues, CollectionChangeModel, AttributeFilteringStage, DefaultResourceRenderer.Collections and CollectionDriftRenderer.
+
+### Quality Engineer (round 2)
+
+- **Date:** 2026-10-16
+- **Summary:** Rework: aligned test-plan.md (C1-C28, new sensitive per-entry, invariance, case-only tests TC-50..59, TC-120..133) and uat-test-plan.md with revised spec and architecture
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/test-plan.md, docs/features/148-compact-collection-diffs/uat-test-plan.md
+- **Problems Encountered:** None

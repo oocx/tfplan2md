@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "architect",
+  "stage": "quality-engineer",
   "status": "running",
   "gates": {
     "spec": "approved",

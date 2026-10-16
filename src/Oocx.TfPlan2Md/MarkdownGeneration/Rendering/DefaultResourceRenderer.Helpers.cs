@@ -137,6 +137,15 @@ internal sealed partial class DefaultResourceRenderer
         }
     }
 
+    /// <summary>
+    /// Escapes an attribute name for plain table and heading text. Adjacent index brackets such as
+    /// <c>matrix[1][0]</c> would otherwise parse as a reference link, so the second bracket is escaped.
+    /// </summary>
+    /// <param name="name">The attribute name.</param>
+    /// <returns>Markdown-safe attribute name.</returns>
+    private static string EscapeAttributeName(string name)
+        => MarkdownHelpers.EscapeMarkdown(name).Replace("][", "]\\[", StringComparison.Ordinal);
+
     private static void RenderLargeAttributes(
         MarkdownWriter writer,
         AttributeChangeModel[] largeAttributes,
@@ -174,7 +183,7 @@ internal sealed partial class DefaultResourceRenderer
 
         foreach (var attribute in largeAttributes)
         {
-            writer.Heading($"**{MarkdownHelpers.EscapeMarkdown(attribute.Name)}:**", 5);
+            writer.Heading($"**{EscapeAttributeName(attribute.Name)}:**", 5);
             writer.BlankLine();
             writer.Raw(attribute.Collection is not null
                 ? FormatLargeCollection(attribute)

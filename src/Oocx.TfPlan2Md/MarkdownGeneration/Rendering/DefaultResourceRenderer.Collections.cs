@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
@@ -85,17 +86,13 @@ internal sealed partial class DefaultResourceRenderer
         {
             text = format(path, element.Value);
         }
-        else if (element.Value is null)
-        {
-            text = MarkdownHelpers.FormatCodeTable("null");
-        }
         else if (string.IsNullOrWhiteSpace(element.Value))
         {
-            text = MarkdownHelpers.FormatCodeTable("\"\"");
+            text = MarkdownHelpers.FormatCodeTable(CollectionValues.ElementDisplayText(element));
         }
         else
         {
-            text = format($"{path}[{element.Index}]", element.Value);
+            text = format($"{path}[{element.Index}]", CollectionValues.ElementDisplayText(element));
         }
 
         if (!withMarkers)
@@ -161,7 +158,7 @@ internal sealed partial class DefaultResourceRenderer
     private static List<string> LargeLines(IEnumerable<CollectionElementModel> elements, bool withMarkers)
         => elements.Select(element =>
         {
-            var text = (element.Value ?? "null").Replace("\r\n", "\\n", StringComparison.Ordinal)
+            var text = CollectionValues.ElementDisplayText(element).Replace("\r\n", "\\n", StringComparison.Ordinal)
                 .Replace("\n", "\\n", StringComparison.Ordinal)
                 .Replace("\r", "\\n", StringComparison.Ordinal);
             if (!withMarkers)

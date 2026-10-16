@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -87,5 +89,36 @@ internal static class CollectionValues
         }
 
         return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    /// <summary>
+    /// Returns the text shown for an element. A string that looks like another JSON type (a number, <c>true</c>,
+    /// <c>false</c> or <c>null</c>) is quoted so that <c>"1"</c> and <c>1</c> stay visibly different.
+    /// An empty string is shown as <c>""</c> and a JSON null as <c>null</c>.
+    /// </summary>
+    /// <param name="element">The collection element.</param>
+    /// <returns>The display text before any markdown formatting.</returns>
+    internal static string ElementDisplayText(CollectionElementModel element)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+        var value = element.Value;
+        if (value is null)
+        {
+            return "null";
+        }
+
+        if (element.Kind != JsonValueKind.String)
+        {
+            return value;
+        }
+
+        if (value.Length == 0)
+        {
+            return "\"\"";
+        }
+
+        var looksLikeOtherType = value is "true" or "false" or "null"
+            || double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
+        return looksLikeOtherType ? $"\"{value}\"" : value;
     }
 }

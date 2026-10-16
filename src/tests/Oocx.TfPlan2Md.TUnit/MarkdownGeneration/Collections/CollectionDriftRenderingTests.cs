@@ -24,11 +24,11 @@ public class CollectionDriftRenderingTests
     [Test]
     public void Drift_GroupMemberInserted_RendersDeltaLinesWithoutBeforeAfterColumns()
     {
-        var markdown = RenderDrift([Group("azuread_group.admins", "{\"members\":" + L("1111", "3333") + "}", "{\"members\":" + L("1111", "2222", "3333") + "}")]);
+        var markdown = RenderDrift([Group("azuread_group.admins", "{\"members\":" + L("m1111", "m3333") + "}", "{\"members\":" + L("m1111", "m2222", "m3333") + "}")]);
 
         markdown.Should().Contain("Drift Detected");
         markdown.Should().Contain($"<summary>🌀{Nbsp}azuread_group <code>azuread_group.admins</code> — 1 changed collection: <code>members</code></summary>");
-        markdown.Should().Contain($"  - ➕{Nbsp}<code>2222</code>");
+        markdown.Should().Contain($"  - ➕{Nbsp}<code>m2222</code>");
         markdown.Should().NotContain("members[");
         markdown.Should().NotContain("➖");
         markdown.Should().NotContain("| Before |");

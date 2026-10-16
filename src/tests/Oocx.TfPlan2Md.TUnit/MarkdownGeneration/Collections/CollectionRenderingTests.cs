@@ -188,10 +188,28 @@ public class CollectionRenderingTests
     }
 
     [Test]
+    public void Update_StringOneToNumberOne_ShowsQuotedStringSoTypeChangeIsVisible()
+    {
+        var row = Row(Render(Res(["update"], "{\"items\":[\"1\",\"true\"]}", "{\"items\":[1,true]}")), "items");
+
+        row.Should().Contain("➖\u00A0`\"1\"`");
+        row.Should().Contain("➕\u00A0`1`");
+        row.Should().Contain("➖\u00A0`\"true\"`");
+    }
+
+    [Test]
     public void Render_ListOfObjectsAndArrayTypeChange_KeepExistingRowsWithoutException()
     {
         Render(Res(["update"], "{\"items\":[{\"a\":1}]}", "{\"items\":[{\"a\":2}]}")).Should().Contain("| items[0].a |");
         Render(Res(["update"], "{\"items\":[\"a\"]}", "{\"items\":\"b\"}")).Should().Contain("items");
+    }
+
+    [Test]
+    public void Update_ListOfNestedLists_EscapesAdjacentIndexBracketsSoNameIsNotAReferenceLink()
+    {
+        var markdown = Render(Res(["update"], "{\"matrix\":[[1],[2]]}", "{\"matrix\":[[1],[3]]}"));
+
+        markdown.Should().Contain("| matrix[1]\\[0] |");
     }
 
     [Test]

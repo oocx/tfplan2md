@@ -428,11 +428,11 @@ counts, and sweep the sentinels through every output. If a test shows a leak, fi
 and log it in `work-protocol.md` as a problem.
 **Acceptance Criteria:**
 
-- [ ] TC-124 cases (a) to (k) give identical model and Markdown, including replacing a masked value with one equal to a visible entry on either side (SC 25)
-- [ ] The TC-124 negative control changes the output, proving the test can fail (SC 25)
-- [ ] TC-126 drift entries are identical under the same substitutions (SC 25)
-- [ ] TC-127 summary text and changed-attribute counts are identical (SC 25, SC 19)
-- [ ] TC-56 sentinels, including their prefix, length and case variants, are absent from the generic table, large section, drift, summaries, diagnostics and log output (SC 23, SC 11)
+- [x] TC-124 cases (a) to (k) give identical model and Markdown, including replacing a masked value with one equal to a visible entry on either side (SC 25)
+- [x] The TC-124 negative control changes the output, proving the test can fail (SC 25)
+- [x] TC-126 drift entries are identical under the same substitutions (SC 25)
+- [x] TC-127 summary text and changed-attribute counts are identical (SC 25, SC 19)
+- [x] TC-56 sentinels, including their prefix, length and case variants, are absent from the generic table, large section, drift, summaries, diagnostics and log output (SC 23, SC 11)
 **Dependencies:** Task 18, Task 19, Task 20
 
 ### Task 22: Case-only Azure ID filter, end to end

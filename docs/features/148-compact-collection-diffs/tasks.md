@@ -213,11 +213,11 @@ by address. Each collection entry is one `<details>` block with the summary text
 (`N changed collection(s): ...`). Lines are deltas only: `➖`, `➕`, `🔀 order changed`. Use `FormatDriftCode`
 for values. Masked collections render `(sensitive)` and no element lines.
 **Acceptance Criteria:**
-- [ ] A collection-only drift result still renders the drift section (TC-80b)
-- [ ] Ordering is by type, then scalar before collection, then address (TC-80c)
-- [ ] A masked collection in drift renders `(sensitive)` and no element lines (SC 11, TC-55)
-- [ ] Collection drift lines use the same marker glyphs as the table and no Before/After columns (SC 14, TC-70)
-- [ ] An unknown collection in drift renders as unresolved, not as an element diff (SC 10, TC-46 drift variant)
+- [x] A collection-only drift result still renders the drift section (TC-80b)
+- [x] Ordering is by type, then scalar before collection, then address (TC-80c)
+- [x] A masked collection in drift renders `(sensitive)` and no element lines (SC 11, TC-55)
+- [x] Collection drift lines use the same marker glyphs as the table and no Before/After columns (SC 14, TC-70)
+- [x] An unknown collection in drift renders as unresolved, not as an element diff (SC 10, TC-46 drift variant)
 **Dependencies:** Task 11
 
 ### Task 13: Drift mode selection and scalar grouping regression
@@ -226,13 +226,13 @@ for values. Masked collections render `(sensitive)` and no element lines.
 collection drift entries exactly as to scalar drift. Mode selection happens on `ResourceChangeModel`s before grouping.
 Confirm that feature-145 scalar grouping across resources is unchanged. Fix nothing outside these paths.
 **Acceptance Criteria:**
-- [ ] `--drift all` includes collection entries (SC 18, TC-77)
-- [ ] Omitting `--drift` behaves as `all` (SC 18, TC-78)
-- [ ] `--drift relevant` includes collection entries only for relevant resources; suppressed and no-op drift stays suppressed (SC 18, TC-79)
-- [ ] `--drift none` produces no collection entries and no drift section (SC 18, TC-80)
-- [ ] Two resources with the same scalar change still group across resources (SC 17, TC-75)
-- [ ] A resource with scalar and collection drift shows the scalar in its group and the collection in its own entry (SC 17, TC-76)
-- [ ] Existing feature-145 drift tests remain green without edits
+- [x] `--drift all` includes collection entries (SC 18, TC-77)
+- [x] Omitting `--drift` behaves as `all` (SC 18, TC-78)
+- [x] `--drift relevant` includes collection entries only for relevant resources; suppressed and no-op drift stays suppressed (SC 18, TC-79)
+- [x] `--drift none` produces no collection entries and no drift section (SC 18, TC-80)
+- [x] Two resources with the same scalar change still group across resources (SC 17, TC-75)
+- [x] A resource with scalar and collection drift shows the scalar in its group and the collection in its own entry (SC 17, TC-76)
+- [x] Existing feature-145 drift tests remain green without edits
 **Dependencies:** Task 11, Task 12
 
 ### Task 14: GUID name annotations and equality independence

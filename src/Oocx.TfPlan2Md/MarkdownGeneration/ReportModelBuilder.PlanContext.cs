@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
@@ -108,7 +109,7 @@ internal partial class ReportModelBuilder
             }))
             .GroupBy(candidate => (candidate.Type, candidate.AttributePath, candidate.Before, candidate.After))
             .OrderBy(group => group.Key.Type, StringComparer.Ordinal)
-            .ThenBy(group => group.Key.AttributePath, StringComparer.Ordinal)
+            .ThenBy(group => group.Key.AttributePath, AttributePathComparer.Instance)
             .ThenBy(group => group.Key.Before, StringComparer.Ordinal)
             .ThenBy(group => group.Key.After, StringComparer.Ordinal)
             .Select(group => new DriftGroupModel

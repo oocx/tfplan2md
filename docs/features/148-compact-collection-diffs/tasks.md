@@ -18,11 +18,11 @@ ordinally (current semantics). Use it for the key ordering in `ResourceChangeSta
 (replacing `Order()`) and for the `AttributePath` ordering in `ReportModelBuilder.GroupDrift`.
 Scope is ordering only; no collection compaction in this task.
 **Acceptance Criteria:**
-- [ ] `a[2]` sorts before `a[10]`, and `a[1]` before `a[2]` (SC 1, TC-01)
-- [ ] Nested indexed paths sort per segment: `r[2].x[9]`, `r[2].x[10]`, `r[9].y`, `r[10].x[1]` (SC 1, TC-02)
-- [ ] Non-index segments keep ordinal order (`Zed` before `abc`); equal paths compare 0; paths without brackets and non-numeric brackets such as `tags["a"]` fall back to ordinal (TC-02)
-- [ ] An object list with indices 0..11 renders `[2]` before `[10]` in the generic table, and drift orders its `AttributePath` the same way (TC-03)
-- [ ] Existing tests remain green; any snapshot change in this task is limited to multi-digit index ordering in generic or drift output
+- [x] `a[2]` sorts before `a[10]`, and `a[1]` before `a[2]` (SC 1, TC-01)
+- [x] Nested indexed paths sort per segment: `r[2].x[9]`, `r[2].x[10]`, `r[9].y`, `r[10].x[1]` (SC 1, TC-02)
+- [x] Non-index segments keep ordinal order (`Zed` before `abc`); equal paths compare 0; paths without brackets and non-numeric brackets such as `tags["a"]` fall back to ordinal (TC-02)
+- [x] An object list with indices 0..11 renders `[2]` before `[10]` in the generic table, and drift orders its `AttributePath` the same way (TC-03)
+- [x] Existing tests remain green; any snapshot change in this task is limited to multi-digit index ordering in generic or drift output
 **Dependencies:** None
 
 ### Task 2: Element diff algorithm

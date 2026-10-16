@@ -55,7 +55,7 @@ internal static class CollectionPlanTestSupport
         Append(change, "after_unknown", resource.AfterUnknown);
         Append(change, "before_sensitive", resource.BeforeSensitive);
         Append(change, "after_sensitive", resource.AfterSensitive);
-        return $"{{\"address\":{JsonSerializer.Serialize(resource.Address)},\"mode\":\"managed\",\"type\":\"{resource.Type}\",\"name\":\"{name}\",\"provider_name\":\"{resource.Provider}\",\"change\":{{{change}}}}}";
+        return $"{{\"address\":{JsonSerializer.Serialize(resource.Address)},\"mode\":\"managed\",\"type\":\"{resource.Type}\",\"name\":{JsonSerializer.Serialize(name)},\"provider_name\":\"{resource.Provider}\",\"change\":{{{change}}}}}";
     }
 
     /// <summary>

@@ -91,3 +91,10 @@
 - **Summary:** Round 3 rework pass after code review round 3. Updated docs/features.md: the masked (sensitive) collection bullet now states that the element-less rule applies to masked collections too (absent, null or [] on both sides produce no row and no drift entry; a masked [] to elements stays visible as (sensitive)). Updated docs/testing-strategy.md: the feature-148-uat-plan.json entry now names sensitive unset block lists. Verified on the rebuilt Release CLI from HEAD with temporary plans: masked create and delete of an empty secret list produce no row, masked [] to elements shows (sensitive) by default and [] to x under --show-sensitive, and a masked null to [] drift entry is absent while the unmasked null to [t] entry is shown. docs/report-style-guide.md, README.md, docs/architecture.md and docs/workflow.md checked and unchanged: no style rule, CLI, install, component or workflow change. markdownlint finding count on features.md is unchanged at 135 (pre-existing).
 - **Artifacts Produced:** docs/features.md, docs/testing-strategy.md, docs/features/148-compact-collection-diffs/work-protocol.md, docs/features/148-compact-collection-diffs/state.json
 - **Problems Encountered:** Still open for other roles, not edited here: architecture.md line 245 still says Empty renders as [] and Null keeps the scalar rendering, which the code does not do (code review m3, Architect); uat-test-plan.md line 27 and line 65 still expect absent -> [] and null -> [] rows (code review m5, Quality Engineer). The pre-existing markdownlint findings in docs/testing-strategy.md were left alone.
+
+### Code Reviewer (round 3)
+
+- **Date:** 2026-10-16
+- **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 1 Blocker, 1 Minor
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
+- **Problems Encountered:** None

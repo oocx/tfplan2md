@@ -181,11 +181,11 @@ summary (`ResourceSummaryHtmlBuilder.BuildChangedAttributesSummary`, `ResourceSu
 prefix matching for SARIF paths. Fix any consumer that does not tolerate a compact row, without changing
 provider factories.
 **Acceptance Criteria:**
-- [ ] A 50-element list with 10 adds and removes counts as one changed attribute in the summary text (SC 19, TC-81)
-- [ ] A collection plus a scalar counts as two, matching table row count (SC 19, TC-82)
-- [ ] A compact collection counts consistently in the summary and detail table (SC 19, TC-84)
-- [ ] A compact row named as a prefix of a child row still matches parent-child merging (SC 20, TC-108)
-- [ ] A SARIF path `x[3]` marks the compact row `x` (SC 20, TC-109)
+- [x] A 50-element list with 10 adds and removes counts as one changed attribute in the summary text (SC 19, TC-81)
+- [x] A collection plus a scalar counts as two, matching table row count (SC 19, TC-82)
+- [x] A compact collection counts consistently in the summary and detail table (SC 19, TC-84)
+- [x] A compact row named as a prefix of a child row still matches parent-child merging (SC 20, TC-108)
+- [x] A SARIF path `x[3]` marks the compact row `x` (SC 20, TC-109)
 **Dependencies:** Task 3
 
 ### Task 11: Collection drift model and grouping

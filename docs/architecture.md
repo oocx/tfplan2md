@@ -334,7 +334,7 @@ tfplan2md/
 - **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
 - **C# Renderer Dispatch:** `ResourceRendererRegistry` maps resource type strings to `IResourceRenderer` implementations; the provider-supplied renderers override `DefaultResourceRenderer`.
 - **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry`, which aggregates optional capabilities into `ProviderContributionSet` (AOT-compatible).
-- **Staged Report Pipeline:** `ReportModelBuilder` orchestrates five dedicated stages: resource-change extraction (`ResourceChangeStage`), attribute filtering (`AttributeFilteringStage`), summary enrichment (`SummaryEnrichmentStage`), display filtering (`DisplayFilteringStage`), and report assembly (`ReportAssemblyStage`). Parent-child merging and code-analysis enrichment remain in `ReportModelBuilder`.
+- **Staged Report Pipeline:** `ReportModelBuilder` orchestrates five dedicated stages: resource-change extraction (`ResourceChangeStage`), attribute filtering (`AttributeFilteringStage`), summary enrichment (`SummaryEnrichmentStage`), display filtering (`DisplayFilteringStage`), and report assembly (`ReportAssemblyStage`). Parent-child merging and code-analysis enrichment remain in `ReportModelBuilder`. Primitive collections are compacted inside `ResourceChangeStage` into one `CollectionChangeModel` per attribute, and collection drift is grouped per resource in `ReportModelBuilder` (PlanContext) and rendered by `CollectionDriftRenderer`.
 - **Pure DI:** `CompositionRoot` wires all services without a DI container (ADR-006).
 - **Code Analysis Integration:** SARIF-based static analysis results integrated into markdown reports.
 - **Parent-Child Resource Merging:** Resources can be grouped hierarchically (e.g., NSG rules under NSG) via `ParentChildRelationshipRegistry`.
@@ -458,9 +458,13 @@ flowchart LR
 | Class | Responsibility |
 |-------|---------------|
 | `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 9 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging, Outputs, Actions, Deprecations, PlanContext) |
-| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations, OtherActions, PlanStatus, DriftChanges, RelevantAttributes) |
+| `ReportModel` | Data passed to rendering pipeline (terraform version, changes, summary, module groups, code analysis, refactoring operations, OtherActions, PlanStatus, DriftChanges, CollectionDrift, RelevantAttributes) |
 | `ResourceChangeModel` | Single resource change for rendering; includes precomputed summaries, child resources, code analysis findings, import/move info, Actions (inline action invocations) |
-| `AttributeChangeModel` | Single attribute change |
+| `AttributeChangeModel` | Single attribute change; a primitive collection is one attribute whose `Collection` (`CollectionChangeModel`) holds its element diff |
+| `CollectionChangeModel` | Element diff of one primitive collection: state per side, element occurrences with their statuses (unchanged, removed, added, moved, unknown), and order-change and unresolved flags |
+| `CollectionDriftModel` | One collection drift entry per drifted resource, holding its changed collection paths |
+| `CollectionDriftRenderer` | Renders collection drift entries inside the drift section as deltas only |
+| `PrimitiveCollectionDiffer`, `CollectionElementDiffer`, `CollectionValues` | Detect primitive collections in plan state, diff element occurrences (prefix/suffix trim, LCS, then key matching), and read element text and state. Element identity is the JSON kind plus raw text, so display names never take part in equality |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Orchestrate C# rendering pipeline; validate output is compatible with GitHub and Azure DevOps |
 | `ReportRenderer` | Top-level renderer that calls `HeaderRenderer`, `SummaryRenderer`, and per-resource renderers; also renders drift, relevant-attributes, and other-actions sections |

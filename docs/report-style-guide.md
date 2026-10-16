@@ -239,6 +239,7 @@ A primitive collection (see [Compact Collection Diffs](features.md#compact-colle
 - **Markers sit outside the code span**, so element text cannot imitate a marker.
 - **Kept occurrences carry no marker.** The `order changed` line is the only signal for a reorder, so a reorder is never shown as removed and added values.
 - **Placeholders** use the same plain or code forms as elsewhere: `-` (absent), `null`, `[]` (empty), `(known after apply)` for unknown elements, and `(sensitive)` for masked collections.
+- **Quoting** is the same as in the feature description: an empty or whitespace-only string is always quoted, and a string that looks like a number, boolean or `null` is quoted only when the collection mixes JSON kinds.
 - **Large collections** move to the large-value section as a `text` block with one element per line and the same markers.
 
 **Example:**

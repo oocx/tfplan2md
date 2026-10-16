@@ -3306,7 +3306,7 @@ On an update, each side lists its elements in order, separated by `<br>`. An occ
 
 Duplicates keep their multiplicity. Removing one of two equal values marks exactly one occurrence with ➖, for example `a`<br>➖ `a`<br>`b` before and `a`<br>`b` after. A create shows the elements without markers, for example `alpha`<br>`beta`<br>`gamma`.
 
-Values keep their Terraform type. A string that looks like a number, boolean or `null` is quoted, so `"1"` and `1` are visibly different, and an empty string is shown as `""`.
+Values keep their Terraform type. An empty or whitespace-only string is always quoted (`""`, `" "`) so it stays visible. When the known elements on either side mix JSON kinds, for example strings with numbers, a string that looks like a number, boolean or `null` is quoted too, so `"1"` and `1` are visibly different. A collection whose elements are all strings shows them unquoted, so an all-string port list reads the same as before.
 
 ### Order and set semantics
 
@@ -3323,7 +3323,8 @@ Values keep their Terraform type. A string that looks like a number, boolean or 
 
 ### Null, empty, unknown and sensitive values
 
-- An absent collection shows `-`, a JSON `null` shows `null`, and an empty collection shows `[]`. Transitions between these states stay visible, for example ➖ `x` against `[]`.
+- An absent collection shows `-`, a JSON `null` shows `null`, and an empty collection shows `[]`. Terraform writes every unset nested block as `[]`, so absent, `null` and `[]` count as equal for change detection. A collection that has no elements on either side is therefore hidden, and so is an unchanged collection, unless `--show-unchanged-values` is used. The resource summary counts only the rows that are shown.
+- A transition from one of these states to a collection with elements stays visible, for example `[]` against ➕ `a`, or ➖ `x` against `[]`.
 - An unknown element shows `(known after apply)` in its position and is not reported as an added or removed value. A wholly unknown collection shows `(known after apply)` in its After cell.
 - A collection is masked as one row when it or any of its elements is sensitive. Both sides show `(sensitive)`, with no element values, counts or order. `--show-sensitive` reveals the values as it does elsewhere.
 

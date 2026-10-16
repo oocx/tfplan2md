@@ -350,7 +350,7 @@ Additional test data files for edge cases:
 - `create-only-plan.json` - Plan with only create operations (new infrastructure deployment)
 - `delete-only-plan.json` - Plan with only delete operations (infrastructure teardown)
 - `firewall-rule-changes.json` - Firewall rule collection with semantic diff scenarios (add, modify, remove rules)
-- `collection-diffs-plan.json` - Primitive collections (add, remove, duplicates, reorder, sets, empty, null, unknown and sensitive elements) and per-resource collection drift
+- `feature-148-uat-plan.json` - Feature 148 compact collection cases: primitive collection diffs, unset block lists on create and delete, all-string port lists, and per-resource collection drift. Not a copy: the test project links it from `docs/features/148-compact-collection-diffs/uat-plan.json`, so the UAT fixture and the test input cannot diverge
 - `multi-module-plan.json` - Plan with multiple modules and nested modules to validate module grouping, ordering, and heading hierarchy
 
 ---

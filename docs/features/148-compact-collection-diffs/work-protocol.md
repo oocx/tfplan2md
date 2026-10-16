@@ -210,3 +210,10 @@
 - **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 1 Major
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
 - **Problems Encountered:** None
+
+### Maintainer decision (code review accepted)
+
+- **Date:** 2026-10-16
+- **Summary:** The round 6 review found no correctness defect; its only finding was missing CI evidence for HEAD. The Maintainer ruled that CI is the Release Manager's responsibility, not a code-review condition, and accepted the code review. The driver moved the stage from developer to uat-tester by hand without a further Developer or review round.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/state.json
+- **Problems Encountered:** Workflow defect for the retrospective: .agents/roles/code-reviewer.md (step 2) and scripts/codex-review.sh ask the reviewer for CI status on the PR, but the PR and its CI are created later by the Release Manager, so a review can never see CI and reports it as a Major, which routes the run back to the Developer. Rounds 4 to 6 each repeated this finding.

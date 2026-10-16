@@ -1,8 +1,8 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "developer",
-  "status": "blocked",
+  "stage": "uat-tester",
+  "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",

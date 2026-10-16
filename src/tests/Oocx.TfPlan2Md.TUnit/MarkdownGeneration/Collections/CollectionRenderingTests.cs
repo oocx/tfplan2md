@@ -181,6 +181,7 @@ public class CollectionRenderingTests
 
         markdown.Should().NotContain("SENTINEL-SECRET-VALUE-148");
         markdown.Should().NotContain("| auth_settings |").And.NotContain("| site_config[0].ip_restriction |");
+        markdown.Should().NotContain("| connection_string |");
         markdown.Should().Contain("| destination_port_ranges |").And.Contain("➕\u00A0`🔌\u00A08080`").And.NotContain("\"8080\"");
         markdown.Should().Contain("🔀\u00A0order changed");
         markdown.Should().Contain("changed collections");
@@ -348,6 +349,37 @@ public class CollectionRenderingTests
             beforeSensitive: "{\"items\":true}", afterSensitive: "{\"items\":true}");
 
         Row(Render(resource, new ReportModelBuilderOptions(ShowSensitive: true)), "items").Should().Be("| items | `a` | `a`<br>➕\u00A0`b` |");
+    }
+
+    [Test]
+    public void Create_SensitiveEmptyCollection_ProducesNoRow()
+    {
+        var resource = Res(["create"], null, "{\"name\":\"x\",\"items\":[]}", afterSensitive: "{\"items\":true}");
+
+        Render(resource).Should().NotContain("| items |");
+    }
+
+    [Test]
+    public void Delete_SensitiveEmptyCollection_ProducesNoRow()
+    {
+        var resource = Res(
+            ["delete"], "{\"name\":\"aks\",\"kube_admin_config\":[]}", null,
+            beforeSensitive: "{\"kube_admin_config\":true}");
+
+        Render(resource).Should().NotContain("| kube_admin_config |");
+    }
+
+    [Test]
+    public void Update_SensitiveEmptyToElements_RendersMaskedRow()
+    {
+        var resource = Res(
+            ["update"], "{\"items\":[]}", Items("SECRETX"),
+            beforeSensitive: "{\"items\":true}", afterSensitive: "{\"items\":true}");
+
+        var markdown = Render(resource);
+
+        Row(markdown, "items").Should().Be("| items | `(sensitive)` | `(sensitive)` |");
+        markdown.Should().NotContain("SECRETX");
     }
 
     // ---- Task 9: large elements ----

@@ -119,6 +119,16 @@ public class CollectionDriftRenderingTests
     }
 
     [Test]
+    public void Drift_SensitiveAbsentToEmpty_ProducesNoCollectionDriftEntry()
+    {
+        var markdown = RenderDrift([Group(
+            "azurerm_kubernetes_cluster.main", "{\"n\":1}", "{\"n\":2,\"kube_admin_config\":[]}", type: "azurerm_kubernetes_cluster",
+            beforeSensitive: "{\"kube_admin_config\":true}", afterSensitive: "{\"kube_admin_config\":true}")]);
+
+        markdown.Should().NotContain("changed collection").And.NotContain("kube_admin_config");
+    }
+
+    [Test]
     public void Drift_NullToElements_RendersAddedElement()
     {
         var markdown = RenderDrift([Group("azuread_group.admins", "{\"members\":null}", "{\"members\":" + L("a") + "}")]);

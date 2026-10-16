@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "developer",
+  "stage": "technical-writer",
   "status": "running",
   "gates": {
     "spec": "approved",
@@ -77,6 +77,12 @@
       "q": "May the report indicate that two masked entries on the same side are equal (duplicate indication between masked entries)?",
       "assumed": "No. Each masked occurrence is its own (sensitive) placeholder and is never collapsed, counted or labelled as a duplicate of another masked entry; only cross-side masked-to-masked comparisons drive markers. Alternative: allow duplicate indication as for visible entries.",
       "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-16"
+    },
+    {
+      "q": "Task 25 asks that uat-plan.md list the rendering runs and expected results, but the Developer role defines uat-plan.md as the rendered output of uat-plan.json. Which should it be?",
+      "assumed": "uat-plan.md stays the rendered default run; the rendering runs and expected results remain in uat-test-plan.md, which the UAT Tester follows",
+      "raised_by": "developer",
       "raised_at": "2026-10-16"
     }
   ],

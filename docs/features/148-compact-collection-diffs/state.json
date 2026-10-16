@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "architect",
+  "stage": "quality-engineer",
   "status": "running",
   "gates": {
     "spec": "approved",
@@ -15,6 +15,19 @@
       "assumed": "Yes. Treat an unidentified collection as ordered, preserve duplicate occurrences, and surface reorder-only changes so potentially meaningful information is not lost. Known sets remain order-insensitive.",
       "raised_by": "requirements-engineer",
       "raised_at": "2026-10-06"
+    },
+    {
+      "q": "If any element of a primitive collection is sensitive (and --show-sensitive is off), should the whole collection be masked, or only that element?",
+      "assumed": "Mask the whole collection. Per-element masking would reveal counts and positions, which the spec forbids.",
+      "raised_by": "architect",
+      "raised_at": "2026-10-16"
+    },
+    {
+      "q": "When a case-only Azure ID filter would have hidden only some per-index rows of a list, may the compact row show those case-variant elements as removed and added?",
+      "assumed": "Yes. The row is suppressed only when every differing position is case-only, which matches today's outcome in the fully suppressed case.",
+      "raised_by": "architect",
+      "raised_at": "2026-10-16"
     }
-  ]
+  ],
+  "arch_contested": false
 }

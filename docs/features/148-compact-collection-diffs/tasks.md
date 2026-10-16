@@ -367,13 +367,13 @@ Create and delete show the placeholder without markers. In the large-value secti
 occurrences are `(sensitive)` lines with their markers.
 **Acceptance Criteria:**
 
-- [ ] A changed secret between masked positions renders `➖ (sensitive)` before and `➕ (sensitive)` after; an unchanged secret at the same position has no marker (SC 21, TC-57, TC-58)
-- [ ] A visible `x` before and a masked `x` after render `➖ x` and `➕ (sensitive)` (SC 22, TC-59)
-- [ ] Two equal secrets on one side render as two placeholders with no count, `×2` or duplicate label; `[<s>,<s>]` and `[<s1>,<s2>]` with the same other side render identically (SC 24, TC-123)
-- [ ] A masked GUID with a feature 147 name mapping shows no annotation and no name text (SC 23, TC-125)
-- [ ] A masked order change renders the `🔀 order changed` line and no marker on moved entries (SC 21, TC-121 at render level)
-- [ ] A masked entry with a value above the large-value threshold does not move the row to the large section, and masked entries in a large row render as `(sensitive)` lines with markers (TC-128)
-- [ ] No sentinel value appears in the generic table or the large-value section (SC 23, TC-56 for these paths)
+- [x] A changed secret between masked positions renders `➖ (sensitive)` before and `➕ (sensitive)` after; an unchanged secret at the same position has no marker (SC 21, TC-57, TC-58)
+- [x] A visible `x` before and a masked `x` after render `➖ x` and `➕ (sensitive)` (SC 22, TC-59)
+- [x] Two equal secrets on one side render as two placeholders with no count, `×2` or duplicate label; `[<s>,<s>]` and `[<s1>,<s2>]` with the same other side render identically (SC 24, TC-123)
+- [x] A masked GUID with a feature 147 name mapping shows no annotation and no name text (SC 23, TC-125)
+- [x] A masked order change renders the `🔀 order changed` line and no marker on moved entries (SC 21, TC-121 at render level)
+- [x] A masked entry with a value above the large-value threshold does not move the row to the large section, and masked entries in a large row render as `(sensitive)` lines with markers (TC-128)
+- [x] No sentinel value appears in the generic table or the large-value section (SC 23, TC-56 for these paths)
 **Dependencies:** Task 17, Task 7, Task 8, Task 9
 
 ### Task 19: Masked entries in collection drift

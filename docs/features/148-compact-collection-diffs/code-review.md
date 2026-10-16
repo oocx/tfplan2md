@@ -1,207 +1,176 @@
 # Code Review: Compact, Semantically Accurate Collection Diffs
 
-Reviewer: Claude (fallback, because the Codex review failed twice with 401 Unauthorized). Branch
-`feature/148-compact-collection-diffs` at `f6d6c38f`, diff `origin/main...HEAD` (87 files).
+Reviewer: Claude (fallback, because the Codex review failed twice with 401 Unauthorized).
+Round 2: a re-review after the Developer rework. Branch `feature/148-compact-collection-diffs`
+at `ab9ca177`. I read the rework diff `f76d07de..HEAD` in full and re-checked the whole branch
+against `origin/main`. The round 1 review is in git history at `f76d07de`.
 
 ## Summary
 
-The implementation follows the architecture closely and is well built. The element differ
-compares values by type, duplicates keep their multiplicity, and an order-only change is
-reported as an order change, not as removed and added values. Sensitive collections carry no
-element data in the model, and collection drift is grouped per resource. The test suite passes
-and coverage clears both thresholds.
+The rework fixes B1 in the unmasked path. A realistic `azurerm_linux_web_app` create and delete
+no longer shows `[]` rows. m1, m2 and m4 are fixed, and s1 is resolved by linking the UAT
+fixture into the test project. Tests pass and coverage clears both thresholds.
 
-One defect blocks release. Empty arrays now count as primitive collections. So on every create
-and delete, each unset nested block list (`[]`) becomes its own `| x | [] |` row. On main these
-rows did not exist. In a realistic `azurerm_linux_web_app` create, 11 of 16 rows are `[]`. The
-demo artifacts and the UAT fixture have no realistic create with empty blocks, so UAT would not
-catch this.
+The B1 fix missed one path. When a collection is masked (sensitive, without
+`--show-sensitive`), change detection still goes through `RawKey`. `RawKey` treats absent and
+`null` as equal, but treats `[]` as different from both. A sensitive empty list on create or
+delete therefore still produces a `(sensitive)` row. A sensitive empty list that appears in
+drift produces a collection drift entry. On main, neither of these exists. The realistic case
+is destroying an AKS cluster without AAD admin, where `kube_admin_config` is `[]` and
+schema-sensitive. This is Major M1. The fix is one line plus tests.
 
 ## Verification Results
 
-I ran these myself in the worktree:
+I ran all of these myself in the worktree at `ab9ca177`:
 
-- Full suite: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` gave
-  1573 total, 1573 passed, 0 failed, 0 skipped (Debug, 1m33s). This matches the Developer's claim.
-- CI-equivalent run: Release with Cobertura coverage, then `Oocx.TfPlan2Md.CoverageEnforcer`
-  with the PR-validation thresholds:
-  - line 89.20% (threshold 84.48%): PASS
-  - branch 80.94% (threshold 72.80%): PASS
-  - the Release run took 1m34s.
-- markdownlint 0.49.1 with `.markdownlint.json`:
-  - `artifacts/comprehensive-demo.md` (the CI-linted file) and `uat-plan.md` are clean, and so
-    are my probe outputs.
-  - Each changed artifact and example has the same findings as its `origin/main` version, so
-    the change adds no lint findings there.
-  - `docs/features.md`, `report-style-guide.md`, `architecture.md` and `testing-strategy.md`
-    have exactly the same finding counts as on main (pre-existing).
-- Rendered the probe plans with the built CLI, listed under "What I Tried To Break".
-- CI status on a PR: there is no PR yet, so I could not check it.
+- **Tests and coverage.** CI-equivalent Release run with Cobertura coverage:
+  `scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release ... --coverage`.
+  - 1580 total, 1580 passed, 0 failed, 0 skipped (1m35s). This matches the Developer's
+    1580/1580 claim.
+  - `Oocx.TfPlan2Md.CoverageEnforcer` with the PR-validation thresholds: line 89.18%
+    (threshold 84.48%) PASS, branch 80.92% (threshold 72.80%) PASS.
+- **Demo artifacts.** I ran `scripts/generate-demo-artifacts.sh`. All 31 regenerated files
+  differed only in the generation timestamp, which confirms the Developer's claim that the
+  rework changes no demo output. I restored the files afterwards.
+- **UAT output.** Rendering `uat-plan.json` with the built CLI reproduces the committed
+  `uat-plan.md`. The only difference is the trailing blank line that stdout output always has,
+  also on main.
+- **markdownlint 0.49.1** with `.markdownlint.json`:
+  - Clean: `uat-plan.md`, `artifacts/comprehensive-demo.md` and `tasks.md`. `tasks.md` had 30
+    findings in round 1.
+  - Probe outputs written to stdout have one MD012 at the end of the file. Main's stdout has
+    the same finding, so it predates this change.
+  - `docs/features.md` (135), `report-style-guide.md` (58) and `testing-strategy.md` (31)
+    have exactly the same finding counts as on main.
+- **Snapshots.** The rework changes none.
+- **Main comparison.** I built `origin/main` in a separate worktree and rendered the same probe
+  plans with both builds.
+- **CI.** There is no PR yet, so I could not check CI status.
 
 ## Specification Compliance
 
+The criterion-to-code-to-test mapping from round 1 still holds. The rework changes C9 and C12:
+
 | Criterion | Implementing code | Proving test |
 |---|---|---|
-| C1 natural index order | `AttributePathComparer`, `ResourceChangeStage.cs` key order, `GroupDrift` | `AttributePathComparerTests` (6 tests incl. 12-item object list, drift ordering) |
-| C2 one row create/update/replace/delete | `PrimitiveCollectionDiffer.Detect`, `BuildCollectionAttribute`, `FormatCollectionCell` | `CollectionRenderingTests` Create_/Update_/Replace_/Delete_PrimitiveList_* |
-| C3 no index-shift cascade | `CollectionElementDiffer` | `Diff_InsertionInMiddle_*`, `Update_InsertionIntoLongList_NoReplacementCascade` |
-| C4 duplicates | `MatchRemainingByKey` multiset | `Diff_RemoveOneOfTwoEqualValues_*`, `Diff_AddOneEqualOccurrence_*`, `Update_DuplicateOccurrences_*` |
-| C5 order-only change | `Moved` status, `OrderChangedLine` | `Diff_SameOccurrencesReordered_*`, `Update_OrderOnlyChange_*` |
-| C6 sorted set membership | LCS of sorted input | `Diff_SortedSetMembershipChange_*`, `Update_SortedSetMembershipChange_*` |
-| C7 value equality | `CollectionElementKey(Kind, Raw)` | `Diff_EqualKeys_*`, `CollectionNameAnnotationTests` (formatter stand-in for 147) |
-| C8 raw GUIDs with optional names | element formatting by `path[i]` | `Update_GuidCollectionWithoutMappings_*`, `Update_GuidCollectionWithMapping_*` (147 mapper not on branch, recorded gap) |
-| C9 empty/absent/null distinct | `CollectionValues.StateOf`, `FormatCollectionCell` | `Update_EmptyAbsentAndNull_RenderDistinctCells`, model state tests. See Blocker B1 for the create/delete side effect |
-| C10 unknown stays unresolved | `IsUnresolved`, `wholeUnknown` | `Update_PartialUnknownElement_*`, `Update_WholeCollectionUnknownAfter_*`, `Drift_UnknownCollection_*` |
-| C11 sensitive protected | `masked` branch, empty element lists, `IsLarge = !masked` | `Update_SensitiveCollectionReorderAndDuplicates_LeakNothing`, `Update_OneSensitiveElement_*`, `Drift_SensitiveCollection_*` |
-| C12 mixed scalar types | key includes `JsonValueKind`; quoting in `ElementDisplayText` | `Update_StringOneToNumberOne_*`, `Update_BooleanVersusString*`, `Create_MixedScalarList_*` |
-| C13 object/nested lists unchanged | `VisitArrays` fall-through | `Update_ListOfObjects_KeepsIndexedRows`, `Update_ListContainingNestedList_*`, `Update_ObjectElementOnEitherSide_*` |
-| C14 to C16 drift per resource | `GroupCollectionDrift`, `CollectionDriftRenderer` | `CollectionDriftModelTests` (one entry, two paths, two resources) |
-| C17 scalar drift grouping | `GroupDrift` filters `Collection is null` | `Drift_ScalarChangeOnTwoResources_StillGrouped`, `Drift_ScalarDriftOnly_RendersExactlyAsBefore` |
-| C18 drift modes | selection before grouping | `Drift_ModeAllAndDefault_*`, `Drift_ModeRelevant_*`, `Drift_ModeNone_*`, `Drift_NoOpCollectionDrift_*` |
-| C19 counts | one row per collection; path count in drift | `CollectionConsumerTests` Summary_*, `Drift_EntryWithThreePaths_*` |
-| C20 provider tables unchanged | no `Providers/` changes | provider snapshots unchanged; the AzureDevOps snapshot changed only in the summary text, because its fixture models `override` as a string list (explained in the work protocol) |
+| C9 empty/absent/null distinct, no noise | `IsElementless` in `IsCollectionChanged` (`ResourceChangeStage.Collections.cs:176-179`) | `CreateAndDelete_RealisticResourceWithUnsetBlockLists_RendersNoEmptyCollectionRows`, `Create_EmptyCollection_ProducesNoRow`, `Create_EmptyCollectionWithShowUnchangedValues_RendersEmptyBrackets`, `Update_AbsentToEmpty_*`, `Update_NullToEmpty_*`, `Drift_AbsentToEmptyOnly_*`, `Drift_NullToElements_*`, `Update_EmptyAbsentAndNull_RenderDistinctCells`. The masked path is not covered: see M1 |
+| C12 mixed scalar types | `CollectionChangeModel.HasMixedKinds`, `ElementDisplayText(element, quoteAmbiguous)` | existing `Update_StringOneToNumberOne_*` and `Update_BooleanVersusString*`, new `Create_AllStringListOfNumericAndBooleanLookingValues_RendersUnquoted`, `Update_WhitespaceOnlyStrings_*` |
 
-Every criterion has both implementing code and a test.
+Each criterion still has implementing code and a test. C9 has a test gap only in the masked
+path.
 
 ## What I Tried To Break
 
-I built probe plans in the scratchpad and rendered them with the built CLI:
+I wrote probe plans in the scratchpad and rendered them with both builds:
 
-- **Empty block lists on create and delete.** Fails: see B1.
-- **Type confusion.**
-  - `[1,"1",true,null]` → `["1",1,"true",null]` keeps `1` and `"1"` distinct, removes
-    boolean `true`, adds string `"true"` and reports the order change. Correct.
-- **Numeric strings in an all-string list.**
-  - NSG `destination_port_ranges` `["80","443"]` renders as `"80"`, `"443"` (quoted).
-  - Correct, but noisy: see m1.
-- **Whitespace-only strings.** `" "` and `"  "` are marked removed and added, but both render
-  as blank code spans: see m2.
-- **Markdown injection.**
-  - `a|b`, `<b>x</b>` and backticks are escaped inside code spans.
-  - The markers sit outside the span, so element text cannot imitate a marker.
-- **null → elements.** `null` → ➕ `a` renders correctly.
-- **Partial unknown.** `["a","b"]` → `["a",(unknown)]` shows `(known after apply)` and no
-  markers. Correct.
-- **Sensitive element, reorder and duplicate.** Both sides show `(sensitive)`. No count, order
-  or value leaks into the table, the summary, the large section (masked rows are never large)
-  or drift.
-- **Drift with insertion and reorder.**
-  - `members` insertion gives exactly one ➕ line.
-  - `owners` swap gives a single order-change line.
-  - A sensitive drift collection shows `(sensitive)` only.
-  - NBSP after the glyphs is present, and the output is markdownlint-clean.
-- **Size cap.**
-  - 4000-element list reversed plus one insertion: 16M cells is over the 10M cap, so the
-    fallback is used.
-  - It renders in 1.6 s with the order change and one addition.
-- **Path consistency.**
-  - `Detect` builds paths with the same `name.child[i]` grammar as `JsonFlattener`, so no
-    duplicate flat row can appear next to a collection row.
-  - `IsUnderCollection` correctly skips nested keys such as `rule[0].prefixes[1]`.
-- **Comparer.** `AttributePathComparer` returns 0 for equal strings and handles leading zeros
-  and non-numeric brackets without overflow.
-- **Case-only filter.** Element-wise, only for same-length lists, and never consulted for
-  masked or unresolved rows.
+- **Sensitive empty list on delete.** `azurerm_kubernetes_cluster` delete with
+  `kube_admin_config: []` and `before_sensitive.kube_admin_config: true`. The branch renders
+  `| kube_admin_config | (sensitive) |`, and main renders no row. **Fails: M1.**
+- **Sensitive empty list on create.** `secret_list: []` with `after_sensitive.secret_list:
+  true`. The branch renders a `(sensitive)` row, and main renders none. **Fails: M1.**
+- **Sensitive empty list in drift.** Drift where `kube_admin_config: []` (sensitive) appears.
+  The branch adds "1 changed collection: `kube_admin_config`" with a `(sensitive)` line.
+  **Fails: M1.**
+- **Unmasked absent, null and `[]`.** These are hidden on create, update and drift. `[x]` →
+  `[]` renders as ➖ `a` → `[]`, and `[]` → `[x]` as `[]` → ➕ `x`. Correct.
+- **Mixed-kind quoting.**
+  - `["1",2]` → `["1",3]` quotes `"1"` (string next to a number). Correct.
+  - All-string `["80","443"]` renders unquoted, as on main.
+  - `HasMixedKinds` concatenates both sides, so `[null]` → `["null"]` quotes the string and
+    the two stay distinguishable.
+  - `true` and `false` count as one kind, so `[true,false]` does not trigger quoting.
+  - Unknown elements are excluded, so a partly unknown list does not flip quoting.
+- **Whitespace-only strings.** `[" "]` → `["  "]` renders as ➖ `" "` and ➕ `"  "`, which
+  can be told apart. Fixed.
+- **Fixture wiring.** `feature-148-uat-plan.json` is linked from `docs/` into TestData and
+  loaded by `CollectionDiffsFixture_RendersCompactRowsWithoutEmptyBlockRowsOrSecrets`. The
+  test also asserts that the sensitive sentinel never appears in the output. No other
+  reference to the deleted `collection-diffs-plan.json` remains outside the work protocol and
+  this review.
+- **`--show-unchanged-values` on create.** Every unset block now appears as a `[]` row. Main
+  showed no row for them, even with this flag, because `JsonFlattener` emits no key for `[]`.
+  The behaviour is opt-in and documented in `docs/features.md`, so I accept it. It is not
+  logged as an issue.
 
 ## Issues Found
 
 ### Blockers
 
-**B1. Every empty nested block list now renders as a `[]` row on create and delete.**
-Locations:
-
-- `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/PrimitiveCollectionDiffer.cs:256`:
-  `All(IsPrimitive)` is vacuously true for `[]`, including empty lists of blocks.
-- `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs:176-188`:
-  only `Null` is normalized to `Absent`, so Absent → Empty counts as a change.
-
-Terraform writes every unset `NestingList` block as `[]` in `after` on create and in `before`
-on delete. Examples are `auth_settings`, `backup`, `identity`, `logs` and
-`site_config[0].ip_restriction`.
-
-I probed with an `azurerm_linux_web_app` create that has 8 top-level empty blocks and 3 empty
-lists inside `site_config`. The table had 16 rows, and 11 of them were `| x | [] |`. The delete
-of the same resource also showed 11 `[]` rows. On main, `JsonFlattener` emits no key for `[]`,
-so none of these rows existed. The architecture says so itself: "an empty array produces no key
-at all".
-
-This contradicts the scope wording that states stay distinct "according to the report's
-existing value-handling rules", and it defeats the feature's goal of fewer, more readable rows.
-`Create_EmptyCollection_RendersEmptyBrackets` (`CollectionRenderingTests.cs:156`) locks the
-behaviour in.
-
-None of the following contains a realistic create or delete with empty blocks, so the noise is
-invisible in review and at the UAT gate:
-
-- the regenerated artifacts and snapshots
-- `collection-diffs-plan.json`
-- `uat-plan.json`
-
-Fix direction (Developer decides; record an open question if the Maintainer must choose):
-
-- Do not emit a row when neither side has elements and the only difference is Absent/Null
-  versus Empty (unless `--show-unchanged-values` is set). This covers create, delete, and
-  update from absent to `[]`.
-- Keep `[]` visible when the other side has elements (`[x]` → `[]`, `[]` → `[x]`), where the
-  distinction carries meaning.
-- Add a regression test with a realistic create and delete that include empty block lists, and
-  extend the UAT fixture with one.
+None.
 
 ### Major
 
-None.
+**M1. Sensitive empty collections still render as rows on create and delete, and as drift
+entries.**
+
+Location: `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs:57`
+together with `RawKey` at lines 198-202.
+
+When `masked` is true, `valuesEqual` compares `RawKey(Before)` with `RawKey(After)`. `RawKey`
+maps absent and `null` to `""`, but `[]` to `"[]"`. So absent → `[]` counts as a change, which
+is exactly the B1 rule that the rework fixed only in the unmasked `IsCollectionChanged` path.
+`detect` still treats `[]` as a primitive collection, so a schema-sensitive block list such as
+AKS `kube_admin_config` produces:
+
+- `| kube_admin_config | (sensitive) |` on delete, where main shows no row.
+- a `(sensitive)` row on create, where main shows no row.
+- a "changed collection" drift entry when the empty list appears in drift.
+
+The row leaks nothing, but it is a regression from main and contradicts the C9 rule that the
+rework documented ("absent, null and [] are equivalent for change detection").
+
+The doc comment on `RawKey` ("null and absent are equivalent") also states the old rule.
+
+Fix direction:
+
+- Make `RawKey` return `string.Empty` for an empty array as well, which matches
+  `IsElementless`.
+- Add tests for:
+  - a masked create with `[]`
+  - a masked delete with `[]`
+  - masked drift absent → `[]`
+  - a masked `[]` → `["x"]` update, which must still show the row
+- Optionally add a sensitive empty block list to the web app in `uat-plan.json`.
 
 ### Minor
 
-**m1. Numeric-looking strings are always quoted, even in all-string lists.**
-`src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/CollectionValues.cs:414-416`. Port lists render
-as `"80"`, `"443"`, `"8080"` (probe on `azurerm_network_security_rule.destination_port_ranges`),
-where main showed `80`. Quoting is only needed to tell kinds apart when both sides of the
-collection together contain more than one `JsonValueKind`. Consider quoting only in that case.
-The UAT gate may judge this as well.
+**m3 (carried over). Architecture section 7 still says `Null` renders as `-`.**
 
-**m2. Whitespace-only strings cannot be told apart.**
-`CollectionValues.cs:409` quotes only the empty string, and
-`DefaultResourceRenderer.Collections.cs:89-92` renders whitespace through `FormatCodeTable`.
-`" "` and `"  "` both appear as blank code spans, yet one is marked ➖ and the other ➕. Quote
-whitespace-only strings the same way as `""`.
+This is the Architect's artifact. The Developer and the Technical Writer both flagged it, but
+nobody has changed it.
 
-**m3. Architecture §7 is out of date.** It says `Null` renders as `-`, but the code renders
-`null` (`DefaultResourceRenderer.Collections.cs:57-58`), and the user docs describe `null`. The
-code and docs agree, but the architecture text is stale.
+**m5. `uat-test-plan.md` still expects `absent -> []` and `null -> []` as visible rows.**
 
-**m4. `tasks.md` has 30 markdownlint findings.** They are MD022 and MD032, missing blank lines
-around headings and lists. CI does not lint `docs/`, but every other doc in this work item is
-close to clean.
+Line 27 of `uat-test-plan.md` still expects these rows, which contradicts the reworked
+behaviour, and step 4 on line 65 is ambiguous about them. This is the Quality Engineer's
+artifact, and the Developer recorded it as an open question. It must be settled before the UAT
+gate, or the UAT tester will judge against a stale expectation.
 
 ### Suggestions
 
-- **s1.** `src/tests/Oocx.TfPlan2Md.TUnit/TestData/collection-diffs-plan.json` is byte-identical
-  to `uat-plan.json`, and no test loads it. Either wire it into an integration or snapshot test,
-  or drop the duplicate.
-- **s2.** TC-35 (annotation from the real feature 147 mapper) is covered only through the
-  value-formatter stand-in. Add the real test when 147 is merged.
-- **s3.** The open question in `state.json` (raised by the requirements engineer) still says
-  "Known sets remain order-insensitive". The Maintainer's resolution, that every collection is
-  ordered, supersedes it. The driver may want to mark it as resolved so the PR description does
-  not repeat a stale assumption.
-- **s4.** The Release test run takes about 94 s locally, against a 120 s CI timeout. There is
-  little headroom.
+- **s2 (carried over).** TC-35 is still covered only through the value-formatter stand-in for
+  feature 147.
+- **s3 (carried over).** The first open question in `state.json` still says "Known sets remain
+  order-insensitive", which the Maintainer's resolution supersedes.
+- **s4 (carried over).** The Release test run takes 1m35s locally against the 120 s CI
+  timeout, with seven more tests than in round 1.
 
 ### Process
 
-- `work-protocol.md` has entries from the Requirements Engineer, Architect, Quality Engineer,
-  Task Planner, Developer and Technical Writer.
-- `CHANGELOG.md` is untouched.
-- The snapshot commits (`c7403b80`, `c627158f`, `4356f5d4`) carry `SNAPSHOT_UPDATE_OK` with
-  specific justifications. The snapshot diff contains only compact rows and summary-name
-  changes, which matches.
-- Commit types are `feat`, `test` and `docs`. No breaking-change markers.
-- Global docs updated: `features.md`, `report-style-guide.md`, `architecture.md` and
-  `testing-strategy.md`. README unchanged, which is right because there is no CLI change.
+- **Work protocol.** `work-protocol.md` has entries for:
+  - the Requirements Engineer, Architect, Quality Engineer, Task Planner, Developer and
+    Technical Writer
+  - Code Reviewer round 1
+  - Developer round 2 and Technical Writer round 2
+- **Changelog.** `CHANGELOG.md` is untouched.
+- **Commits.** The rework commits are `fix:` and `docs:`. They change no snapshots, so they
+  need no `SNAPSHOT_UPDATE_OK`.
+- **Global docs.** `features.md`, `report-style-guide.md` and `testing-strategy.md` were
+  updated for the new rules. README needs no change.
 
 ## Decision
 
-Rework. B1 is a user-visible regression in the most common report shape (create and delete of
-azurerm resources with unset blocks), and neither tests nor UAT cover it. m1 and m2 are cheap to
-fix in the same pass. The rest of the implementation is sound and needs no rework.
+Rework. M1 is the masked variant of B1. It is a small, well-localised fix, but it is a
+user-visible regression from main in realistic destroy plans (AKS), and no test covers it.
+Everything else from round 1 is resolved or tracked. m3 and m5 belong to other roles and should
+be cleared before UAT.

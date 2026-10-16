@@ -53,12 +53,16 @@ error-handling paths, anything touching sensitivity masking, and any file over 3
    sandbox and cannot execute anything** — that is deliberate, so you cannot modify the
    code you are judging. In that mode, audit rather than run:
 
-   - the test results the Developer recorded in `work-protocol.md`
-   - CI status on the PR, which is the authority on whether tests and coverage pass
+   - the test and coverage results the Developer recorded in `work-protocol.md`
    - whether the claimed evidence is specific enough to believe
 
    **Missing or vague evidence is itself a finding.** "Tests pass" with no numbers,
    or a coverage claim with no enforcer output, is a Major.
+
+   **CI is not yours to check.** Review runs before the pull request exists, so there
+   is no CI result to see; the Release Manager opens the PR and owns its CI. Never
+   raise missing CI as a finding: the Developer cannot produce it, and rework would
+   only repeat the review.
 
    If you *can* run commands, use the `run-dotnet-tests` skill (never `dotnet test`
    directly) and the CoverageEnforcer tool, and report the real numbers.

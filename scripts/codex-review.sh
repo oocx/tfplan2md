@@ -67,8 +67,9 @@ test plan and tasks before reading the diff, and review against intent.
 
 You are running in a read-only sandbox: you cannot modify files, and you cannot
 run the test suite. Verify by reading the code, and by checking the evidence the
-Developer recorded in work-protocol.md and in CI. If the evidence that the change
-works is missing, that is itself a finding.
+Developer recorded in work-protocol.md. If that evidence is missing, that is itself
+a finding. No pull request or CI run exists yet: CI belongs to the Release Manager,
+so never report missing CI as a finding.
 
 Respond only with the JSON object described by the output schema.
 EOF

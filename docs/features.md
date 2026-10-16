@@ -3341,6 +3341,7 @@ When element text is long, the collection moves to the large-value section. Its 
 
 - **Update:** each side is its own `text` block, labelled `Before:` and `After:`. A side with no elements uses the table placeholder: `-` when absent, `null`, or `[]` when empty. A side that is unknown as a whole shows `(known after apply)`, and a masked entry shows `(sensitive)` with its marker.
 - **Create and delete:** the collection is one `text` block, labelled only by the attribute name, with no markers.
+- **Summary:** the `Large values:` summary counts each added, removed or unknown element as one change, and a changed order as one more. A side that is unknown as a whole counts as one change, so such a collection never reads `0 changes`. For example, a list that gains one element, or a reordered list, reads `items (2 lines, 1 change)`.
 
 ### Natural index order
 

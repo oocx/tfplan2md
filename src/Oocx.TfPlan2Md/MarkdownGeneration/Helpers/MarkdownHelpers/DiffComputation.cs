@@ -244,7 +244,14 @@ internal static partial class MarkdownHelpers
     /// <param name="Name">Attribute name.</param>
     /// <param name="Before">Original value.</param>
     /// <param name="After">Updated value.</param>
-    private readonly record struct AttributeChangeInfo(string Name, string? Before, string? After);
+    /// <param name="CollectionTotalLines">Occurrence count for a compact collection, otherwise null.</param>
+    /// <param name="CollectionChangedLines">Changed occurrence count for a compact collection, otherwise null.</param>
+    private readonly record struct AttributeChangeInfo(
+        string Name,
+        string? Before,
+        string? After,
+        int? CollectionTotalLines = null,
+        int? CollectionChangedLines = null);
 
     /// <summary>
     /// Describes the kind of difference detected between two values.

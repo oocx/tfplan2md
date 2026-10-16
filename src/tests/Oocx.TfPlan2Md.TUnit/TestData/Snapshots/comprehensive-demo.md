@@ -246,10 +246,7 @@ _No attribute changes._
 | description | `Platform engineering team with infrastructure access` |
 | display_name | `Platform Engineers` |
 | mail_nickname | `platform-engineers` |
-| members[0] | `user-100` |
-| members[1] | `user-101` |
-| members[2] | `group-200` |
-| members[3] | `spn-300` |
+| members | `user-100`<br>`user-101`<br>`group-200`<br>`spn-300` |
 
 </details>
 
@@ -335,7 +332,7 @@ _No attribute changes._
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `🌐 10.0.0.0/16` |
+| address_space | `🌐 10.0.0.0/16` |
 | location | `🌍 eastus` |
 | name | `🆔 vnet-hub` |
 | resource_group_name | `📁 rg-tfplan2md-demo` |
@@ -348,7 +345,7 @@ _No attribute changes._
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `🌐 10.1.0.0/16` |
+| address_space | `🌐 10.1.0.0/16` |
 | location | `🌍 eastus` |
 | name | `🆔 vnet-spoke` |
 | resource_group_name | `📁 rg-tfplan2md-demo` |
@@ -369,7 +366,7 @@ _No attribute changes._
 | Attribute | Value |
 | ----------- | ------- |
 | name | `🆔 api` |
-| records[0] | `🌐 10.1.1.4` |
+| records | `🌐 10.1.1.4` |
 | ttl | `300` |
 | zone_name | `contoso.local` |
 
@@ -391,12 +388,12 @@ _No attribute changes._
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>🆔 vnet-branch</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.2.0.0/16</code> | 1 🔧 address_space[1]</summary>
+<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>🆔 vnet-branch</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.2.0.0/16</code> | 1 🔧 address_space</summary>
 <br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| address_space[1] | - | `🌐 10.3.0.0/16` |
+| address_space | `🌐 10.2.0.0/16` | `🌐 10.2.0.0/16`<br>➕ `🌐 10.3.0.0/16` |
 
 </details>
 
@@ -441,7 +438,7 @@ _No attribute changes._
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `🌐 10.50.0.0/16` |
+| address_space | `🌐 10.50.0.0/16` |
 | location | `🌍 eastus` |
 | name | `🆔 vnet-old` |
 | resource_group_name | `📁 rg-old` |

@@ -176,7 +176,9 @@ internal sealed partial class DefaultResourceRenderer
         {
             writer.Heading($"**{MarkdownHelpers.EscapeMarkdown(attribute.Name)}:**", 5);
             writer.BlankLine();
-            writer.Raw(MarkdownHelpers.FormatLargeValue(attribute.Before, attribute.After, largeValueFormat));
+            writer.Raw(attribute.Collection is not null
+                ? FormatLargeCollection(attribute)
+                : MarkdownHelpers.FormatLargeValue(attribute.Before, attribute.After, largeValueFormat));
             writer.BlankLine();
         }
     }

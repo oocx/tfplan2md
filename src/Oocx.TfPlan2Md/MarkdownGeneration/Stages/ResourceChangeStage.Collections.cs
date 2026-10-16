@@ -18,6 +18,8 @@ internal sealed partial class ResourceChangeStage
     /// Builds the single logical row for one primitive collection.
     /// </summary>
     /// <param name="change">The Terraform change payload.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="resourceType">The Terraform resource type.</param>
     /// <param name="configurationReferences">Configuration references grouped by top-level attribute.</param>
     /// <param name="collection">The detected collection.</param>
     /// <param name="beforeSensitive">Flattened before-state sensitivity map.</param>
@@ -25,6 +27,8 @@ internal sealed partial class ResourceChangeStage
     /// <returns>The row, or <c>null</c> when the collection is unchanged and unchanged values are hidden.</returns>
     private AttributeChangeModel? BuildCollectionAttribute(
         Change change,
+        string providerName,
+        string resourceType,
         IReadOnlyDictionary<string, IReadOnlyList<string>> configurationReferences,
         DetectedCollection collection,
         Dictionary<string, string?> beforeSensitive,
@@ -57,7 +61,7 @@ internal sealed partial class ResourceChangeStage
         {
             beforeDisplay = CollectionValues.CanonicalText(collection.Before);
             afterDisplay = wholeUnknown ? null : CollectionValues.CanonicalText(collection.After);
-            model = BuildCollectionModel(collection, beforeState, afterState, wholeUnknown, unknownFlags);
+            model = BuildCollectionModel(collection, beforeState, afterState, wholeUnknown, unknownFlags, ResolveKnownAfterApplyLabel(configurationReferences, path));
             valuesEqual = !IsCollectionChanged(model);
         }
 
@@ -75,10 +79,18 @@ internal sealed partial class ResourceChangeStage
             Before = beforeDisplay,
             After = afterDisplay,
             IsSensitive = isSensitive,
-            IsLarge = false,
+            IsLarge = !masked && HasLargeElement(model, providerName, resourceType, path),
             Collection = model
         };
     }
+
+    /// <summary>
+    /// Determines whether any known element needs the dedicated large-value section.
+    /// </summary>
+    private bool HasLargeElement(CollectionChangeModel model, string providerName, string resourceType, string path)
+        => model.Before.Concat(model.After).Any(element =>
+            element.Status != CollectionElementStatus.Unknown
+            && IsLargeUnresolvedValue(element.Value, providerName, resourceType, $"{path}[{element.Index}]"));
 
     /// <summary>
     /// Builds the element lists, statuses and states for an unmasked collection.
@@ -88,7 +100,8 @@ internal sealed partial class ResourceChangeStage
         CollectionState beforeState,
         CollectionState afterState,
         bool wholeUnknown,
-        List<bool> unknownFlags)
+        List<bool> unknownFlags,
+        string unknownLabel)
     {
         var beforeElements = CollectionValues.ReadElements(collection.Before);
         var afterElements = CollectionValues.ReadElements(collection.After);
@@ -113,7 +126,7 @@ internal sealed partial class ResourceChangeStage
                 var unknown = index < unknownFlags.Count && unknownFlags[index];
                 if (unknown || index >= afterElements.Count)
                 {
-                    afterModels.Add(new CollectionElementModel(index, null, JsonValueKind.Null, unknown ? CollectionElementStatus.Unknown : CollectionElementStatus.Unchanged));
+                    afterModels.Add(new CollectionElementModel(index, unknown ? unknownLabel : null, JsonValueKind.Null, unknown ? CollectionElementStatus.Unknown : CollectionElementStatus.Unchanged));
                 }
                 else
                 {

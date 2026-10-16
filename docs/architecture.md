@@ -224,6 +224,7 @@ tfplan2md/
 │   ├── TerraformActions.cs      # Canonical Terraform action names and symbols
 │   ├── Stages/                  # Explicit report-generation stages
 │   │   ├── IResourceChangeStage.cs, ResourceChangeStage.cs, ResourceChangeStage.Helpers.cs
+│   │   ├── ResourceChangeStage.Collections.cs, ResourceChangeStage.CollectionSensitivity.cs  # Primitive collection compaction and sensitive masking
 │   │   ├── IAttributeFilteringStage.cs, AttributeFilteringStage.cs
 │   │   ├── ISummaryEnrichmentStage.cs, SummaryEnrichmentStage.cs
 │   │   ├── IDisplayFilteringStage.cs, DisplayFilteringStage.cs
@@ -464,7 +465,7 @@ flowchart LR
 | `CollectionChangeModel` | Element diff of one primitive collection: state per side, element occurrences with their statuses (unchanged, removed, added, moved, unknown), and order-change and unresolved flags |
 | `CollectionDriftModel` | One collection drift entry per drifted resource, holding its changed collection paths |
 | `CollectionDriftRenderer` | Renders collection drift entries inside the drift section as deltas only |
-| `PrimitiveCollectionDiffer`, `CollectionElementDiffer`, `CollectionValues` | Detect primitive collections in plan state, diff element occurrences (prefix/suffix trim, LCS, then key matching), and read element text and state. Element identity is the JSON kind plus raw text, so display names never take part in equality. Masked (sensitive) entries have no raw text in the diff: they get opaque tokens in `ResourceChangeStage` (see section 8.1) |
+| `PrimitiveCollectionDiffer`, `CollectionElementDiffer`, `CollectionValues` | Detect primitive collections in plan state, diff element occurrences (prefix/suffix trim, LCS, then key matching), and read element text and state. Element identity is the JSON kind plus raw text, so display names never take part in equality. Masked (sensitive) entries have no raw text in the diff: they get opaque tokens in `ResourceChangeStage` (`ResourceChangeStage.CollectionSensitivity.cs`, see section 8.1) |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Orchestrate C# rendering pipeline; validate output is compatible with GitHub and Azure DevOps |
 | `ReportRenderer` | Top-level renderer that calls `HeaderRenderer`, `SummaryRenderer`, and per-resource renderers; also renders drift, relevant-attributes, and other-actions sections |

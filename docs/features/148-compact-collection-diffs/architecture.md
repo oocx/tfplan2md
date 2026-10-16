@@ -11,6 +11,13 @@ per-side masking that carries change markers (specification "Sensitive Values in
 Collections"), and section 6 records the Maintainer's case-only ruling. Section 5a is
 new. The placement decision (Option A) is unchanged.
 
+Revised again 2026-10-16 to match the approved specification and the code after review
+rounds 3 to 6. Section 7 now treats absent, `null` and `[]` as equivalent for change
+detection (specification criterion 9, section 7a). Section 5a names
+`ResourceChangeStage.CollectionSensitivity.cs` as the home of sensitivity reading and
+masking. Section 7b is new: it describes the labelled Before/After blocks in the
+large-value section and the large-value summary count, which includes unknown values.
+
 ## Context
 
 Feature specification: [specification.md](specification.md)
@@ -190,9 +197,10 @@ known-after-apply label when the whole collection is unknown, `null` for a JSON 
 `-` when absent, and otherwise compact JSON of the array built **from the model
 elements**, with each masked element written as the bare token `(sensitive)` (for
 example `["a",(sensitive),"b"]`). The canonical text is never built from the raw JSON
-array, because that contains the masked values (`CollectionValues.CanonicalText`). No
-consumer uses the canonical text for equality; change detection comes from the model
-(section 7a).
+array, because that contains the masked values (`CollectionCanonicalText.FromModel`).
+`CollectionValues.CanonicalText`, which serialises the raw array, is used only when no
+entry is masked. No consumer uses the canonical text for equality; change detection
+comes from the model (section 7a).
 Collection rows set `IsLarge` from their non-masked elements (see 7), never from the
 canonical text.
 
@@ -251,26 +259,38 @@ semantics conservative.
 
 The specification ("Sensitive Values in Collections", rules 1 to 9) replaces the
 original whole-collection masking. All of the following applies only when
-`--show-sensitive` is off. `ResourceChangeStage.BuildCollectionAttribute` decides
-masking once, before any element text or key exists, so no later stage has to repeat
-the decision.
+`--show-sensitive` is off. Masking is decided once per collection, before any element
+text or key exists, so no later stage has to repeat the decision. The code is split in
+two partial files of `ResourceChangeStage`:
+
+- `ResourceChangeStage.CollectionSensitivity.cs` holds everything that reads a masked
+  value: `ReadSensitivity` and `ReadEntryMarks` read the sensitivity maps, and
+  `PrepareElements` replaces masked elements by opaque tokens (item 3). No masked value
+  or element text leaves this file.
+- `ResourceChangeStage.Collections.cs` (`BuildCollectionAttribute`) applies the result:
+  it chooses the whole-collection or per-entry path, builds the model from the prepared
+  elements, and decides whether the row is shown.
 
 1. **Whole collection** (rule 1). If `SensitivityHelper.IsSensitiveAttribute(P, ...)` is
    true, meaning the resource, an ancestor of `P` or `P` itself is marked `true` on
    either side, both states are `Masked` and the element lists are empty. Change
    detection uses `RawKey`, as before, so the row only reveals that the collection
    changed (rule 5, last item). This is the unchanged path for sensitive attributes.
+   The same path is taken, as a fail-safe, when a sensitivity mark beneath `P` is not a
+   plain entry index (`P[i]`): such a mark cannot be mapped to one entry, so the whole
+   collection is masked rather than risk showing a marked value.
 2. **Individual entries, per side** (rules 2 and 3). Otherwise, before element `i` is
    masked if and only if `before_sensitive` flattens to `"true"` at `P[i]`. After element
    `j` is masked if and only if `after_sensitive` flattens to `"true"` at `P[j]`. Each side
    is read only from its own map, so a value that Terraform does not mark on its side is
    shown. This differs deliberately from the per-index rows on `main`, which masked a
    position on both sides when either side was marked.
-3. **Opaque comparison tokens** (rules 4, 6 and 7). Before calling
-   `CollectionElementDiffer`, the stage replaces each masked element's key with
-   `(Masked: true, Kind: Undefined, Raw: "#n")`. `n` numbers the distinct
-   `(kind, raw value)` pairs of masked elements on both sides together. The token map is
-   a local variable of the method and is discarded after the diff. Consequences:
+3. **Opaque comparison tokens** (rules 4, 6 and 7). Before `CollectionElementDiffer`
+   runs, `PrepareElements` replaces each masked element's key with
+   `(Masked: true, Kind: Undefined, Raw: "#n")` and drops its value. `n` numbers the
+   distinct `(kind, raw value)` pairs of masked elements on both sides together. The
+   token map is a local variable of `PrepareElements` and is discarded when it returns.
+   Consequences:
    - masked-to-masked equality across sides is exactly value equality (rule 4);
    - masked-to-visible equality is always false, because `Masked` differs in the key
      (rule 4). Example 3 of the specification (`"x"` visible before, `<x>` after) yields
@@ -363,21 +383,28 @@ does not bring a suppressed collection back, matching the scalar filter.
   because a masked element's `Value` is also `null`. Markers apply to it exactly as to a
   visible element.
 - Elements are joined with `<br>`, the existing table-cell line break.
-- **Create / delete** (single-value table): the full collection, no markers.
+- **Which rows exist** is decided by the stage, not the renderer (section 7a). A
+  collection with no elements on either side, in any combination of absent, `null` and
+  `[]`, produces no row by default. A row therefore reaches the renderer only when at
+  least one side has elements, a side is unknown, the order changed, or
+  `--show-unchanged-values` is set.
+- **Create / delete** (single-value table): the full collection of the present side, no
+  markers. A create or delete of an unset collection (`absent -> []`, `[] -> absent`)
+  has no row.
 - **Update / replace** (before/after table): Before holds the full before collection with
   `Removed` occurrences prefixed `➖`; After holds the full after collection with `Added`
   occurrences prefixed `➕`. When `OrderChanged`, After ends with a `🔀 order changed`
   line. `Moved` elements carry no per-element marker; both sequences are visible.
-- Element-less sides render by state: `Empty` as `` `[]` ``, `Null` as `` `null` `` and
-  `Absent` as `-`. `Masked` and `Unknown` render the row's canonical text from section 3.
-  These cells are only reached when the row exists, which for an element-less side means
-  the other side has elements, or `--show-unchanged-values` is set (see 7a).
-- **Large elements**: if any element is a large value (the existing check, including the
-  formatter consult), the row is `IsLarge` and renders in the large-attribute section,
-  one occurrence per line, with the same markers. It does not use the line-LCS large
-  diff, which would turn a reorder into a removed/added pair. Masked elements never
-  make a row large (section 5a, item 5). In a large row they render as `(sensitive)` lines
-  with their markers.
+- **Element-less sides** render by state, so the reader can tell them apart whenever a
+  row is shown: `Empty` as `` `[]` ``, `Null` as `` `null` `` and `Absent` as `-`. In
+  practice this is the side that gains its first elements or loses its last ones (for
+  example `[]` before, `["a"]` after), or either side of an element-less row shown under
+  `--show-unchanged-values`. `Masked` and `Unknown` render the row's canonical text from
+  section 3.
+- **Large elements**: if any known, non-masked element is a large value (the existing
+  check, including the formatter consult), the row is `IsLarge` and renders in the
+  large-attribute section instead of the table (section 7b). Masked elements never make
+  a row large (section 5a, item 5).
 
 ### 7a. Element-less collections (revised after code review)
 
@@ -404,7 +431,9 @@ every unset nested block as `[]`, so each create and delete gained an `absent ->
 per unset block, and destroying a resource with a sensitive empty list produced a
 spurious `(sensitive)` row and drift entry. The per-key rows on main never showed these,
 because the flattener emits no key for an empty array. The revised rule restores that
-behaviour while keeping the states distinct wherever a row is shown.
+behaviour while keeping the states distinct wherever a row is shown. The Maintainer
+approved the rule on 2026-10-16, and the specification now states it (scope, and success
+criterion 9).
 
 Options considered:
 
@@ -420,6 +449,35 @@ Options considered:
 Consequence: an `absent -> []` or `null -> []` transition alone is no longer reported,
 even though Terraform's JSON differs. No plan in the test corpus or the issue gives that
 transition a meaning to the reader, so this is accepted.
+
+### 7b. Large collections (revised after code review)
+
+A large collection row (section 7) renders in the large-attribute section through
+`DefaultResourceRenderer.FormatLargeCollection`, one occurrence per line, with the same
+`➖`/`➕` markers and `🔀 order changed` line as the table. It does not use the line-LCS
+large diff, which would turn a reorder into a removed/added pair. Line breaks inside an
+element are escaped as `\n`, so one occurrence is always one line, and each fence is
+longer than the longest backtick run in its lines.
+
+- **Update / replace**: both sides are always shown, as two fenced blocks labelled
+  `Before:` and `After:`. An element-less side is shown with the table's placeholders
+  (`-`, `null`, `[]`), so absent and `null` stay distinguishable here as well (round 4
+  review). A side masked or unknown as a whole shows the row's canonical text, which
+  never holds a masked value.
+- **Create / delete**: the absent side is omitted and the present side is one
+  unlabelled block without markers, matching the single value column of the table.
+- Masked entries render as `(sensitive)` lines with their markers, through
+  `CollectionValues.ElementDisplayText` (section 8).
+
+The section's summary line (`LargeValueSummary`, "Large values: name (N lines, M
+changes)") reads collection rows from the model instead of counting text lines:
+
+- `N` is the larger of the before and after element counts.
+- `M` counts `Removed`, `Added` and `Unknown` occurrences on both sides, plus one when
+  `OrderChanged`, plus one when the after side is unknown as a whole. Unknown values are
+  always changes (specification, scope), so an unresolved collection never reads as
+  "0 changes" (round 6 review). Terraform never marks a before value unknown, so only
+  the after side is checked for whole unknown.
 
 ### 8. Collection drift
 
@@ -461,7 +519,8 @@ text through it or through the masked check in section 7.
 |---|---|
 | New | `MarkdownGeneration/Helpers/AttributePathComparer.cs`, `MarkdownGeneration/Helpers/PrimitiveCollectionDiffer.cs`, `MarkdownGeneration/Models/CollectionChangeModel.cs` (+ element/state types), `MarkdownGeneration/Models/CollectionDriftModel.cs` |
 | Changed | `AttributeChangeModel.cs`, `Stages/ResourceChangeStage.cs`, `Stages/AttributeFilteringStage.cs`, `Rendering/DefaultResourceRenderer.AttributeTables.cs` (+ large-attribute rendering), `ReportModelBuilder.PlanContext.cs`, `ReportModel.cs`, `Stages/ReportAssemblyStage.cs` / `IReportAssemblyStage.cs`, `Rendering/ReportRenderer.cs` |
-| Changed by the sensitive-entry revision (5a, 6) | `Models/CollectionChangeModel.cs` (`IsMasked`, `HasMixedKinds`), `Helpers/CollectionElementDiffer.cs` (`CollectionElementKey.Masked`), `Helpers/CollectionValues.cs` (`ElementDisplayText`, `CanonicalText` from the model), `Stages/ResourceChangeStage.Collections.cs` (per-side masking, tokens, `HasLargeElement`), `Stages/AttributeFilteringStage.cs` (masked positions), `Rendering/DefaultResourceRenderer.Collections.cs`, `Rendering/CollectionDriftRenderer.cs` |
+| Changed by the sensitive-entry revision (5a, 6) | `Models/CollectionChangeModel.cs` (`IsMasked`, `HasMixedKinds`), `Helpers/CollectionElementDiffer.cs` (`CollectionElementKey.Masked`), `Helpers/CollectionValues.cs` (`ElementDisplayText`), `Helpers/CollectionCanonicalText.cs` (canonical text from the model), `Stages/ResourceChangeStage.CollectionSensitivity.cs` (sensitivity reading, per-side marks, tokens), `Stages/ResourceChangeStage.Collections.cs` (masking path, `HasLargeElement`, element-less change rule), `Stages/AttributeFilteringStage.cs` (masked positions), `Rendering/DefaultResourceRenderer.Collections.cs`, `Rendering/CollectionDriftRenderer.cs` |
+| Changed by the large-collection revision (7b) | `Rendering/DefaultResourceRenderer.Collections.cs` (`FormatLargeCollection`, labelled blocks), `Rendering/DefaultResourceRenderer.Helpers.cs`, `Helpers/MarkdownHelpers/LargeValueSummary.cs` (`CountCollectionChanges`) |
 | Not touched | everything under `Providers/` and `Platforms/` |
 
 ## Consequences

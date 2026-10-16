@@ -24,7 +24,7 @@ folder from a valid Terraform plan JSON fixture with `resource_changes`, `resour
 | generic review_object.dup, update | list with duplicates: `[a,a,b]` -> `[a,b]` and `[a,b]` -> `[a,a,b]` |
 | review_object.insert, update | 12-element list with one insertion at index 3 |
 | review_object.sorted, update | sorted set-like GUID list, membership change only |
-| review_object.states, update | one attribute per state transition: absent -> `[]`, `null` -> `[]`, `[]` -> `[]` (all element-less on both sides, so no row by default), `[]` -> `[x]`, `[x]` -> `[]` (rows shown) |
+| review_object.states, update | one attribute per state transition: absent -> `[]`, `null` -> `[]`, `[]` -> `[]` (element-less on both sides, equivalent for change detection per spec criterion 9: no row by default, shown only with `--show-unchanged-values`), `[]` -> `[x]`, `[x]` -> `[]` (rows shown; the element-less side is `[]`, distinguishable from `-` and `null`). Add `null` -> `[x]`, `[x]` -> absent and `[x]` -> `null` so the three element-less renderings are all visible in a changed row |
 | review_object.types, update | `[1,"1",true,"true",null]` -> `["1",1,true,null]` |
 | review_object.unknown, update | whole list unknown after apply; separate list with one unknown element |
 | review_object.secret_entries, update | `["a",<s1>,"b"]` -> `["a",<s2>,"c"]` (changed secret), a list where the secret is unchanged at the same position, an added and a removed masked entry, two masked entries reordered, and two equal secrets on one side. Sentinel values (`SECRET-AAA`, ...) that must never appear |
@@ -34,6 +34,8 @@ folder from a valid Terraform plan JSON fixture with `resource_changes`, `resour
 | review_object.secret_unknown, update | an entry both unknown and sensitive, beside a known masked entry |
 | review_object.azure_ids, update | `ids_case_only`: Azure resource IDs differing only in case (expected hidden, also with `--show-unchanged-values`); `ids_case_plus_add`: same plus an added member (expected shown); `ids_case_masked`: masked ID pair differing only in case (expected shown as masked removed/added) |
 | review_object.large, update | element exceeding the large-value threshold, plus a reorder of large elements |
+| review_object.large_states, update | large-value section with an element-less side (round 5): a large element list going from absent, from `null` and from `[]` to a list with a large element, and from a large list to `[]`, to `null` and to absent (six attributes). Each must render labelled `Before:` and `After:` blocks, with the element-less side shown as a placeholder (`-` absent, `null`, `[]`) |
+| review_object.large_created / large_deleted | large element list on create and on delete: single block, no `Before:`/`After:` labels, no markers |
 | review_object.special, create | elements containing `|`, backtick, `<br>`, `<`, `&`, empty string, very long GUID |
 | review_object.created / deleted | primitive list on create and on delete (single-value table) |
 | review_object.replaced, replace | primitive list change forcing replacement |
@@ -55,6 +57,7 @@ Render the fixture for `github`, `azuredevops`, `bitbucket` with:
    Run also `--ignore-azure-id-case-changes` disabled (case-only lists become visible changes).
 6. With a GUID display-name mapping (feature 147) enabled on the policy resource and
    without it, to compare annotations.
+7. `--show-unchanged-values` (element-less rows for `states` appear; `ids_case_only` stays hidden).
 
 The UAT Tester obtains platform-rendered evidence through the repository UAT skills. If
 a platform is unavailable, record the limitation in uat-report.md; a Markdown snapshot is not platform validation.
@@ -68,7 +71,7 @@ a platform is unavailable, record the limitation in uat-report.md; a Markdown sn
    too unwieldy (design follow-up: collapse unchanged runs).
 3. **Order.** The reordered list shows the sequences and a `🔀 order changed` line, no `➖`/`➕`.
    The sorted set-like list shows no order line.
-4. **States.** Element-less collections (absent, `null`, `[]` on both sides, including sensitive ones) produce no row by default; the absent -> `[]`, `null` -> `[]` and `[]` -> `[]` attributes must not appear. When the other side has elements, `[]` is shown and is distinguishable from `-` (absent/null). With `--show-unchanged-values` the element-less rows appear.
+4. **States.** Absent, `null` and `[]` are visibly distinct whenever a row shows them, but equivalent for change detection (spec criterion 9). A collection with no elements on either side, in any combination of these states (including sensitive ones), is unchanged: the absent -> `[]`, `null` -> `[]` and `[]` -> `[]` attributes must not appear in the default run, and no drift entry exists for them. They are not visible state transitions, and their absence is the expected result, not a defect. When the other side has elements (`[]` -> `[x]`, `[x]` -> `[]`, `null` -> `[x]`, `[x]` -> absent), the row is shown and the element-less side renders as `-` (absent), `null` or `[]`, each distinguishable. With `--show-unchanged-values` the element-less rows appear, each side's state distinguishable. Do not mark the missing rows as a regression.
 5. **Types.** `1` versus `"1"` shows as a visible change, not as equal.
 6. **Unknown.** Whole-unknown shows the known-after-apply text; partial-unknown shows a label in place with no markers.
 7. **Sensitive.** Default run, with the sentinel text absent from the whole document in every case:
@@ -80,7 +83,7 @@ a platform is unavailable, record the limitation in uat-report.md; a Markdown sn
    - A masked entry with a very long value does not widen the table or move the list to the large section.
    - `--show-sensitive`: normal diff, identical to the same list without sensitive entries.
 8. **Special characters** do not break the table on any platform (pipes, `<br>`, backticks, HTML).
-9. **Large values** appear in the large-attribute section one occurrence per line with markers; masked entries there are `(sensitive)` lines with markers and no value.
+9. **Large values** appear in the large-attribute section one occurrence per line with markers; masked entries there are `(sensitive)` lines with markers and no value. On update and replace the section shows labelled `Before:` and `After:` blocks, and an absent, `null` or `[]` side is shown as a placeholder block (`-`, `null`, `[]`) rather than omitted. On create and delete there is a single unlabelled block without markers. The large-value summary line counts the collection as changed, including a wholly unknown or partly unknown large collection.
 10. **Non-compact collections** keep indexed rows, `[2]` above `[10]`; the nested primitive list is a compact row.
 11. **Drift.** One `<details>` per affected resource; `admins` shows both `members` and `owners` paths; `devs` has its own entry; scalar drift for `description` still grouped across resources; summary text reports number of paths. Drift mode selections behave per run list above. A masked entry in drift is marked but shows no value; the case-only Azure ID list produces no drift entry.
 12. **Provider tables** (azuread, azuredevops, NSG) look as in the previous release.

@@ -126,3 +126,10 @@
 - **Summary:** Rework: aligned test-plan.md (C1-C28, new sensitive per-entry, invariance, case-only tests TC-50..59, TC-120..133) and uat-test-plan.md with revised spec and architecture
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/test-plan.md, docs/features/148-compact-collection-diffs/uat-test-plan.md
 - **Problems Encountered:** None
+
+### Task Planner (round 2)
+
+- **Date:** 2026-10-16
+- **Summary:** Rework plan: kept Tasks 1-15 as history, marked superseded criteria (Tasks 5, 6), and added Tasks 16-25 against the code at 68d5dcf6. Gaps found: whole-collection masking on any sensitive element; no masked flag in the element key; canonical text built from raw JSON; known-after-apply override masks the whole before side; filter ignores OrderChanged and does not treat masked positions specially. Coverage: all 28 criteria and every test-plan scenario mapped (mechanical check).
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/tasks.md
+- **Problems Encountered:** Task 16-25 are unverified against a running build; criteria were checked by reading the code, not by running tests. The UAT fixture in uat-plan.json has no per-entry secret scenarios (Task 25).

@@ -4,9 +4,18 @@ Sources: [specification.md](specification.md), [architecture.md](architecture.md
 [test-plan.md](test-plan.md).
 
 References used below: **SC n** is the n-th success criterion in `specification.md`
-(numbered the same as C1-C20 in `test-plan.md`). **TC-nn** is a test-plan scenario.
+(numbered the same as C1-C28 in `test-plan.md`). **TC-nn** is a test-plan scenario.
 Every test is TUnit, named `MethodName_Scenario_ExpectedResult`, in
 `src/tests/Oocx.TfPlan2Md.TUnit`.
+
+**Rework (2026-10-16).** Tasks 1 to 15 were built against the earlier specification and
+are complete on the branch. The specification, architecture, test plan and UAT test plan
+were then revised: per-entry, per-side sensitive masking with change markers, the
+invariance criterion (SC 25), the element-less equivalence wording (SC 9), and the
+case-only rule (SC 27, SC 28). Criteria in Tasks 1 to 15 that the revision supersedes are
+marked **Superseded** in place. Tasks 16 to 25 are the remaining work, planned against the
+code as it stands at `68d5dcf6`. Their criteria were checked against the code, not
+assumed complete.
 
 ## Tasks
 
@@ -107,13 +116,13 @@ produces the After text including any reference hint. A partially unknown collec
 **Description:** When `before_sensitive` or `after_sensitive` marks `P` or any element under it,
 and `--show-sensitive` is off, set both states to `Masked`, empty the element lists, show
 `(sensitive)` on both sides, and keep `IsSensitive` true. With `--show-sensitive` on, render the
-normal diff and keep `IsSensitive` true. Masking is at the whole-collection level; no count, order
-or duplicate information may reach the model for a masked row. Handle the `before_sensitive` shapes
-`true`, array of bool, and object.
+normal diff and keep `IsSensitive` true. **Superseded (rework):** the masking rule in this paragraph (whole-collection level, any
+sensitive element masks the collection) is replaced by per-entry, per-side masking in Task 17.
+The `before_sensitive` shape handling (`true`, array of bool, object) still applies.
 **Acceptance Criteria:**
 
 - [x] A sensitive whole collection shows `(sensitive)` in both Before and After cells (SC 11, TC-50)
-- [x] One sensitive element masks the whole collection; neither non-sensitive sibling values nor the collection length appear in the output (SC 11, TC-51)
+- [x] One sensitive element masks the whole collection; neither non-sensitive sibling values nor the collection length appear in the output (SC 11, TC-51) **Superseded:** the revised SC 11 and TC-51 mask only the marked entry; see Task 17
 - [x] A reorder or duplicate change on a sensitive collection renders no `➖`, `➕` or `🔀` (SC 11, TC-52)
 - [x] A masked row's element lists are empty and both states are `Masked` (SC 11, TC-53)
 - [x] With `--show-sensitive`, the normal diff renders and `IsSensitive` stays true (SC 11, TC-54)
@@ -134,7 +143,7 @@ not learn provider filter rules. Preserves the fully-suppressed case-only Azure 
 - [x] A list with one non-case difference renders its row (TC-101)
 - [x] Lists of different lengths render their row (TC-102)
 - [x] The registry receives indexed names `P[i]` and element texts for each differing position (TC-103)
-- [x] A partially case-only change shows the case-variant elements as `➖` and `➕` (open question 3 in state.json, recorded as assumed)
+- [x] A partially case-only change shows the case-variant elements as `➖` and `➕` (open question 3 in state.json, recorded as assumed; **Resolved 2026-10-16:** the row is shown when the collection has any other change, as the revised SC 27 states. The filter also needs the order check added in Task 20.)
 **Dependencies:** Task 3
 
 ### Task 7: Generic table rendering for update and replace
@@ -291,7 +300,207 @@ tests over the new fixtures.
 - [x] `MarkdownLintIntegrationTests` and `MarkdownInvariantTests` pass over the new fixtures (regression, test-plan R type)
 **Dependencies:** Task 9, Task 10, Task 12, Task 13, Task 14
 
-## Implementation Order
+### Task 16: Masked-aware element key in the differ
+
+**Priority:** High
+**Description:** Add a `Masked` flag to `CollectionElementKey` (`Helpers/CollectionElementDiffer.cs`)
+and an `IsMasked` flag to `CollectionElementModel` (`Models/CollectionChangeModel.cs`). A masked key
+equals only a masked key with the same token, never a non-masked key, whatever the raw text
+(specification rule 4). The matching steps of Task 2 stay as they are; only equality changes. The
+stage that builds the tokens and masked elements is Task 17.
+**Acceptance Criteria:**
+
+- [ ] A masked key never equals a non-masked key, even with the same raw text (SC 22, TC-59 at diff level)
+- [ ] Masked keys with the same token are `Unchanged` across sides; different tokens give `Removed` and `Added` (SC 21, TC-57 at diff level)
+- [ ] Reordered masked occurrences give `OrderChanged` and `Moved` statuses, not `Removed` and `Added` (SC 21, TC-121 at diff level)
+- [ ] An added or removed masked occurrence carries `Added` or `Removed` (SC 21, TC-122)
+- [ ] Differ tests from Task 2 pass unchanged (regression)
+**Dependencies:** Task 2, Task 3
+
+### Task 17: Per-side, per-entry sensitive masking in the stage
+
+**Priority:** High
+**Description:** In `Stages/ResourceChangeStage.Collections.cs`, replace the rule that masks a whole
+collection when any element is sensitive (`HasSensitiveElement`). Follow architecture 5a:
+
+- Whole collection: `IsSensitiveAttribute` on either side (ancestors included) keeps whole masking.
+  Both states are `Masked`, element lists are empty.
+- Otherwise before element `i` is masked only when `before_sensitive` is `true` at `P[i]`, and after
+  element `j` only when `after_sensitive` is `true` at `P[j]`. Each side reads its own map.
+- Masked elements get the opaque key `(Masked, Undefined, "#n")`, where `n` numbers the distinct
+  `(kind, raw)` pairs of masked elements across both sides. The map is local to the method. Their
+  model element has `IsMasked`, `Value` null and `Undefined` kind; their text is never computed.
+- The canonical `Before`/`After` text on the per-entry path is built from model elements, with masked
+  elements written as bare `(sensitive)`. `CollectionValues.CanonicalText` is not used there.
+- `HasMixedKinds` and `HasLargeElement` skip masked elements, so `IsLarge` is not forced off by a
+  masked row.
+- Unknown flags are read on per-entry masked rows (rule 9).
+- The known-after-apply override (`ApplyComputedKnownAfterApplyOverride`) receives only the
+  whole-collection sensitivity. Otherwise a whole-unknown after side would turn the before side of a
+  per-entry row into `(sensitive)`.
+- Rewrite the two tests that assert whole-collection masking for one sensitive element,
+  `PrimitiveCollectionModelTests.Update_OneSensitiveElement_MasksWholeCollection` and
+  `CollectionRenderingTests.Update_OneSensitiveElement_NeitherSiblingsNorCountAppear`, to the
+  per-entry expectations.
+
+**Acceptance Criteria:**
+
+- [ ] Only entries marked on a side are masked on that side; the other entries keep their markers (SC 11, TC-51, TC-120)
+- [ ] A collection marked as a whole on either side masks both sides with empty element lists and `IsSensitive` true (SC 11, TC-50, TC-130)
+- [ ] A masked element's model carries no value, type or length, and no masked text appears in any model property (SC 23, TC-53)
+- [ ] The canonical text of a per-entry row contains bare `(sensitive)` tokens, for example `["a",(sensitive),"b"]`
+- [ ] A visible `x` before and a masked `x` after yield `Removed` and `Added`, never `Unchanged` (SC 22, TC-59 at model level)
+- [ ] With `--show-sensitive` the row equals the row for the same input without sensitivity markers (SC 26, TC-54)
+- [ ] An entry both unknown and sensitive keeps `Unknown` status, a known masked entry beside it stays masked, and no markers are computed in the unresolved row (SC 10, SC 11, TC-129 at model level)
+- [ ] A whole-unknown after side with per-entry masking on the before side keeps per-entry before text (specification rule 2)
+- [ ] `HasMixedKinds` and `HasLargeElement` ignore masked elements; a row whose only large element is masked is not `IsLarge` (TC-128 at model level)
+**Dependencies:** Task 16, Task 4, Task 5
+
+### Task 18: Masked rendering in the generic table and large-value section
+
+**Priority:** High
+**Description:** In `Rendering/DefaultResourceRenderer.Collections.cs` and
+`CollectionValues.ElementDisplayText`, a masked element renders as `` `(sensitive)` ``. That check
+runs before the null and formatter branches, so no value formatter or feature 147 annotation receives
+a masked element. Markers apply exactly as for visible elements: `➖` in Before and `➕` in After.
+Create and delete show the placeholder without markers. In the large-value section, masked
+occurrences are `(sensitive)` lines with their markers.
+**Acceptance Criteria:**
+
+- [ ] A changed secret between masked positions renders `➖ (sensitive)` before and `➕ (sensitive)` after; an unchanged secret at the same position has no marker (SC 21, TC-57, TC-58)
+- [ ] A visible `x` before and a masked `x` after render `➖ x` and `➕ (sensitive)` (SC 22, TC-59)
+- [ ] Two equal secrets on one side render as two placeholders with no count, `×2` or duplicate label; `[<s>,<s>]` and `[<s1>,<s2>]` with the same other side render identically (SC 24, TC-123)
+- [ ] A masked GUID with a feature 147 name mapping shows no annotation and no name text (SC 23, TC-125)
+- [ ] A masked order change renders the `🔀 order changed` line and no marker on moved entries (SC 21, TC-121 at render level)
+- [ ] A masked entry with a value above the large-value threshold does not move the row to the large section, and masked entries in a large row render as `(sensitive)` lines with markers (TC-128)
+- [ ] No sentinel value appears in the generic table or the large-value section (SC 23, TC-56 for these paths)
+**Dependencies:** Task 17, Task 7, Task 8, Task 9
+
+### Task 19: Masked entries in collection drift
+
+**Priority:** High
+**Description:** In `Rendering/CollectionDriftRenderer.cs` (`BuildLines`), a per-entry masked element
+renders as `➖ (sensitive)` or `➕ (sensitive)`, and as `(sensitive)` inside order-changed sequences.
+A whole-collection mask keeps its single `(sensitive)` line and no element lines. Masked values never
+reach `FormatDriftCode`. Entry selection and path counts are unchanged.
+**Acceptance Criteria:**
+
+- [ ] A per-entry masked change shows its marker line with no value, and the visible members still show (SC 11, TC-55 per-entry)
+- [ ] A whole-collection mask shows `(sensitive)` and no element lines; the existing drift test stays green (TC-55 whole)
+- [ ] An order change involving masked entries lists them as `(sensitive)` in the retained sequence (SC 21, TC-121 at drift level)
+- [ ] A drift entry containing a masked change counts its paths as before (SC 19)
+**Dependencies:** Task 17, Task 12
+
+### Task 20: Element-wise filter for masked positions and order
+
+**Priority:** High
+**Description:** In `Stages/AttributeFilteringStage.cs` (`ShouldSuppress`, collection branch):
+
+1. A row with `OrderChanged` is never suppressed. The filter does not read `OrderChanged` today, so a
+   case-variant reorder such as `[ABC,abc]` to `[abc,ABC]` is hidden by its positional case-only
+   matches.
+2. A position with a masked element is neutral only when both sides are masked and both statuses are
+   `Unchanged`. Any other masked position stops suppression. Today a pair of masked nulls compares
+   equal and is skipped, so a changed secret beside a case-only change could be hidden once masking is
+   per entry.
+3. The registry is never called with a masked element. Masked values are never read.
+
+The core still learns no provider rule.
+**Acceptance Criteria:**
+
+- [ ] A row where a masked entry changed is never suppressed, even beside case-only Azure ID differences (SC 28, TC-133 a and b)
+- [ ] A masked entry opposite a visible entry with case-variant text shows the row (SC 28, TC-133 c)
+- [ ] A masked unchanged pair beside a case-only visible difference hides the row (SC 28, TC-133 d)
+- [ ] The registry receives `P[i]` and texts for visible differing positions and is never called for a masked position (TC-103)
+- [ ] Same-length case-only reorder shows the row (SC 27, TC-132 order variant)
+- [ ] TC-100, TC-101 and TC-102 stay green (regression)
+**Dependencies:** Task 17, Task 6
+
+### Task 21: Invariance and leak tests across every output path
+
+**Priority:** High
+**Description:** Add the rule 7 test seam (architecture 5a). Run the stage and renderer on plans that
+differ only in the values of masked entries, keeping each masked entry's equality with the masked
+entries on the other side. Assert that the complete `AttributeChangeModel` and the Markdown are
+identical. Cover cases (a) to (k) of TC-124, and a negative control in which the cross-side masked
+relation changes and the output must differ. Extend the same substitutions to drift, summaries and
+counts, and sweep the sentinels through every output. If a test shows a leak, fix the owning code path
+and log it in `work-protocol.md` as a problem.
+**Acceptance Criteria:**
+
+- [ ] TC-124 cases (a) to (k) give identical model and Markdown, including replacing a masked value with one equal to a visible entry on either side (SC 25)
+- [ ] The TC-124 negative control changes the output, proving the test can fail (SC 25)
+- [ ] TC-126 drift entries are identical under the same substitutions (SC 25)
+- [ ] TC-127 summary text and changed-attribute counts are identical (SC 25, SC 19)
+- [ ] TC-56 sentinels, including their prefix, length and case variants, are absent from the generic table, large section, drift, summaries, diagnostics and log output (SC 23, SC 11)
+**Dependencies:** Task 18, Task 19, Task 20
+
+### Task 22: Case-only Azure ID filter, end to end
+
+**Priority:** Medium
+**Description:** Add the full-report tests for TC-131 and TC-132. A collection whose only difference is
+Azure ID letter case is hidden under the default options, and also under `--show-unchanged-values`. It
+produces no drift entry and no changed-attribute count. With `--ignore-azure-id-case-changes` disabled
+it is shown. A case-only collection that also has an added member, a removed member, an order change
+or an unrelated element change is shown. Fix any path that does not match the expected output.
+**Acceptance Criteria:**
+
+- [ ] A case-only collection gives no row by default (SC 27, TC-131)
+- [ ] The same collection gives no row under `--show-unchanged-values` (SC 27, TC-131)
+- [ ] It produces no drift entry and does not count as a changed attribute (SC 27, TC-131)
+- [ ] With the flag disabled the row is shown (SC 27, TC-131)
+- [ ] Case-only plus an added member, a removed member, an order change or an unrelated change shows the row, and a drift entry appears only for that collection (SC 27, TC-132)
+**Dependencies:** Task 20, Task 6
+
+### Task 23: Element-less and empty-state verification
+
+**Priority:** Medium
+**Description:** Verify criterion 9 as reworded. Absent, `null` and `[]` are equivalent for change
+detection and distinct whenever a row is shown (`ResourceChangeStage.IsElementless`, architecture 7a).
+Add the tests for TC-40 to TC-43 and TC-116 at row and drift level that do not already exist, including a
+sensitive element-less collection on create and on delete. Fix the stage only if a test fails.
+**Acceptance Criteria:**
+
+- [ ] absent to `[]` and `null` to `[]` give no row by default (SC 9, TC-40, TC-41)
+- [ ] `[]` to `[]` gives no row by default (SC 9, TC-42)
+- [ ] Under `--show-unchanged-values` each of these shows a row in which each side's state is distinguishable (SC 9, TC-40, TC-41, TC-42)
+- [ ] `[]` beside elements renders `[]`; absent or `null` beside elements renders `-` or `null` (SC 9, TC-43)
+- [ ] A sensitive element-less collection on create or delete gives no row and no drift entry (SC 9, TC-41)
+- [ ] An unchanged compact collection under `--show-unchanged-values` renders as one row (TC-116)
+**Dependencies:** Task 17
+
+### Task 24: Regression, snapshots and provider tables
+
+**Priority:** High
+**Description:** After Tasks 18 to 23, re-verify the Task 15 criteria against the final output. Run the
+provider-specific tests and confirm that no provider table snapshot changes. Regenerate the generic,
+drift and demo snapshots with the `update-test-snapshots` skill only where output changed, and review
+that each diff contains only per-entry masked rows, collection rows, and index-order changes. Run the
+Markdown lint and invariant tests over the fixtures.
+**Acceptance Criteria:**
+
+- [ ] No provider table snapshot changes (SC 20, TC-90)
+- [ ] The MsGraph `excludeUsers` update still shows a compact body row beside unchanged settings rows (SC 20, TC-91)
+- [ ] Snapshot diffs contain only intended collection output and index-order changes (SC 20, TC-92)
+- [ ] `MarkdownLintIntegrationTests` and `MarkdownInvariantTests` pass over the fixtures
+**Dependencies:** Tasks 18, 19, 20, 21, 22, 23
+
+### Task 25: UAT fixtures for the revised scenarios
+
+**Priority:** Medium
+**Description:** Rebuild `uat-plan.json` and `uat-plan.md` in this work-item folder to the resource
+inventory in `uat-test-plan.md`. The current files have no per-entry secret, visible-to-sensitive,
+whole-sensitive, large-secret, unknown-secret or case-only Azure ID scenarios. The Developer builds
+fixtures only. The UAT Tester runs the platform checks later.
+**Acceptance Criteria:**
+
+- [ ] Every row of the resource inventory in `uat-test-plan.md` has a fixture entry
+- [ ] Sentinel secrets appear only in entries marked sensitive, and the default-run rendering of the fixture contains none of them
+- [ ] `uat-plan.md` lists the rendering runs and the expected result for each scenario
+- [ ] Any scenario that cannot be built is recorded in `work-protocol.md`
+**Dependencies:** Task 24
+
+## Implementation Order (initial build, Tasks 1-15)
 
 1. **Task 1 and Task 2 (parallel-capable, foundational).** Task 1 is path ordering used by all
    later row building. Task 2 is the pure diff with no dependencies, so it can be built and tested in
@@ -312,13 +521,55 @@ tests over the new fixtures.
 9. **Task 15 (regression and snapshots).** Last, because snapshots must reflect the final output.
    Regenerating earlier would produce snapshot churn.
 
+## Rework Implementation Order
+
+1. **Task 16** (differ key). Foundational: every masked row depends on the masked key.
+2. **Task 17** (stage masking). Needs Task 16. Every rendering, filter and drift task reads the
+   masked elements it produces.
+3. **Tasks 18, 19 and 20** (table and large section, drift, filter). Each needs Task 17 and they touch
+   different files, so they can run in parallel. Task 20 also builds on the Task 6 filter.
+4. **Task 23** (element-less verification). Needs only Task 17, so it can run alongside Tasks 18 to 20.
+5. **Task 22** (case-only end to end). Needs Task 20.
+6. **Task 21** (invariance and leak sweep). Needs Tasks 18 to 20, because it tests their output.
+7. **Task 24** (regression and snapshots). Last code task, after 18 to 23, so snapshots are regenerated
+   once.
+8. **Task 25** (UAT fixtures). Last, so the fixtures match the final output.
+
 ## Coverage Check
 
-Every spec success criterion SC 1-20 is covered: SC 1 by Task 1; SC 2 by Tasks 3, 7, 8; SC 3 by Tasks 2, 7, 9;
-SC 4 by Tasks 2, 7; SC 5 by Tasks 2, 7, 9; SC 6 by Tasks 2, 7; SC 7 by Tasks 2, 14; SC 8 by Tasks 7, 14;
-SC 9 by Tasks 3, 8; SC 10 by Tasks 4, 12; SC 11 by Tasks 5, 12; SC 12 by Task 3; SC 13 by Tasks 1, 3;
-SC 14 by Tasks 11, 12; SC 15 by Tasks 11, 12; SC 16 by Task 11; SC 17 by Task 13; SC 18 by Task 13;
-SC 19 by Tasks 10, 11; SC 20 by Tasks 6, 8, 10, 15.
+Success criteria, SC 1 to 28. Tasks 1 to 15 carry the earlier coverage; Tasks 16 to 25 carry the rework.
 
-Every test-plan scenario is mapped to a task, including architecture-derived ones (TC-100 to TC-116).
-The reverse mapping was checked mechanically: each `TC-` identifier in `test-plan.md` appears in this file.
+| SC | Tasks |
+|---|---|
+| 1 | 1 |
+| 2 | 3, 7, 8 |
+| 3 | 2, 7, 9 |
+| 4 | 2, 7 |
+| 5 | 2, 7, 9 |
+| 6 | 2, 7 |
+| 7 | 2, 14 |
+| 8 | 7, 14 |
+| 9 | 3, 8, 23 |
+| 10 | 4, 12, 17 |
+| 11 | 5 (superseded), 17, 18, 19, 21 |
+| 12 | 3 |
+| 13 | 1, 3 |
+| 14 | 11, 12 |
+| 15 | 11, 12 |
+| 16 | 11 |
+| 17 | 13 |
+| 18 | 13 |
+| 19 | 10, 11, 19, 21 |
+| 20 | 6, 8, 10, 24 |
+| 21 | 16, 17, 18, 19 |
+| 22 | 16, 17, 18 |
+| 23 | 17, 18, 21 |
+| 24 | 18 |
+| 25 | 21 |
+| 26 | 17, 24 |
+| 27 | 6, 20, 22 |
+| 28 | 20 |
+
+Test-plan scenarios: every `TC-` identifier in `test-plan.md` appears in at least one task. Tasks 1
+to 15 carry the earlier scenarios, and the new scenarios are TC-57, TC-58, TC-59, TC-120 to TC-133 and
+TC-53 to TC-56, mapped in Tasks 16 to 22 and 24. The mechanical check runs on the committed file.

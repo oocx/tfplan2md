@@ -4,36 +4,31 @@
 
 ## Summary
 
-The compact collection implementation broadly matches the revised specification, including type-accurate diffs, duplicate preservation, natural ordering, per-entry masking, case-only filtering, and resource-level collection drift. Release is blocked because large collection transitions involving null or absent states omit that side entirely, violating the requirement that those states remain distinguishable whenever a row is shown.
+The round-4 rendering blocker is fixed: large collection updates now preserve absent, null, empty, unknown, and populated sides, and the oversized collection stage was split. However, large wholly-unknown transitions are still summarized as having zero changes, contradicting the specification, and authoritative CI evidence for the final branch is unavailable.
 
 ## Verification Results
 
-Read-only audit; tests were not executed. The Developer records 1,675 passed, 0 failed, 0 skipped. The Technical Writer reports regenerated UAT output and no new markdownlint findings relative to main. Current CI and post-rework coverage could not be verified because GitHub was unreachable. Earlier coverage results predate the final sensitive-masking rework.
+The Developer recorded 1,685 passed, 0 failed, 0 skipped at commit 6d500b36, with CoverageEnforcer passing at 89.24% line coverage and 81.17% branch coverage. The final two commits are documentation-only. I could not run tests in the read-only sandbox. GitHub CI could not be verified because api.github.com was unreachable; the work protocol also states the branch had not been pushed and its CI remained unavailable. Snapshot changes are authorized by commit c7403b80 with a specific SNAPSHOT_UPDATE_OK justification. Demo artifacts were recorded as regenerated with metadata-only differences, and documentation lint counts were recorded as unchanged from main.
 
 ## Specification Compliance
 
-C1: AttributePathComparer with AttributePathComparerTests. C2-C6: PrimitiveCollectionDiffer, CollectionElementDiffer, and collection renderers with model/rendering/differ tests. C7-C8: raw typed keys and indexed formatter annotations with CollectionNameAnnotationTests; real feature-147 integration remains unavailable as recorded. C9: ordinary table/model behavior is covered by ElementlessCollectionTests, but the large-value rendering path is noncompliant and lacks a null/absent transition test. C10: AfterUnknownHelper and unresolved model handling with primitive-model/rendering tests. C11 and C21-C26: masking/tokenization/rendering with SensitiveCollectionModelTests, SensitiveCollectionRenderingTests, MaskedElementDifferTests, SensitiveCollectionDriftTests, and MaskedValueInvarianceTests. C12-C13: typed keys and primitive detection with model and ordering tests. C14-C18: CollectionDriftModel/grouping/rendering and drift-mode tests. C19: logical row/path counts with CollectionConsumerTests and drift tests. C20: provider-specific rendering remains separate and snapshot regressions are recorded. C27-C28: AttributeFilteringStage with collection-filter and end-to-end case-only tests. All criteria have code and named tests, but C9's tests do not prove the large-value output path.
+C1: AttributePathComparer / AttributePathComparerTests. C2-C6: PrimitiveCollectionDiffer and CollectionElementDiffer / collection model, differ, and rendering tests. C7-C8: typed underlying keys and formatter annotations / CollectionNameAnnotationTests. C9: state modeling and two-sided large rendering / ElementlessCollectionTests and LargeCollectionStateTests. C10: whole and partial unknown modeling/rendering has tests, but the large-value summary violates the criterion and lacks a summary assertion. C11-C12: masking and typed scalar identity / sensitive model, rendering, drift, and mixed-kind tests. C13: primitive rejection plus natural ordering / model and comparer tests. C14-C18: CollectionDriftModel, ReportModelBuilder grouping, and drift selection / drift model, rendering, and consumer tests. C19: logical row and path counting / CollectionConsumerTests and drift tests. C20: provider-specific paths remain separate; regression snapshots are recorded as passing. C21-C26: opaque masked keys, per-side models, renderer guards, and show-sensitive path / MaskedElementDifferTests, SensitiveCollection*Tests, and MaskedValueInvarianceTests. C27-C28: collection-aware AttributeFilteringStage / CollectionAttributeFilterTests, MaskedCollectionFilterTests, and CaseOnlyCollectionEndToEndTests. All criteria have identified code and tests, but C10 remains behaviorally noncompliant in LargeAttributesSummary.
 
 ## What I Tried To Break
 
-Checked null/absent/empty transitions, large-value rendering, duplicate and reorder behavior, LCS fallback, mixed JSON kinds, unknown values, whole and per-entry sensitivity, masked-value invariance, Azure ID case-only filtering, drift grouping, summary counts, snapshot authorization, commit types, and documentation/process changes. The large-value path drops null and absent sides; masking paths otherwise avoid placing secret values in rendered models, canonical text, formatters, or filters.
+Audited natural path ordering; primitive detection; duplicate, insertion, deletion, and reorder matching; the LCS size fallback; mixed JSON types; absent/null/empty handling; whole and partial unknown states; whole and per-entry masking; masked-to-visible comparisons and secret invariance; case-only Azure ID suppression; drift grouping and selection; logical attribute counts; large-value rendering and summaries; provider-specific isolation; snapshot authorization; commit types; documentation updates; and file-size compliance. The large-value body now preserves both sides, but its summary reports a wholly unknown transition as zero changes.
 
 ## Issues Found
 
 ### Blockers
 
-- **Large collection rendering hides null and absent states** — `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderer.Collections.cs:129`
-  FormatLargeCollection only includes a side when its state is Elements or Empty, apart from Unknown/Masked on the after side. Therefore an update such as null → [large value], absent → [large value], [large value] → null, or [large value] → absent renders only the populated side. Null and absent become indistinguishable, directly violating success criterion 9 and the requirement that each side's state remain visible whenever the other side has elements. Existing large-value tests cover element changes and reorders but not these state transitions.
+- **A wholly unknown large collection is reported as having zero changes** — `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/MarkdownHelpers/LargeValueSummary.cs:89`
+  For a whole-collection unknown transition, BuildCollectionModel intentionally leaves every before occurrence Unchanged, supplies no after occurrences, and marks AfterState as Unknown. LargeAttributesSummary nevertheless derives CollectionChangedLines solely from Removed/Added statuses plus OrderChanged, producing “0 changes.” This contradicts the specification’s explicit rule that an unknown value is always a change and makes the summary disagree with the resource’s changed-attribute count. The Technical Writer reproduced this exact output. LargeCollectionStateTests verifies the Before/After blocks but never asserts the summary count. CountCollectionChanges must account for Unknown/IsUnresolved state, with a regression test for the rendered summary.
 
 ### Majors
 
-- **Current CI and coverage evidence is absent** — `docs/features/148-compact-collection-diffs/work-protocol.md:122`
-  The final Developer entry gives a specific local test result of 1,675 passing tests, but no CI result or coverage-enforcer output exists for the final rework. GitHub status could not be queried because the API was unreachable. Earlier recorded coverage was measured before the final masking implementation and its new branches, so it is not evidence for HEAD.
-
-### Minors
-
-- **New collection stage file exceeds the repository size guideline** — `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs:1`
-  ResourceChangeStage.Collections.cs is 370 lines, exceeding the repository rule that files over approximately 300 lines be refactored. Sensitivity extraction/tokenization and model construction are separable responsibilities.
+- **Authoritative CI evidence is unavailable for the final branch** — `docs/features/148-compact-collection-diffs/work-protocol.md:170`
+  The local evidence is specific and includes CoverageEnforcer output, but the Developer explicitly records that nothing was pushed and CI remained the authoritative outstanding check. GitHub status could not be queried during review because api.github.com was unreachable. Release readiness therefore lacks CI confirmation for tests, coverage, architecture checks, and repository validation.
 
 ## Decision
 

@@ -8,12 +8,15 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 
 /// <summary>
-/// Type-accurate identity of a collection element: the JSON kind plus the raw text.
-/// Display names never take part, so <c>"1"</c> and <c>1</c> are different elements.
+/// Type-accurate identity of a collection element: whether it is masked, the JSON kind and the raw text.
+/// Display names never take part, so <c>"1"</c> and <c>1</c> are different elements. A masked key carries an
+/// opaque token instead of the value and never equals a non-masked key, whatever the texts
+/// (docs/features/148-compact-collection-diffs/specification.md, rule 4).
 /// </summary>
-/// <param name="Kind">The JSON value kind.</param>
-/// <param name="Raw">The raw text of the value.</param>
-internal readonly record struct CollectionElementKey(JsonValueKind Kind, string Raw);
+/// <param name="Kind">The JSON value kind; <see cref="JsonValueKind.Undefined"/> for a masked element.</param>
+/// <param name="Raw">The raw text of the value, or the opaque token of a masked element.</param>
+/// <param name="Masked">Whether the element is masked as sensitive.</param>
+internal readonly record struct CollectionElementKey(JsonValueKind Kind, string Raw, bool Masked = false);
 
 /// <summary>
 /// The outcome of diffing two element sequences.

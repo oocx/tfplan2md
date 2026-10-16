@@ -54,10 +54,14 @@ public enum CollectionElementStatus
 /// One occurrence of a primitive value inside a collection.
 /// </summary>
 /// <param name="Index">Index of the occurrence on its own side.</param>
-/// <param name="Value">Text of the value; <c>null</c> for a JSON null element.</param>
-/// <param name="Kind">The JSON kind, so <c>"1"</c> and <c>1</c> stay different elements.</param>
+/// <param name="Value">Text of the value; <c>null</c> for a JSON null element and for a masked element.</param>
+/// <param name="Kind">The JSON kind, so <c>"1"</c> and <c>1</c> stay different elements; <see cref="JsonValueKind.Undefined"/> when masked.</param>
 /// <param name="Status">The diff status of this occurrence.</param>
-public sealed record CollectionElementModel(int Index, string? Value, JsonValueKind Kind, CollectionElementStatus Status);
+/// <param name="IsMasked">
+/// Whether the occurrence is sensitive and masked. A masked occurrence carries no value, type or length; only its
+/// index and status are real (docs/features/148-compact-collection-diffs/architecture.md, section 5a).
+/// </param>
+public sealed record CollectionElementModel(int Index, string? Value, JsonValueKind Kind, CollectionElementStatus Status, bool IsMasked = false);
 
 /// <summary>
 /// Structured diff of a collection of primitive values, rendered as one logical attribute.

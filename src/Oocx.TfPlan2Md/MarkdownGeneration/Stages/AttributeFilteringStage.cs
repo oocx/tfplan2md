@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
@@ -83,12 +84,7 @@ internal sealed class AttributeFilteringStage : IAttributeFilteringStage
             || string.Equals(resourceChange.SummaryHtml, defaultSummaryHtml, StringComparison.Ordinal);
 
         var originalCount = attributeChanges.Count;
-        attributeChanges.RemoveAll(attributeChange => _attributeChangeFilterRegistry.ShouldSuppress(
-            new AttributeChangeFilterContext(
-                resourceChange.ProviderName,
-                attributeChange.Name,
-                attributeChange.Before,
-                attributeChange.After)));
+        attributeChanges.RemoveAll(attributeChange => ShouldSuppress(resourceChange.ProviderName, attributeChange));
 
         if (attributeChanges.Count == originalCount)
         {
@@ -109,5 +105,51 @@ internal sealed class AttributeFilteringStage : IAttributeFilteringStage
         {
             resourceChange.SummaryHtml = ResourceSummaryHtmlBuilder.BuildSummaryHtml(resourceChange);
         }
+    }
+
+    /// <summary>
+    /// Decides whether a row is suppressed. A collection row is evaluated element-wise: it is suppressed only when
+    /// both sides have the same length and every differing position is suppressed by the registry, which reproduces
+    /// the outcome of the former per-index rows without teaching the core any provider rule.
+    /// </summary>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="attributeChange">The row to evaluate.</param>
+    /// <returns><c>true</c> when the row should be removed.</returns>
+    private bool ShouldSuppress(string providerName, AttributeChangeModel attributeChange)
+    {
+        var collection = attributeChange.Collection;
+        if (collection is null)
+        {
+            return _attributeChangeFilterRegistry.ShouldSuppress(
+                new AttributeChangeFilterContext(providerName, attributeChange.Name, attributeChange.Before, attributeChange.After));
+        }
+
+        if (collection.IsUnresolved
+            || collection.BeforeState != CollectionState.Elements
+            || collection.AfterState != CollectionState.Elements
+            || collection.Before.Count != collection.After.Count)
+        {
+            return false;
+        }
+
+        var differingPositions = 0;
+        for (var index = 0; index < collection.Before.Count; index++)
+        {
+            var before = collection.Before[index];
+            var after = collection.After[index];
+            if (before.Kind == after.Kind && string.Equals(before.Value, after.Value, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            differingPositions++;
+            var context = new AttributeChangeFilterContext(providerName, $"{attributeChange.Name}[{index}]", before.Value, after.Value);
+            if (!_attributeChangeFilterRegistry.ShouldSuppress(context))
+            {
+                return false;
+            }
+        }
+
+        return differingPositions > 0;
     }
 }

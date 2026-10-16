@@ -118,11 +118,11 @@ have equal length and every differing position is suppressed by the registry (ca
 `P[i]` and the two element texts), suppress the row. Otherwise render it normally. The core must
 not learn provider filter rules. Preserves the fully-suppressed case-only Azure ID outcome.
 **Acceptance Criteria:**
-- [ ] Same-length lists whose only differences are Azure ID case changes produce no row (SC 20, TC-100)
-- [ ] A list with one non-case difference renders its row (TC-101)
-- [ ] Lists of different lengths render their row (TC-102)
-- [ ] The registry receives indexed names `P[i]` and element texts for each differing position (TC-103)
-- [ ] A partially case-only change shows the case-variant elements as `➖` and `➕` (open question 3 in state.json, recorded as assumed)
+- [x] Same-length lists whose only differences are Azure ID case changes produce no row (SC 20, TC-100)
+- [x] A list with one non-case difference renders its row (TC-101)
+- [x] Lists of different lengths render their row (TC-102)
+- [x] The registry receives indexed names `P[i]` and element texts for each differing position (TC-103)
+- [x] A partially case-only change shows the case-variant elements as `➖` and `➕` (open question 3 in state.json, recorded as assumed)
 **Dependencies:** Task 3
 
 ### Task 7: Generic table rendering for update and replace

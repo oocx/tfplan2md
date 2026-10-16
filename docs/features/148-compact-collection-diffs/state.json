@@ -1,7 +1,7 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "developer",
+  "stage": "technical-writer",
   "status": "running",
   "gates": {
     "spec": "approved",

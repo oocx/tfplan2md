@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Rendering;
@@ -84,12 +85,7 @@ internal static class CollectionDriftRenderer
             .Select(FormatElement));
 
     private static string FormatElement(CollectionElementModel element)
-        => ReportRenderer.FormatDriftCode(element.Value switch
-        {
-            null => "null",
-            { Length: 0 } => "\"\"",
-            var text => text
-        });
+        => ReportRenderer.FormatDriftCode(CollectionValues.ElementDisplayText(element));
 
     private static string DescribeState(CollectionState state) => state switch
     {

@@ -255,10 +255,10 @@ table, drift and comprehensive demo snapshots with the `update-test-snapshots` s
 contains only primitive-collection rows and multi-digit index ordering changes. Run the Markdown lint integration
 tests over the new fixtures.
 **Acceptance Criteria:**
-- [ ] Existing AzureAD, AzureDevOps, Azapi, NSG, firewall, role assignment, APIM and MsGraph provider tests pass with no snapshot diff in provider tables (SC 20, TC-90)
-- [ ] The MsGraph `excludeUsers` update shows a compact body row beside unchanged `api_version` and `url` settings rows (SC 20, TC-91)
-- [ ] Generic, drift and demo snapshot diffs contain only the intended collection rows and index-order changes (SC 20, TC-92)
-- [ ] `MarkdownLintIntegrationTests` and `MarkdownInvariantTests` pass over the new fixtures (regression, test-plan R type)
+- [x] Existing AzureAD, AzureDevOps, Azapi, NSG, firewall, role assignment, APIM and MsGraph provider tests pass with no snapshot diff in provider tables (SC 20, TC-90)
+- [x] The MsGraph `excludeUsers` update shows a compact body row beside unchanged `api_version` and `url` settings rows (SC 20, TC-91)
+- [x] Generic, drift and demo snapshot diffs contain only the intended collection rows and index-order changes (SC 20, TC-92)
+- [x] `MarkdownLintIntegrationTests` and `MarkdownInvariantTests` pass over the new fixtures (regression, test-plan R type)
 **Dependencies:** Task 9, Task 10, Task 12, Task 13, Task 14
 
 ## Implementation Order

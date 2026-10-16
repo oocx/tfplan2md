@@ -142,7 +142,7 @@ internal sealed partial class DefaultResourceRenderer
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
-                MarkdownHelpers.EscapeMarkdown(attribute.Name) + indicator,
+                EscapeAttributeName(attribute.Name) + indicator,
                 value
             ]);
         }
@@ -179,7 +179,7 @@ internal sealed partial class DefaultResourceRenderer
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
-                MarkdownHelpers.EscapeMarkdown(attribute.Name) + indicator,
+                EscapeAttributeName(attribute.Name) + indicator,
                 string.IsNullOrEmpty(beforeValue) ? "-" : beforeValue,
                 string.IsNullOrEmpty(afterValue) ? "-" : afterValue
             ]);

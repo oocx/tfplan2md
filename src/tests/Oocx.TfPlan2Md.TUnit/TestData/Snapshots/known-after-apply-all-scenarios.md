@@ -138,7 +138,7 @@ _(all values known after apply)_
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_prefixes[0] | `🌐 10.0.1.0/24` |
+| address_prefixes | `🌐 10.0.1.0/24` |
 | name | `🆔 app-subnet` |
 | virtual_network_name | `(known after apply)` |
 

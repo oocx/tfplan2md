@@ -307,7 +307,7 @@ internal sealed partial class ResourceChangeStage : IResourceChangeStage
             if (collections.TryGetValue(key, out var detected))
             {
                 var collectionRow = BuildCollectionAttribute(
-                    change, configurationReferences, detected, beforeSensitiveDict, afterSensitiveDict);
+                    change, providerName, resourceType, configurationReferences, detected, beforeSensitiveDict, afterSensitiveDict);
                 if (collectionRow is not null)
                 {
                     changes.Add(collectionRow);

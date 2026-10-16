@@ -132,10 +132,13 @@ internal sealed partial class DefaultResourceRenderer
                 continue;
             }
 
-            var raw = preferAfterValue || change.Action == "create" ? attribute.After : attribute.Before;
+            var useAfter = preferAfterValue || change.Action == "create";
+            var raw = useAfter ? attribute.After : attribute.Before;
             var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
-            var value = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
-                attribute.Name, raw, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
+            var value = attribute.Collection is not null
+                ? FormatCollectionCell(attribute, !useAfter, false, change, resourceType, valueFormatterRegistry, iconProviderRegistry)
+                : MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
+                    attribute.Name, raw, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([
@@ -165,10 +168,14 @@ internal sealed partial class DefaultResourceRenderer
         foreach (var attribute in smallAttributes)
         {
             var resourceType = useResourceTypeForAttributeIcons ? change.Type : null;
-            var beforeValue = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
-                attribute.Name, attribute.Before, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
-            var afterValue = MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
-                attribute.Name, attribute.After, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
+            var beforeValue = attribute.Collection is not null
+                ? FormatCollectionCell(attribute, true, true, change, resourceType, valueFormatterRegistry, iconProviderRegistry)
+                : MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
+                    attribute.Name, attribute.Before, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
+            var afterValue = attribute.Collection is not null
+                ? FormatCollectionCell(attribute, false, true, change, resourceType, valueFormatterRegistry, iconProviderRegistry)
+                : MarkdownHelpers.FormatAttributeValueTableWithRegistryResource(
+                    attribute.Name, attribute.After, change.ProviderName, resourceType, valueFormatterRegistry, iconProviderRegistry);
             var indicator = GetAttributeFindingIndicator(attribute.Name, change.CodeAnalysisFindings);
 
             writer.TableRow([

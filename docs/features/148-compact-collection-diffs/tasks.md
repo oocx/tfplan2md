@@ -134,14 +134,14 @@ When `OrderChanged`, After ends with a `🔀 order changed` line. `Moved` elemen
 Elements are joined with `<br>`, and each element is formatted with `FormatAttributeValueTableWithRegistryResource`
 passing `P[i]` for the element's own-side index. Raw GUIDs are rendered without names in this task.
 **Acceptance Criteria:**
-- [ ] An update to a primitive list renders one row with Before and After columns (SC 2, TC-11)
-- [ ] A replace renders the same single-row layout (SC 2, TC-12)
-- [ ] Inserting one element into a 12-element list renders exactly one `➕` and no `➖`, with no replacement cascade (SC 3, TC-22)
-- [ ] Duplicate values render with multiplicity: value `a` appears twice in After with a single `➕` marker (SC 4, TC-25)
-- [ ] An order-only change renders a row (not filtered as no-op), no `➖` or `➕`, and After ends with `🔀 order changed` (SC 5, TC-27)
-- [ ] A sorted-collection membership change renders no `🔀 order changed` line (SC 6, TC-30)
-- [ ] An `excludeUsers`-style GUID collection without any name mapping renders raw GUIDs with markers (SC 8, TC-34)
-- [ ] Element text identical to a marker (`➕ x`) stays distinguishable from a real added marker (TC-111)
+- [x] An update to a primitive list renders one row with Before and After columns (SC 2, TC-11)
+- [x] A replace renders the same single-row layout (SC 2, TC-12)
+- [x] Inserting one element into a 12-element list renders exactly one `➕` and no `➖`, with no replacement cascade (SC 3, TC-22)
+- [x] Duplicate values render with multiplicity: value `a` appears twice in After with a single `➕` marker (SC 4, TC-25)
+- [x] An order-only change renders a row (not filtered as no-op), no `➖` or `➕`, and After ends with `🔀 order changed` (SC 5, TC-27)
+- [x] A sorted-collection membership change renders no `🔀 order changed` line (SC 6, TC-30)
+- [x] An `excludeUsers`-style GUID collection without any name mapping renders raw GUIDs with markers (SC 8, TC-34)
+- [x] Element text identical to a marker (`➕ x`) stays distinguishable from a real added marker (TC-111)
 **Dependencies:** Task 3
 
 ### Task 8: Generic table rendering for create, delete and value edge cases
@@ -152,13 +152,13 @@ containing `|`, backticks, `<br>`, newlines, HTML characters and empty strings (
 `--show-unchanged-values` option renders an unchanged compact collection. Confirm that existing value
 formatters matching indexed names (AzureDevOps `^members?(?:\[\d+\])?$`) still apply per element.
 **Acceptance Criteria:**
-- [ ] A create with `[a,b,c]` renders one row with the three values separated by `<br>` (SC 2, TC-10)
-- [ ] A delete renders the full before collection in the single-value table (SC 2, TC-13)
-- [ ] `[]` renders `[]`, absent renders `-` (SC 9, TC-40)
-- [ ] Empty before and element after renders distinct cells, with no pair collapsing where today they differed (SC 9, TC-43)
-- [ ] Special characters in elements are escaped and do not break the table (TC-110)
-- [ ] An AzureDevOps `members[0]`-style formatter still applies to a compact list element (SC 20, TC-107)
-- [ ] With `--show-unchanged-values`, an unchanged compact collection renders as one row (TC-116)
+- [x] A create with `[a,b,c]` renders one row with the three values separated by `<br>` (SC 2, TC-10)
+- [x] A delete renders the full before collection in the single-value table (SC 2, TC-13)
+- [x] `[]` renders `[]`, absent renders `-` (SC 9, TC-40)
+- [x] Empty before and element after renders distinct cells, with no pair collapsing where today they differed (SC 9, TC-43)
+- [x] Special characters in elements are escaped and do not break the table (TC-110)
+- [x] An AzureDevOps `members[0]`-style formatter still applies to a compact list element (SC 20, TC-107)
+- [x] With `--show-unchanged-values`, an unchanged compact collection renders as one row (TC-116)
 **Dependencies:** Task 3
 
 ### Task 9: Large collection elements
@@ -168,9 +168,9 @@ consult), mark the row `IsLarge` and render in the large-attribute section, one 
 with the same markers. Do not use the line-LCS large diff for compact collections, so a reorder never
 becomes a removed/added pair.
 **Acceptance Criteria:**
-- [ ] A large element in an update renders in the large section, one occurrence per line, with `➖` and `➕` (SC 3, TC-104)
-- [ ] A large-element reorder reports an order change and not a removed/added pair (SC 5, TC-105)
-- [ ] A single-element large collection still respects the existing large-value threshold (existing tests stay green)
+- [x] A large element in an update renders in the large section, one occurrence per line, with `➖` and `➕` (SC 3, TC-104)
+- [x] A large-element reorder reports an order change and not a removed/added pair (SC 5, TC-105)
+- [x] A single-element large collection still respects the existing large-value threshold (existing tests stay green)
 **Dependencies:** Task 7, Task 8
 
 ### Task 10: Counts and consumer compatibility

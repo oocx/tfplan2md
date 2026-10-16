@@ -408,12 +408,12 @@ reach `FormatDriftCode`. Entry selection and path counts are unchanged.
 The core still learns no provider rule.
 **Acceptance Criteria:**
 
-- [ ] A row where a masked entry changed is never suppressed, even beside case-only Azure ID differences (SC 28, TC-133 a and b)
-- [ ] A masked entry opposite a visible entry with case-variant text shows the row (SC 28, TC-133 c)
-- [ ] A masked unchanged pair beside a case-only visible difference hides the row (SC 28, TC-133 d)
-- [ ] The registry receives `P[i]` and texts for visible differing positions and is never called for a masked position (TC-103)
-- [ ] Same-length case-only reorder shows the row (SC 27, TC-132 order variant)
-- [ ] TC-100, TC-101 and TC-102 stay green (regression)
+- [x] A row where a masked entry changed is never suppressed, even beside case-only Azure ID differences (SC 28, TC-133 a and b)
+- [x] A masked entry opposite a visible entry with case-variant text shows the row (SC 28, TC-133 c)
+- [x] A masked unchanged pair beside a case-only visible difference hides the row (SC 28, TC-133 d)
+- [x] The registry receives `P[i]` and texts for visible differing positions and is never called for a masked position (TC-103)
+- [x] Same-length case-only reorder shows the row (SC 27, TC-132 order variant)
+- [x] TC-100, TC-101 and TC-102 stay green (regression)
 **Dependencies:** Task 17, Task 6
 
 ### Task 21: Invariance and leak tests across every output path

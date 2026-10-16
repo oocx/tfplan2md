@@ -108,10 +108,17 @@ internal sealed class AttributeFilteringStage : IAttributeFilteringStage
     }
 
     /// <summary>
-    /// Decides whether a row is suppressed. A collection row is evaluated element-wise: it is suppressed only when
-    /// both sides have the same length and every differing position is suppressed by the registry, which reproduces
-    /// the outcome of the former per-index rows without teaching the core any provider rule.
+    /// Decides whether a row is suppressed. A collection row is evaluated element-wise, by position: it is suppressed
+    /// only when both sides have the same length, the order is unchanged, every position is either equal or
+    /// suppressed by the registry, and at least one position was suppressed. This reproduces the outcome of the
+    /// former per-index rows without teaching the core any provider rule.
     /// </summary>
+    /// <remarks>
+    /// A position holding a masked entry is neutral only when both entries are masked and both are unchanged; any
+    /// other masked position keeps the row. Masked entries are never passed to the registry, so masked content can
+    /// never be treated as a case-only difference
+    /// (docs/features/148-compact-collection-diffs/architecture.md, section 6).
+    /// </remarks>
     /// <param name="providerName">The Terraform provider name.</param>
     /// <param name="attributeChange">The row to evaluate.</param>
     /// <returns><c>true</c> when the row should be removed.</returns>
@@ -125,6 +132,7 @@ internal sealed class AttributeFilteringStage : IAttributeFilteringStage
         }
 
         if (collection.IsUnresolved
+            || collection.OrderChanged
             || collection.BeforeState != CollectionState.Elements
             || collection.AfterState != CollectionState.Elements
             || collection.Before.Count != collection.After.Count)
@@ -137,6 +145,16 @@ internal sealed class AttributeFilteringStage : IAttributeFilteringStage
         {
             var before = collection.Before[index];
             var after = collection.After[index];
+            if (before.IsMasked || after.IsMasked)
+            {
+                if (IsUnchangedMaskedPair(before, after))
+                {
+                    continue;
+                }
+
+                return false;
+            }
+
             if (before.Kind == after.Kind && string.Equals(before.Value, after.Value, StringComparison.Ordinal))
             {
                 continue;
@@ -152,4 +170,13 @@ internal sealed class AttributeFilteringStage : IAttributeFilteringStage
 
         return differingPositions > 0;
     }
+
+    /// <summary>
+    /// Determines whether a position holds two masked entries that the diff matched as unchanged.
+    /// </summary>
+    private static bool IsUnchangedMaskedPair(CollectionElementModel before, CollectionElementModel after)
+        => before.IsMasked
+            && after.IsMasked
+            && before.Status == CollectionElementStatus.Unchanged
+            && after.Status == CollectionElementStatus.Unchanged;
 }

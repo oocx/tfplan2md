@@ -330,7 +330,7 @@ public class CollectionRenderingTests
     }
 
     [Test]
-    public void Update_OneSensitiveElement_NeitherSiblingsNorCountAppear()
+    public void Update_OneSensitiveElement_MasksOnlyThatEntryAndShowsSiblings()
     {
         var resource = Res(
             ["update"], Items("PUBLICSIBLING", "SECRETB"), Items("PUBLICSIBLING", "SECRETB", "OTHER"),
@@ -338,7 +338,9 @@ public class CollectionRenderingTests
 
         var markdown = Render(resource);
 
-        markdown.Should().NotContain("PUBLICSIBLING").And.NotContain("SECRETB").And.NotContain("OTHER");
+        Row(markdown, "items").Should().Be(
+            "| items | `PUBLICSIBLING`<br>`(sensitive)` | `PUBLICSIBLING`<br>`(sensitive)`<br>➕\u00A0`OTHER` |");
+        markdown.Should().NotContain("SECRETB");
     }
 
     [Test]

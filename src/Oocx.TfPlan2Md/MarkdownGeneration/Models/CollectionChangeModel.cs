@@ -100,11 +100,12 @@ public sealed class CollectionChangeModel
     public bool IsUnresolved { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether the known elements of both sides span more than one JSON kind
+    /// Gets a value indicating whether the known, non-masked elements of both sides span more than one JSON kind
     /// (<c>true</c> and <c>false</c> count as one). Only then are strings that look like another type quoted.
+    /// Masked elements never take part, so a masked value's type cannot change how visible entries render.
     /// </summary>
     public bool HasMixedKinds => Before.Concat(After)
-        .Where(element => element.Status != CollectionElementStatus.Unknown)
+        .Where(element => element.Status != CollectionElementStatus.Unknown && !element.IsMasked)
         .Select(element => element.Kind == JsonValueKind.False ? JsonValueKind.True : element.Kind)
         .Distinct()
         .Skip(1)

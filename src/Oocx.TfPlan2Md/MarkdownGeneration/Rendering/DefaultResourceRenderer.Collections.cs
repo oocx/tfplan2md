@@ -84,7 +84,13 @@ internal sealed partial class DefaultResourceRenderer
         Func<string, string?, string> format)
     {
         string text;
-        if (element.Status == CollectionElementStatus.Unknown)
+        if (element.IsMasked)
+        {
+            // Checked before every other branch: a masked element never reaches a value formatter, so no display
+            // name or other annotation can be derived from it.
+            text = MarkdownHelpers.FormatCodeTable(CollectionValues.SensitivePlaceholder);
+        }
+        else if (element.Status == CollectionElementStatus.Unknown)
         {
             text = format(path, element.Value);
         }

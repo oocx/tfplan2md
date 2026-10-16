@@ -1,15 +1,16 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "developer",
-  "status": "blocked",
+  "stage": "requirements-engineer",
+  "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",
     "uat": "n/a"
   },
   "attempts": {
-    "developer": 3
+    "developer": 3,
+    "requirements-engineer": 1
   },
   "open_questions": [
     {

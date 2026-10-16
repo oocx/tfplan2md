@@ -15,6 +15,11 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 internal static class CollectionValues
 {
     /// <summary>
+    /// Text shown in place of a masked element.
+    /// </summary>
+    internal const string SensitivePlaceholder = "(sensitive)";
+
+    /// <summary>
     /// Builds the ordered element list of a collection side.
     /// </summary>
     /// <param name="side">The JSON value at the collection path, or <c>null</c> when absent.</param>
@@ -95,7 +100,8 @@ internal static class CollectionValues
     /// Returns the text shown for an element. An empty or whitespace-only string is always quoted so that it stays
     /// visible. When the collection mixes JSON kinds, a string that looks like another JSON type (a number,
     /// <c>true</c>, <c>false</c> or <c>null</c>) is quoted as well, so that <c>"1"</c> and <c>1</c> stay visibly
-    /// different. A JSON null is shown as <c>null</c>.
+    /// different. A JSON null is shown as <c>null</c>. A masked element is always <c>(sensitive)</c>; that check comes
+    /// first, so no later branch ever sees a masked element.
     /// </summary>
     /// <param name="element">The collection element.</param>
     /// <param name="quoteAmbiguous">Whether strings that look like another JSON type are quoted.</param>
@@ -103,6 +109,11 @@ internal static class CollectionValues
     internal static string ElementDisplayText(CollectionElementModel element, bool quoteAmbiguous)
     {
         ArgumentNullException.ThrowIfNull(element);
+        if (element.IsMasked)
+        {
+            return SensitivePlaceholder;
+        }
+
         var value = element.Value;
         if (value is null)
         {

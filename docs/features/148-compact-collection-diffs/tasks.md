@@ -345,15 +345,15 @@ collection when any element is sensitive (`HasSensitiveElement`). Follow archite
 
 **Acceptance Criteria:**
 
-- [ ] Only entries marked on a side are masked on that side; the other entries keep their markers (SC 11, TC-51, TC-120)
-- [ ] A collection marked as a whole on either side masks both sides with empty element lists and `IsSensitive` true (SC 11, TC-50, TC-130)
-- [ ] A masked element's model carries no value, type or length, and no masked text appears in any model property (SC 23, TC-53)
-- [ ] The canonical text of a per-entry row contains bare `(sensitive)` tokens, for example `["a",(sensitive),"b"]`
-- [ ] A visible `x` before and a masked `x` after yield `Removed` and `Added`, never `Unchanged` (SC 22, TC-59 at model level)
-- [ ] With `--show-sensitive` the row equals the row for the same input without sensitivity markers (SC 26, TC-54)
-- [ ] An entry both unknown and sensitive keeps `Unknown` status, a known masked entry beside it stays masked, and no markers are computed in the unresolved row (SC 10, SC 11, TC-129 at model level)
-- [ ] A whole-unknown after side with per-entry masking on the before side keeps per-entry before text (specification rule 2)
-- [ ] `HasMixedKinds` and `HasLargeElement` ignore masked elements; a row whose only large element is masked is not `IsLarge` (TC-128 at model level)
+- [x] Only entries marked on a side are masked on that side; the other entries keep their markers (SC 11, TC-51, TC-120)
+- [x] A collection marked as a whole on either side masks both sides with empty element lists and `IsSensitive` true (SC 11, TC-50, TC-130)
+- [x] A masked element's model carries no value, type or length, and no masked text appears in any model property (SC 23, TC-53)
+- [x] The canonical text of a per-entry row contains bare `(sensitive)` tokens, for example `["a",(sensitive),"b"]`
+- [x] A visible `x` before and a masked `x` after yield `Removed` and `Added`, never `Unchanged` (SC 22, TC-59 at model level)
+- [x] With `--show-sensitive` the row equals the row for the same input without sensitivity markers (SC 26, TC-54)
+- [x] An entry both unknown and sensitive keeps `Unknown` status, a known masked entry beside it stays masked, and no markers are computed in the unresolved row (SC 10, SC 11, TC-129 at model level)
+- [x] A whole-unknown after side with per-entry masking on the before side keeps per-entry before text (specification rule 2)
+- [x] `HasMixedKinds` and `HasLargeElement` ignore masked elements; a row whose only large element is masked is not `IsLarge` (TC-128 at model level)
 **Dependencies:** Task 16, Task 4, Task 5
 
 ### Task 18: Masked rendering in the generic table and large-value section

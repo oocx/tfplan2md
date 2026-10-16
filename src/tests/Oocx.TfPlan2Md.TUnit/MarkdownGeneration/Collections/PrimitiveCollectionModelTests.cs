@@ -249,15 +249,19 @@ public class PrimitiveCollectionModelTests
     }
 
     [Test]
-    public void Update_OneSensitiveElement_MasksWholeCollection()
+    public void Update_OneSensitiveElement_MasksOnlyThatEntry()
     {
         var row = Row(
             Res(["update"], "{\"items\":" + L("pub", "sec") + "}", "{\"items\":" + L("pub", "sec", "more") + "}",
                 beforeSensitive: "{\"items\":[false,true]}", afterSensitive: "{\"items\":[false,true,false]}"),
             "items");
 
-        row.Collection!.AfterState.Should().Be(CollectionState.Masked);
-        row.After.Should().Be("(sensitive)");
+        row.Collection!.AfterState.Should().Be(CollectionState.Elements);
+        row.After.Should().Be("[\"pub\",(sensitive),\"more\"]");
+        row.Collection.After.Select(e => e.IsMasked).Should().Equal(false, true, false);
+        row.Collection.After.Select(e => e.Status).Should().Equal(
+            CollectionElementStatus.Unchanged, CollectionElementStatus.Unchanged, CollectionElementStatus.Added);
+        row.Collection.After[1].Value.Should().BeNull();
     }
 
     [Test]
@@ -290,7 +294,7 @@ public class PrimitiveCollectionModelTests
     {
         var resource = Res(["delete"], "{\"items\":[\"SECRETVALUE1\"]}", null, beforeSensitive: "{\"items\":[true]}");
 
-        Row(resource, "items").Collection!.BeforeState.Should().Be(CollectionState.Masked);
+        Row(resource, "items").Collection!.Before.Single().IsMasked.Should().BeTrue();
         Render(resource).Should().NotContain("SECRETVALUE");
     }
 }

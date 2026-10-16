@@ -824,6 +824,7 @@ All summary values are automatically escaped to ensure valid markdown output.
 Masking is applied comprehensively across all rendering paths:
 
 - **Attribute tables** — individual attributes marked sensitive by Terraform are shown as `(sensitive)`
+- **Primitive collections** — a collection marked sensitive as a whole is shown as `(sensitive)`; otherwise only its marked entries are shown as `(sensitive)`, each with its change marker (see [Compact Collection Diffs](#compact-collection-diffs-feature-148))
 - **AzApi body tables** — flattened JSON body properties (create, update, delete, replace) are masked when the corresponding `before_sensitive` / `after_sensitive` metadata marks them as sensitive
 - **Azure DevOps Variable Group diffs** — a variable cell is masked as `(sensitive / hidden)` when either the before or after state has `is_secret: true` (including transitions where a variable gains or loses secret status)
 
@@ -834,6 +835,7 @@ Masking is applied comprehensively across all rendering paths:
 | Exact path | `{"password": true}` | `password` is masked |
 | Root boolean | `before_sensitive: true` | Every attribute in the resource is masked |
 | Array-parent | `{"secrets": true}` | `secrets[0]`, `secrets[1]`, … are all masked; a primitive list is shown as one masked row |
+| Per-entry list | `{"secrets": [false, true, false]}` | Only the marked entries are masked, each at its position; the other entries of a primitive list are shown (see [Compact Collection Diffs](#compact-collection-diffs-feature-148)) |
 | Nested path | `{"properties.accessPolicies": true}` | All child keys are masked |
 
 ### Attribute Tables
@@ -2933,6 +2935,7 @@ With `--ignore-azure-id-case-changes`, only the `display_name` row is shown — 
 
 - Only **Azure resource ID** attribute values are subject to the filter. Plain display names, numeric values, boolean values, and null values are never suppressed.
 - The filter applies to `azurerm` resources and to body properties of `azapi` resources (`azapi_resource`, `azapi_update_resource`). Resources from other providers (e.g., `aws`) are unaffected.
+- On `azurerm` resources, a compact primitive collection of Azure resource IDs (see [Compact Collection Diffs](#compact-collection-diffs-feature-148)) is hidden when its only change is letter case. If the collection also gains or loses an element, or its order changes, the collection is shown. A masked entry never counts as a case-only difference.
 - Rows suppressed by `--ignore-azure-id-case-changes` remain hidden **even when `--show-unchanged-values` is also active** — casing-only Azure ID changes take precedence.
 - The resource entry itself still appears in the report even if all its attribute change rows are suppressed.
 - Plan summary counts (resources to add, change, destroy) are not affected.
@@ -3290,7 +3293,7 @@ tfplan2md --summary-name-attributes body.title,body.properties.title \
 
 ## Compact Collection Diffs (Feature 148)
 
-Primitive collections are reviewed as one logical attribute instead of one row per index. A collection is primitive when all of its known elements are strings, numbers, booleans or `null`. Lists, tuples and sets all qualify. Collections that contain objects or nested collections keep their indexed rows, with numeric indices sorted by value. The feature changes generic attribute tables and collection drift. Provider-specific tables keep their existing layouts. See the [Compact, Semantically Accurate Collection Diffs specification](features/148-compact-collection-diffs/specification.md) for the acceptance criteria.
+Primitive collections are reviewed as one logical attribute instead of one row per index. A collection is primitive when all of its known elements that are not masked as sensitive are strings, numbers, booleans or `null`. Lists, tuples and sets all qualify. Collections that contain objects or nested collections keep their indexed rows, with numeric indices sorted by value. The feature changes generic attribute tables and collection drift. Provider-specific tables keep their existing layouts. See the [Compact, Semantically Accurate Collection Diffs specification](features/148-compact-collection-diffs/specification.md) for the acceptance criteria.
 
 ### Compact rows
 
@@ -3326,7 +3329,10 @@ Values keep their Terraform type. An empty or whitespace-only string is always q
 - An absent collection shows `-`, a JSON `null` shows `null`, and an empty collection shows `[]`. Terraform writes every unset nested block as `[]`, so absent, `null` and `[]` count as equal for change detection. A collection that has no elements on either side is therefore hidden, and so is an unchanged collection, unless `--show-unchanged-values` is used. The resource summary counts only the rows that are shown.
 - A transition from one of these states to a collection with elements stays visible, for example `[]` against ➕ `a`, or ➖ `x` against `[]`.
 - An unknown element shows `(known after apply)` in its position and is not reported as an added or removed value. A wholly unknown collection shows `(known after apply)` in its After cell.
-- A collection is masked as one row when it or any of its elements is sensitive. Both sides show `(sensitive)`, with no element values, counts or order. `--show-sensitive` reveals the values as it does elsewhere.
+- A collection that Terraform marks sensitive as a whole is masked as one row, with `(sensitive)` on both sides and no element count, position or marker.
+- Otherwise only the entries that Terraform marks sensitive are masked, each at its own position on the side where it is marked. Entries that are not marked are shown normally, with their added, removed and order information. A masked entry shows `(sensitive)` in place of its value.
+- A masked entry is compared only with masked entries. It is never shown as equal to a visible entry, so changing a sensitive value to or from a visible value shows a removal and an addition. A masked entry on one side is equal to a masked entry on the other side, and shows no marker, only when both hold the same value. Each masked occurrence is its own placeholder, so two masked entries on one side are never reported as duplicates. Masked values never produce a display name or other annotation. The report reveals nothing else about a masked value, so changing a secret shows only through these markers.
+- A masked entry can carry a removed, added or unchanged marker, and it takes part in an order change like any other entry. `--show-sensitive` reveals the values and renders the collection as if nothing were sensitive.
 - The element-less rule applies to masked collections too. A sensitive collection that is absent, `null` or `[]` on both sides, such as an unset sensitive block list on a create or delete, produces no row and no collection drift entry. A transition from a masked `[]` to masked elements stays visible as `(sensitive)`.
 
 ### Large collections
@@ -3353,7 +3359,7 @@ When a resource has drift in primitive collections, the drift section gets one e
 ```
 
 - Entries are never combined across resources, even when the same path changes the same way, because each resource's element changes depend on its own membership and order.
-- A collection with unknown values is described as `unresolved: some values are known after apply`, and a masked collection shows `(sensitive)`.
+- A collection with unknown values is described as `unresolved: some values are known after apply`. A masked entry is listed at its position with the same ➖ or ➕ marker as in the attribute row, shown as `(sensitive)`. A collection that Terraform marks sensitive as a whole shows only `(sensitive)`.
 - The heading counts changed collection paths, not members or indices.
 - The `--drift all`, `--drift relevant` and `--drift none` options select collection entries in the same way as scalar entries.
 - Scalar drift still groups across resources as described in the Drift Detected Section above.

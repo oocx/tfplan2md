@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.RenderTargets;
@@ -98,6 +99,21 @@ internal static class CollectionPlanTestSupport
     /// </summary>
     internal static string Render(Resource resource, ReportModelBuilderOptions? options = null)
         => Render(PlanJson([resource]), options);
+
+    /// <summary>
+    /// Builds and renders a plan through the services the command line composes, with all providers registered and
+    /// every option at its command-line default unless <paramref name="args"/> overrides it.
+    /// </summary>
+    /// <param name="planJson">The plan JSON.</param>
+    /// <param name="args">Command-line options, without the input file.</param>
+    /// <returns>The model and the rendered Markdown.</returns>
+    internal static (ReportModel Model, string Markdown) RenderWithCliDefaults(string planJson, params string[] args)
+    {
+        var options = CliParser.Parse([.. args, "plan.json"]);
+        var services = new CompositionRoot(options).ComposeServices();
+        var model = services.ModelBuilder.Build(services.Parser.Parse(planJson));
+        return (model, services.Renderer.Render(model));
+    }
 
     /// <summary>
     /// Renders a JSON array of strings.

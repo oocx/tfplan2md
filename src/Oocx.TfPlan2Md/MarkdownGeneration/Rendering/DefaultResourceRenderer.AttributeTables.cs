@@ -92,7 +92,7 @@ internal sealed partial class DefaultResourceRenderer
             writer.BlankLine();
         }
 
-        RenderLargeAttributes(writer, largeAttributes, smallAttributes.Length > 0, context);
+        RenderLargeAttributes(writer, largeAttributes, smallAttributes.Length > 0, IsTwoSided(change), context);
         writer.DetailsClose();
         writer.BlankLine();
     }

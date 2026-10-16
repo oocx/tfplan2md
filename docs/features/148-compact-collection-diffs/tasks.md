@@ -242,10 +242,10 @@ raw value and never changes equality or merges distinct members. This task depen
 on the branch. If it is not, write the tests against the formatter extension point and record the gap in
 work-protocol.md.
 **Acceptance Criteria:**
-- [ ] A GUID mapped to a name on one side only does not change the row, which is absent (SC 7, TC-32)
-- [ ] Two distinct GUIDs mapped to the same name remain two elements, one `➖` and one `➕` (SC 7, TC-33)
-- [ ] With a mapping, the name appears as an annotation beside the same GUID (SC 8, TC-35)
-- [ ] If feature 147 is absent, the gap is recorded in work-protocol.md (SC 8)
+- [x] A GUID mapped to a name on one side only does not change the row, which is absent (SC 7, TC-32)
+- [x] Two distinct GUIDs mapped to the same name remain two elements, one `➖` and one `➕` (SC 7, TC-33)
+- [x] With a mapping, the name appears as an annotation beside the same GUID (SC 8, TC-35)
+- [x] If feature 147 is absent, the gap is recorded in work-protocol.md (SC 8)
 **Dependencies:** Task 7
 
 ### Task 15: Regression guard and snapshots

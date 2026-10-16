@@ -4,7 +4,7 @@
   "stage": "architect",
   "status": "running",
   "gates": {
-    "spec": "pending",
+    "spec": "approved",
     "arch": "n/a",
     "uat": "n/a"
   },

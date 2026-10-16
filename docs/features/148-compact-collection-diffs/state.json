@@ -1,14 +1,16 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "code-reviewer",
+  "stage": "developer",
   "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",
     "uat": "n/a"
   },
-  "attempts": {},
+  "attempts": {
+    "developer": 1
+  },
   "open_questions": [
     {
       "q": "When the available Terraform plan data does not identify a primitive collection as a list/tuple or a set, should tfplan2md treat reorder-only differences as meaningful?",

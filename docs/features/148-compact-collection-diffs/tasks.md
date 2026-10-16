@@ -310,11 +310,11 @@ equals only a masked key with the same token, never a non-masked key, whatever t
 stage that builds the tokens and masked elements is Task 17.
 **Acceptance Criteria:**
 
-- [ ] A masked key never equals a non-masked key, even with the same raw text (SC 22, TC-59 at diff level)
-- [ ] Masked keys with the same token are `Unchanged` across sides; different tokens give `Removed` and `Added` (SC 21, TC-57 at diff level)
-- [ ] Reordered masked occurrences give `OrderChanged` and `Moved` statuses, not `Removed` and `Added` (SC 21, TC-121 at diff level)
-- [ ] An added or removed masked occurrence carries `Added` or `Removed` (SC 21, TC-122)
-- [ ] Differ tests from Task 2 pass unchanged (regression)
+- [x] A masked key never equals a non-masked key, even with the same raw text (SC 22, TC-59 at diff level)
+- [x] Masked keys with the same token are `Unchanged` across sides; different tokens give `Removed` and `Added` (SC 21, TC-57 at diff level)
+- [x] Reordered masked occurrences give `OrderChanged` and `Moved` statuses, not `Removed` and `Added` (SC 21, TC-121 at diff level)
+- [x] An added or removed masked occurrence carries `Added` or `Removed` (SC 21, TC-122)
+- [x] Differ tests from Task 2 pass unchanged (regression)
 **Dependencies:** Task 2, Task 3
 
 ### Task 17: Per-side, per-entry sensitive masking in the stage

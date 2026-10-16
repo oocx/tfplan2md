@@ -667,55 +667,6 @@
       }
     },
     {
-      "address": "review_object.secret",
-      "mode": "managed",
-      "type": "review_object",
-      "name": "secret",
-      "provider_name": "registry.terraform.io/example/review",
-      "change": {
-        "actions": [
-          "update"
-        ],
-        "before": {
-          "one_sensitive": [
-            "public-1",
-            "SENTINEL-SECRET-VALUE-148"
-          ],
-          "all_sensitive": [
-            "SENTINEL-SECRET-VALUE-148-A",
-            "SENTINEL-SECRET-VALUE-148-B"
-          ]
-        },
-        "after": {
-          "one_sensitive": [
-            "public-1",
-            "SENTINEL-SECRET-VALUE-148",
-            "public-2"
-          ],
-          "all_sensitive": [
-            "SENTINEL-SECRET-VALUE-148-B",
-            "SENTINEL-SECRET-VALUE-148-A"
-          ]
-        },
-        "after_unknown": {},
-        "before_sensitive": {
-          "one_sensitive": [
-            false,
-            true
-          ],
-          "all_sensitive": true
-        },
-        "after_sensitive": {
-          "one_sensitive": [
-            false,
-            true,
-            false
-          ],
-          "all_sensitive": true
-        }
-      }
-    },
-    {
       "address": "review_object.large",
       "mode": "managed",
       "type": "review_object",
@@ -1165,6 +1116,416 @@
         "before_sensitive": {},
         "after_sensitive": {}
       }
+    },
+    {
+      "address": "review_object.secret_entries",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_entries",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "changed": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-AAA",
+            "b"
+          ],
+          "unchanged": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-CCC",
+            "b"
+          ],
+          "added": [
+            "a"
+          ],
+          "removed": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-EEE"
+          ],
+          "reordered": [
+            "SENTINEL-SECRET-VALUE-148-FFF",
+            "SENTINEL-SECRET-VALUE-148-GGG"
+          ],
+          "equal_same_side": [
+            "SENTINEL-SECRET-VALUE-148-HHH",
+            "SENTINEL-SECRET-VALUE-148-HHH"
+          ]
+        },
+        "after": {
+          "changed": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-BBB",
+            "c"
+          ],
+          "unchanged": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-CCC",
+            "c"
+          ],
+          "added": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-DDD"
+          ],
+          "removed": [
+            "a"
+          ],
+          "reordered": [
+            "SENTINEL-SECRET-VALUE-148-GGG",
+            "SENTINEL-SECRET-VALUE-148-FFF"
+          ],
+          "equal_same_side": [
+            "SENTINEL-SECRET-VALUE-148-III"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "changed": [
+            false,
+            true,
+            false
+          ],
+          "unchanged": [
+            false,
+            true,
+            false
+          ],
+          "added": [
+            false
+          ],
+          "removed": [
+            false,
+            true
+          ],
+          "reordered": [
+            true,
+            true
+          ],
+          "equal_same_side": [
+            true,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "changed": [
+            false,
+            true,
+            false
+          ],
+          "unchanged": [
+            false,
+            true,
+            false
+          ],
+          "added": [
+            false,
+            true
+          ],
+          "removed": [
+            false
+          ],
+          "reordered": [
+            true,
+            true
+          ],
+          "equal_same_side": [
+            true
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_visible",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_visible",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "visible_to_masked": [
+            "x"
+          ],
+          "masked_to_visible": [
+            "y"
+          ],
+          "after_side_only": [
+            "a",
+            "shown-before"
+          ]
+        },
+        "after": {
+          "visible_to_masked": [
+            "x"
+          ],
+          "masked_to_visible": [
+            "y"
+          ],
+          "after_side_only": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-JJJ"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "visible_to_masked": [
+            false
+          ],
+          "masked_to_visible": [
+            true
+          ],
+          "after_side_only": [
+            false,
+            false
+          ]
+        },
+        "after_sensitive": {
+          "visible_to_masked": [
+            true
+          ],
+          "masked_to_visible": [
+            false
+          ],
+          "after_side_only": [
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_whole",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_whole",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "whole": [
+            "SENTINEL-SECRET-VALUE-148-K1",
+            "SENTINEL-SECRET-VALUE-148-K2"
+          ]
+        },
+        "after": {
+          "whole": [
+            "SENTINEL-SECRET-VALUE-148-K2",
+            "SENTINEL-SECRET-VALUE-148-K1",
+            "SENTINEL-SECRET-VALUE-148-K3"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "whole": true
+        },
+        "after_sensitive": {
+          "whole": true
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_whole_created",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_whole_created",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "created",
+          "secret_list": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {
+          "secret_list": true
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_whole_deleted",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_whole_deleted",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "deleted",
+          "secret_list": []
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "secret_list": true
+        },
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.secret_large",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_large",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "large_beside_masked": [
+            "visible-large-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+            "SENTINEL-SECRET-VALUE-148-LARGE-1-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          ],
+          "only_masked_large": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-LARGE-3-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          ]
+        },
+        "after": {
+          "large_beside_masked": [
+            "visible-large-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+            "SENTINEL-SECRET-VALUE-148-LARGE-2-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+            "z"
+          ],
+          "only_masked_large": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-LARGE-3-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+            "b"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "large_beside_masked": [
+            false,
+            true
+          ],
+          "only_masked_large": [
+            false,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "large_beside_masked": [
+            false,
+            true,
+            false
+          ],
+          "only_masked_large": [
+            false,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_unknown",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_unknown",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "entries": [
+            "a",
+            "b",
+            "SENTINEL-SECRET-VALUE-148-MMM"
+          ]
+        },
+        "after": {
+          "entries": [
+            "a",
+            null,
+            "SENTINEL-SECRET-VALUE-148-NNN"
+          ]
+        },
+        "after_unknown": {
+          "entries": [
+            false,
+            true,
+            false
+          ]
+        },
+        "before_sensitive": {
+          "entries": [
+            false,
+            false,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "entries": [
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.azure_ids",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "azure_ids",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "ids-before",
+          "ids_case_only": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-A/providers/Microsoft.Network/virtualNetworks/vnet",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-B/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_plus_add": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-A/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_masked": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SENTINEL-SECRET-VALUE-148-RG/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after": {
+          "name": "ids-after",
+          "ids_case_only": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-a/providers/Microsoft.Network/virtualNetworks/vnet",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-b/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_plus_add": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-a/providers/Microsoft.Network/virtualNetworks/vnet",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-c/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_masked": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sentinel-secret-value-148-rg/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "ids_case_masked": [
+            true
+          ]
+        },
+        "after_sensitive": {
+          "ids_case_masked": [
+            true
+          ]
+        }
+      }
     }
   ],
   "resource_drift": [
@@ -1347,6 +1708,94 @@
         "before_sensitive": {},
         "after_sensitive": {}
       }
+    },
+    {
+      "address": "azuread_group.masked_entry_drift",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "masked_entry_drift",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "m",
+          "members": [
+            "00000021-aaaa-4bbb-8ccc-000000000021",
+            "SENTINEL-SECRET-VALUE-148-D3"
+          ]
+        },
+        "after": {
+          "display_name": "m",
+          "members": [
+            "00000021-aaaa-4bbb-8ccc-000000000021",
+            "SENTINEL-SECRET-VALUE-148-D4",
+            "00000022-aaaa-4bbb-8ccc-000000000022"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "members": [
+            false,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "members": [
+            false,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.case_only_drift",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "case_only_drift",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "description": "before",
+          "ids": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-DRIFT/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after": {
+          "description": "after",
+          "ids": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-drift/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
     }
-  ]
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "review_object.unknown",
+          "mode": "managed",
+          "type": "review_object",
+          "name": "unknown",
+          "expressions": {
+            "whole_unknown": {
+              "references": [
+                "review_source.lookup.ids",
+                "review_source.lookup"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
 }

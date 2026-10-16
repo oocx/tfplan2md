@@ -3339,6 +3339,9 @@ Values keep their Terraform type. An empty or whitespace-only string is always q
 
 When element text is long, the collection moves to the large-value section. Its body lists one element per line in a `text` block, with the same ➖ and ➕ markers and a `🔀 order changed` line when the order changed.
 
+- **Update:** each side is its own `text` block, labelled `Before:` and `After:`. A side with no elements uses the table placeholder: `-` when absent, `null`, or `[]` when empty. A side that is unknown as a whole shows `(known after apply)`, and a masked entry shows `(sensitive)` with its marker.
+- **Create and delete:** the collection is one `text` block, labelled only by the attribute name, with no markers.
+
 ### Natural index order
 
 Numeric indices in visible attribute paths sort by their numeric value, so `rules[2]` comes before `rules[10]`. Nested indices sort segment by segment. Other path segments keep their ordinary text order.

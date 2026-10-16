@@ -191,4 +191,19 @@ public class SensitiveCollectionRenderingTests
         Row(markdown).Should().Be($"| items | `a`<br>`(sensitive)` | `a`<br>`(sensitive)`<br>➕{Nbsp}`b` |");
         markdown.Should().NotContain("SECRET");
     }
+
+    [Test]
+    public void UatFixture_RevisedSensitiveScenarios_RenderPerEntryMasksWithoutSecrets()
+    {
+        var (_, markdown) = RenderWithCliDefaults(System.IO.File.ReadAllText("TestData/feature-148-uat-plan.json"));
+
+        markdown.Should().NotContainEquivalentOf("SENTINEL");
+        markdown.Should().Contain($"| changed | `a`<br>➖{Nbsp}`(sensitive)`<br>➖{Nbsp}`b` | `a`<br>➕{Nbsp}`(sensitive)`<br>➕{Nbsp}`c` |");
+        markdown.Should().Contain($"| visible_to_masked | ➖{Nbsp}`x` | ➕{Nbsp}`(sensitive)` |");
+        markdown.Should().Contain("| whole | `(sensitive)` | `(sensitive)` |");
+        markdown.Should().Contain($"| ids_case_masked | ➖{Nbsp}`(sensitive)` | ➕{Nbsp}`(sensitive)` |");
+        markdown.Should().Contain("`🔒(known after apply)`");
+        markdown.Should().NotContain("secret_list").And.NotContain("ids_case_only");
+        markdown.Should().Contain($"  - ➕{Nbsp}<code>(sensitive)</code>");
+    }
 }

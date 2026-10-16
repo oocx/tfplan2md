@@ -494,10 +494,10 @@ whole-sensitive, large-secret, unknown-secret or case-only Azure ID scenarios. T
 fixtures only. The UAT Tester runs the platform checks later.
 **Acceptance Criteria:**
 
-- [ ] Every row of the resource inventory in `uat-test-plan.md` has a fixture entry
-- [ ] Sentinel secrets appear only in entries marked sensitive, and the default-run rendering of the fixture contains none of them
-- [ ] `uat-plan.md` lists the rendering runs and the expected result for each scenario
-- [ ] Any scenario that cannot be built is recorded in `work-protocol.md`
+- [x] Every row of the resource inventory in `uat-test-plan.md` has a fixture entry
+- [x] Sentinel secrets appear only in entries marked sensitive, and the default-run rendering of the fixture contains none of them
+- [x] `uat-plan.md` lists the rendering runs and the expected result for each scenario
+- [x] Any scenario that cannot be built is recorded in `work-protocol.md`
 **Dependencies:** Task 24
 
 ## Implementation Order (initial build, Tasks 1-15)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
@@ -93,4 +94,15 @@ public sealed class CollectionChangeModel
     /// Gets a value indicating whether unknown values prevent a definitive diff.
     /// </summary>
     public bool IsUnresolved { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the known elements of both sides span more than one JSON kind
+    /// (<c>true</c> and <c>false</c> count as one). Only then are strings that look like another type quoted.
+    /// </summary>
+    public bool HasMixedKinds => Before.Concat(After)
+        .Where(element => element.Status != CollectionElementStatus.Unknown)
+        .Select(element => element.Kind == JsonValueKind.False ? JsonValueKind.True : element.Kind)
+        .Distinct()
+        .Skip(1)
+        .Any();
 }

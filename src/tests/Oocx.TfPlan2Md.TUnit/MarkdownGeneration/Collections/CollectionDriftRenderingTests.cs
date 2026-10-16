@@ -111,11 +111,27 @@ public class CollectionDriftRenderingTests
     }
 
     [Test]
-    public void Drift_StateOnlyChange_RendersStateTransition()
+    public void Drift_AbsentToEmptyOnly_ProducesNoCollectionDriftEntry()
     {
-        var markdown = RenderDrift([Group("azuread_group.admins", "{\"n\":1}", "{\"n\":1,\"members\":[]}")]);
+        var markdown = RenderDrift([Group("azuread_group.admins", "{\"n\":1}", "{\"n\":2,\"members\":[]}")]);
 
-        markdown.Should().Contain("absent → empty");
+        markdown.Should().NotContain("changed collection").And.NotContain("absent → empty");
+    }
+
+    [Test]
+    public void Drift_NullToElements_RendersAddedElement()
+    {
+        var markdown = RenderDrift([Group("azuread_group.admins", "{\"members\":null}", "{\"members\":" + L("a") + "}")]);
+
+        markdown.Should().Contain($"  - ➕{Nbsp}<code>a</code>");
+    }
+
+    [Test]
+    public void Drift_UnchangedCollectionWithShowUnchangedValues_ProducesNoCollectionDriftEntry()
+    {
+        var plan = PlanJson([], [Group("azuread_group.admins", "{\"members\":" + L("a") + ",\"n\":1}", "{\"members\":" + L("a") + ",\"n\":2}")]);
+
+        Render(plan, new ReportModelBuilderOptions(ShowUnchangedValues: true)).Should().NotContain("changed collection");
     }
 
     [Test]

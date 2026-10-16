@@ -11,6 +11,7 @@ Every test is TUnit, named `MethodName_Scenario_ExpectedResult`, in
 ## Tasks
 
 ### Task 1: Natural ordering of numeric path indices
+
 **Priority:** High
 **Description:** Add `AttributePathComparer` in `MarkdownGeneration/Helpers/`. It splits a
 path into segments, compares `[n]` index segments by numeric value and every other segment
@@ -18,6 +19,7 @@ ordinally (current semantics). Use it for the key ordering in `ResourceChangeSta
 (replacing `Order()`) and for the `AttributePath` ordering in `ReportModelBuilder.GroupDrift`.
 Scope is ordering only; no collection compaction in this task.
 **Acceptance Criteria:**
+
 - [x] `a[2]` sorts before `a[10]`, and `a[1]` before `a[2]` (SC 1, TC-01)
 - [x] Nested indexed paths sort per segment: `r[2].x[9]`, `r[2].x[10]`, `r[9].y`, `r[10].x[1]` (SC 1, TC-02)
 - [x] Non-index segments keep ordinal order (`Zed` before `abc`); equal paths compare 0; paths without brackets and non-numeric brackets such as `tags["a"]` fall back to ordinal (TC-02)
@@ -26,6 +28,7 @@ Scope is ordering only; no collection compaction in this task.
 **Dependencies:** None
 
 ### Task 2: Element diff algorithm
+
 **Priority:** High
 **Description:** Implement the pure diff over element keys, with no rendering and no JSON
 walking. Element key is `(JsonValueKind category, raw text)`, so `"1"` and `1` differ and
@@ -38,6 +41,7 @@ matching with `OrderChanged` true only when the retained key sequences differ. E
 state types are defined here (`CollectionChangeModel` and `CollectionElementModel` may be
 introduced as the diff's output types, with the `AttributeChangeModel` property added in Task 3).
 **Acceptance Criteria:**
+
 - [x] `[a,c,d]` to `[a,b,c,d]` gives one `Added` (b), three `Unchanged`, `OrderChanged` false (SC 3, TC-20)
 - [x] The mirror removal gives one `Removed` (TC-21)
 - [x] `[a,a,b]` to `[a,b]` gives exactly one `Removed` occurrence of `a` and two `Unchanged` (`a`, `b`) occurrences (SC 4, TC-23)
@@ -53,6 +57,7 @@ introduced as the diff's output types, with the `AttributeChangeModel` property 
 **Dependencies:** None
 
 ### Task 3: Primitive collection detection and model rows for known values
+
 **Priority:** High
 **Description:** Add `PrimitiveCollectionDiffer` in `MarkdownGeneration/Helpers/`. Walk `before`
 and `after` in parallel and record each path `P` where at least one side is an array at `P`,
@@ -67,6 +72,7 @@ array, `null`, `-` for absent). `BuildAttributeChanges` skips every flat key at 
 handling are excluded here (Tasks 4 and 5). The same detection rule applies to `output_changes`
 as to resource changes, and output paths keep their current naming (TC-114).
 **Acceptance Criteria:**
+
 - [x] A primitive list `[a,b,c]` on create produces exactly one row for its path, with no `path[0]` rows (SC 2, TC-14 row count)
 - [x] A primitive list nested inside an object list (`security_rule[0].source_address_prefixes`) becomes one row; sibling scalar rows of `security_rule[0]` remain separate and naturally sorted (SC 2, TC-14)
 - [x] `[]` to `[a]` yields distinct before states `Empty` and `Elements`; `null` to `[a]` and absent to `[a]` yield `Null` and `Absent` before states, not collapsed (SC 9, TC-40, TC-41, TC-43 model)
@@ -80,6 +86,7 @@ as to resource changes, and output paths keep their current naming (TC-114).
 **Dependencies:** Task 1, Task 2
 
 ### Task 4: Unknown and partially unknown collections
+
 **Priority:** High
 **Description:** Handle `after_unknown` and `before_unknown` shapes. A whole collection unknown
 (`true` at `P`) sets `AfterState = Unknown`, and the existing `ApplyComputedKnownAfterApplyOverride`
@@ -87,6 +94,7 @@ produces the After text including any reference hint. A partially unknown collec
 `IsUnresolved = true`, marks unknown-flagged elements `Status = Unknown`, and computes no
 `Removed`, `Added` or `Moved` markers. Malformed shapes (`true` vs array vs absent) must not throw.
 **Acceptance Criteria:**
+
 - [x] Whole-collection unknown after gives a known-after-apply rendering, with the configuration-reference hint when present (SC 10, TC-44)
 - [x] `after_unknown: [false,true,false]` gives an unknown element with the known-after-apply label and no marker in the row (SC 10, TC-45)
 - [x] The diff for a partially unknown collection reports `IsUnresolved` true and no statuses other than `Unknown` and `Unchanged` (SC 10, TC-46)
@@ -94,6 +102,7 @@ produces the After text including any reference hint. A partially unknown collec
 **Dependencies:** Task 3
 
 ### Task 5: Sensitive collections in the model and generic cell
+
 **Priority:** High
 **Description:** When `before_sensitive` or `after_sensitive` marks `P` or any element under it,
 and `--show-sensitive` is off, set both states to `Masked`, empty the element lists, show
@@ -102,6 +111,7 @@ normal diff and keep `IsSensitive` true. Masking is at the whole-collection leve
 or duplicate information may reach the model for a masked row. Handle the `before_sensitive` shapes
 `true`, array of bool, and object.
 **Acceptance Criteria:**
+
 - [x] A sensitive whole collection shows `(sensitive)` in both Before and After cells (SC 11, TC-50)
 - [x] One sensitive element masks the whole collection; neither non-sensitive sibling values nor the collection length appear in the output (SC 11, TC-51)
 - [x] A reorder or duplicate change on a sensitive collection renders no `➖`, `➕` or `🔀` (SC 11, TC-52)
@@ -112,12 +122,14 @@ or duplicate information may reach the model for a masked row. Handle the `befor
 **Dependencies:** Task 3
 
 ### Task 6: Element-wise attribute filter for collection rows
+
 **Priority:** High
 **Description:** Make `AttributeFilteringStage` evaluate a collection row element-wise. When both sides
 have equal length and every differing position is suppressed by the registry (called with name
 `P[i]` and the two element texts), suppress the row. Otherwise render it normally. The core must
 not learn provider filter rules. Preserves the fully-suppressed case-only Azure ID outcome.
 **Acceptance Criteria:**
+
 - [x] Same-length lists whose only differences are Azure ID case changes produce no row (SC 20, TC-100)
 - [x] A list with one non-case difference renders its row (TC-101)
 - [x] Lists of different lengths render their row (TC-102)
@@ -126,6 +138,7 @@ not learn provider filter rules. Preserves the fully-suppressed case-only Azure 
 **Dependencies:** Task 3
 
 ### Task 7: Generic table rendering for update and replace
+
 **Priority:** High
 **Description:** In `DefaultResourceRenderer.AttributeTables`, render a row with `Collection` and action
 `update` or `replace` in the before/after table. Before holds the full before collection with `Removed`
@@ -134,6 +147,7 @@ When `OrderChanged`, After ends with a `🔀 order changed` line. `Moved` elemen
 Elements are joined with `<br>`, and each element is formatted with `FormatAttributeValueTableWithRegistryResource`
 passing `P[i]` for the element's own-side index. Raw GUIDs are rendered without names in this task.
 **Acceptance Criteria:**
+
 - [x] An update to a primitive list renders one row with Before and After columns (SC 2, TC-11)
 - [x] A replace renders the same single-row layout (SC 2, TC-12)
 - [x] Inserting one element into a 12-element list renders exactly one `➕` and no `➖`, with no replacement cascade (SC 3, TC-22)
@@ -145,6 +159,7 @@ passing `P[i]` for the element's own-side index. Raw GUIDs are rendered without 
 **Dependencies:** Task 3
 
 ### Task 8: Generic table rendering for create, delete and value edge cases
+
 **Priority:** Medium
 **Description:** Render create and delete in the single-value table with the full collection and no markers.
 `Empty` renders `[]`; `Null` and `Absent` keep the existing scalar `-` rendering. Escape element text
@@ -152,6 +167,7 @@ containing `|`, backticks, `<br>`, newlines, HTML characters and empty strings (
 `--show-unchanged-values` option renders an unchanged compact collection. Confirm that existing value
 formatters matching indexed names (AzureDevOps `^members?(?:\[\d+\])?$`) still apply per element.
 **Acceptance Criteria:**
+
 - [x] A create with `[a,b,c]` renders one row with the three values separated by `<br>` (SC 2, TC-10)
 - [x] A delete renders the full before collection in the single-value table (SC 2, TC-13)
 - [x] `[]` renders `[]`, absent renders `-` (SC 9, TC-40)
@@ -162,18 +178,21 @@ formatters matching indexed names (AzureDevOps `^members?(?:\[\d+\])?$`) still a
 **Dependencies:** Task 3
 
 ### Task 9: Large collection elements
+
 **Priority:** Medium
 **Description:** When any element is a large value under the existing check (including the formatter
 consult), mark the row `IsLarge` and render in the large-attribute section, one occurrence per line,
 with the same markers. Do not use the line-LCS large diff for compact collections, so a reorder never
 becomes a removed/added pair.
 **Acceptance Criteria:**
+
 - [x] A large element in an update renders in the large section, one occurrence per line, with `➖` and `➕` (SC 3, TC-104)
 - [x] A large-element reorder reports an order change and not a removed/added pair (SC 5, TC-105)
 - [x] A single-element large collection still respects the existing large-value threshold (existing tests stay green)
 **Dependencies:** Task 7, Task 8
 
 ### Task 10: Counts and consumer compatibility
+
 **Priority:** Medium
 **Description:** Verify the consumers listed in architecture section "Consumers": changed-attribute
 summary (`ResourceSummaryHtmlBuilder.BuildChangedAttributesSummary`, `ResourceSummaryBuilder`),
@@ -181,6 +200,7 @@ summary (`ResourceSummaryHtmlBuilder.BuildChangedAttributesSummary`, `ResourceSu
 prefix matching for SARIF paths. Fix any consumer that does not tolerate a compact row, without changing
 provider factories.
 **Acceptance Criteria:**
+
 - [x] A 50-element list with 10 adds and removes counts as one changed attribute in the summary text (SC 19, TC-81)
 - [x] A collection plus a scalar counts as two, matching table row count (SC 19, TC-82)
 - [x] A compact collection counts consistently in the summary and detail table (SC 19, TC-84)
@@ -189,6 +209,7 @@ provider factories.
 **Dependencies:** Task 3
 
 ### Task 11: Collection drift model and grouping
+
 **Priority:** High
 **Description:** Add `CollectionDriftModel` in `MarkdownGeneration/Models/` with `ResourceType`, `Address`
 and `Paths` (naturally ordered list of path and `CollectionChangeModel`). In `ReportModelBuilder.GroupDrift`,
@@ -197,6 +218,7 @@ feature-145 grouping unchanged; rows with a collection form one `CollectionDrift
 Add `ReportModel.CollectionDrift` beside `Drift`, and wire it through `Stages/ReportAssemblyStage.cs`
 and `IReportAssemblyStage.cs`. The count of changed collection paths is the number of paths.
 **Acceptance Criteria:**
+
 - [x] A group member inserted into `members` yields one collection entry with one path, not `members[n]` transitions (SC 14, TC-70)
 - [x] Many shifted indices yield no per-index drift entries (SC 14, TC-71)
 - [x] Two collection paths of one resource share one entry with both paths, naturally ordered (SC 15, TC-72)
@@ -206,6 +228,7 @@ and `IReportAssemblyStage.cs`. The count of changed collection paths is the numb
 **Dependencies:** Task 1, Task 3
 
 ### Task 12: Collection drift rendering
+
 **Priority:** High
 **Description:** Extend `ReportRenderer.RenderDriftSection` to render when either the scalar or collection drift list
 is non-empty. Order by resource type; within a type, scalar groups first (existing order), then collection entries
@@ -213,6 +236,7 @@ by address. Each collection entry is one `<details>` block with the summary text
 (`N changed collection(s): ...`). Lines are deltas only: `➖`, `➕`, `🔀 order changed`. Use `FormatDriftCode`
 for values. Masked collections render `(sensitive)` and no element lines.
 **Acceptance Criteria:**
+
 - [x] A collection-only drift result still renders the drift section (TC-80b)
 - [x] Ordering is by type, then scalar before collection, then address (TC-80c)
 - [x] A masked collection in drift renders `(sensitive)` and no element lines (SC 11, TC-55)
@@ -221,11 +245,13 @@ for values. Masked collections render `(sensitive)` and no element lines.
 **Dependencies:** Task 11
 
 ### Task 13: Drift mode selection and scalar grouping regression
+
 **Priority:** High
 **Description:** Confirm that `--drift all`, omission of the option, `--drift relevant` and `--drift none` apply to
 collection drift entries exactly as to scalar drift. Mode selection happens on `ResourceChangeModel`s before grouping.
 Confirm that feature-145 scalar grouping across resources is unchanged. Fix nothing outside these paths.
 **Acceptance Criteria:**
+
 - [x] `--drift all` includes collection entries (SC 18, TC-77)
 - [x] Omitting `--drift` behaves as `all` (SC 18, TC-78)
 - [x] `--drift relevant` includes collection entries only for relevant resources; suppressed and no-op drift stays suppressed (SC 18, TC-79)
@@ -236,12 +262,14 @@ Confirm that feature-145 scalar grouping across resources is unchanged. Fix noth
 **Dependencies:** Task 11, Task 12
 
 ### Task 14: GUID name annotations and equality independence
+
 **Priority:** Low
 **Description:** Verify that display-name mapping from feature 147 can annotate collection members beside the
 raw value and never changes equality or merges distinct members. This task depends on feature 147 being present
 on the branch. If it is not, write the tests against the formatter extension point and record the gap in
 work-protocol.md.
 **Acceptance Criteria:**
+
 - [x] A GUID mapped to a name on one side only does not change the row, which is absent (SC 7, TC-32)
 - [x] Two distinct GUIDs mapped to the same name remain two elements, one `➖` and one `➕` (SC 7, TC-33)
 - [x] With a mapping, the name appears as an annotation beside the same GUID (SC 8, TC-35)
@@ -249,12 +277,14 @@ work-protocol.md.
 **Dependencies:** Task 7
 
 ### Task 15: Regression guard and snapshots
+
 **Priority:** High
 **Description:** Run the provider-specific tests and confirm no provider table snapshot changes. Regenerate generic
 table, drift and comprehensive demo snapshots with the `update-test-snapshots` skill and review that the diff
 contains only primitive-collection rows and multi-digit index ordering changes. Run the Markdown lint integration
 tests over the new fixtures.
 **Acceptance Criteria:**
+
 - [x] Existing AzureAD, AzureDevOps, Azapi, NSG, firewall, role assignment, APIM and MsGraph provider tests pass with no snapshot diff in provider tables (SC 20, TC-90)
 - [x] The MsGraph `excludeUsers` update shows a compact body row beside unchanged `api_version` and `url` settings rows (SC 20, TC-91)
 - [x] Generic, drift and demo snapshot diffs contain only the intended collection rows and index-order changes (SC 20, TC-92)

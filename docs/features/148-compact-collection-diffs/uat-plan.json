@@ -860,6 +860,133 @@
       }
     },
     {
+      "address": "azurerm_linux_web_app.created_web",
+      "mode": "managed",
+      "type": "azurerm_linux_web_app",
+      "name": "created_web",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "app-uat-new",
+          "location": "westeurope",
+          "resource_group_name": "rg-uat",
+          "service_plan_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat/providers/Microsoft.Web/serverFarms/plan-uat",
+          "https_only": true,
+          "app_settings": {
+            "MODE": "prod"
+          },
+          "auth_settings": [],
+          "auth_settings_v2": [],
+          "backup": [],
+          "connection_string": [],
+          "identity": [],
+          "logs": [],
+          "storage_account": [],
+          "sticky_settings": [],
+          "site_config": [
+            {
+              "always_on": true,
+              "ftps_state": "Disabled",
+              "minimum_tls_version": "1.2",
+              "application_stack": [],
+              "cors": [],
+              "ip_restriction": [],
+              "scm_ip_restriction": []
+            }
+          ],
+          "tags": null
+        },
+        "after_unknown": {
+          "id": true,
+          "default_hostname": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_linux_web_app.deleted_web",
+      "mode": "managed",
+      "type": "azurerm_linux_web_app",
+      "name": "deleted_web",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "app-uat-old",
+          "location": "westeurope",
+          "resource_group_name": "rg-uat",
+          "service_plan_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat/providers/Microsoft.Web/serverFarms/plan-uat",
+          "https_only": true,
+          "app_settings": {
+            "MODE": "prod"
+          },
+          "auth_settings": [],
+          "auth_settings_v2": [],
+          "backup": [],
+          "connection_string": [],
+          "identity": [],
+          "logs": [],
+          "storage_account": [],
+          "sticky_settings": [],
+          "site_config": [
+            {
+              "always_on": true,
+              "ftps_state": "Disabled",
+              "minimum_tls_version": "1.2",
+              "application_stack": [],
+              "cors": [],
+              "ip_restriction": [],
+              "scm_ip_restriction": []
+            }
+          ],
+          "tags": null
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_network_security_rule.ports",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "ports",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "allow-web",
+          "priority": 100,
+          "destination_port_ranges": [
+            "80",
+            "443"
+          ]
+        },
+        "after": {
+          "name": "allow-web",
+          "priority": 100,
+          "destination_port_ranges": [
+            "80",
+            "443",
+            "8080"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
       "address": "review_object.mixed",
       "mode": "managed",
       "type": "review_object",

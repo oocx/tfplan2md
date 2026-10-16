@@ -92,13 +92,15 @@ internal static class CollectionValues
     }
 
     /// <summary>
-    /// Returns the text shown for an element. A string that looks like another JSON type (a number, <c>true</c>,
-    /// <c>false</c> or <c>null</c>) is quoted so that <c>"1"</c> and <c>1</c> stay visibly different.
-    /// An empty string is shown as <c>""</c> and a JSON null as <c>null</c>.
+    /// Returns the text shown for an element. An empty or whitespace-only string is always quoted so that it stays
+    /// visible. When the collection mixes JSON kinds, a string that looks like another JSON type (a number,
+    /// <c>true</c>, <c>false</c> or <c>null</c>) is quoted as well, so that <c>"1"</c> and <c>1</c> stay visibly
+    /// different. A JSON null is shown as <c>null</c>.
     /// </summary>
     /// <param name="element">The collection element.</param>
+    /// <param name="quoteAmbiguous">Whether strings that look like another JSON type are quoted.</param>
     /// <returns>The display text before any markdown formatting.</returns>
-    internal static string ElementDisplayText(CollectionElementModel element)
+    internal static string ElementDisplayText(CollectionElementModel element, bool quoteAmbiguous)
     {
         ArgumentNullException.ThrowIfNull(element);
         var value = element.Value;
@@ -112,13 +114,14 @@ internal static class CollectionValues
             return value;
         }
 
-        if (value.Length == 0)
+        if (string.IsNullOrWhiteSpace(value))
         {
-            return "\"\"";
+            return $"\"{value}\"";
         }
 
-        var looksLikeOtherType = value is "true" or "false" or "null"
-            || double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
+        var looksLikeOtherType = quoteAmbiguous
+            && (value is "true" or "false" or "null"
+                || double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _));
         return looksLikeOtherType ? $"\"{value}\"" : value;
     }
 }

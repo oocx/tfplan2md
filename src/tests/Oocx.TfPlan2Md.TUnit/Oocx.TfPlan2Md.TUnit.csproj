@@ -30,6 +30,7 @@
     </None>
     <None Include="../../../docs/features/146-generic-resource-review-clarity/uat-plan.json" Link="TestData\feature-146-uat-plan.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../../docs/features/146-generic-resource-review-clarity/uat-plan-root-noop.json" Link="TestData\feature-146-uat-plan-root-noop.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../../docs/features/148-compact-collection-diffs/uat-plan.json" Link="TestData\feature-148-uat-plan.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

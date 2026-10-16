@@ -1,16 +1,16 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "architect",
+  "stage": "requirements-engineer",
   "status": "running",
   "gates": {
-    "spec": "pending",
+    "spec": "rework",
     "arch": "n/a",
     "uat": "n/a"
   },
   "attempts": {
     "developer": 3,
-    "requirements-engineer": 1
+    "requirements-engineer": 2
   },
   "open_questions": [
     {

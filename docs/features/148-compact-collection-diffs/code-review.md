@@ -4,31 +4,36 @@
 
 ## Summary
 
-The implementation and test coverage are broad, and the prior sensitive-empty-collection defect is now covered. Release is still blocked because the implementation deliberately treats absent, null, and empty collections as equivalent for change detection, directly contradicting the approved specification. The unresolved conflict is already recorded in state.json.
+The compact collection implementation broadly matches the revised specification, including type-accurate diffs, duplicate preservation, natural ordering, per-entry masking, case-only filtering, and resource-level collection drift. Release is blocked because large collection transitions involving null or absent states omit that side entirely, violating the requirement that those states remain distinguishable whenever a row is shown.
 
 ## Verification Results
 
-Read-only audit only; I did not run tests. The Developer records 1,584 passed, 0 failed, 0 skipped after round-three rework, with markdownlint clean for uat-plan.md and regenerated demo output unchanged except timestamps. An earlier reviewer independently recorded 1,580 passing tests and passing coverage (89.18% line, 80.92% branch) before the final four regression tests. No PR exists, and GitHub CI could not be verified; the API was unreachable. Snapshot commits include SNAPSHOT_UPDATE_OK with explanations. git diff --check is clean.
+Read-only audit; tests were not executed. The Developer records 1,675 passed, 0 failed, 0 skipped. The Technical Writer reports regenerated UAT output and no new markdownlint findings relative to main. Current CI and post-rework coverage could not be verified because GitHub was unreachable. Earlier coverage results predate the final sensitive-masking rework.
 
 ## Specification Compliance
 
-C1: AttributePathComparer; AttributePathComparerTests. C2: PrimitiveCollectionDiffer/ResourceChangeStage collection rows and DefaultResourceRenderer.Collections; CollectionRenderingTests create/update/replace/delete cases. C3-C6: CollectionElementDiffer and collection rendering; CollectionElementDifferTests and CollectionRenderingTests cover shifts, duplicates, reorder-only changes, and sorted insertions. C7-C8: raw CollectionElementKey identity plus indexed value-formatting annotations; CollectionNameAnnotationTests, though real feature-147 integration is unavailable on this branch. C9: code and tests intentionally implement element-less equivalence, contradicting specification.md criterion 9; Blocker. C10: AfterUnknownHelper and BuildCollectionModel unresolved paths; PrimitiveCollectionModelTests and CollectionRenderingTests. C11: whole-collection masking in BuildCollectionAttribute; sensitive model/rendering/drift tests, including round-three empty-sensitive regressions. C12: JsonValueKind plus raw-text keys and mixed-kind quoting; PrimitiveCollectionModelTests and CollectionRenderingTests. C13: PrimitiveCollectionDiffer rejects object/nested elements while AttributePathComparer sorts remaining indexed paths; model and ordering tests. C14-C16: GroupCollectionDrift/CollectionDriftModel; CollectionDriftModelTests and CollectionDriftRenderingTests. C17-C18: scalar GroupDrift remains separate and BuildResourceDrift applies existing mode selection; drift model/rendering mode tests. C19: logical collection rows and path-count summaries; CollectionConsumerTests and drift tests. C20: provider factories remain separate; provider snapshots/regression suite are recorded as passing, with intentional generic/summarization snapshot changes.
+C1: AttributePathComparer with AttributePathComparerTests. C2-C6: PrimitiveCollectionDiffer, CollectionElementDiffer, and collection renderers with model/rendering/differ tests. C7-C8: raw typed keys and indexed formatter annotations with CollectionNameAnnotationTests; real feature-147 integration remains unavailable as recorded. C9: ordinary table/model behavior is covered by ElementlessCollectionTests, but the large-value rendering path is noncompliant and lacks a null/absent transition test. C10: AfterUnknownHelper and unresolved model handling with primitive-model/rendering tests. C11 and C21-C26: masking/tokenization/rendering with SensitiveCollectionModelTests, SensitiveCollectionRenderingTests, MaskedElementDifferTests, SensitiveCollectionDriftTests, and MaskedValueInvarianceTests. C12-C13: typed keys and primitive detection with model and ordering tests. C14-C18: CollectionDriftModel/grouping/rendering and drift-mode tests. C19: logical row/path counts with CollectionConsumerTests and drift tests. C20: provider-specific rendering remains separate and snapshot regressions are recorded. C27-C28: AttributeFilteringStage with collection-filter and end-to-end case-only tests. All criteria have code and named tests, but C9's tests do not prove the large-value output path.
 
 ## What I Tried To Break
 
-Inspected natural path comparison, LCS/multiset matching, duplicate handling, mixed JSON kinds, partial/whole unknown values, sensitive masking, element-wise filters, collection drift grouping/rendering, large values, snapshots, provider regressions, and the round-two/round-three fixes. The sensitive empty-list path now maps absent, null, and [] to the same masked comparison key and has targeted tests. The remaining failure is contractual: the same equivalence is applied to ordinary collection change detection, suppressing transitions the approved specification says must remain observably distinct.
+Checked null/absent/empty transitions, large-value rendering, duplicate and reorder behavior, LCS fallback, mixed JSON kinds, unknown values, whole and per-entry sensitivity, masked-value invariance, Azure ID case-only filtering, drift grouping, summary counts, snapshot authorization, commit types, and documentation/process changes. The large-value path drops null and absent sides; masking paths otherwise avoid placing secret values in rendered models, canonical text, formatters, or filters.
 
 ## Issues Found
 
 ### Blockers
 
-- **C9 is implemented contrary to the approved specification** — `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs:176`
-  Success criterion C9 says empty, absent, and null collection states must retain distinct meanings and must not be silently treated as equivalent. IsCollectionChanged returns false whenever both sides are any combination of Absent, Null, or Empty, so absent→[], null→[], and absent→null disappear by default, including from drift. RawKey applies the same equivalence to masked collections. Architecture and tests were subsequently changed to bless this behavior, but specification.md was not; state.json explicitly records the conflict as an unresolved question awaiting Requirements Engineer/Maintainer confirmation. Either implement the approved criterion or obtain specification approval and update it before release.
+- **Large collection rendering hides null and absent states** — `src/Oocx.TfPlan2Md/MarkdownGeneration/Rendering/DefaultResourceRenderer.Collections.cs:129`
+  FormatLargeCollection only includes a side when its state is Elements or Empty, apart from Unknown/Masked on the after side. Therefore an update such as null → [large value], absent → [large value], [large value] → null, or [large value] → absent renders only the populated side. Null and absent become indistinguishable, directly violating success criterion 9 and the requirement that each side's state remain visible whenever the other side has elements. Existing large-value tests cover element changes and reorders but not these state transitions.
+
+### Majors
+
+- **Current CI and coverage evidence is absent** — `docs/features/148-compact-collection-diffs/work-protocol.md:122`
+  The final Developer entry gives a specific local test result of 1,675 passing tests, but no CI result or coverage-enforcer output exists for the final rework. GitHub status could not be queried because the API was unreachable. Earlier recorded coverage was measured before the final masking implementation and its new branches, so it is not evidence for HEAD.
 
 ### Minors
 
-- **Current review evidence is not durably recorded** — `docs/features/148-compact-collection-diffs/code-review.md:1`
-  The checked-in code-review.md still describes round two and its now-fixed sensitive-empty-list defect. The work protocol also has no current Code Reviewer entry for HEAD. The read-only sandbox prevents this review from writing those required artifacts, so the workflow record must be updated by the driver before handoff.
+- **New collection stage file exceeds the repository size guideline** — `src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs:1`
+  ResourceChangeStage.Collections.cs is 370 lines, exceeding the repository rule that files over approximately 300 lines be refactored. Sensitivity extraction/tokenization and model construction are separable responsibilities.
 
 ## Decision
 

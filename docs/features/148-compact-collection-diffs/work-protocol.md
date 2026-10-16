@@ -77,3 +77,10 @@
 - **Summary:** Round 2 re-review after Developer rework, as the Claude fallback. Verdict: REWORK. B1, m1, m2, m4 and s1 fixed. New Major M1: masked (sensitive) collections still treat [] as different from absent via RawKey, so a sensitive empty list renders a (sensitive) row on create and delete and a drift entry (e.g. AKS kube_admin_config on destroy); main shows none. Minor: m3 architecture section 7 still stale, m5 uat-test-plan.md still expects absent/null -> [] rows. Ran the Release suite with coverage: 1580/1580 passed, line 89.18%, branch 80.92%, both pass. Demo artifacts regenerate with timestamp-only changes.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
 - **Problems Encountered:** reviewer: claude-fallback
+
+### Developer (round 3)
+
+- **Date:** 2026-10-16
+- **Summary:** Round 3 rework for code review M1: RawKey now treats [] like absent and null, so a masked (sensitive) empty collection produces no row on create or delete and no drift entry, matching IsElementless in the unmasked path. Added four tests (masked create, delete, drift absent to [], and masked [] to elements still showing the row), each failing before the fix. Added a sensitive empty connection_string to both UAT web apps and asserted it is absent in the fixture test. Full suite 1584/1584, 0 skipped; demo artifacts unchanged apart from timestamps (restored); uat-plan.md re-rendered, content unchanged, markdownlint clean.
+- **Artifacts Produced:** src/Oocx.TfPlan2Md/MarkdownGeneration/Stages/ResourceChangeStage.Collections.cs, src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Collections/CollectionRenderingTests.cs, src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Collections/CollectionDriftRenderingTests.cs, docs/features/148-compact-collection-diffs/uat-plan.json, docs/features/148-compact-collection-diffs/uat-plan.md
+- **Problems Encountered:** The round 2 B1 fix covered only the unmasked path; the masked path used a separate equality key (RawKey) with the old rule. m3 (architecture.md) and m5 (uat-test-plan.md) remain with the Architect and Quality Engineer.

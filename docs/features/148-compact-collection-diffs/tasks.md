@@ -38,18 +38,18 @@ matching with `OrderChanged` true only when the retained key sequences differ. E
 state types are defined here (`CollectionChangeModel` and `CollectionElementModel` may be
 introduced as the diff's output types, with the `AttributeChangeModel` property added in Task 3).
 **Acceptance Criteria:**
-- [ ] `[a,c,d]` to `[a,b,c,d]` gives one `Added` (b), three `Unchanged`, `OrderChanged` false (SC 3, TC-20)
-- [ ] The mirror removal gives one `Removed` (TC-21)
-- [ ] `[a,a,b]` to `[a,b]` gives exactly one `Removed` occurrence of `a` and two `Unchanged` (`a`, `b`) occurrences (SC 4, TC-23)
-- [ ] `[a,b]` to `[a,a,b]` gives exactly one `Added` occurrence (SC 4, TC-24)
-- [ ] `[a,b]` to `[c,d]` gives two `Removed`, two `Added`, no `Moved` (TC-20b)
-- [ ] `[a,b]` to `[b,a]` gives no `Removed`, no `Added`, `OrderChanged` true, at least one `Moved` (SC 5, TC-26)
-- [ ] `[a,b,c]` to `[c,a,b,d]` gives `Added` d and `OrderChanged` true; `[a,b,a]` to `[a,a,b]` gives `OrderChanged` true with no add or remove (SC 5, TC-28)
-- [ ] Sorted-collection insertion and removal (`[a,c,e]` to `[a,b,c,e]` and back, plus sorted GUID lists, three parameterised cases) gives `OrderChanged` false (SC 6, TC-29)
-- [ ] Two equal-value elements with different display names compare equal; the differ API accepts raw values only (SC 7, TC-31)
-- [ ] `[]` to `[]` gives no change (TC-42, model level)
-- [ ] Above the cap, a 1000-element list with one change completes within a generous bound modelled on `DiffComputationPerformanceTests`; retained occurrences are `Unchanged`; `OrderChanged` is true only when retained key sequences differ (TC-106)
-- [ ] Running the diff twice on the same input yields identical statuses (TC-115)
+- [x] `[a,c,d]` to `[a,b,c,d]` gives one `Added` (b), three `Unchanged`, `OrderChanged` false (SC 3, TC-20)
+- [x] The mirror removal gives one `Removed` (TC-21)
+- [x] `[a,a,b]` to `[a,b]` gives exactly one `Removed` occurrence of `a` and two `Unchanged` (`a`, `b`) occurrences (SC 4, TC-23)
+- [x] `[a,b]` to `[a,a,b]` gives exactly one `Added` occurrence (SC 4, TC-24)
+- [x] `[a,b]` to `[c,d]` gives two `Removed`, two `Added`, no `Moved` (TC-20b)
+- [x] `[a,b]` to `[b,a]` gives no `Removed`, no `Added`, `OrderChanged` true, at least one `Moved` (SC 5, TC-26)
+- [x] `[a,b,c]` to `[c,a,b,d]` gives `Added` d and `OrderChanged` true; `[a,b,a]` to `[a,a,b]` gives `OrderChanged` true with no add or remove (SC 5, TC-28)
+- [x] Sorted-collection insertion and removal (`[a,c,e]` to `[a,b,c,e]` and back, plus sorted GUID lists, three parameterised cases) gives `OrderChanged` false (SC 6, TC-29)
+- [x] Two equal-value elements with different display names compare equal; the differ API accepts raw values only (SC 7, TC-31)
+- [x] `[]` to `[]` gives no change (TC-42, model level)
+- [x] Above the cap, a 1000-element list with one change completes within a generous bound modelled on `DiffComputationPerformanceTests`; retained occurrences are `Unchanged`; `OrderChanged` is true only when retained key sequences differ (TC-106)
+- [x] Running the diff twice on the same input yields identical statuses (TC-115)
 **Dependencies:** None
 
 ### Task 3: Primitive collection detection and model rows for known values

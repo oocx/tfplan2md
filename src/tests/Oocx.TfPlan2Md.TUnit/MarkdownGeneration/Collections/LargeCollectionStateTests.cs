@@ -63,6 +63,24 @@ public class LargeCollectionStateTests
     }
 
     [Test]
+    public void Update_LargeCollectionToUnknown_SummaryCountsUnknownAsChange()
+    {
+        var markdown = Render(Res(["update"], WithItems(L(Large)), "{\"n\":1}", afterUnknown: "{\"items\":true}"));
+
+        markdown.Should().Contain("Large values: items (1 line, 1 change)");
+        markdown.Should().NotContain("0 changes");
+    }
+
+    [Test]
+    public void Update_LargeCollectionWithUnknownElement_SummaryCountsUnknownElementAsChange()
+    {
+        var markdown = Render(Res(["update"], WithItems(L(Large)), WithItems("[" + L(Large)[1..^1] + ",null]"),
+            afterUnknown: "{\"items\":[false,true]}"));
+
+        markdown.Should().Contain("Large values: items (2 lines, 1 change)");
+    }
+
+    [Test]
     public void Update_MaskedEntryBesideNullSide_ShowsNullAndPlaceholderOnly()
     {
         const string secret = "s3cr3t-value";

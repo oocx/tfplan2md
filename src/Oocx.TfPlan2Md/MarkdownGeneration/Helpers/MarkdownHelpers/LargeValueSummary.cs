@@ -160,14 +160,19 @@ internal static partial class MarkdownHelpers
     }
 
     /// <summary>
-    /// Counts removed and added occurrences of a collection, plus one when the order changed.
+    /// Counts removed, added and unknown occurrences of a collection, plus one when the order changed and one when
+    /// the after side is unknown as a whole (Terraform never marks a before value unknown). An unknown value is always a
+    /// change (docs/features/148-compact-collection-diffs/specification.md), so it never reads as 0 changes.
     /// </summary>
     /// <param name="collection">The collection diff.</param>
     /// <returns>The number of changes shown in the large-value summary.</returns>
     private static int CountCollectionChanges(CollectionChangeModel collection)
     {
         var occurrences = collection.Before.Concat(collection.After)
-            .Count(element => element.Status is CollectionElementStatus.Removed or CollectionElementStatus.Added);
-        return occurrences + (collection.OrderChanged ? 1 : 0);
+            .Count(element => element.Status is CollectionElementStatus.Removed
+                or CollectionElementStatus.Added
+                or CollectionElementStatus.Unknown);
+        var wholeUnknown = collection.AfterState == CollectionState.Unknown ? 1 : 0;
+        return occurrences + wholeUnknown + (collection.OrderChanged ? 1 : 0);
     }
 }

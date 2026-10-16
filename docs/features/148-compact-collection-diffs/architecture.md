@@ -172,7 +172,8 @@ public CollectionChangeModel? Collection { get; init; }   // null for scalar row
 
 `Before` / `After` on the row keep a canonical text, so consumers that only read strings
 keep working: compact JSON of the array, `(sensitive)` when masked, the existing
-known-after-apply label when the whole collection is unknown, `null` for absent/null.
+known-after-apply label when the whole collection is unknown, `null` for a JSON `null`
+and `-` when absent (`CollectionValues.CanonicalText`).
 Collection rows set `IsLarge` from their elements (see 7), never from the canonical text.
 
 When a collection is masked, the element lists are left empty, so the renderer cannot
@@ -242,12 +243,55 @@ all have been filtered. The core never learns what the provider filters do.
   `Removed` occurrences prefixed `➖`; After holds the full after collection with `Added`
   occurrences prefixed `➕`. When `OrderChanged`, After ends with a `🔀 order changed`
   line. `Moved` elements carry no per-element marker; both sequences are visible.
-- `Empty` renders as `[]`. `Null` and `Absent` keep the existing scalar rendering (`-`).
-  `Masked`, `Unknown` and the canonical text come from section 3.
+- Element-less sides render by state: `Empty` as `` `[]` ``, `Null` as `` `null` `` and
+  `Absent` as `-`. `Masked` and `Unknown` render the row's canonical text from section 3.
+  These cells are only reached when the row exists, which for an element-less side means
+  the other side has elements, or `--show-unchanged-values` is set (see 7a).
 - **Large elements**: if any element is a large value (the existing check, including the
   formatter consult), the row is `IsLarge` and renders in the large-attribute section,
   one occurrence per line, with the same markers. It does not use the line-LCS large
   diff, which would turn a reorder into a removed/added pair.
+
+### 7a. Element-less collections (revised after code review)
+
+`Absent`, `Null` and `Empty` stay distinct states in the model and in rendering, but they
+are **equivalent for change detection** (`ResourceChangeStage.IsElementless`):
+
+- When both sides are element-less (any combination of absent, `null` and `[]`), the
+  collection counts as unchanged. The stage emits no row unless `--show-unchanged-values`
+  is set, and it never emits a drift entry, because the drift stage always runs with
+  unchanged values hidden.
+- The same rule applies to masked collections: `RawKey` maps absent, `null` and `[]` to
+  the same comparison key, so a sensitive unset list produces no `(sensitive)` row on
+  create or delete and no drift entry.
+- A transition between an element-less side and a side with elements is a change and
+  renders normally, showing the element-less side as described in section 7. A masked
+  `[]` to elements transition still renders `(sensitive)` on both sides.
+- Unknown values and order changes are always changes, independent of this rule.
+
+**Decision change.** The original design treated `[]` as distinct from `null` and absent
+for change detection, which follows the specification's "observably distinct" wording
+literally. Code review (B1, then M1 for the masked path) showed the cost: Terraform writes
+every unset nested block as `[]`, so each create and delete gained an `absent -> []` row
+per unset block, and destroying a resource with a sensitive empty list produced a
+spurious `(sensitive)` row and drift entry. The per-key rows on main never showed these,
+because the flattener emits no key for an empty array. The revised rule restores that
+behaviour while keeping the states distinct wherever a row is shown.
+
+Options considered:
+
+- **Distinct for change detection** (original): literal reading of the spec, but adds a
+  noise row for every unset block and regresses against main.
+- **Equivalent for change detection, distinct for display** (selected): no noise rows,
+  matches main, and the states remain observable whenever the collection actually changes
+  or the user asks for unchanged values.
+- **Equivalent everywhere** (collapse the states in the model): simplest, but loses the
+  distinction the spec requires when one side has elements and under
+  `--show-unchanged-values`.
+
+Consequence: an `absent -> []` or `null -> []` transition alone is no longer reported,
+even though Terraform's JSON differs. No plan in the test corpus or the issue gives that
+transition a meaning to the reader, so this is accepted.
 
 ### 8. Collection drift
 
@@ -309,6 +353,8 @@ Negative:
 - A partially suppressed case-only Azure ID change in a list now shows the case-variant
   elements as `➖`/`➕`, where before only the per-index row was hidden. The fully
   suppressed case is preserved.
+- A change between absent, `null` and `[]` with no elements on either side is not
+  reported (section 7a). The states are still shown whenever a row is rendered.
 - Long lists with a single change produce tall cells. If UAT finds this unreadable, a
   follow-up can collapse unchanged runs without changing the model.
 - azapi body tables (provider-specific) keep their per-index rows. Their flattener

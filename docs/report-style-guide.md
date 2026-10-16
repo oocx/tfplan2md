@@ -238,7 +238,8 @@ A primitive collection (see [Compact Collection Diffs](features.md#compact-colle
 - **Each glyph is followed by a non-breaking space (U+00A0)**, like every icon that labels text.
 - **Markers sit outside the code span**, so element text cannot imitate a marker.
 - **Kept occurrences carry no marker.** The `order changed` line is the only signal for a reorder, so a reorder is never shown as removed and added values.
-- **Placeholders** use the same plain or code forms as elsewhere: `-` (absent), `null`, `[]` (empty), `(known after apply)` for unknown elements, and `(sensitive)` for masked collections.
+- **Placeholders** use the same plain or code forms as elsewhere: `-` (absent), `null`, `[]` (empty), `(known after apply)` for unknown elements, and `(sensitive)` for a collection marked sensitive as a whole and for each masked entry.
+- **Masked entries keep their markers.** A masked entry shows `(sensitive)` in its position with ➖ or ➕ like any entry. It is never compared with a visible entry, so a visible value that becomes masked shows as ➖ and ➕ rather than as unchanged. It carries no marker only when it equals a masked entry on the other side. Masked entries are never labelled as duplicates of each other.
 - **Quoting** is the same as in the feature description: an empty or whitespace-only string is always quoted, and a string that looks like a number, boolean or `null` is quoted only when the collection mixes JSON kinds.
 - **Large collections** move to the large-value section as a `text` block with one element per line and the same markers.
 

@@ -464,7 +464,7 @@ flowchart LR
 | `CollectionChangeModel` | Element diff of one primitive collection: state per side, element occurrences with their statuses (unchanged, removed, added, moved, unknown), and order-change and unresolved flags |
 | `CollectionDriftModel` | One collection drift entry per drifted resource, holding its changed collection paths |
 | `CollectionDriftRenderer` | Renders collection drift entries inside the drift section as deltas only |
-| `PrimitiveCollectionDiffer`, `CollectionElementDiffer`, `CollectionValues` | Detect primitive collections in plan state, diff element occurrences (prefix/suffix trim, LCS, then key matching), and read element text and state. Element identity is the JSON kind plus raw text, so display names never take part in equality |
+| `PrimitiveCollectionDiffer`, `CollectionElementDiffer`, `CollectionValues` | Detect primitive collections in plan state, diff element occurrences (prefix/suffix trim, LCS, then key matching), and read element text and state. Element identity is the JSON kind plus raw text, so display names never take part in equality. Masked (sensitive) entries have no raw text in the diff: they get opaque tokens in `ResourceChangeStage` (see section 8.1) |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Orchestrate C# rendering pipeline; validate output is compatible with GitHub and Azure DevOps |
 | `ReportRenderer` | Top-level renderer that calls `HeaderRenderer`, `SummaryRenderer`, and per-resource renderers; also renders drift, relevant-attributes, and other-actions sections |
@@ -1258,7 +1258,7 @@ Future phases will add ARM64, macOS, and Windows binaries.
 - Default behavior: mask all sensitive values as `(sensitive)`
 - Opt-in via `--show-sensitive` flag
 - Sensitivity determined by Terraform's `before_sensitive` and `after_sensitive` flags
-- Masking applied after comparison (to detect actual changes)
+- Masking applied after comparison (to detect actual changes). Primitive collections are the exception: `ResourceChangeStage` masks sensitive entries before the element diff and gives each masked entry an opaque comparison token, so a masked value is compared only with masked values and never reaches the model (Feature 148, `docs/features/148-compact-collection-diffs/architecture.md` section 5a)
 - Render safety rule: render contexts must receive masked-by-default JSON unless `--show-sensitive` is enabled (ADR-009)
 
 **Container Security:**

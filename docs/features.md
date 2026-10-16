@@ -3327,6 +3327,7 @@ Values keep their Terraform type. An empty or whitespace-only string is always q
 - A transition from one of these states to a collection with elements stays visible, for example `[]` against ➕ `a`, or ➖ `x` against `[]`.
 - An unknown element shows `(known after apply)` in its position and is not reported as an added or removed value. A wholly unknown collection shows `(known after apply)` in its After cell.
 - A collection is masked as one row when it or any of its elements is sensitive. Both sides show `(sensitive)`, with no element values, counts or order. `--show-sensitive` reveals the values as it does elsewhere.
+- The element-less rule applies to masked collections too. A sensitive collection that is absent, `null` or `[]` on both sides, such as an unset sensitive block list on a create or delete, produces no row and no collection drift entry. A transition from a masked `[]` to masked elements stays visible as `(sensitive)`.
 
 ### Large collections
 

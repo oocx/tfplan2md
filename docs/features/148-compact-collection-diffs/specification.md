@@ -21,10 +21,9 @@ This feature makes primitive collection changes compact while preserving the dis
 - Sort numeric collection indices by their numeric value wherever indexed attribute paths remain visible, so index 2 appears before index 10. Non-index path components retain their existing ordering semantics.
 - In generic attribute tables, present each collection whose elements are all primitive values as one logical attribute row for create, update, replace, and delete actions.
 - For collection updates, show added and removed element occurrences as a collection diff. Repeated equal values are retained with their multiplicity; removing one of two equal occurrences is one removal, not removal of the value altogether.
-- Respect observable Terraform collection semantics:
-  - For lists and tuples, preserve order and report an order-only change even when the same element occurrences exist before and after.
-  - For sets, disregard presentation order and report only membership changes.
-  - When the available plan information does not establish whether a collection is ordered or unordered, treat it as ordered so a potentially meaningful reorder is not hidden.
+- Treat every primitive collection as ordered. Plan JSON serializes lists, tuples, and sets identically as arrays and carries no provider schema, so tfplan2md cannot tell a set from a list.
+  - Report an order-only change even when the same element occurrences exist before and after.
+  - This loses nothing for sets: Terraform emits set elements in a canonical sorted order, so a set never produces an order-only change, and its membership changes keep the remaining elements in relative order.
 - Compare elements by their underlying Terraform values. A display name supplied by feature 147 (`guid-display-name-resolution`) may annotate an element, but it never changes whether two elements are equal.
 - Keep `null`, an absent collection, an empty collection, an unknown value, and a sensitive value observably distinct according to the report's existing value-handling rules.
   - Unknown elements or collections remain visibly unknown and are not presented as known additions or removals.
@@ -60,7 +59,7 @@ body.conditions.users.excludeUsers
 
 The exact Markdown layout is an architecture decision. The user-visible contract is that the collection has one logical row, additions and removals are unambiguous, duplicates are not collapsed, and names do not replace the underlying identity.
 
-For an ordered list whose values only move, the report explicitly identifies an order change. It does not claim that one occurrence was removed and an equal occurrence added, and it does not omit the change. The same presentation-only order difference in a Terraform set produces no collection change.
+For an ordered list whose values only move, the report explicitly identifies an order change. It does not claim that one occurrence was removed and an equal occurrence added, and it does not omit the change. Terraform still updates the resource for such a reorder, even where the provider's API ignores order (for example the user GUIDs of a Conditional Access policy), so the report shows why the resource is updated. Order is significant in other cases, such as `dns_servers`, where the first entry is the primary server.
 
 When one `azuread_group` gains a member in the middle of `members`, the drift section contains one collection-drift entry for that resource and one changed path for `members`. It reports the added member instead of a sequence of `members[n]: old → new` transitions. If the same resource also has drift in another primitive collection, both paths appear in that resource's collection-drift entry. Other resources receive their own collection-drift entries.
 
@@ -83,9 +82,8 @@ Unknown and sensitive states remain placeholders. A transition involving a parti
 - [ ] A generic table renders an all-primitive collection as one logical attribute row for create, update, replace, and delete actions.
 - [ ] A primitive collection update identifies added and removed occurrences without emitting a replacement cascade caused only by shifted indices.
 - [ ] Duplicate values retain their multiplicity: adding or removing one equal occurrence changes the diff by exactly one occurrence.
-- [ ] An order-only change to a known ordered collection is visible and is identified as an order change.
-- [ ] An order-only difference in a known Terraform set is omitted, while genuine set membership additions and removals remain visible.
-- [ ] When collection kind is unavailable, a reorder is preserved under the documented ordered-collection assumption.
+- [ ] An order-only change to a primitive collection is visible and is identified as an order change, not as removed and added occurrences.
+- [ ] Adding or removing members of a sorted collection, as Terraform emits sets, reports only the membership change and no order change.
 - [ ] Equality uses underlying Terraform values; enabling or changing GUID display-name mappings cannot turn an unchanged member into a change or merge two distinct members.
 - [ ] The same collection diff remains understandable with raw GUIDs only and gains optional name annotations when feature 147 can resolve them.
 - [ ] Empty, absent, and `null` collection states retain their existing distinct meanings and are not silently treated as equivalent.
@@ -103,4 +101,7 @@ Unknown and sensitive states remain placeholders. A transition involving a parti
 
 ## Open Questions and Assumptions
 
-- The issue calls the proposed update rendering a "set diff" but does not define behavior for Terraform lists, tuples, duplicates, or reorder-only changes. This specification assumes lists and tuples remain order-sensitive, sets remain order-insensitive, duplicate occurrences are preserved, and an unknown collection kind is treated as ordered. Maintainer approval of this specification confirms or revises that assumption.
+- The issue calls the proposed update rendering a "set diff" but does not define behavior for Terraform lists, tuples, duplicates, or reorder-only changes. Resolved 2026-10-16 by the Maintainer: every primitive collection is treated as ordered and duplicate occurrences are preserved.
+  - Evidence: with Terraform 1.14, reordering a set in configuration yields a `no-op` with identical, sorted before and after values, while reordering a list yields an `update`.
+  - Both kinds are common in practice. Current schemas define 885 list and 600 set primitive attributes in azurerm 5.10, and 38 list and 52 set attributes in azuread 3.10. Arrays inside azapi `body` are always ordered.
+  - Many schema lists are semantically unordered in the provider's API, for example Conditional Access user GUIDs, Key Vault access-policy permissions, and firewall rule addresses. A reorder there is noise, but it still triggers an update, so it is reported as an order change rather than hidden.

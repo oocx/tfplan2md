@@ -154,3 +154,10 @@
 - **Summary:** Reviewed against origin/main in codex (gpt-5.6-sol). Verdict: REWORK. Findings: 1 Blocker, 1 Major, 1 Minor
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/code-review.md
 - **Problems Encountered:** None
+
+### Maintainer decision (unblock)
+
+- **Date:** 2026-10-16
+- **Summary:** The run was blocked after the round 4 review (developer attempts 4). The Maintainer approved one more Developer attempt, limited to the round 4 findings: the large-value section must show null and absent sides (Blocker), fresh coverage evidence for HEAD (Major), and splitting ResourceChangeStage.Collections.cs under the size guideline (Minor). Status set back to running by the driver.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/state.json
+- **Problems Encountered:** No script exists to unblock a run; state.json was edited by hand.

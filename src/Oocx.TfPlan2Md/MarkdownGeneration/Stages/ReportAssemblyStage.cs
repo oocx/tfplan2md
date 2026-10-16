@@ -49,6 +49,7 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
         var refactoringOperations = BuildRefactoringOperations(input.AllChanges);
         var planStatus = BuildPlanStatusFromInput(input);
         var drift = input.Drift ?? new List<DriftGroupModel>();
+        var collectionDrift = input.CollectionDrift ?? new List<CollectionDriftModel>();
         var relevantAttributes = input.RelevantAttributes ?? new List<RelevantAttributeModel>();
 
         return new ReportModel
@@ -75,6 +76,7 @@ internal sealed class ReportAssemblyStage : IReportAssemblyStage
             FilteredResourceCount = input.FilteredResourceCount,
             PlanStatus = planStatus,
             Drift = drift,
+            CollectionDrift = collectionDrift,
             RelevantAttributes = relevantAttributes,
             OtherActions = input.OtherActions
         };

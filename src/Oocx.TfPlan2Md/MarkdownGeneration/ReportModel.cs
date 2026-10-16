@@ -146,6 +146,12 @@ internal class ReportModel
     public IReadOnlyList<DriftGroupModel> Drift { get; init; } = [];
 
     /// <summary>
+    /// Gets resource drift in primitive collections, one entry per resource, detected outside Terraform.
+    /// Related feature: docs/features/148-compact-collection-diffs/specification.md.
+    /// </summary>
+    public IReadOnlyList<CollectionDriftModel> CollectionDrift { get; init; } = [];
+
+    /// <summary>
     /// Gets the relevant attributes that influenced downstream resource computation.
     /// Related feature: docs/features/122-terraform-1-15-support/adr-002-h2-report-layout.md.
     /// </summary>

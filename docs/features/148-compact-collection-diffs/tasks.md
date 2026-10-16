@@ -197,12 +197,12 @@ feature-145 grouping unchanged; rows with a collection form one `CollectionDrift
 Add `ReportModel.CollectionDrift` beside `Drift`, and wire it through `Stages/ReportAssemblyStage.cs`
 and `IReportAssemblyStage.cs`. The count of changed collection paths is the number of paths.
 **Acceptance Criteria:**
-- [ ] A group member inserted into `members` yields one collection entry with one path, not `members[n]` transitions (SC 14, TC-70)
-- [ ] Many shifted indices yield no per-index drift entries (SC 14, TC-71)
-- [ ] Two collection paths of one resource share one entry with both paths, naturally ordered (SC 15, TC-72)
-- [ ] Each path in one entry carries its own diff, including one add and one order-only change (SC 15, TC-73)
-- [ ] Two resources with identical collection changes get two separate entries (SC 16, TC-74)
-- [ ] Drift containing three collection paths reports three changed collections (SC 19, TC-83)
+- [x] A group member inserted into `members` yields one collection entry with one path, not `members[n]` transitions (SC 14, TC-70)
+- [x] Many shifted indices yield no per-index drift entries (SC 14, TC-71)
+- [x] Two collection paths of one resource share one entry with both paths, naturally ordered (SC 15, TC-72)
+- [x] Each path in one entry carries its own diff, including one add and one order-only change (SC 15, TC-73)
+- [x] Two resources with identical collection changes get two separate entries (SC 16, TC-74)
+- [x] Drift containing three collection paths reports three changed collections (SC 19, TC-83)
 **Dependencies:** Task 1, Task 3
 
 ### Task 12: Collection drift rendering

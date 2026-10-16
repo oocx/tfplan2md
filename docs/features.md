@@ -833,7 +833,7 @@ Masking is applied comprehensively across all rendering paths:
 |---|---|---|
 | Exact path | `{"password": true}` | `password` is masked |
 | Root boolean | `before_sensitive: true` | Every attribute in the resource is masked |
-| Array-parent | `{"secrets": true}` | `secrets[0]`, `secrets[1]`, … are all masked |
+| Array-parent | `{"secrets": true}` | `secrets[0]`, `secrets[1]`, … are all masked; a primitive list is shown as one masked row |
 | Nested path | `{"properties.accessPolicies": true}` | All child keys are masked |
 
 ### Attribute Tables
@@ -1521,26 +1521,30 @@ Azure AD resources now use specialized templates with semantic icons and informa
 
 ```markdown
 <details>
-<summary>➕ azuread_group <b><code>platform_team</code></b> — <code>👥 Platform Team</code> (<code>🆔 Platform Engineering</code>) Core platform engineering team | <code>3 👤 2 👥 1 💻 1 ❓</code></summary>
+<summary>➕ azuread_group <b><code>platform</code></b> — <code>👥 Platform Team</code> - Core platform engineering team | <code>2 👤 1 👥 1 💻 1 ❓</code> | ➕ 5 members</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| display_name | `Platform Team` |
-| mail_nickname | `Platform Engineering` |
 | description | `Core platform engineering team` |
-| members[0] | `user-100` |
-| members[1] | `user-101` |
-| members[2] | `group-100` |
-| members[3] | `spn-200` |
-| members[4] | `unknown-999` |
+| display_name | `Platform Team` |
+
+#### Members
+
+| Change | Member |
+| -------- | -------- |
+| ➕ | `user-100` |
+| ➕ | `user-101` |
+| ➕ | `group-100` |
+| ➕ | `spn-200` |
+| ➕ | `unknown-999` |
 
 </details>
 ```
 
-The member count `3 👤 2 👥 1 💻 1 ❓` shows:
-- 3 Users (👤)
-- 2 Groups (👥)
+`azuread_group` has its own renderer, so its members appear in a provider-specific **Members** table rather than as a generic attribute row. The member count `2 👤 1 👥 1 💻 1 ❓` shows:
+- 2 Users (👤)
+- 1 Group (👥)
 - 1 Service Principal (💻)
 - 1 Unknown principal type (❓)
 
@@ -3160,7 +3164,7 @@ No banner is emitted for ordinary, applyable, complete plans, or for effectively
 
 #### 🌀 Drift Detected Section
 
-When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list. Values, paths, and addresses are safely escaped for the collapsed markup; line breaks are preserved as visible breaks within inline code.
+When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining scalar entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list. Changed primitive collections are the exception: each drifted resource gets one collection entry that lists all of its changed collection paths (see [Compact Collection Diffs](#compact-collection-diffs-feature-148)). Values, paths, and addresses are safely escaped for the collapsed markup; line breaks are preserved as visible breaks within inline code.
 
 Use `--drift` to control which displayable drift entries appear:
 
@@ -3283,6 +3287,74 @@ omitted after filtering. Without the option, output selection is unchanged.
 tfplan2md --summary-name-attributes body.title,body.properties.title \
   --hide-unchanged-outputs plan.json
 ```
+
+## Compact Collection Diffs (Feature 148)
+
+Primitive collections are reviewed as one logical attribute instead of one row per index. A collection is primitive when all of its known elements are strings, numbers, booleans or `null`. Lists, tuples and sets all qualify. Collections that contain objects or nested collections keep their indexed rows, with numeric indices sorted by value. The feature changes generic attribute tables and collection drift. Provider-specific tables keep their existing layouts. See the [Compact, Semantically Accurate Collection Diffs specification](features/148-compact-collection-diffs/specification.md) for the acceptance criteria.
+
+### Compact rows
+
+A primitive collection is one row for create, update, replace and delete. It counts as one changed attribute however many elements it has, so the resource summary and the attribute table agree.
+
+On an update, each side lists its elements in order, separated by `<br>`. An occurrence that exists only before is prefixed with ➖, and an occurrence that exists only after is prefixed with ➕. Kept occurrences have no prefix.
+
+```markdown
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| address_space | `🌐 10.0.0.0/16` | `🌐 10.0.0.0/16`<br>➕ `🌐 10.1.0.0/16` |
+```
+
+Duplicates keep their multiplicity. Removing one of two equal values marks exactly one occurrence with ➖, for example `a`<br>➖ `a`<br>`b` before and `a`<br>`b` after. A create shows the elements without markers, for example `alpha`<br>`beta`<br>`gamma`.
+
+Values keep their Terraform type. A string that looks like a number, boolean or `null` is quoted, so `"1"` and `1` are visibly different, and an empty string is shown as `""`.
+
+### Order and set semantics
+
+- Every primitive collection is treated as ordered, because plan JSON writes lists, tuples and sets the same way. A reorder of the same occurrences shows `🔀 order changed` at the end of the after cell instead of removed and added values:
+
+```markdown
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| dns_servers | `🌐 10.0.0.4`<br>`🌐 10.0.0.5` | `🌐 10.0.0.5`<br>`🌐 10.0.0.4`<br>🔀 order changed |
+```
+
+- Terraform writes set elements in sorted order, so a set does not report an order change. Adding or removing set members shows only the membership change.
+- Equality uses the raw Terraform value. Feature 147 (`guid-display-name-resolution`) adds display names as annotations beside raw values once it is merged. Names never change whether two elements are equal and never merge two distinct members.
+
+### Null, empty, unknown and sensitive values
+
+- An absent collection shows `-`, a JSON `null` shows `null`, and an empty collection shows `[]`. Transitions between these states stay visible, for example ➖ `x` against `[]`.
+- An unknown element shows `(known after apply)` in its position and is not reported as an added or removed value. A wholly unknown collection shows `(known after apply)` in its After cell.
+- A collection is masked as one row when it or any of its elements is sensitive. Both sides show `(sensitive)`, with no element values, counts or order. `--show-sensitive` reveals the values as it does elsewhere.
+
+### Large collections
+
+When element text is long, the collection moves to the large-value section. Its body lists one element per line in a `text` block, with the same ➖ and ➕ markers and a `🔀 order changed` line when the order changed.
+
+### Natural index order
+
+Numeric indices in visible attribute paths sort by their numeric value, so `rules[2]` comes before `rules[10]`. Nested indices sort segment by segment. Other path segments keep their ordinary text order.
+
+### Collection drift
+
+When a resource has drift in primitive collections, the drift section gets one entry for that resource. The entry lists every changed collection path, and each path shows its own added (➕) and removed (➖) occurrences and any order change:
+
+```markdown
+<details><summary>🌀 azuread_group <code>azuread_group.admins</code> — 2 changed collections: <code>members</code>, <code>owners</code></summary>
+
+- <code>members</code>
+  - ➕ <code>00000002-aaaa-4bbb-8ccc-000000000002</code>
+- <code>owners</code>
+  - 🔀 order changed: <code>00000007-aaaa-4bbb-8ccc-000000000007</code>, <code>00000008-aaaa-4bbb-8ccc-000000000008</code> → <code>00000008-aaaa-4bbb-8ccc-000000000008</code>, <code>00000007-aaaa-4bbb-8ccc-000000000007</code>
+
+</details>
+```
+
+- Entries are never combined across resources, even when the same path changes the same way, because each resource's element changes depend on its own membership and order.
+- A collection with unknown values is described as `unresolved: some values are known after apply`, and a masked collection shows `(sensitive)`.
+- The heading counts changed collection paths, not members or indices.
+- The `--drift all`, `--drift relevant` and `--drift none` options select collection entries in the same way as scalar entries.
+- Scalar drift still groups across resources as described in the Drift Detected Section above.
 
 ## Future Considerations
 

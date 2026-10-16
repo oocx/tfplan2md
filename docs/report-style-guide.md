@@ -225,6 +225,31 @@ For multi-line strings or long values (>100 chars):
     - **Inline Diff**: HTML `<pre>` block with styled `<span>` elements for character-level highlighting.
     - **Simple Diff**: Code block with `diff` language identifier.
 
+### Collection Diffs
+
+A primitive collection (see [Compact Collection Diffs](features.md#compact-collection-diffs-feature-148)) is one attribute row. Its Before and After cells list one occurrence per `<br>`-separated line, each code-formatted:
+
+| Marker | Meaning | Where it appears |
+|--------|---------|------------------|
+| ➖ | Occurrence exists only before | Before cell, before the value |
+| ➕ | Occurrence exists only after | After cell, before the value |
+| 🔀 order changed | Kept occurrences changed order | Last line of the After cell, or the drift line |
+
+- **Each glyph is followed by a non-breaking space (U+00A0)**, like every icon that labels text.
+- **Markers sit outside the code span**, so element text cannot imitate a marker.
+- **Kept occurrences carry no marker.** The `order changed` line is the only signal for a reorder, so a reorder is never shown as removed and added values.
+- **Placeholders** use the same plain or code forms as elsewhere: `-` (absent), `null`, `[]` (empty), `(known after apply)` for unknown elements, and `(sensitive)` for masked collections.
+- **Large collections** move to the large-value section as a `text` block with one element per line and the same markers.
+
+**Example:**
+
+```markdown
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| address_space | `🌐 10.0.0.0/16` | `🌐 10.0.0.0/16`<br>➕ `🌐 10.1.0.0/16` |
+| dns_servers | `🌐 10.0.0.4`<br>`🌐 10.0.0.5` | `🌐 10.0.0.5`<br>`🌐 10.0.0.4`<br>🔀 order changed |
+```
+
 ## Icons & Symbols
 
 ### Action Icons
@@ -304,6 +329,7 @@ This rule applies to all icon+label combinations throughout the generated markdo
 | 🔒 | Security Findings | `🔒 **Security & Quality:**` | See Code Analysis Integration | Security findings header in resource details |
 | 📥 | Import Operation | `📥 Import` | See Refactoring Operations | Resource import operation indicator |
 | 🔀 | Move Operation | `🔀 Move` | See Refactoring Operations | Resource move operation indicator |
+| 🔀 | Order Changed | `🔀 order changed` | See Collection Diffs | Reorder of a primitive collection; not a move. Used only inside collection rows and collection drift lines |
 
 ### Icon Placement Rules
 

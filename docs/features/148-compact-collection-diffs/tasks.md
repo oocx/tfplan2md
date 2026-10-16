@@ -461,12 +461,12 @@ Add the tests for TC-40 to TC-43 and TC-116 at row and drift level that do not a
 sensitive element-less collection on create and on delete. Fix the stage only if a test fails.
 **Acceptance Criteria:**
 
-- [ ] absent to `[]` and `null` to `[]` give no row by default (SC 9, TC-40, TC-41)
-- [ ] `[]` to `[]` gives no row by default (SC 9, TC-42)
-- [ ] Under `--show-unchanged-values` each of these shows a row in which each side's state is distinguishable (SC 9, TC-40, TC-41, TC-42)
-- [ ] `[]` beside elements renders `[]`; absent or `null` beside elements renders `-` or `null` (SC 9, TC-43)
-- [ ] A sensitive element-less collection on create or delete gives no row and no drift entry (SC 9, TC-41)
-- [ ] An unchanged compact collection under `--show-unchanged-values` renders as one row (TC-116)
+- [x] absent to `[]` and `null` to `[]` give no row by default (SC 9, TC-40, TC-41)
+- [x] `[]` to `[]` gives no row by default (SC 9, TC-42)
+- [x] Under `--show-unchanged-values` each of these shows a row in which each side's state is distinguishable (SC 9, TC-40, TC-41, TC-42)
+- [x] `[]` beside elements renders `[]`; absent or `null` beside elements renders `-` or `null` (SC 9, TC-43)
+- [x] A sensitive element-less collection on create or delete gives no row and no drift entry (SC 9, TC-41)
+- [x] An unchanged compact collection under `--show-unchanged-values` renders as one row (TC-116)
 **Dependencies:** Task 17
 
 ### Task 24: Regression, snapshots and provider tables

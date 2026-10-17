@@ -1,12 +1,12 @@
 {
   "type": "feature",
   "slug": "148-compact-collection-diffs",
-  "stage": "uat-tester",
+  "stage": "release-manager",
   "status": "running",
   "gates": {
     "spec": "approved",
     "arch": "n/a",
-    "uat": "required"
+    "uat": "pending"
   },
   "attempts": {
     "developer": 6,

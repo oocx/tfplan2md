@@ -2,14 +2,13 @@
 
 ## Status
 
-Partial: GitHub UAT PR created and open; Azure DevOps UAT PR NOT created (blocked, see below).
-The Maintainer's decision is pending and is recorded by the workflow driver.
+Decision: UAT PASSED, judged on GitHub PR 128 alone. Azure DevOps not run (no token). PR 128 closed.
 
 ## UAT PRs
 
 | Platform | PR | Status |
 |---|---|---|
-| GitHub | https://github.com/oocx/tfplan2md-uat/pull/128 | Open, 2 comments (feature test, comprehensive demo regression) |
+| GitHub | https://github.com/oocx/tfplan2md-uat/pull/128 | Closed after the decision; 2 comments (feature test, comprehensive demo regression) |
 | Azure DevOps | not created | Blocked: no AZDO_UAT_TOKEN / AZURE_DEVOPS_EXT_PAT available to the agent |
 | Bitbucket | not tested | No UAT tooling in repo |
 
@@ -40,4 +39,6 @@ https://dev.azure.com/oocx/test/_git/test/pullrequests?_a=mine
 
 ## Results
 
-Pending Maintainer review. No platform-rendered defects recorded yet.
+Maintainer decision: UAT PASSED on GitHub PR 128. No platform-rendered defects reported. Azure DevOps and Bitbucket were not validated.
+
+A stash mix-up during cleanup (a stray `git stash pop` applied an unrelated stash) was repaired by the Maintainer's reset; nothing was lost.

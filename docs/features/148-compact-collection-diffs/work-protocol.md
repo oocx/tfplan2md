@@ -224,3 +224,10 @@
 - **Summary:** Out-of-band corrections at the uat-tester stage, requested by the Maintainer, recorded by the driver because wp-append.sh only accepts the current stage's role. Quality Engineer: uat-test-plan.md step 4 and the states inventory now treat absent, null and [] as equivalent for change detection (criterion 9); step 9 covers the labelled Before/After large-value blocks and the unknown-aware summary count; added run 7 (--show-unchanged-values). Architect: architecture.md section 7 rewritten for element-less equivalence, 5a names ResourceChangeStage.CollectionSensitivity.cs and the whole-collection masking fallback, section 3 names CollectionCanonicalText.FromModel, new section 7b covers large collections and the summary count; Files table updated.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/uat-test-plan.md, docs/features/148-compact-collection-diffs/architecture.md
 - **Problems Encountered:** uat-plan.json lacks fixtures for the updated plan: large collections with an element-less side, large create/delete, and states null -> [x], [x] -> absent, [x] -> null.
+
+### UAT Tester
+
+- **Date:** 2026-10-17
+- **Summary:** Created GitHub UAT PR 128 (feature test + regression); Maintainer passed UAT on GitHub alone; PR closed. Azure DevOps not run.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/uat-report.md
+- **Problems Encountered:** UAT submodule gitlinks untracked on main (worked around with env paths); no AzDO token so no AzDO PR; stray git stash pop applied unrelated stash during cleanup, repaired by Maintainer reset

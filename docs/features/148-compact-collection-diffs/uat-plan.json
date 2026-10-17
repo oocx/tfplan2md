@@ -1,0 +1,1903 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "msgraph_resource.policy[\"ca\"]",
+      "mode": "managed",
+      "type": "msgraph_resource",
+      "name": "policy[\"ca\"]",
+      "provider_name": "registry.terraform.io/microsoft/msgraph",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "id": "policy-id",
+          "api_version": "v1.0",
+          "url": "/identity/conditionalAccess/policies",
+          "ignore_missing_property": true,
+          "body": {
+            "displayName": "ca",
+            "conditions": {
+              "users": {
+                "excludeUsers": [
+                  "00000001-aaaa-4bbb-8ccc-000000000001",
+                  "00000002-aaaa-4bbb-8ccc-000000000002",
+                  "00000003-aaaa-4bbb-8ccc-000000000003"
+                ],
+                "includeUsers": [
+                  "00000010-aaaa-4bbb-8ccc-000000000010",
+                  "00000011-aaaa-4bbb-8ccc-000000000011",
+                  "00000012-aaaa-4bbb-8ccc-000000000012"
+                ]
+              }
+            }
+          }
+        },
+        "after": {
+          "id": "policy-id",
+          "api_version": "v1.0",
+          "url": "/identity/conditionalAccess/policies",
+          "ignore_missing_property": true,
+          "body": {
+            "displayName": "ca",
+            "conditions": {
+              "users": {
+                "excludeUsers": [
+                  "00000001-aaaa-4bbb-8ccc-000000000001",
+                  "00000003-aaaa-4bbb-8ccc-000000000003",
+                  "00000004-aaaa-4bbb-8ccc-000000000004"
+                ],
+                "includeUsers": [
+                  "00000012-aaaa-4bbb-8ccc-000000000012",
+                  "00000010-aaaa-4bbb-8ccc-000000000010",
+                  "00000011-aaaa-4bbb-8ccc-000000000011"
+                ]
+              }
+            }
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_virtual_network.v",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "v",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "vnet",
+          "location": "westeurope",
+          "resource_group_name": "rg",
+          "dns_servers": [
+            "10.0.0.4",
+            "10.0.0.5"
+          ],
+          "address_space": [
+            "10.0.0.0/16"
+          ]
+        },
+        "after": {
+          "name": "vnet",
+          "location": "westeurope",
+          "resource_group_name": "rg",
+          "dns_servers": [
+            "10.0.0.5",
+            "10.0.0.4"
+          ],
+          "address_space": [
+            "10.0.0.0/16",
+            "10.1.0.0/16"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_network_security_group.nsg",
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "nsg",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "nsg",
+          "location": "westeurope",
+          "resource_group_name": "rg",
+          "security_rule": [
+            {
+              "name": "rule0",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8000",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule1",
+              "priority": 101,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8001",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule2",
+              "priority": 102,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8002",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule3",
+              "priority": 103,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8003",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule4",
+              "priority": 104,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8004",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule5",
+              "priority": 105,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8005",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule6",
+              "priority": 106,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8006",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule7",
+              "priority": 107,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8007",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule8",
+              "priority": 108,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8008",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule9",
+              "priority": 109,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8009",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule10",
+              "priority": 110,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8010",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule11",
+              "priority": 111,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8011",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            }
+          ]
+        },
+        "after": {
+          "name": "nsg",
+          "location": "westeurope",
+          "resource_group_name": "rg",
+          "security_rule": [
+            {
+              "name": "rule0",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8000",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule1",
+              "priority": 101,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8001",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule2",
+              "priority": 103,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8002",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule3",
+              "priority": 103,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8003",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule4",
+              "priority": 104,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8004",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule5",
+              "priority": 105,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8005",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule6",
+              "priority": 106,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8006",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule7",
+              "priority": 107,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8007",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule8",
+              "priority": 108,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8008",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule9",
+              "priority": 109,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8009",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            },
+            {
+              "name": "rule10",
+              "priority": 111,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8010",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24",
+                "10.0.1.0/24"
+              ]
+            },
+            {
+              "name": "rule11",
+              "priority": 111,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "8011",
+              "destination_address_prefix": "*",
+              "source_address_prefixes": [
+                "10.0.0.0/24"
+              ]
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.dup",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "dup",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "dup_remove": [
+            "a",
+            "a",
+            "b"
+          ],
+          "dup_add": [
+            "a",
+            "b"
+          ]
+        },
+        "after": {
+          "dup_remove": [
+            "a",
+            "b"
+          ],
+          "dup_add": [
+            "a",
+            "a",
+            "b"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.insert",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "insert",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "items": [
+            "item-00",
+            "item-01",
+            "item-02",
+            "item-03",
+            "item-04",
+            "item-05",
+            "item-06",
+            "item-07",
+            "item-08",
+            "item-09",
+            "item-10",
+            "item-11"
+          ]
+        },
+        "after": {
+          "items": [
+            "item-00",
+            "item-01",
+            "item-02",
+            "item-inserted",
+            "item-03",
+            "item-04",
+            "item-05",
+            "item-06",
+            "item-07",
+            "item-08",
+            "item-09",
+            "item-10",
+            "item-11"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.sorted",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "sorted",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "members": [
+            "00000005-aaaa-4bbb-8ccc-000000000005",
+            "00000025-aaaa-4bbb-8ccc-000000000025",
+            "00000045-aaaa-4bbb-8ccc-000000000045"
+          ]
+        },
+        "after": {
+          "members": [
+            "00000005-aaaa-4bbb-8ccc-000000000005",
+            "00000015-aaaa-4bbb-8ccc-000000000015",
+            "00000025-aaaa-4bbb-8ccc-000000000025",
+            "00000045-aaaa-4bbb-8ccc-000000000045"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.states",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "states",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "present": 1,
+          "null_to_empty": null,
+          "empty_to_x": [],
+          "x_to_empty": [
+            "x"
+          ],
+          "empty_unchanged": [],
+          "null_to_x": null,
+          "x_to_absent": [
+            "x"
+          ],
+          "x_to_null": [
+            "x"
+          ]
+        },
+        "after": {
+          "present": 1,
+          "absent_to_empty": [],
+          "null_to_empty": [],
+          "empty_to_x": [
+            "x"
+          ],
+          "x_to_empty": [],
+          "empty_unchanged": [],
+          "null_to_x": [
+            "x"
+          ],
+          "x_to_null": null
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.types",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "types",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "mixed": [
+            1,
+            "1",
+            true,
+            "true",
+            null
+          ]
+        },
+        "after": {
+          "mixed": [
+            "1",
+            1,
+            true,
+            null
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.unknown",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "unknown",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "whole_unknown": [
+            "a",
+            "b"
+          ],
+          "partial_unknown": [
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        "after": {
+          "partial_unknown": [
+            "a",
+            null,
+            "c"
+          ]
+        },
+        "after_unknown": {
+          "whole_unknown": true,
+          "partial_unknown": [
+            false,
+            true,
+            false
+          ]
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.large",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "large",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "large_change": [
+            "small",
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          ],
+          "large_reorder": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ]
+        },
+        "after": {
+          "large_change": [
+            "small",
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ],
+          "large_reorder": [
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.large_states",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "large_states",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "null_to_large": null,
+          "empty_to_large": [],
+          "large_to_empty": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ],
+          "large_to_null": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ],
+          "large_to_absent": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ]
+        },
+        "after": {
+          "abs_to_large": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ],
+          "null_to_large": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ],
+          "empty_to_large": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ],
+          "large_to_empty": [],
+          "large_to_null": null
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.large_created",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "large_created",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "created_large_list": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.large_deleted",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "large_deleted",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "deleted_large_list": [
+            "large-element-a-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "large-element-b-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          ]
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.special",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "special",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "elements": [
+            "a|b",
+            "tick`tick",
+            "<br>",
+            "<b>bold</b>",
+            "R&D",
+            "",
+            "ffffffff-ffff-4fff-8fff-ffffffffffff"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.created",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "created",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "tags_list": [
+            "alpha",
+            "beta",
+            "gamma"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.deleted",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "deleted",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "tags_list": [
+            "alpha",
+            "beta",
+            "gamma"
+          ]
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.replaced",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "replaced",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete",
+          "create"
+        ],
+        "before": {
+          "zones": [
+            "1",
+            "2"
+          ],
+          "name": "r"
+        },
+        "after": {
+          "zones": [
+            "1",
+            "3"
+          ],
+          "name": "r"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "replace_paths": [
+          [
+            "zones"
+          ]
+        ]
+      }
+    },
+    {
+      "address": "azurerm_linux_web_app.created_web",
+      "mode": "managed",
+      "type": "azurerm_linux_web_app",
+      "name": "created_web",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "app-uat-new",
+          "location": "westeurope",
+          "resource_group_name": "rg-uat",
+          "service_plan_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat/providers/Microsoft.Web/serverFarms/plan-uat",
+          "https_only": true,
+          "app_settings": {
+            "MODE": "prod"
+          },
+          "auth_settings": [],
+          "auth_settings_v2": [],
+          "backup": [],
+          "connection_string": [],
+          "identity": [],
+          "logs": [],
+          "storage_account": [],
+          "sticky_settings": [],
+          "site_config": [
+            {
+              "always_on": true,
+              "ftps_state": "Disabled",
+              "minimum_tls_version": "1.2",
+              "application_stack": [],
+              "cors": [],
+              "ip_restriction": [],
+              "scm_ip_restriction": []
+            }
+          ],
+          "tags": null
+        },
+        "after_unknown": {
+          "id": true,
+          "default_hostname": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "connection_string": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_linux_web_app.deleted_web",
+      "mode": "managed",
+      "type": "azurerm_linux_web_app",
+      "name": "deleted_web",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "app-uat-old",
+          "location": "westeurope",
+          "resource_group_name": "rg-uat",
+          "service_plan_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat/providers/Microsoft.Web/serverFarms/plan-uat",
+          "https_only": true,
+          "app_settings": {
+            "MODE": "prod"
+          },
+          "auth_settings": [],
+          "auth_settings_v2": [],
+          "backup": [],
+          "connection_string": [],
+          "identity": [],
+          "logs": [],
+          "storage_account": [],
+          "sticky_settings": [],
+          "site_config": [
+            {
+              "always_on": true,
+              "ftps_state": "Disabled",
+              "minimum_tls_version": "1.2",
+              "application_stack": [],
+              "cors": [],
+              "ip_restriction": [],
+              "scm_ip_restriction": []
+            }
+          ],
+          "tags": null
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "connection_string": true
+        },
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_network_security_rule.ports",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "ports",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "allow-web",
+          "priority": 100,
+          "destination_port_ranges": [
+            "80",
+            "443"
+          ]
+        },
+        "after": {
+          "name": "allow-web",
+          "priority": 100,
+          "destination_port_ranges": [
+            "80",
+            "443",
+            "8080"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.mixed",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "mixed",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "rules": [
+            {
+              "name": "r0",
+              "prefixes": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "name": "r1",
+              "prefixes": [
+                "c"
+              ]
+            }
+          ],
+          "matrix": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ]
+        },
+        "after": {
+          "rules": [
+            {
+              "name": "r0",
+              "prefixes": [
+                "a",
+                "b",
+                "z"
+              ]
+            },
+            {
+              "name": "r1",
+              "prefixes": [
+                "c"
+              ]
+            }
+          ],
+          "matrix": [
+            [
+              1
+            ],
+            [
+              3
+            ]
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.vg",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "vg",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "vg",
+          "allow_access": false,
+          "tags": [
+            "a",
+            "b"
+          ]
+        },
+        "after": {
+          "name": "vg",
+          "allow_access": true,
+          "tags": [
+            "a",
+            "b"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.provider_check",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "provider_check",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "pc",
+          "owners": [
+            "00000001-aaaa-4bbb-8ccc-000000000001"
+          ],
+          "members": [
+            "00000002-aaaa-4bbb-8ccc-000000000002"
+          ]
+        },
+        "after": {
+          "display_name": "pc2",
+          "owners": [
+            "00000001-aaaa-4bbb-8ccc-000000000001"
+          ],
+          "members": [
+            "00000002-aaaa-4bbb-8ccc-000000000002"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.admins",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "admins",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "admins",
+          "description": "x"
+        },
+        "after": {
+          "display_name": "admins",
+          "description": "y"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.ops",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "ops",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "ops",
+          "description": "new"
+        },
+        "after": {
+          "display_name": "ops",
+          "description": "newer"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.secret_entries",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_entries",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "changed": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-AAA",
+            "b"
+          ],
+          "unchanged": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-CCC",
+            "b"
+          ],
+          "added": [
+            "a"
+          ],
+          "removed": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-EEE"
+          ],
+          "reordered": [
+            "SENTINEL-SECRET-VALUE-148-FFF",
+            "SENTINEL-SECRET-VALUE-148-GGG"
+          ],
+          "equal_same_side": [
+            "SENTINEL-SECRET-VALUE-148-HHH",
+            "SENTINEL-SECRET-VALUE-148-HHH"
+          ]
+        },
+        "after": {
+          "changed": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-BBB",
+            "c"
+          ],
+          "unchanged": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-CCC",
+            "c"
+          ],
+          "added": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-DDD"
+          ],
+          "removed": [
+            "a"
+          ],
+          "reordered": [
+            "SENTINEL-SECRET-VALUE-148-GGG",
+            "SENTINEL-SECRET-VALUE-148-FFF"
+          ],
+          "equal_same_side": [
+            "SENTINEL-SECRET-VALUE-148-III"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "changed": [
+            false,
+            true,
+            false
+          ],
+          "unchanged": [
+            false,
+            true,
+            false
+          ],
+          "added": [
+            false
+          ],
+          "removed": [
+            false,
+            true
+          ],
+          "reordered": [
+            true,
+            true
+          ],
+          "equal_same_side": [
+            true,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "changed": [
+            false,
+            true,
+            false
+          ],
+          "unchanged": [
+            false,
+            true,
+            false
+          ],
+          "added": [
+            false,
+            true
+          ],
+          "removed": [
+            false
+          ],
+          "reordered": [
+            true,
+            true
+          ],
+          "equal_same_side": [
+            true
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_visible",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_visible",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "visible_to_masked": [
+            "x"
+          ],
+          "masked_to_visible": [
+            "y"
+          ],
+          "after_side_only": [
+            "a",
+            "shown-before"
+          ]
+        },
+        "after": {
+          "visible_to_masked": [
+            "x"
+          ],
+          "masked_to_visible": [
+            "y"
+          ],
+          "after_side_only": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-JJJ"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "visible_to_masked": [
+            false
+          ],
+          "masked_to_visible": [
+            true
+          ],
+          "after_side_only": [
+            false,
+            false
+          ]
+        },
+        "after_sensitive": {
+          "visible_to_masked": [
+            true
+          ],
+          "masked_to_visible": [
+            false
+          ],
+          "after_side_only": [
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_whole",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_whole",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "whole": [
+            "SENTINEL-SECRET-VALUE-148-K1",
+            "SENTINEL-SECRET-VALUE-148-K2"
+          ]
+        },
+        "after": {
+          "whole": [
+            "SENTINEL-SECRET-VALUE-148-K2",
+            "SENTINEL-SECRET-VALUE-148-K1",
+            "SENTINEL-SECRET-VALUE-148-K3"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "whole": true
+        },
+        "after_sensitive": {
+          "whole": true
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_whole_created",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_whole_created",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "created",
+          "secret_list": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {
+          "secret_list": true
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_whole_deleted",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_whole_deleted",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "deleted",
+          "secret_list": []
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "secret_list": true
+        },
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "review_object.secret_large",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_large",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "large_beside_masked": [
+            "visible-large-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+            "SENTINEL-SECRET-VALUE-148-LARGE-1-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          ],
+          "only_masked_large": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-LARGE-3-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          ]
+        },
+        "after": {
+          "large_beside_masked": [
+            "visible-large-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+            "SENTINEL-SECRET-VALUE-148-LARGE-2-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+            "z"
+          ],
+          "only_masked_large": [
+            "a",
+            "SENTINEL-SECRET-VALUE-148-LARGE-3-LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+            "b"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "large_beside_masked": [
+            false,
+            true
+          ],
+          "only_masked_large": [
+            false,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "large_beside_masked": [
+            false,
+            true,
+            false
+          ],
+          "only_masked_large": [
+            false,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.secret_unknown",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "secret_unknown",
+      "provider_name": "registry.terraform.io/example/review",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "entries": [
+            "a",
+            "b",
+            "SENTINEL-SECRET-VALUE-148-MMM"
+          ]
+        },
+        "after": {
+          "entries": [
+            "a",
+            null,
+            "SENTINEL-SECRET-VALUE-148-NNN"
+          ]
+        },
+        "after_unknown": {
+          "entries": [
+            false,
+            true,
+            false
+          ]
+        },
+        "before_sensitive": {
+          "entries": [
+            false,
+            false,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "entries": [
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.azure_ids",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "azure_ids",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "ids-before",
+          "ids_case_only": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-A/providers/Microsoft.Network/virtualNetworks/vnet",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-B/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_plus_add": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-A/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_masked": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SENTINEL-SECRET-VALUE-148-RG/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after": {
+          "name": "ids-after",
+          "ids_case_only": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-a/providers/Microsoft.Network/virtualNetworks/vnet",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-b/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_plus_add": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-a/providers/Microsoft.Network/virtualNetworks/vnet",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-c/providers/Microsoft.Network/virtualNetworks/vnet"
+          ],
+          "ids_case_masked": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sentinel-secret-value-148-rg/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "ids_case_masked": [
+            true
+          ]
+        },
+        "after_sensitive": {
+          "ids_case_masked": [
+            true
+          ]
+        }
+      }
+    }
+  ],
+  "resource_drift": [
+    {
+      "address": "azuread_group.admins",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "admins",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "admins",
+          "members": [
+            "00000001-aaaa-4bbb-8ccc-000000000001",
+            "00000003-aaaa-4bbb-8ccc-000000000003"
+          ],
+          "owners": [
+            "00000007-aaaa-4bbb-8ccc-000000000007",
+            "00000008-aaaa-4bbb-8ccc-000000000008"
+          ]
+        },
+        "after": {
+          "display_name": "admins",
+          "members": [
+            "00000001-aaaa-4bbb-8ccc-000000000001",
+            "00000002-aaaa-4bbb-8ccc-000000000002",
+            "00000003-aaaa-4bbb-8ccc-000000000003"
+          ],
+          "owners": [
+            "00000008-aaaa-4bbb-8ccc-000000000008",
+            "00000007-aaaa-4bbb-8ccc-000000000007"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.devs",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "devs",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "devs",
+          "members": [
+            "00000001-aaaa-4bbb-8ccc-000000000001",
+            "00000003-aaaa-4bbb-8ccc-000000000003"
+          ]
+        },
+        "after": {
+          "display_name": "devs",
+          "members": [
+            "00000001-aaaa-4bbb-8ccc-000000000001",
+            "00000002-aaaa-4bbb-8ccc-000000000002",
+            "00000003-aaaa-4bbb-8ccc-000000000003"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.ops",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "ops",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "ops",
+          "description": "old"
+        },
+        "after": {
+          "display_name": "ops",
+          "description": "new"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.ops2",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "ops2",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "ops2",
+          "description": "old"
+        },
+        "after": {
+          "display_name": "ops2",
+          "description": "new"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.secret_drift",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "secret_drift",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "s",
+          "members": [
+            "SENTINEL-SECRET-VALUE-148-D1"
+          ]
+        },
+        "after": {
+          "display_name": "s",
+          "members": [
+            "SENTINEL-SECRET-VALUE-148-D2",
+            "SENTINEL-SECRET-VALUE-148-D1"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "members": true
+        },
+        "after_sensitive": {
+          "members": true
+        }
+      }
+    },
+    {
+      "address": "azuread_group.unknown_drift",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "unknown_drift",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "u",
+          "members": [
+            "00000001-aaaa-4bbb-8ccc-000000000001",
+            "00000002-aaaa-4bbb-8ccc-000000000002"
+          ]
+        },
+        "after": {
+          "display_name": "u",
+          "members": [
+            "00000001-aaaa-4bbb-8ccc-000000000001",
+            null
+          ]
+        },
+        "after_unknown": {
+          "members": [
+            false,
+            true
+          ]
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.masked_entry_drift",
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "masked_entry_drift",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "display_name": "m",
+          "members": [
+            "00000021-aaaa-4bbb-8ccc-000000000021",
+            "SENTINEL-SECRET-VALUE-148-D3"
+          ]
+        },
+        "after": {
+          "display_name": "m",
+          "members": [
+            "00000021-aaaa-4bbb-8ccc-000000000021",
+            "SENTINEL-SECRET-VALUE-148-D4",
+            "00000022-aaaa-4bbb-8ccc-000000000022"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "members": [
+            false,
+            true
+          ]
+        },
+        "after_sensitive": {
+          "members": [
+            false,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "address": "review_object.case_only_drift",
+      "mode": "managed",
+      "type": "review_object",
+      "name": "case_only_drift",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "description": "before",
+          "ids": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-DRIFT/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after": {
+          "description": "after",
+          "ids": [
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-drift/providers/Microsoft.Network/virtualNetworks/vnet"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "review_object.unknown",
+          "mode": "managed",
+          "type": "review_object",
+          "name": "unknown",
+          "expressions": {
+            "whole_unknown": {
+              "references": [
+                "review_source.lookup.ids",
+                "review_source.lookup"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

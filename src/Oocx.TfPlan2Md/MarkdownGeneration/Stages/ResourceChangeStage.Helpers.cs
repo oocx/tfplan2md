@@ -116,6 +116,38 @@ internal sealed partial class ResourceChangeStage
     }
 
     /// <summary>
+    /// Determines whether a flattened key lies at or below a detected primitive collection path.
+    /// </summary>
+    /// <param name="key">The flattened attribute key.</param>
+    /// <param name="collections">The detected collections keyed by path.</param>
+    /// <returns><c>true</c> when the key is replaced by a compact collection row.</returns>
+    private static bool IsUnderCollection(string key, Dictionary<string, DetectedCollection> collections)
+    {
+        if (collections.Count == 0)
+        {
+            return false;
+        }
+
+        if (collections.ContainsKey(key))
+        {
+            return true;
+        }
+
+        var bracket = key.IndexOf('[', StringComparison.Ordinal);
+        while (bracket >= 0)
+        {
+            if (collections.ContainsKey(key[..bracket]))
+            {
+                return true;
+            }
+
+            bracket = key.IndexOf('[', bracket + 1);
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Flattens a JSON-like object into dotted attribute paths.
     /// </summary>
     /// <param name="obj">The source object.</param>

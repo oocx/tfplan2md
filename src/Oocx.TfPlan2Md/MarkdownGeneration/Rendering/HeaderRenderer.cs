@@ -71,7 +71,7 @@ internal sealed class HeaderRenderer
             return;
         }
 
-        var isNoChangesBaseline = model.Summary.Total == 0 && model.Drift.Count == 0;
+        var isNoChangesBaseline = model.Summary.Total == 0 && model.Drift.Count == 0 && model.CollectionDrift.Count == 0;
         var lines = new List<string>(3);
         if (status.Errored == true)
         {

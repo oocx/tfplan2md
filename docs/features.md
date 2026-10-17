@@ -824,6 +824,7 @@ All summary values are automatically escaped to ensure valid markdown output.
 Masking is applied comprehensively across all rendering paths:
 
 - **Attribute tables** — individual attributes marked sensitive by Terraform are shown as `(sensitive)`
+- **Primitive collections** — a collection marked sensitive as a whole is shown as `(sensitive)`; otherwise only its marked entries are shown as `(sensitive)`, each with its change marker (see [Compact Collection Diffs](#compact-collection-diffs-feature-148))
 - **AzApi body tables** — flattened JSON body properties (create, update, delete, replace) are masked when the corresponding `before_sensitive` / `after_sensitive` metadata marks them as sensitive
 - **Azure DevOps Variable Group diffs** — a variable cell is masked as `(sensitive / hidden)` when either the before or after state has `is_secret: true` (including transitions where a variable gains or loses secret status)
 
@@ -833,7 +834,8 @@ Masking is applied comprehensively across all rendering paths:
 |---|---|---|
 | Exact path | `{"password": true}` | `password` is masked |
 | Root boolean | `before_sensitive: true` | Every attribute in the resource is masked |
-| Array-parent | `{"secrets": true}` | `secrets[0]`, `secrets[1]`, … are all masked |
+| Array-parent | `{"secrets": true}` | `secrets[0]`, `secrets[1]`, … are all masked; a primitive list is shown as one masked row |
+| Per-entry list | `{"secrets": [false, true, false]}` | Only the marked entries are masked, each at its position; the other entries of a primitive list are shown (see [Compact Collection Diffs](#compact-collection-diffs-feature-148)) |
 | Nested path | `{"properties.accessPolicies": true}` | All child keys are masked |
 
 ### Attribute Tables
@@ -1521,26 +1523,30 @@ Azure AD resources now use specialized templates with semantic icons and informa
 
 ```markdown
 <details>
-<summary>➕ azuread_group <b><code>platform_team</code></b> — <code>👥 Platform Team</code> (<code>🆔 Platform Engineering</code>) Core platform engineering team | <code>3 👤 2 👥 1 💻 1 ❓</code></summary>
+<summary>➕ azuread_group <b><code>platform</code></b> — <code>👥 Platform Team</code> - Core platform engineering team | <code>2 👤 1 👥 1 💻 1 ❓</code> | ➕ 5 members</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| display_name | `Platform Team` |
-| mail_nickname | `Platform Engineering` |
 | description | `Core platform engineering team` |
-| members[0] | `user-100` |
-| members[1] | `user-101` |
-| members[2] | `group-100` |
-| members[3] | `spn-200` |
-| members[4] | `unknown-999` |
+| display_name | `Platform Team` |
+
+#### Members
+
+| Change | Member |
+| -------- | -------- |
+| ➕ | `user-100` |
+| ➕ | `user-101` |
+| ➕ | `group-100` |
+| ➕ | `spn-200` |
+| ➕ | `unknown-999` |
 
 </details>
 ```
 
-The member count `3 👤 2 👥 1 💻 1 ❓` shows:
-- 3 Users (👤)
-- 2 Groups (👥)
+`azuread_group` has its own renderer, so its members appear in a provider-specific **Members** table rather than as a generic attribute row. The member count `2 👤 1 👥 1 💻 1 ❓` shows:
+- 2 Users (👤)
+- 1 Group (👥)
 - 1 Service Principal (💻)
 - 1 Unknown principal type (❓)
 
@@ -2929,6 +2935,7 @@ With `--ignore-azure-id-case-changes`, only the `display_name` row is shown — 
 
 - Only **Azure resource ID** attribute values are subject to the filter. Plain display names, numeric values, boolean values, and null values are never suppressed.
 - The filter applies to `azurerm` resources and to body properties of `azapi` resources (`azapi_resource`, `azapi_update_resource`). Resources from other providers (e.g., `aws`) are unaffected.
+- On `azurerm` resources, a compact primitive collection of Azure resource IDs (see [Compact Collection Diffs](#compact-collection-diffs-feature-148)) is hidden when its only change is letter case. If the collection also gains or loses an element, or its order changes, the collection is shown. A masked entry never counts as a case-only difference.
 - Rows suppressed by `--ignore-azure-id-case-changes` remain hidden **even when `--show-unchanged-values` is also active** — casing-only Azure ID changes take precedence.
 - The resource entry itself still appears in the report even if all its attribute change rows are suppressed.
 - Plan summary counts (resources to add, change, destroy) are not affected.
@@ -3160,7 +3167,7 @@ No banner is emitted for ordinary, applyable, complete plans, or for effectively
 
 #### 🌀 Drift Detected Section
 
-When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list. Values, paths, and addresses are safely escaped for the collapsed markup; line breaks are preserved as visible breaks within inline code.
+When `resource_drift[]` is non-empty, a `🌀 Drift Detected` H2 section is rendered between Resource Changes and Refactoring Operations. Drift entries are passed through the same display-filtering stage used for normal resource changes, so no-op or fully suppressed entries are hidden. Remaining scalar entries are grouped by resource type, changed attribute path, and their normalized before-and-after values. Each collapsed group shows its count and transition, with all affected resource addresses available as a bullet list. Changed primitive collections are the exception: each drifted resource gets one collection entry that lists all of its changed collection paths (see [Compact Collection Diffs](#compact-collection-diffs-feature-148)). Values, paths, and addresses are safely escaped for the collapsed markup; line breaks are preserved as visible breaks within inline code.
 
 Use `--drift` to control which displayable drift entries appear:
 
@@ -3283,6 +3290,83 @@ omitted after filtering. Without the option, output selection is unchanged.
 tfplan2md --summary-name-attributes body.title,body.properties.title \
   --hide-unchanged-outputs plan.json
 ```
+
+## Compact Collection Diffs (Feature 148)
+
+Primitive collections are reviewed as one logical attribute instead of one row per index. A collection is primitive when all of its known elements that are not masked as sensitive are strings, numbers, booleans or `null`. Lists, tuples and sets all qualify. Collections that contain objects or nested collections keep their indexed rows, with numeric indices sorted by value. The feature changes generic attribute tables and collection drift. Provider-specific tables keep their existing layouts. See the [Compact, Semantically Accurate Collection Diffs specification](features/148-compact-collection-diffs/specification.md) for the acceptance criteria.
+
+### Compact rows
+
+A primitive collection is one row for create, update, replace and delete. It counts as one changed attribute however many elements it has, so the resource summary and the attribute table agree.
+
+On an update, each side lists its elements in order, separated by `<br>`. An occurrence that exists only before is prefixed with ➖, and an occurrence that exists only after is prefixed with ➕. Kept occurrences have no prefix.
+
+```markdown
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| address_space | `🌐 10.0.0.0/16` | `🌐 10.0.0.0/16`<br>➕ `🌐 10.1.0.0/16` |
+```
+
+Duplicates keep their multiplicity. Removing one of two equal values marks exactly one occurrence with ➖, for example `a`<br>➖ `a`<br>`b` before and `a`<br>`b` after. A create shows the elements without markers, for example `alpha`<br>`beta`<br>`gamma`.
+
+Values keep their Terraform type. An empty or whitespace-only string is always quoted (`""`, `" "`) so it stays visible. When the known elements on either side mix JSON kinds, for example strings with numbers, a string that looks like a number, boolean or `null` is quoted too, so `"1"` and `1` are visibly different. A collection whose elements are all strings shows them unquoted, so an all-string port list reads the same as before.
+
+### Order and set semantics
+
+- Every primitive collection is treated as ordered, because plan JSON writes lists, tuples and sets the same way. A reorder of the same occurrences shows `🔀 order changed` at the end of the after cell instead of removed and added values:
+
+```markdown
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| dns_servers | `🌐 10.0.0.4`<br>`🌐 10.0.0.5` | `🌐 10.0.0.5`<br>`🌐 10.0.0.4`<br>🔀 order changed |
+```
+
+- Terraform writes set elements in sorted order, so a set does not report an order change. Adding or removing set members shows only the membership change.
+- Equality uses the raw Terraform value. Feature 147 (`guid-display-name-resolution`) adds display names as annotations beside raw values once it is merged. Names never change whether two elements are equal and never merge two distinct members.
+
+### Null, empty, unknown and sensitive values
+
+- An absent collection shows `-`, a JSON `null` shows `null`, and an empty collection shows `[]`. Terraform writes every unset nested block as `[]`, so absent, `null` and `[]` count as equal for change detection. A collection that has no elements on either side is therefore hidden, and so is an unchanged collection, unless `--show-unchanged-values` is used. The resource summary counts only the rows that are shown.
+- A transition from one of these states to a collection with elements stays visible, for example `[]` against ➕ `a`, or ➖ `x` against `[]`.
+- An unknown element shows `(known after apply)` in its position and is not reported as an added or removed value. A wholly unknown collection shows `(known after apply)` in its After cell.
+- A collection that Terraform marks sensitive as a whole is masked as one row, with `(sensitive)` on both sides and no element count, position or marker.
+- Otherwise only the entries that Terraform marks sensitive are masked, each at its own position on the side where it is marked. Entries that are not marked are shown normally, with their added, removed and order information. A masked entry shows `(sensitive)` in place of its value.
+- A masked entry is compared only with masked entries. It is never shown as equal to a visible entry, so changing a sensitive value to or from a visible value shows a removal and an addition. A masked entry on one side is equal to a masked entry on the other side, and shows no marker, only when both hold the same value. Each masked occurrence is its own placeholder, so two masked entries on one side are never reported as duplicates. Masked values never produce a display name or other annotation. The report reveals nothing else about a masked value, so changing a secret shows only through these markers.
+- A masked entry can carry a removed, added or unchanged marker, and it takes part in an order change like any other entry. `--show-sensitive` reveals the values and renders the collection as if nothing were sensitive.
+- The element-less rule applies to masked collections too. A sensitive collection that is absent, `null` or `[]` on both sides, such as an unset sensitive block list on a create or delete, produces no row and no collection drift entry. A transition from a masked `[]` to masked elements stays visible as `(sensitive)`.
+
+### Large collections
+
+When element text is long, the collection moves to the large-value section. Its body lists one element per line in a `text` block, with the same ➖ and ➕ markers and a `🔀 order changed` line when the order changed.
+
+- **Update:** each side is its own `text` block, labelled `Before:` and `After:`. A side with no elements uses the table placeholder: `-` when absent, `null`, or `[]` when empty. A side that is unknown as a whole shows `(known after apply)`, and a masked entry shows `(sensitive)` with its marker.
+- **Create and delete:** the collection is one `text` block, labelled only by the attribute name, with no markers.
+- **Summary:** the `Large values:` summary counts each added, removed or unknown element as one change, and a changed order as one more. A side that is unknown as a whole counts as one change, so such a collection never reads `0 changes`. For example, a list that gains one element, or a reordered list, reads `items (2 lines, 1 change)`.
+
+### Natural index order
+
+Numeric indices in visible attribute paths sort by their numeric value, so `rules[2]` comes before `rules[10]`. Nested indices sort segment by segment. Other path segments keep their ordinary text order.
+
+### Collection drift
+
+When a resource has drift in primitive collections, the drift section gets one entry for that resource. The entry lists every changed collection path, and each path shows its own added (➕) and removed (➖) occurrences and any order change:
+
+```markdown
+<details><summary>🌀 azuread_group <code>azuread_group.admins</code> — 2 changed collections: <code>members</code>, <code>owners</code></summary>
+
+- <code>members</code>
+  - ➕ <code>00000002-aaaa-4bbb-8ccc-000000000002</code>
+- <code>owners</code>
+  - 🔀 order changed: <code>00000007-aaaa-4bbb-8ccc-000000000007</code>, <code>00000008-aaaa-4bbb-8ccc-000000000008</code> → <code>00000008-aaaa-4bbb-8ccc-000000000008</code>, <code>00000007-aaaa-4bbb-8ccc-000000000007</code>
+
+</details>
+```
+
+- Entries are never combined across resources, even when the same path changes the same way, because each resource's element changes depend on its own membership and order.
+- A collection with unknown values is described as `unresolved: some values are known after apply`. A masked entry is listed at its position with the same ➖ or ➕ marker as in the attribute row, shown as `(sensitive)`. A collection that Terraform marks sensitive as a whole shows only `(sensitive)`.
+- The heading counts changed collection paths, not members or indices.
+- The `--drift all`, `--drift relevant` and `--drift none` options select collection entries in the same way as scalar entries.
+- Scalar drift still groups across resources as described in the Drift Detected Section above.
 
 ## Future Considerations
 

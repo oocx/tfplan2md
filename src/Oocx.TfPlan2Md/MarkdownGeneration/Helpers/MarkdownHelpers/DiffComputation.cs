@@ -14,7 +14,7 @@ internal static partial class MarkdownHelpers
     /// A 10 million cell limit allows ~3,162×3,162 line or character comparisons while keeping
     /// computation under ~40 MB memory and completing in well under a second.
     /// </summary>
-    private const long MaxLcsMatrixCells = 10_000_000;
+    internal const long MaxLcsMatrixCells = 10_000_000;
 
     /// <summary>
     /// Thread-local cache for <see cref="BuildLineDiff"/> results.
@@ -101,7 +101,7 @@ internal static partial class MarkdownHelpers
     /// <param name="before">Original lines.</param>
     /// <param name="after">Updated lines.</param>
     /// <returns>List of matching index pairs.</returns>
-    private static List<LcsPair> ComputeLcsPairs(string[] before, string[] after)
+    internal static List<LcsPair> ComputeLcsPairs(string[] before, string[] after)
     {
         var m = before.Length;
         var n = after.Length;
@@ -244,7 +244,14 @@ internal static partial class MarkdownHelpers
     /// <param name="Name">Attribute name.</param>
     /// <param name="Before">Original value.</param>
     /// <param name="After">Updated value.</param>
-    private readonly record struct AttributeChangeInfo(string Name, string? Before, string? After);
+    /// <param name="CollectionTotalLines">Occurrence count for a compact collection, otherwise null.</param>
+    /// <param name="CollectionChangedLines">Changed occurrence count for a compact collection, otherwise null.</param>
+    private readonly record struct AttributeChangeInfo(
+        string Name,
+        string? Before,
+        string? After,
+        int? CollectionTotalLines = null,
+        int? CollectionChangedLines = null);
 
     /// <summary>
     /// Describes the kind of difference detected between two values.
@@ -272,5 +279,5 @@ internal static partial class MarkdownHelpers
     /// </summary>
     /// <param name="BeforeIndex">Index in the original sequence.</param>
     /// <param name="AfterIndex">Index in the updated sequence.</param>
-    private readonly record struct LcsPair(int BeforeIndex, int AfterIndex);
+    internal readonly record struct LcsPair(int BeforeIndex, int AfterIndex);
 }

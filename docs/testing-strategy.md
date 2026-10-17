@@ -211,6 +211,8 @@ These exemptions are documented in the test file with clear justification commen
 
 Test individual components in isolation to verify correct behavior of parsing, model building, markdown rendering, and CLI argument parsing.
 
+Feature 148 adds a masking invariance pattern for sensitive collection entries (`MaskedValueInvarianceTests`). It renders one plan, replaces the values of masked entries with other values while keeping each entry's equality with masked entries on the other side, and asserts that the table, large-value section, drift, summaries, counts and diagnostics do not change. A sentinel sweep then checks that no masked value appears in any output, including console output.
+
 ### Integration Tests
 
 Test JSON parsing and markdown generation end-to-end. As the application is distributed via Docker, Docker-based integration tests verify the final CLI behavior in a containerized environment.
@@ -350,6 +352,7 @@ Additional test data files for edge cases:
 - `create-only-plan.json` - Plan with only create operations (new infrastructure deployment)
 - `delete-only-plan.json` - Plan with only delete operations (infrastructure teardown)
 - `firewall-rule-changes.json` - Firewall rule collection with semantic diff scenarios (add, modify, remove rules)
+- `feature-148-uat-plan.json` - Feature 148 compact collection cases: primitive collection diffs, unset block lists on create and delete (including sensitive ones), all-string port lists, and per-resource collection drift. Not a copy: the test project links it from `docs/features/148-compact-collection-diffs/uat-plan.json`, so the UAT fixture and the test input cannot diverge
 - `multi-module-plan.json` - Plan with multiple modules and nested modules to validate module grouping, ordering, and heading hierarchy
 
 ---

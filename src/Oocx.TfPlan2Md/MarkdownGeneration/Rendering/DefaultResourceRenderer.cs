@@ -67,7 +67,7 @@ internal sealed partial class DefaultResourceRenderer : IResourceRenderer
 
         RenderChildResources(writer, change.ChildResourceGroups);
         RenderCodeAnalysisFindings(writer, change);
-        RenderLargeAttributes(writer, largeAttributes, smallAttributes.Length > 0 || !string.IsNullOrWhiteSpace(change.TagsBadges), context);
+        RenderLargeAttributes(writer, largeAttributes, smallAttributes.Length > 0 || !string.IsNullOrWhiteSpace(change.TagsBadges), IsTwoSided(change), context);
 
         RenderInlineActions(writer, change, context);
 

@@ -225,6 +225,33 @@ For multi-line strings or long values (>100 chars):
     - **Inline Diff**: HTML `<pre>` block with styled `<span>` elements for character-level highlighting.
     - **Simple Diff**: Code block with `diff` language identifier.
 
+### Collection Diffs
+
+A primitive collection (see [Compact Collection Diffs](features.md#compact-collection-diffs-feature-148)) is one attribute row. Its Before and After cells list one occurrence per `<br>`-separated line, each code-formatted:
+
+| Marker | Meaning | Where it appears |
+|--------|---------|------------------|
+| ➖ | Occurrence exists only before | Before cell, before the value |
+| ➕ | Occurrence exists only after | After cell, before the value |
+| 🔀 order changed | Kept occurrences changed order | Last line of the After cell, or the drift line |
+
+- **Each glyph is followed by a non-breaking space (U+00A0)**, like every icon that labels text.
+- **Markers sit outside the code span**, so element text cannot imitate a marker.
+- **Kept occurrences carry no marker.** The `order changed` line is the only signal for a reorder, so a reorder is never shown as removed and added values.
+- **Placeholders** use the same plain or code forms as elsewhere: `-` (absent), `null`, `[]` (empty), `(known after apply)` for unknown elements, and `(sensitive)` for a collection marked sensitive as a whole and for each masked entry.
+- **Masked entries keep their markers.** A masked entry shows `(sensitive)` in its position with ➖ or ➕ like any entry. It is never compared with a visible entry, so a visible value that becomes masked shows as ➖ and ➕ rather than as unchanged. It carries no marker only when it equals a masked entry on the other side. Masked entries are never labelled as duplicates of each other.
+- **Quoting** is the same as in the feature description: an empty or whitespace-only string is always quoted, and a string that looks like a number, boolean or `null` is quoted only when the collection mixes JSON kinds.
+- **Large collections** move to the large-value section as `text` blocks with one element per line and the same markers. On an update, the Before and After sides are separate blocks labelled `Before:` and `After:`, and an element-less side shows `-`, `null` or `[]`. A create or delete shows one unlabelled block without markers. The summary counts each changed element once, a wholly unknown side as one change, and a changed order as one more.
+
+**Example:**
+
+```markdown
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| address_space | `🌐 10.0.0.0/16` | `🌐 10.0.0.0/16`<br>➕ `🌐 10.1.0.0/16` |
+| dns_servers | `🌐 10.0.0.4`<br>`🌐 10.0.0.5` | `🌐 10.0.0.5`<br>`🌐 10.0.0.4`<br>🔀 order changed |
+```
+
 ## Icons & Symbols
 
 ### Action Icons
@@ -304,6 +331,7 @@ This rule applies to all icon+label combinations throughout the generated markdo
 | 🔒 | Security Findings | `🔒 **Security & Quality:**` | See Code Analysis Integration | Security findings header in resource details |
 | 📥 | Import Operation | `📥 Import` | See Refactoring Operations | Resource import operation indicator |
 | 🔀 | Move Operation | `🔀 Move` | See Refactoring Operations | Resource move operation indicator |
+| 🔀 | Order Changed | `🔀 order changed` | See Collection Diffs | Reorder of a primitive collection; not a move. Used only inside collection rows and collection drift lines |
 
 ### Icon Placement Rules
 

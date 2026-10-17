@@ -109,7 +109,7 @@ public class ResourceChangeStageTests
         var attributes = stage.Build(plan).Single().AttributeChanges;
 
         attributes.Should().ContainSingle(attribute => attribute.Name == "group" && !attribute.IsLarge);
-        attributes.Should().ContainSingle(attribute => attribute.Name == "members[0]" && !attribute.IsLarge);
+        attributes.Should().ContainSingle(attribute => attribute.Name == "members" && !attribute.IsLarge);
     }
 
     /// <summary>

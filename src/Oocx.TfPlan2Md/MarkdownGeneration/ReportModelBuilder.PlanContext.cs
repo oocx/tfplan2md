@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
@@ -44,14 +45,14 @@ internal partial class ReportModelBuilder
     /// <param name="configurationReferenceIndex">Configuration reference index for drift resources.</param>
     /// <param name="displayChanges">Already display-filtered planned changes used by relevant mode.</param>
     /// <returns>A list of grouped displayable drift entries.</returns>
-    private List<DriftGroupModel> BuildResourceDrift(
+    private DriftModels BuildResourceDrift(
         TerraformPlan plan,
         IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> configurationReferenceIndex,
         IReadOnlyList<ResourceChangeModel> displayChanges)
     {
         if (_driftDisplayMode == DriftDisplayMode.None || plan.ResourceDrift is null || plan.ResourceDrift.Count == 0)
         {
-            return [];
+            return DriftModels.Empty;
         }
 
         // Drift groups represent changed attributes only. Keep this independent from the
@@ -74,7 +75,20 @@ internal partial class ReportModelBuilder
             ? SelectRelevantDrift(displayableDrift, displayChanges)
             : displayableDrift;
 
-        return GroupDrift(selectedDrift);
+        return new DriftModels(GroupDrift(selectedDrift), GroupCollectionDrift(selectedDrift));
+    }
+
+    /// <summary>
+    /// Scalar drift groups and per-resource collection drift entries built from the selected drift.
+    /// </summary>
+    /// <param name="Groups">Scalar attribute transitions grouped across resources.</param>
+    /// <param name="Collections">Collection drift entries, one per resource.</param>
+    private sealed record DriftModels(List<DriftGroupModel> Groups, List<CollectionDriftModel> Collections)
+    {
+        /// <summary>
+        /// Gets an instance without any drift.
+        /// </summary>
+        internal static DriftModels Empty { get; } = new([], []);
     }
 
     /// <summary>
@@ -98,7 +112,7 @@ internal partial class ReportModelBuilder
     private static List<DriftGroupModel> GroupDrift(IReadOnlyList<ResourceChangeModel> selectedDrift)
     {
         return selectedDrift
-            .SelectMany(change => change.AttributeChanges.Select(attribute => new
+            .SelectMany(change => change.AttributeChanges.Where(attribute => attribute.Collection is null).Select(attribute => new
             {
                 change.Type,
                 AttributePath = attribute.Name,
@@ -108,7 +122,7 @@ internal partial class ReportModelBuilder
             }))
             .GroupBy(candidate => (candidate.Type, candidate.AttributePath, candidate.Before, candidate.After))
             .OrderBy(group => group.Key.Type, StringComparer.Ordinal)
-            .ThenBy(group => group.Key.AttributePath, StringComparer.Ordinal)
+            .ThenBy(group => group.Key.AttributePath, AttributePathComparer.Instance)
             .ThenBy(group => group.Key.Before, StringComparer.Ordinal)
             .ThenBy(group => group.Key.After, StringComparer.Ordinal)
             .Select(group => new DriftGroupModel
@@ -120,6 +134,38 @@ internal partial class ReportModelBuilder
                 Addresses = group.Select(candidate => candidate.Address)
                     .Distinct(StringComparer.Ordinal)
                     .OrderBy(address => address, StringComparer.Ordinal)
+                    .ToList()
+            })
+            .ToList();
+    }
+
+    /// <summary>
+    /// Builds one collection drift entry per resource from rows that carry a collection diff.
+    /// Entries are ordered by resource type and address; paths are naturally ordered.
+    /// </summary>
+    private static List<CollectionDriftModel> GroupCollectionDrift(IReadOnlyList<ResourceChangeModel> selectedDrift)
+    {
+        return selectedDrift
+            .Select(change => new
+            {
+                change.Type,
+                change.Address,
+                Paths = change.AttributeChanges
+                    .Where(attribute => attribute.Collection is not null)
+                    .OrderBy(attribute => attribute.Name, AttributePathComparer.Instance)
+                    .Select(attribute => new CollectionDriftPath(attribute.Name, attribute.Collection!))
+                    .ToList()
+            })
+            .Where(candidate => candidate.Paths.Count > 0)
+            .GroupBy(candidate => (candidate.Type, candidate.Address))
+            .OrderBy(group => group.Key.Type, StringComparer.Ordinal)
+            .ThenBy(group => group.Key.Address, StringComparer.Ordinal)
+            .Select(group => new CollectionDriftModel
+            {
+                ResourceType = group.Key.Type,
+                Address = group.Key.Address,
+                Paths = group.SelectMany(candidate => candidate.Paths)
+                    .OrderBy(path => path.Path, AttributePathComparer.Instance)
                     .ToList()
             })
             .ToList();

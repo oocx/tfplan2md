@@ -87,7 +87,7 @@ internal sealed class ReportRenderer
     /// <param name="model">Report model.</param>
     private static void RenderDriftSection(MarkdownWriter writer, ReportModel model)
     {
-        if (model.Drift.Count == 0)
+        if (model.Drift.Count == 0 && model.CollectionDrift.Count == 0)
         {
             return;
         }
@@ -95,31 +95,62 @@ internal sealed class ReportRenderer
         writer.Heading("🌀\u00A0Drift Detected", 2);
         writer.BlankLine();
 
-        foreach (var group in model.Drift)
+        // Ordered by resource type; within a type scalar groups come first, then collection entries by address.
+        var resourceTypes = model.Drift.Select(group => group.ResourceType)
+            .Concat(model.CollectionDrift.Select(entry => entry.ResourceType))
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal);
+
+        foreach (var resourceType in resourceTypes)
         {
-            var safeResourceType = MarkdownHelpers.HtmlEncode(group.ResourceType)
-                .Replace("\r\n", "<br/>", StringComparison.Ordinal)
-                .Replace("\n", "<br/>", StringComparison.Ordinal)
-                .Replace("\r", "<br/>", StringComparison.Ordinal);
-            var summary = $"🌀\u00A0{group.Addresses.Count} {safeResourceType} resources — " +
-                $"{FormatDriftCode(group.AttributePath)}: " +
-                $"{FormatDriftCode(group.Before)} → {FormatDriftCode(group.After)}";
-            writer.DetailsOpen(summary);
-            writer.BlankLine();
-            foreach (var address in group.Addresses)
+            foreach (var group in model.Drift.Where(candidate => string.Equals(candidate.ResourceType, resourceType, StringComparison.Ordinal)))
             {
-                writer.Paragraph($"- {FormatDriftCode(address)}");
+                RenderScalarDriftGroup(writer, group);
             }
 
-            writer.BlankLine();
-            writer.DetailsClose();
+            foreach (var entry in model.CollectionDrift.Where(candidate => string.Equals(candidate.ResourceType, resourceType, StringComparison.Ordinal)))
+            {
+                CollectionDriftRenderer.Render(writer, entry);
+            }
         }
     }
 
     /// <summary>
+    /// Renders one scalar drift group shared by one or more resources.
+    /// </summary>
+    private static void RenderScalarDriftGroup(MarkdownWriter writer, DriftGroupModel group)
+    {
+        var safeResourceType = EncodeDriftText(group.ResourceType);
+        var summary = $"🌀\u00A0{group.Addresses.Count} {safeResourceType} resources — " +
+            $"{FormatDriftCode(group.AttributePath)}: " +
+            $"{FormatDriftCode(group.Before)} → {FormatDriftCode(group.After)}";
+        writer.DetailsOpen(summary);
+        writer.BlankLine();
+        foreach (var address in group.Addresses)
+        {
+            writer.Paragraph($"- {FormatDriftCode(address)}");
+        }
+
+        writer.BlankLine();
+        writer.DetailsClose();
+    }
+
+    /// <summary>
+    /// HTML-encodes drift text and keeps it on one line so it cannot split details markup.
+    /// </summary>
+    /// <param name="value">The raw text.</param>
+    /// <returns>Encoded single-line text.</returns>
+    internal static string EncodeDriftText(string value) => MarkdownHelpers.HtmlEncode(value)
+        .Replace("\r\n", "<br/>", StringComparison.Ordinal)
+        .Replace("\n", "<br/>", StringComparison.Ordinal)
+        .Replace("\r", "<br/>", StringComparison.Ordinal);
+
+    /// <summary>
     /// Formats drift text as inline code without allowing a Terraform value to split details markup across lines.
     /// </summary>
-    private static string FormatDriftCode(string? value) => MarkdownHelpers.FormatCodeSummary(value)
+    /// <param name="value">The raw text.</param>
+    /// <returns>Inline code markup on one line.</returns>
+    internal static string FormatDriftCode(string? value) => MarkdownHelpers.FormatCodeSummary(value)
         .Replace("\r\n", "<br/>", StringComparison.Ordinal)
         .Replace("\n", "<br/>", StringComparison.Ordinal)
         .Replace("\r", "<br/>", StringComparison.Ordinal);

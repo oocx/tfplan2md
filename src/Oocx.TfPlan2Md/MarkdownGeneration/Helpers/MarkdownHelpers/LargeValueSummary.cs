@@ -30,8 +30,8 @@ internal static partial class MarkdownHelpers
             var before = attr.Before ?? string.Empty;
             var after = attr.After ?? string.Empty;
 
-            var totalLines = CountTotalLines(before, after);
-            var changedLines = CountChangedLines(before, after);
+            var totalLines = attr.CollectionTotalLines ?? CountTotalLines(before, after);
+            var changedLines = attr.CollectionChangedLines ?? CountChangedLines(before, after);
 
             var totalLabel = totalLines == 1 ? "line" : "lines";
             var changedLabel = changedLines == 1 ? "change" : "changes";
@@ -80,7 +80,14 @@ internal static partial class MarkdownHelpers
     {
         if (item is AttributeChangeModel attrModel)
         {
-            return new AttributeChangeInfo(attrModel.Name, attrModel.Before, attrModel.After);
+            return attrModel.Collection is { } collection
+                ? new AttributeChangeInfo(
+                    attrModel.Name,
+                    attrModel.Before,
+                    attrModel.After,
+                    Math.Max(collection.Before.Count, collection.After.Count),
+                    CountCollectionChanges(collection))
+                : new AttributeChangeInfo(attrModel.Name, attrModel.Before, attrModel.After);
         }
 
         if (item is AttributeChangeInfo info)
@@ -150,5 +157,22 @@ internal static partial class MarkdownHelpers
         var afterLines = SplitLines(after);
         var diff = BuildLineDiff(beforeLines, afterLines);
         return diff.Count(d => d.Kind != DiffKind.Unchanged);
+    }
+
+    /// <summary>
+    /// Counts removed, added and unknown occurrences of a collection, plus one when the order changed and one when
+    /// the after side is unknown as a whole (Terraform never marks a before value unknown). An unknown value is always a
+    /// change (docs/features/148-compact-collection-diffs/specification.md), so it never reads as 0 changes.
+    /// </summary>
+    /// <param name="collection">The collection diff.</param>
+    /// <returns>The number of changes shown in the large-value summary.</returns>
+    private static int CountCollectionChanges(CollectionChangeModel collection)
+    {
+        var occurrences = collection.Before.Concat(collection.After)
+            .Count(element => element.Status is CollectionElementStatus.Removed
+                or CollectionElementStatus.Added
+                or CollectionElementStatus.Unknown);
+        var wholeUnknown = collection.AfterState == CollectionState.Unknown ? 1 : 0;
+        return occurrences + wholeUnknown + (collection.OrderChanged ? 1 : 0);
     }
 }

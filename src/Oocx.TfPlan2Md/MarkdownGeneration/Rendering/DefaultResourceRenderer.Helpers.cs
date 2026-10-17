@@ -137,10 +137,25 @@ internal sealed partial class DefaultResourceRenderer
         }
     }
 
+    /// <summary>
+    /// Escapes an attribute name for plain table and heading text. Adjacent index brackets such as
+    /// <c>matrix[1][0]</c> would otherwise parse as a reference link, so the second bracket is escaped.
+    /// </summary>
+    /// <param name="name">The attribute name.</param>
+    /// <returns>Markdown-safe attribute name.</returns>
+    private static string EscapeAttributeName(string name)
+        => MarkdownHelpers.EscapeMarkdown(name).Replace("][", "]\\[", StringComparison.Ordinal);
+
+    /// <summary>
+    /// Determines whether a resource shows before and after values. A create or delete has a single value column.
+    /// </summary>
+    private static bool IsTwoSided(ResourceChangeModel change) => change.Action is not ("create" or "delete");
+
     private static void RenderLargeAttributes(
         MarkdownWriter writer,
         AttributeChangeModel[] largeAttributes,
         bool hasSmallAttributesOrTags,
+        bool twoSided,
         IRenderContext context)
     {
         if (largeAttributes.Length == 0)
@@ -155,7 +170,7 @@ internal sealed partial class DefaultResourceRenderer
             writer.Raw("<details>\n");
             writer.Raw($"<summary>{summary}</summary>\n");
             writer.BlankLine();
-            RenderLargeAttributeBodies(writer, largeAttributes, context);
+            RenderLargeAttributeBodies(writer, largeAttributes, twoSided, context);
             writer.Raw("</details>\n");
             writer.BlankLine();
             return;
@@ -163,10 +178,10 @@ internal sealed partial class DefaultResourceRenderer
 
         writer.Paragraph(summary);
         writer.BlankLine();
-        RenderLargeAttributeBodies(writer, largeAttributes, context);
+        RenderLargeAttributeBodies(writer, largeAttributes, twoSided, context);
     }
 
-    private static void RenderLargeAttributeBodies(MarkdownWriter writer, AttributeChangeModel[] largeAttributes, IRenderContext context)
+    private static void RenderLargeAttributeBodies(MarkdownWriter writer, AttributeChangeModel[] largeAttributes, bool twoSided, IRenderContext context)
     {
         var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(context.RenderTarget) == LargeValueFormat.SimpleDiff
             ? "simple-diff"
@@ -174,9 +189,11 @@ internal sealed partial class DefaultResourceRenderer
 
         foreach (var attribute in largeAttributes)
         {
-            writer.Heading($"**{MarkdownHelpers.EscapeMarkdown(attribute.Name)}:**", 5);
+            writer.Heading($"**{EscapeAttributeName(attribute.Name)}:**", 5);
             writer.BlankLine();
-            writer.Raw(MarkdownHelpers.FormatLargeValue(attribute.Before, attribute.After, largeValueFormat));
+            writer.Raw(attribute.Collection is not null
+                ? FormatLargeCollection(attribute, twoSided)
+                : MarkdownHelpers.FormatLargeValue(attribute.Before, attribute.After, largeValueFormat));
             writer.BlankLine();
         }
     }

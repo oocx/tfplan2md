@@ -231,3 +231,10 @@
 - **Summary:** Created GitHub UAT PR 128 (feature test + regression); Maintainer passed UAT on GitHub alone; PR closed. Azure DevOps not run.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/uat-report.md
 - **Problems Encountered:** UAT submodule gitlinks untracked on main (worked around with env paths); no AzDO token so no AzDO PR; stray git stash pop applied unrelated stash during cleanup, repaired by Maintainer reset
+
+### Release Manager
+
+- **Date:** 2026-10-17
+- **Summary:** Wrote release notes with one screenshot (PR 128 UAT PR already closed, no cleanup needed). Pushed branch, opened PR carrying the workflow fix 36394b12, waiting for PR Validation. Maintainer merges personally.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/release-notes.md, docs/features/148-compact-collection-diffs/compact-collection-insert.png
+- **Problems Encountered:** Playwright rejects ubuntu26.04; screenshot generated with PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-x64. Release tag in screenshot URL (v1.48.0) assumes a minor bump from v1.47.0.

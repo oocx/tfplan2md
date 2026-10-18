@@ -238,3 +238,10 @@
 - **Summary:** Wrote release notes with one screenshot (PR 128 UAT PR already closed, no cleanup needed). Pushed branch, opened PR carrying the workflow fix 36394b12, waiting for PR Validation. Maintainer merges personally.
 - **Artifacts Produced:** docs/features/148-compact-collection-diffs/release-notes.md, docs/features/148-compact-collection-diffs/compact-collection-insert.png
 - **Problems Encountered:** Playwright rejects ubuntu26.04; screenshot generated with PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-x64. Release tag in screenshot URL (v1.48.0) assumes a minor bump from v1.47.0.
+
+### Retrospective
+
+- **Date:** 2026-10-18
+- **Summary:** Post-release retrospective for v1.48.0: six finding themes (unsatisfiable CI review demand, hand-edited unblocks, stale cross-role artifacts, dropped release notes, post-release CI failures, environment friction) and ten improvement items.
+- **Artifacts Produced:** docs/features/148-compact-collection-diffs/retrospective.md
+- **Problems Encountered:** None

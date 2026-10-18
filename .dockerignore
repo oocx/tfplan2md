@@ -26,6 +26,9 @@ docs/features/*
 docs/features/146-generic-resource-review-clarity/*
 !docs/features/146-generic-resource-review-clarity/uat-plan.json
 !docs/features/146-generic-resource-review-clarity/uat-plan-root-noop.json
+!docs/features/148-compact-collection-diffs/
+docs/features/148-compact-collection-diffs/*
+!docs/features/148-compact-collection-diffs/uat-plan.json
 artifacts/
 website/
 uat-repos/

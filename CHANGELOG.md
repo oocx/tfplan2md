@@ -5,6 +5,98 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.48.0"></a>
+## [1.48.0](https://github.com/oocx/tfplan2md/compare/v1.47.0...v1.48.0) (2026-10-18)
+
+### ✨ Features
+
+* add masked flag to collection element keys and models ([bf52ca5](https://github.com/oocx/tfplan2md/commit/bf52ca57758f08a8834dd593c6bc45ce2ba7bebb))
+* add type-accurate collection element diff ([c3cef45](https://github.com/oocx/tfplan2md/commit/c3cef4579460a3070f5d110c0374ecc53079220b))
+* compact primitive collections into one model row with unknown and sensitive handling ([969bd78](https://github.com/oocx/tfplan2md/commit/969bd78ca8e6275b969cdc2cdeaccd8d1da8a17f))
+* evaluate attribute filters element-wise for collection rows ([83e9ecd](https://github.com/oocx/tfplan2md/commit/83e9ecd6df06f4f0a9e47eb791011c063f998605))
+* group collection drift per resource ([a7461bf](https://github.com/oocx/tfplan2md/commit/a7461bfad55c1530029156bc6fce0b23cba4cea2))
+* mask sensitive collection entries per side with opaque comparison tokens ([c9aefa8](https://github.com/oocx/tfplan2md/commit/c9aefa8fc5f9cbbe5a451dafedfa1c797d2ea813))
+* order attribute paths by numeric index ([7a3c409](https://github.com/oocx/tfplan2md/commit/7a3c40972838c35608061dc56f3a210ec3a8fbce))
+* quote ambiguous strings, escape adjacent index brackets, add UAT plan and regenerate demo artifacts ([3bde639](https://github.com/oocx/tfplan2md/commit/3bde639898a797aa8f7d4e8374998fb0b1a012d6))
+* render collection drift entries per resource and verify drift modes ([de57562](https://github.com/oocx/tfplan2md/commit/de5756284e3a2e7f5816375e2282a53877479e1a))
+* render compact collection rows with markers and large-value support ([5f382e3](https://github.com/oocx/tfplan2md/commit/5f382e39df38c583d76074f8cd00d1a44e28ad1f))
+* render masked collection entries as placeholders with change markers ([8e7f708](https://github.com/oocx/tfplan2md/commit/8e7f7086396464c646e79c223da14124fb1af2c3))
+* show masked collection entries as placeholders in collection drift ([baf77a4](https://github.com/oocx/tfplan2md/commit/baf77a4bfe5c49d3e40fa5cda3290cfa48c9f8b1))
+
+### 🐛 Bug Fixes
+
+* count unknown collections as changes in large-value summary ([127889b](https://github.com/oocx/tfplan2md/commit/127889b550e8ce103016a1c4faa7ef7d78885b72))
+* hide element-less collection rows and quote only ambiguous strings ([403f090](https://github.com/oocx/tfplan2md/commit/403f0906e3a9639e023d32a11ee3af6799f397c8))
+* keep collection rows with masked changes or order changes out of the case-only filter ([47850a7](https://github.com/oocx/tfplan2md/commit/47850a774274e23d1ad5558a97ad369a6583a397))
+* show null and absent sides of large collections ([047c5a2](https://github.com/oocx/tfplan2md/commit/047c5a2c254bca2c221942cf7f4f457908e0365f))
+* treat sensitive empty collections as unchanged ([fefabc3](https://github.com/oocx/tfplan2md/commit/fefabc32f8b6a38d09a76055cbd48896de7863c5))
+
+### ♻️ Refactoring
+
+* move collection sensitivity reading into its own partial file ([8f03e41](https://github.com/oocx/tfplan2md/commit/8f03e415e09d27c399a28011112c0b4aa7c398d9))
+
+### 📚 Documentation
+
+* add architecture for compact collection diffs ([9362044](https://github.com/oocx/tfplan2md/commit/9362044e4dc1d1bf65d05db888e63503c9f22277))
+* add release notes for workflow change ([f307629](https://github.com/oocx/tfplan2md/commit/f3076290b1bab486786b59198cf719d00b850d30))
+* add task plan for compact collection diffs ([6082276](https://github.com/oocx/tfplan2md/commit/60822767b40f1f5b0c018fee2e45c7947d666955))
+* add test plan and UAT plan for compact collection diffs ([58b0427](https://github.com/oocx/tfplan2md/commit/58b0427865022b5aea8db30a6dbca91d555a94a7))
+* add UAT report for compact collection diffs ([c718604](https://github.com/oocx/tfplan2md/commit/c718604468c37b4748c53c22793b664836a2d77e))
+* advance compact collection diffs to code review ([ae20511](https://github.com/oocx/tfplan2md/commit/ae2051116c422b6a8d6df651f204e4d5550a0fb1))
+* advance compact collection diffs to quality engineer ([e82a499](https://github.com/oocx/tfplan2md/commit/e82a49918ba914b9e0298d2ff18ab8e5f3bb7c2f))
+* advance compact collection diffs to technical writer ([a3b23ac](https://github.com/oocx/tfplan2md/commit/a3b23acf4c379a0037803a3157b3be126ee4e6e1))
+* advance compact collection diffs to technical writer ([4af58f1](https://github.com/oocx/tfplan2md/commit/4af58f1a1f91d1a36d5800f6bddbcaf7d2cee977))
+* align collection architecture with element-less change rule ([1f7794a](https://github.com/oocx/tfplan2md/commit/1f7794aeb0bdb90e83bbb82c8f7774fb16d8747f))
+* align collection diff test plans with per-entry sensitive masking ([36724a3](https://github.com/oocx/tfplan2md/commit/36724a390a35d03f9abb3bf497b87e33441a117b))
+* align collection state test expectations with element-less rows hidden ([815505f](https://github.com/oocx/tfplan2md/commit/815505fcfd649004f45120c0cd38fee8eebcf4b5))
+* align UAT plan and architecture with compact collection behaviour ([ab7decc](https://github.com/oocx/tfplan2md/commit/ab7decc8ce71be12769879e13ff6c63143ac2b75))
+* allow change indication for masked collection entries ([d7750e6](https://github.com/oocx/tfplan2md/commit/d7750e6f79496cfeab2c67f5a85e463f60870d1a))
+* approve compact collection diffs specification ([9996e59](https://github.com/oocx/tfplan2md/commit/9996e59c924ebe8c5350db2f55fa1accf27f3bca))
+* approve revised compact collection diffs specification ([721caf0](https://github.com/oocx/tfplan2md/commit/721caf04119f81aa8ea6315e547b66605f7eb38b))
+* describe before and after blocks for large collections ([59ce194](https://github.com/oocx/tfplan2md/commit/59ce194c4b66a5ffae76aeb47b67da69cddffdb8))
+* describe large-value summary counts for collections ([37e2de7](https://github.com/oocx/tfplan2md/commit/37e2de7d08b7f8b69cd2e6a401788ef18347c9e4))
+* describe per-entry sensitive masking in collection diffs ([0b3affd](https://github.com/oocx/tfplan2md/commit/0b3affdbec7cb4b4f36a228ed7ecaac1ef71bb06))
+* describe readable workflow diagrams in release notes ([e4b9ca8](https://github.com/oocx/tfplan2md/commit/e4b9ca83b8b4def2aa1f3fbed52c5418258fd68c))
+* document compact collection rows and collection drift ([cb9ee51](https://github.com/oocx/tfplan2md/commit/cb9ee51fa795722f0f225bda2d2cbaafb0d1aff1))
+* document element-less collection equivalence and quoting rules ([891fdae](https://github.com/oocx/tfplan2md/commit/891fdae249a4ca7e0051b4ecc9927e215175b2e7))
+* document element-less masked collections and round 3 fixture ([2cc6243](https://github.com/oocx/tfplan2md/commit/2cc6243b6c53e4ba558baa43fc17b4df7dea2675))
+* extend collection UAT fixture with large-value and element-less state scenarios ([1b7a60c](https://github.com/oocx/tfplan2md/commit/1b7a60c29c8d08ac4a3e4343d8d63da19f13eba4))
+* plan rework of compact collection diffs ([9d9e7c5](https://github.com/oocx/tfplan2md/commit/9d9e7c5ac77c5dd6b5f003ab8c28bc06cfb8f623))
+* record code review for compact collection diffs ([04f7c0d](https://github.com/oocx/tfplan2md/commit/04f7c0d1f5dda8e049a56d213c03162bfb3738c5))
+* record developer rework for compact collection diffs ([0d1dfd3](https://github.com/oocx/tfplan2md/commit/0d1dfd3328154bbaba1f7975fff2f0476de91c90))
+* record developer rework for per-entry sensitive collection masking ([8ba3ff9](https://github.com/oocx/tfplan2md/commit/8ba3ff9de3095ebcb5ffc4a6d96700e15b4d32e3))
+* record developer rework for round 4 review findings ([3b87b95](https://github.com/oocx/tfplan2md/commit/3b87b9518f35e85d58eeb836883eb1e015f1ca16))
+* record developer round 3 rework for compact collection diffs ([0a05319](https://github.com/oocx/tfplan2md/commit/0a053196e89c82b8ca6ce28957433e60ab1df3c5))
+* record developer round 6 for compact collection diffs ([b5c09f2](https://github.com/oocx/tfplan2md/commit/b5c09f2b35a25a54f68c7ddb81a65ce68abde658))
+* record element-less equivalence question for compact collection diffs ([ba79dbf](https://github.com/oocx/tfplan2md/commit/ba79dbf83c1651250d09d82d413876dbd606cd3b))
+* record maintainer acceptance of code review for compact collection diffs ([6e28445](https://github.com/oocx/tfplan2md/commit/6e284453e8f49d3ffd3cbf72980ba4f91c0a14f4))
+* record maintainer unblock for compact collection diffs ([876026f](https://github.com/oocx/tfplan2md/commit/876026f1e9d4293f830f6f5a55117109e83c640b))
+* record quality engineer work protocol entry ([4df33c4](https://github.com/oocx/tfplan2md/commit/4df33c4c8258be42e5582e3feab742476bc0daad))
+* record regression verification for compact collection diffs rework ([01af4a0](https://github.com/oocx/tfplan2md/commit/01af4a06ed4fdc16cb20e005f108a343d87e27d0))
+* record round 2 code review for compact collection diffs ([3154145](https://github.com/oocx/tfplan2md/commit/3154145bb2ff25883bf2282ec274aa95637a4e18))
+* record round 3 code review for compact collection diffs ([727f716](https://github.com/oocx/tfplan2md/commit/727f7163088d930a6b0715205ba6d35fcbd467a0))
+* record round 4 code review for compact collection diffs ([d3f945e](https://github.com/oocx/tfplan2md/commit/d3f945ecd01b1d372e28c2f0a1dfce71d5eda41c))
+* record round 5 code review for compact collection diffs ([652cf43](https://github.com/oocx/tfplan2md/commit/652cf43d5df9a4962a669ad2906fc5ea6965cb5b))
+* record round 6 code review for compact collection diffs ([a981e87](https://github.com/oocx/tfplan2md/commit/a981e87fff55129a800c3a71cc1aa1c92b58fa8b))
+* record second maintainer unblock for compact collection diffs ([eab88cb](https://github.com/oocx/tfplan2md/commit/eab88cb5055a4b2ce93d68d94234166bcc4ab6e2))
+* record technical writer round 5 for compact collection diffs ([769ee0b](https://github.com/oocx/tfplan2md/commit/769ee0bbadc760709ec8a15e8d1459d92bd750d7))
+* record technical writer round 6 for compact collection diffs ([473b442](https://github.com/oocx/tfplan2md/commit/473b442ec9476e9133572a68dec2bc430e4dd0e4))
+* record UAT as required for compact collection diffs ([d6d2a84](https://github.com/oocx/tfplan2md/commit/d6d2a8427e1faf61686fda2268055a27a27e5954))
+* record UAT decision and work protocol entry for compact collection diffs ([6d3debc](https://github.com/oocx/tfplan2md/commit/6d3debc116d94268a84331d9a2504d45c8dbd725))
+* record UAT gate approval for compact collection diffs ([d2d0bb4](https://github.com/oocx/tfplan2md/commit/d2d0bb4eb7db48de7be1e7e3f8ab57305f4bc643))
+* record workflow release validation ([d928704](https://github.com/oocx/tfplan2md/commit/d9287046ed760469cb7e30c0f1fa3e70aaaa769d))
+* regenerate demo artifacts and record developer work protocol ([27795fd](https://github.com/oocx/tfplan2md/commit/27795fd89feaa6beb59c34396acca3482d21defa))
+* regenerate demo artifacts for collection diff UAT ([1a6607d](https://github.com/oocx/tfplan2md/commit/1a6607d9986faa2565a2c7a15c79c2ea52682cbc))
+* reject compact collection diffs spec for sensitive change indication ([1b4d422](https://github.com/oocx/tfplan2md/commit/1b4d4220b4eaca0a916e18537b951b446a717ee0))
+* renumber workflow work item to resolve collision ([aa2fa28](https://github.com/oocx/tfplan2md/commit/aa2fa2867521d338e7bdf8a8008beb2b91bfbaed))
+* resolve collection ordering question for compact collection diffs ([4177013](https://github.com/oocx/tfplan2md/commit/4177013eba9c1934e1e7819df1144451e227dec9))
+* revise collection architecture for per-entry sensitive masking ([ae89ec0](https://github.com/oocx/tfplan2md/commit/ae89ec0cf941c716f1450800615ccb892333efcf))
+* revise collection diff spec for element-less, sensitive and case-only rules ([cdd698f](https://github.com/oocx/tfplan2md/commit/cdd698f68f4f891077777988b19b8ec62aa39fd9))
+* route compact collection diffs back to developer ([54dc8ff](https://github.com/oocx/tfplan2md/commit/54dc8ffe2506ce7995a1525ed5b57f27275fb864))
+* route compact collection diffs back to requirements engineer ([0f7513d](https://github.com/oocx/tfplan2md/commit/0f7513dff4aa07d90b584735abba967538f12326))
+* state contribution policy and move development guide ([fcd4671](https://github.com/oocx/tfplan2md/commit/fcd4671ca2f719b67d47ce2f6d3417032b7c9219))
+* write release notes for compact collection diffs ([f7e5d51](https://github.com/oocx/tfplan2md/commit/f7e5d51a150d55c7c7c54ab4759130182bf2b2f3))
+
 <a name="1.47.0"></a>
 ## [1.47.0](https://github.com/oocx/tfplan2md/compare/v1.46.0...v1.47.0) (2026-10-07)
 

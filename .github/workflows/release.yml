@@ -170,30 +170,31 @@ jobs:
             echo "path=${RELEASE_NOTES_FILES[0]}" >> $GITHUB_OUTPUT
             echo "Found user-focused release notes: ${RELEASE_NOTES_FILES[0]}"
           elif [ "${#RELEASE_NOTES_FILES[@]}" -gt 1 ]; then
-            # Multiple release note files can exist in cumulative release ranges when
-            # intermediate versions were not released. Pick the latest work item by
-            # numeric prefix (docs/*/NNN-*/release-notes.md).
-            latest_release_notes=""
-            latest_work_item_id=-1
-            for release_notes_file in "${RELEASE_NOTES_FILES[@]}"; do
-              work_item_dir="$(basename "$(dirname "$release_notes_file")")"
-              work_item_id="${work_item_dir%%-*}"
-              if [[ "$work_item_id" =~ ^[0-9]+$ ]]; then
-                work_item_id_numeric=$((10#$work_item_id))
-                if [ "$work_item_id_numeric" -gt "$latest_work_item_id" ]; then
-                  latest_work_item_id="$work_item_id_numeric"
-                  latest_release_notes="$release_notes_file"
+            # Multiple release note files exist in cumulative release ranges when
+            # intermediate merges did not release on their own (for example docs or
+            # workflow items). Every one of them describes something in this release,
+            # so combine them: features and fixes first, then workflow items, each
+            # group in work-item order (oldest first, which matches merge order).
+            combined_release_notes="combined-release-notes.md"
+            : > "$combined_release_notes"
+            for group in features issues workflow; do
+              while IFS= read -r release_notes_file; do
+                [ -f "$release_notes_file" ] || continue
+                if [ -s "$combined_release_notes" ]; then
+                  printf '\n' >> "$combined_release_notes"
                 fi
-              fi
+                cat "$release_notes_file" >> "$combined_release_notes"
+                echo "Included release notes: ${release_notes_file}"
+              done < <(printf '%s\n' "${RELEASE_NOTES_FILES[@]}" | grep "^docs/${group}/" | sort -t/ -k3)
             done
 
-            if [ -n "$latest_release_notes" ] && [ -f "$latest_release_notes" ]; then
+            if [ -s "$combined_release_notes" ]; then
               echo "found=true" >> $GITHUB_OUTPUT
-              echo "path=${latest_release_notes}" >> $GITHUB_OUTPUT
-              echo "Multiple release-notes.md files changed; selected latest work item notes: ${latest_release_notes}"
+              echo "path=${combined_release_notes}" >> $GITHUB_OUTPUT
+              echo "Multiple release-notes.md files changed; combined them into ${combined_release_notes}"
             else
               echo "found=false" >> $GITHUB_OUTPUT
-              echo "Multiple release-notes.md files changed but no valid latest work item found; using changelog extraction"
+              echo "Multiple release-notes.md files changed but none could be read; using changelog extraction"
             fi
           else
             echo "found=false" >> $GITHUB_OUTPUT

@@ -2,7 +2,7 @@
   "type": "feature",
   "slug": "148-compact-collection-diffs",
   "stage": "retrospective",
-  "status": "running",
+  "status": "done",
   "gates": {
     "spec": "approved",
     "arch": "n/a",
